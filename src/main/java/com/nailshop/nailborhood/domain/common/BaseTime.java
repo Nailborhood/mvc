@@ -17,6 +17,6 @@ public abstract class BaseTime {
     @CreatedDate
     private LocalDateTime createdAt; // 셍성 시간
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt; // 수정 시간
+/*    @LastModifiedDate
+    private LocalDateTime updatedAt; // 수정 시간*/
 }

@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.chat;
 
+import com.nailshop.nailborhood.domain.common.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Message {
+public class Message extends BaseTime {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +23,9 @@ public class Message {
 
     private String contents;
 
-    private LocalDateTime createdDate;
 
     @Builder
-    public Message( String contents, LocalDateTime createdDate) {
+    public Message( String contents) {
         this.contents = contents;
-        this.createdDate = createdDate;
     }
 }
