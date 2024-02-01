@@ -24,15 +24,12 @@ public class Review extends BaseTime {
 
     private String rate;
 
-    private LocalDateTime created;
-
     private boolean isDeleted;
 
     @Builder
-    public Review( String contents, String rate, LocalDateTime created, boolean isDeleted) {
+    public Review( String contents, String rate, boolean isDeleted) {
         this.contents = contents;
         this.rate = rate;
-        this.created = created;
         this.isDeleted = isDeleted;
     }
 }
