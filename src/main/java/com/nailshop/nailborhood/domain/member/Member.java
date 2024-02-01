@@ -43,8 +43,8 @@ public class Member {
     private Role role;
 
     @Builder
-    public Member(Long memberId, String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg, LocalDateTime joinDate, String provider, boolean isDeleted, Role role) {
-        this.memberId = memberId;
+    public Member( String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg, LocalDateTime joinDate, String provider, boolean isDeleted, Role role) {
+
         this.email = email;
         this.name = name;
         this.birthday = birthday;

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ArtImg {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private  Long artImgId;
 
     private String imgPath;
     private int imgNum;

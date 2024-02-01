@@ -17,8 +17,4 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
 
-    @Builder
-    public Customer(Long customerId) {
-        this.customerId = customerId;
-    }
 }

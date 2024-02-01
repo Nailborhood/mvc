@@ -18,7 +18,7 @@ public class Shop extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long shopId;
 
     private String name;
     private String address;

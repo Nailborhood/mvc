@@ -15,13 +15,12 @@ public class ReviewLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likeId;
+    private Long reviewlikeId;
 
     private boolean status;
 
     @Builder
-    public ReviewLike(Long likeId, boolean status) {
-        this.likeId = likeId;
+    public ReviewLike(boolean status) {
         this.status = status;
     }
 }

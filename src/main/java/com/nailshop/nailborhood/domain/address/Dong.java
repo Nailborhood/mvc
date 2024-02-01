@@ -15,7 +15,7 @@ public class Dong {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private  Long dongId;
 
     private String name;
 

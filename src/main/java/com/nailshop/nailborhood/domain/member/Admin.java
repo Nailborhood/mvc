@@ -17,8 +17,5 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminId;
 
-    @Builder
-    public Admin(Long adminId) {
-        this.adminId = adminId;
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.review;
 
+import com.nailshop.nailborhood.domain.common.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Review {
+public class Review extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +29,7 @@ public class Review {
     private boolean isDeleted;
 
     @Builder
-    public Review(Long reviewId, String contents, String rate, LocalDateTime created, boolean isDeleted) {
-        this.reviewId = reviewId;
+    public Review( String contents, String rate, LocalDateTime created, boolean isDeleted) {
         this.contents = contents;
         this.rate = rate;
         this.created = created;

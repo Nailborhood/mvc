@@ -20,8 +20,7 @@ public class Login {
     private String refreshToken;
 
     @Builder
-    public Login(Long loginId, String refreshToken) {
-        this.loginId = loginId;
+    public Login(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 }

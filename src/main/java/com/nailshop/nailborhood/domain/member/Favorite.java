@@ -20,8 +20,7 @@ public class Favorite {
     private boolean status;
 
     @Builder
-    public Favorite(Long favoriteId, boolean status) {
-        this.favoriteId = favoriteId;
+    public Favorite( boolean status) {
         this.status = status;
     }
 }

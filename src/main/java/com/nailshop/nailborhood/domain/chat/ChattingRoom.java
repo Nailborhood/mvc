@@ -17,8 +17,5 @@ public class ChattingRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
-    @Builder
-    public ChattingRoom(Long roomId) {
-        this.roomId = roomId;
-    }
+
 }

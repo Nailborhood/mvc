@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class ArtBoardLike {
+public class ArtLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private  Long artLikeId;
 
     private Boolean status;
 
     @Builder
-    public ArtBoardLike(Boolean status) {
+    public ArtLike(Boolean status) {
         this.status = status;
     }
 }
