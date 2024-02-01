@@ -27,6 +27,9 @@ public class Shop extends BaseTime {
     private String content;
     private String status;
     private Boolean isDeleted;
+
+
+
     //private double latitude; // 위도
     //private double longitude; // 경도
 
