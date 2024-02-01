@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.type.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Member {
+public class Member extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +34,6 @@ public class Member {
 
     private String profileImg;
 
-    private LocalDateTime joinDate;
-
     private String provider;
 
     private boolean isDeleted;
@@ -43,7 +42,7 @@ public class Member {
     private Role role;
 
     @Builder
-    public Member( String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg, LocalDateTime joinDate, String provider, boolean isDeleted, Role role) {
+    public Member( String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
 
         this.email = email;
         this.name = name;
@@ -53,7 +52,6 @@ public class Member {
         this.address = address;
         this.nickname = nickname;
         this.profileImg = profileImg;
-        this.joinDate = joinDate;
         this.provider = provider;
         this.isDeleted = isDeleted;
         this.role = role;
