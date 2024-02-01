@@ -15,19 +15,17 @@ public class ReviewImg {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageId;
+    private Long reviewImgId;
 
-    private String url;
-
-    private String s3Name;
+    private String imgPath;
+    private int imgNum;
 
     private String isDeleted;
 
     @Builder
-    public ReviewImg(Long imageId, String url, String s3Name, String isDeleted) {
-        this.imageId = imageId;
-        this.url = url;
-        this.s3Name = s3Name;
+    public ReviewImg(String imgPath, int imgNum, String isDeleted) {
+        this.imgPath = imgPath;
+        this.imgNum = imgNum;
         this.isDeleted = isDeleted;
     }
 }

@@ -26,8 +26,7 @@ public class ReviewReport {
     private String status;
 
     @Builder
-    public ReviewReport(Long reportId, String contents, LocalDateTime date, String status) {
-        this.reportId = reportId;
+    public ReviewReport( String contents, LocalDateTime date, String status) {
         this.contents = contents;
         this.date = date;
         this.status = status;

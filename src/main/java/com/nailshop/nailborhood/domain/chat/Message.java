@@ -24,8 +24,7 @@ public class Message {
     private LocalDateTime createdDate;
 
     @Builder
-    public Message(Long messageId, String contents, LocalDateTime createdDate) {
-        this.messageId = messageId;
+    public Message( String contents, LocalDateTime createdDate) {
         this.contents = contents;
         this.createdDate = createdDate;
     }

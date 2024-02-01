@@ -15,7 +15,7 @@ public class ShopImg {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private Long shopImgId;
 
     private String imgPath;
     private int imgNum;
