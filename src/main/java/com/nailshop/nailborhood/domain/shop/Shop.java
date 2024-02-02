@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Favorite;
+import com.nailshop.nailborhood.type.ShopStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +29,10 @@ public class Shop extends BaseTime {
     private String opentime;
     private String website;
     private String content;
-    private String status;
+    private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private ShopStatus status;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -60,8 +64,9 @@ public class Shop extends BaseTime {
     //private double longitude; // 경도
 
 
+
     @Builder
-    public Shop(String name, String address, String opentime, String website, String content, String status, Boolean isDeleted) {
+    public Shop(String name, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, Dong dong ,String phone) {
         this.name = name;
         this.address = address;
         this.opentime = opentime;
@@ -69,7 +74,7 @@ public class Shop extends BaseTime {
         this.content = content;
         this.status = status;
         this.isDeleted = isDeleted;
-        //this.latitude = latitude;
-        //this.longitude = longitude;
+        this.dong = dong;
+        this.phone = phone;
     }
 }
