@@ -13,6 +13,7 @@ public class ShopImg {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "shop_img_id")
     private Long shopImgId;
 
     private String imgPath;

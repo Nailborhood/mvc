@@ -1,9 +1,7 @@
 package com.nailshop.nailborhood.domain.member;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.nailshop.nailborhood.domain.review.Review;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +15,14 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long customerId;
+
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Review> reviewList;
 
 }

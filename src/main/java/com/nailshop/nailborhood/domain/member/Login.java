@@ -12,8 +12,10 @@ public class Login {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "login_id")
     private Long loginId;
 
+    @Column(name = "refresh_token")
     private String refreshToken;
 
     @OneToOne
