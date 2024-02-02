@@ -1,9 +1,6 @@
 package com.nailshop.nailborhood.domain.shop;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "shop_img")
 public class ShopImg {
 
     @Id
@@ -20,6 +18,10 @@ public class ShopImg {
     private String imgPath;
     private int imgNum;
     private Boolean isDeleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
     @Builder
     public ShopImg(String imgPath, int imgNum, Boolean isDeleted) {

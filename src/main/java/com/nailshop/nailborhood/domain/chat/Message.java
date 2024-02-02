@@ -1,10 +1,7 @@
 package com.nailshop.nailborhood.domain.chat;
 
 import com.nailshop.nailborhood.domain.common.BaseTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +16,10 @@ public class Message extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "message_id")
     private Long messageId;
 
     private String contents;
-
 
     @Builder
     public Message( String contents) {
