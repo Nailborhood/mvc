@@ -23,6 +23,7 @@ public class ArtRef extends BaseTime {
 
     private String name;
     private String content;
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @OneToMany(mappedBy = "artRef")
