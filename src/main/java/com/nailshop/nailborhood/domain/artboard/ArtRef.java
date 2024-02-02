@@ -19,7 +19,8 @@ public class ArtRef extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long artRefId;
+    @Column(name = "art_ref_id")
+    private Long artRefId;
 
     private String name;
     private String content;

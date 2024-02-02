@@ -14,6 +14,7 @@ public class ArtLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "art_like_id")
     private  Long artLikeId;
 
     private Boolean status;
