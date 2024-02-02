@@ -3,6 +3,8 @@ package com.nailshop.nailborhood.domain.member;
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
+import com.nailshop.nailborhood.domain.review.ReviewLike;
+import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.type.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
