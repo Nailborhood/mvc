@@ -22,8 +22,9 @@ public class Menu {
     private Shop shop;
 
     @Builder
-    public Menu(String name, String price) {
+    public Menu(String name, String price,Shop shop) {
         this.name = name;
         this.price = price;
+        this.shop =shop;
     }
 }
