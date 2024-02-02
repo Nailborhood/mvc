@@ -1,12 +1,11 @@
 package com.nailshop.nailborhood.domain.address;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -15,9 +14,13 @@ public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city_id")
     private  Long cityId;
 
     private String name;
+
+    @OneToMany(mappedBy = "city")
+    private List<Districts> districtsList;
 
     @Builder
     public City(String name) {

@@ -1,6 +1,10 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.artboard.ArtLike;
+import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
+import com.nailshop.nailborhood.domain.review.ReviewLike;
+import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.type.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -8,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +21,7 @@ public class Member extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "memeber_id")
     private Long memberId;
 
     private String email;
@@ -24,6 +30,7 @@ public class Member extends BaseTime {
 
     private LocalDateTime birthday;
 
+    @Column(name = "phone_num")
     private String phoneNum;
 
     private String gender;
@@ -32,14 +39,37 @@ public class Member extends BaseTime {
 
     private String nickname;
 
+    @Column(name = "profile_img")
     private String profileImg;
 
     private String provider;
 
+    @Column(name = "is_deleted")
     private boolean isDeleted;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
+
+    @OneToOne(mappedBy = "member")
+    private Customer customer;
+    @OneToOne(mappedBy = "member")
+    private Owner owner;
+    @OneToOne(mappedBy = "member")
+    private Admin admin;
+
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Favorite> FavoriteList;
+    @OneToMany(mappedBy = "member")
+    private List<ArtLike> artLikeList;
+
+    @OneToMany(mappedBy = "member")
+    private List<ReviewLike> reviewLikeList;
+
+    @OneToMany(mappedBy = "member")
+    private List<ReviewReport> reviewReportList;
 
     @Builder
     public Member( String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
