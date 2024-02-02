@@ -15,7 +15,8 @@ public class ReviewLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewlikeId;
+    @Column(name = "review_like_id")
+    private Long reviewLikeId;
 
     private boolean status;
 

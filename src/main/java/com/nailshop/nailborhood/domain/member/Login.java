@@ -1,9 +1,6 @@
 package com.nailshop.nailborhood.domain.member;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +15,10 @@ public class Login {
     private Long loginId;
 
     private String refreshToken;
+
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Builder
     public Login(String refreshToken) {
