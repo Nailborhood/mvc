@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "chat_message")
 public class Message extends BaseTime {
 
 

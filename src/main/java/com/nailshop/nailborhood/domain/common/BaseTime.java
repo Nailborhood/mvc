@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public abstract class BaseTime {
 
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDateTime createdAt; // 셍성 시간
 
 /*    @LastModifiedDate
