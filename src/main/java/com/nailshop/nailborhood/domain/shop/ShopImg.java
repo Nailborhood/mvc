@@ -16,8 +16,13 @@ public class ShopImg {
     @Column(name = "shop_img_id")
     private Long shopImgId;
 
+    @Column(name = "img_path")
     private String imgPath;
+
+    @Column(name = "img_num")
     private int imgNum;
+
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
