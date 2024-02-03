@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.service.shop;
+package com.nailshop.nailborhood.service.shop.admin;
 
 import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.shop.Menu;
@@ -36,7 +36,7 @@ public class ShopRegistrationService {
     private final ShopImgRepository shopImgRepository;
 
     // 매장 등록
-    @Transactional
+
     public CommonResponseDto<Object> registerShop (List<MultipartFile> multipartFileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
         // 동 엔티티 설정
@@ -98,6 +98,7 @@ public class ShopRegistrationService {
             ShopImg shopImg = ShopImg.builder()
                     .imgPath(imgPath)
                     .imgNum(imgNum)
+                    .isDeleted(false)
                     .shop(shop)
                     .build();
             shopImgRepository.save(shopImg);
