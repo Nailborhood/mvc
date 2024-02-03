@@ -32,10 +32,10 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private final String SHOP_PATH = "/shop";
-    private final String ARTREF_PATH = "/artRef";
-    private final String REVIEW_PATH = "/review";
-    private final String PROFILE_PATH = "/profile";
+    private final String SHOP_PATH = "shop";
+    private final String ARTREF_PATH = "artRef";
+    private final String REVIEW_PATH = "review";
+    private final String PROFILE_PATH = "profile";
 
 
 
