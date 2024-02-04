@@ -50,4 +50,9 @@ public class ArtRef extends BaseTime {
         this.shop = shop;
         this.category = category;
     }
+
+    public void updateArtRef(String name, String content){
+        this.name = name;
+        this.content = content;
+    }
 }
