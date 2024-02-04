@@ -14,7 +14,8 @@ public enum SuccessCode {
     SHOP_MODIFICATION_SUCCESS("매장 수정을 성공했습니다."),
     // 아트판
     ART_REGISTRATION_SUCCESS("아트판 등록에 성공했습니다."),
-    ART_UPDATE_SUCCESS("아트판 수정에 성공했습니다.");
+    ART_UPDATE_SUCCESS("아트판 수정에 성공했습니다."),
+    ART_DELETE_SUCCESS("아트판 삭제에 성공했습니다.");
 
 
     private final String description;
