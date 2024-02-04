@@ -11,5 +11,4 @@ public class ArtRegistrationDto {
     private String content;
     private Long shopId;
     private Long categoryId;
-    private Boolean isDeleted;
 }
