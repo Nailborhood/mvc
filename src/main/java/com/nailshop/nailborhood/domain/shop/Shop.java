@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Favorite;
+import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.type.ShopStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -52,6 +53,11 @@ public class Shop extends BaseTime {
     // 아트판
     @OneToMany(mappedBy = "shop")
     private List<ArtRef> artRefList;
+
+    // 리뷰
+    @OneToMany(mappedBy = "shop")
+    private List<Review> reviewList;
+
 
     // 주소(동)
     @ManyToOne(fetch = FetchType.LAZY)

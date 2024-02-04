@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.shop;
+package com.nailshop.nailborhood.dto.shop.request;
 
 import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;

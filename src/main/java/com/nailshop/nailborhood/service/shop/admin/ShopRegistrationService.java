@@ -5,8 +5,8 @@ import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.shop.ShopMenuDto;
-import com.nailshop.nailborhood.dto.shop.ShopRegistrationRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
@@ -18,7 +18,6 @@ import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
