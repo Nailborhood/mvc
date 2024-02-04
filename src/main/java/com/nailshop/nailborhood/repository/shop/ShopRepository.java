@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.repository.shop;
 
 import com.nailshop.nailborhood.domain.shop.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +16,7 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
             "FROM Shop s " +
             "WHERE s.shopId =:shopId AND s.isDeleted = false ")
     Optional<Shop> findByShopIdAndIsDeleted(@Param("shopId")Long shopId);
+
+    @Query("SELECT s FROM Shop s")
+    Page<Shop> findAllShopLIst(PageRequest pageable);
 }
