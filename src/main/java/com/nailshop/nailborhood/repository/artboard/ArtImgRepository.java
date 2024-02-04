@@ -14,9 +14,15 @@ public interface ArtImgRepository extends JpaRepository<ArtImg, Long> {
             "FROM ArtImg ai " +
             "LEFT JOIN ai.artRef a " +
             "WHERE a.artRefId = :artRefId ")
-    List<ArtImg> findByArtImgListByArtRefId(@Param("artRefId") Long artRefId);
+    List<ArtImg> findByArtRefId(@Param("artRefId") Long artRefId);
 
     @Modifying
     @Query("DELETE FROM ArtImg ai WHERE ai.artRef.artRefId = :artRefId")
     void deleteByArtRefId(@Param("artRefId") Long ArtRefId);
+
+    @Query("UPDATE ArtImg ai " +
+            "SET ai.isDeleted = :status " +
+            "WHERE ai.artImgId = :artImgId ")
+    @Modifying(clearAutomatically = true)
+    void deleteByArtImgId(@Param("artImgId") Long artImgId ,@Param("status") Boolean status);
 }

@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.dto.artboard.ArtRegistrationDto;
 import com.nailshop.nailborhood.dto.artboard.ArtUpdateDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.service.artboard.ArtDeleteService;
 import com.nailshop.nailborhood.service.artboard.ArtRegistrationService;
 import com.nailshop.nailborhood.service.artboard.ArtUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ public class ArtController {
 
     private final ArtRegistrationService artRegistrationService;
     private final ArtUpdateService artUpdateService;
+    private final ArtDeleteService artDeleteService;
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 등록", description = "owner API")
@@ -41,6 +43,17 @@ public class ArtController {
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "data") ArtUpdateDto artUpdateDto){
         CommonResponseDto<Object> commonResponseDto = artUpdateService.updateArt(multipartFileList, artUpdateDto, artRefId);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+    @Tag(name = "owner", description = "owner API")
+    @Operation(summary = "아트판 삭제", description = "owner API")
+    @DeleteMapping(consumes = {"multipart/form-data"}, value = "owner/artboard/delete/{artRefId}")
+    public ResponseEntity<ResultDto<Void>> deleteArtRef(@PathVariable Long artRefId,
+                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList){
+        CommonResponseDto<Object> commonResponseDto = artDeleteService.deleteArt(multipartFileList, artRefId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
