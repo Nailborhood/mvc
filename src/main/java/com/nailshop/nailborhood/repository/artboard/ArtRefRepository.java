@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.repository.artboard;
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,4 +15,10 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "FROM ArtRef a " +
             "WHERE a.artRefId = :artRefId AND a.isDeleted = false")
     Optional<ArtRef> findByArtRefIdAndIsDeleted(@Param("artRefId") Long artRefId);
+
+    @Query("UPDATE ArtRef a " +
+            "SET a.isDeleted = :status " +
+            "WHERE a.artRefId = :artRefId ")
+    @Modifying(clearAutomatically = true)
+    void deleteByArtRefId(@Param("artRefId") Long artRefId ,@Param("status") Boolean status);
 }
