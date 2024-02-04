@@ -53,7 +53,7 @@ public class ArtUpdateService {
 
         if (multipartFileList != null) {
             // url 값 삭제
-            List<ArtImg> artImgList = artImgRepository.findByArtImgListByArtRefId(artRefId);
+            List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
             for (ArtImg artImg : artImgList) {
                 String artImgUrl = artImg.getImgPath();
                 // s3 이미지 삭제
