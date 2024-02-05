@@ -33,10 +33,10 @@ public class ArtController {
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
     public ResponseEntity<ResultDto<Void>> registerArt(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                        @RequestPart(value = "data") ArtRegistrationDto artRegistrationDto){
-        CommonResponseDto<Object> commonResponseDto = artRegistrationService.registerArt(multipartFileList, artRegistrationDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(multipartFileList, artRegistrationDto);
+        ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(registerArt.getHttpStatus()).body(resultDto);
     }
 
     @Tag(name = "owner", description = "owner API")
@@ -45,10 +45,10 @@ public class ArtController {
     public ResponseEntity<ResultDto<Void>> updateArtRef(@PathVariable Long artRefId,
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "data") ArtUpdateDto artUpdateDto){
-        CommonResponseDto<Object> commonResponseDto = artUpdateService.updateArt(multipartFileList, artUpdateDto, artRefId);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        CommonResponseDto<Object> updateArt = artUpdateService.updateArt(multipartFileList, artUpdateDto, artRefId);
+        ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(updateArt.getHttpStatus()).body(resultDto);
     }
 
     @Tag(name = "owner", description = "owner API")
@@ -56,20 +56,20 @@ public class ArtController {
     @DeleteMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/delete/{artRefId}")
     public ResponseEntity<ResultDto<Void>> deleteArtRef(@PathVariable Long artRefId,
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList){
-        CommonResponseDto<Object> commonResponseDto = artDeleteService.deleteArt(multipartFileList, artRefId);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(multipartFileList, artRefId);
+        ResultDto<Void> resultDto = ResultDto.in(deleteArt.getStatus(), deleteArt.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
     }
 
     @Tag(name = "user", description = "user API")
     @Operation(summary = "아트판 좋아요", description = "user API")
     @PostMapping("/user/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeDto>> likeArtRef(@PathVariable Long artRefId){
-        CommonResponseDto<Object> commonResponseDto = artLikeService.likeArt(artRefId);
-        ResultDto<ArtLikeDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        resultDto.setData((ArtLikeDto) commonResponseDto.getData());
+        CommonResponseDto<Object> likeArt = artLikeService.likeArt(artRefId);
+        ResultDto<ArtLikeDto> resultDto = ResultDto.in(likeArt.getStatus(), likeArt.getMessage());
+        resultDto.setData((ArtLikeDto) likeArt.getData());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(likeArt.getHttpStatus()).body(resultDto);
     }
 }
