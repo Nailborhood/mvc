@@ -36,7 +36,7 @@ public class ShopRegistrationService {
 
     // 매장 등록
 
-    public CommonResponseDto<Object> registerShop (List<MultipartFile> multipartFileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAdressSeparation()
@@ -56,6 +56,9 @@ public class ShopRegistrationService {
                         .phone(shopRegistrationRequestDto.getPhone())
                         .isDeleted(false)
                         .dong(dong)
+                        .reviewCnt(0)
+                        .favoriteCnt(0)
+                        .rateAvg(0)
                         .build();
 
         shop = shopRepository.save(shop);
@@ -86,20 +89,20 @@ public class ShopRegistrationService {
     }
 
     // 이미지 저장
-    private void saveShopImg(List<MultipartFile> multipartFileList, Shop shop){
+    private void saveShopImg(List<MultipartFile> multipartFileList, Shop shop) {
         // s3에 이미지 업로드
         List<String> shopImgUrlList = s3UploadService.shopImgUpload(multipartFileList);
 
         // 이미지 번호 1번 부터 시작
         Integer imgNum = 1;
 
-        for(String imgPath : shopImgUrlList){
+        for (String imgPath : shopImgUrlList) {
             ShopImg shopImg = ShopImg.builder()
-                    .imgPath(imgPath)
-                    .imgNum(imgNum)
-                    .isDeleted(false)
-                    .shop(shop)
-                    .build();
+                                     .imgPath(imgPath)
+                                     .imgNum(imgNum)
+                                     .isDeleted(false)
+                                     .shop(shop)
+                                     .build();
             shopImgRepository.save(shopImg);
 
             imgNum++;

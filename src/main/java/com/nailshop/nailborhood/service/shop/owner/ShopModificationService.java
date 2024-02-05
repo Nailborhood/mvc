@@ -69,7 +69,7 @@ public class ShopModificationService {
                 shopModifiactionRequestDto.getWebsite(),
                 shopModifiactionRequestDto.getContent(),
                 ShopStatus.valueOf(String.valueOf(shopModifiactionRequestDto.getStatus())),
-               dong,
+                dong,
                 shopModifiactionRequestDto.getPhone());
 
         shopRepository.save(shop);
