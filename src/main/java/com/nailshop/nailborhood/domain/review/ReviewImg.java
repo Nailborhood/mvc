@@ -22,14 +22,14 @@ public class ReviewImg {
     private int imgNum;
 
     @Column(name = "is_deleted")
-    private String isDeleted;
+    private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
 
     @Builder
-    public ReviewImg(String imgPath, int imgNum, String isDeleted, Review review) {
+    public ReviewImg(String imgPath, int imgNum, Boolean isDeleted, Review review) {
         this.imgPath = imgPath;
         this.imgNum = imgNum;
         this.isDeleted = isDeleted;

@@ -24,7 +24,7 @@ public class Review extends BaseTime {
 
     private String contents;
 
-    private String rate;
+    private Integer rate;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
@@ -51,9 +51,10 @@ public class Review extends BaseTime {
     private Shop shop;
 
     @Builder
-    public Review( String contents, String rate, boolean isDeleted) {
+    public Review(String contents, Integer rate, boolean isDeleted, Shop shop) {
         this.contents = contents;
         this.rate = rate;
         this.isDeleted = isDeleted;
+        this.shop = shop;
     }
 }
