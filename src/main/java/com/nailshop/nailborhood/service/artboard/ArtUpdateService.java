@@ -40,6 +40,7 @@ public class ArtUpdateService {
         String content = artUpdateDto.getContent().equals(artRef.getContent()) ? artRef.getContent() : artUpdateDto.getContent();
 
         artRef.updateArtRef(name, content);
+        artRefRepository.save(artRef);
 
         // 기존 이미지 삭제 후 새 이미지 저장
         updateArtRefImg(multipartFileList, artRef);
