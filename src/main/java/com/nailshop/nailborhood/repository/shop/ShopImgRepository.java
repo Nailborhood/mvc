@@ -12,10 +12,17 @@ public interface ShopImgRepository extends JpaRepository<ShopImg,Long> {
     @Query("SELECT si " +
             "FROM ShopImg si " +
             "LEFT JOIN si.shop s " +
-            "WHERE s.shopId = :shopId ")
+            "WHERE s.shopId = :shopId")
     List<ShopImg> findByShopImgListByShopId(@Param("shopId") Long shopId);
 
     @Modifying
     @Query("DELETE FROM ShopImg si WHERE si.shop.shopId = :shopId")
     void deleteByShopId(@Param("shopId") Long shopId);
+
+
+    @Query("SELECT si.imgPath " +
+            "FROM ShopImg si " +
+            "LEFT JOIN si.shop s " +
+            "WHERE s.shopId =:shopId AND si.imgNum = 1 ")
+    String findByShopImgByShopIdAndShopImgId(@Param("shopId")Long shopId);
 }
