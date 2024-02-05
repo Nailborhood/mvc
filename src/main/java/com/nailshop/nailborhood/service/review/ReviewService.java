@@ -1,18 +1,24 @@
 package com.nailshop.nailborhood.service.review;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
+import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
+import com.nailshop.nailborhood.dto.review.ReviewReportDto;
 import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
+import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.ReviewReportStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,8 +34,10 @@ import java.util.List;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewReportRepository reviewReportRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final ShopRepository shopRepository;
+    private final MemberRepository memberRepository;
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
 
@@ -52,7 +61,6 @@ public class ReviewService {
         reviewRepository.save(review);
 
 
-
         // 기존 이미지 삭제
         removeExistReviewImg(multipartFileList, review);
 
@@ -69,22 +77,39 @@ public class ReviewService {
     }
 
     // 리뷰 신고
-//    @Transactional
-//    public CommonResponseDto<Object> reviewReport(Long reviewId, ReviewReportDto reviewReportDto) {
-//
-//        // 유저 정보 확인
-//
-//        // 리뷰 가져오기
-//        Review review = reviewRepository.findReviewByFalse(reviewId)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
-//
-//        String reportReason = reviewReportDto.getReportReason();
-//        reviewRepository.
-//
-//
-//
-//        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, null);
-//    }
+    @Transactional
+    public CommonResponseDto<Object> reviewReport(Long reviewId, Long shopId,Long memberId, ReviewReportDto reviewReportDto) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // 매장 존재 여부
+        shopRepository.findByShopIdAndIsDeleted(shopId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        // 리뷰 가져오기
+        Review review = reviewRepository.findReviewByFalse(reviewId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+
+        // 신고당한 유저 ID를 가져올까 닉네임을 가져올까
+//        Long reportedCustomerId = review.getCustomer().getCustomerId();
+
+
+
+        ReviewReport reviewReport = ReviewReport.builder()
+                .contents(review.getContents())
+                .status(ReviewReportStatus.REVIEW_REPORT_PENDING.getDescription())
+                .member(member)
+                .review(review)
+                .date(LocalDateTime.now())
+                .build();
+
+        reviewReportRepository.save(reviewReport);
+
+
+
+        return commonService.successResponse(SuccessCode.REVIEW_REPORT_SUCCESS.getDescription(), HttpStatus.OK, null);
+    }
 
 
 
