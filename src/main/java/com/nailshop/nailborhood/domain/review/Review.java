@@ -23,7 +23,7 @@ public class Review extends BaseTime {
 
     private String contents;
 
-    private String rate;
+    private Integer rate;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
@@ -46,9 +46,14 @@ public class Review extends BaseTime {
     private Category category;
 
     @Builder
-    public Review( String contents, String rate, boolean isDeleted) {
+    public Review( String contents, Integer rate, boolean isDeleted) {
         this.contents = contents;
         this.rate = rate;
         this.isDeleted = isDeleted;
+    }
+
+    public void reviewUpdate(String contents, Integer rate) {
+        this.contents = contents;
+        this.rate = rate;
     }
 }
