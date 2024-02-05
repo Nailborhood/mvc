@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.repository;
+package com.nailshop.nailborhood.repository.review;
 
 
 import com.nailshop.nailborhood.domain.review.ReviewReport;
