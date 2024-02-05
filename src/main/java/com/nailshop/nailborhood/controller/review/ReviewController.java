@@ -26,6 +26,20 @@ public class ReviewController {
     private final ReviewRegistrationService reviewRegistrationService;
 
 
+    @Tag(name = "review", description = "review API")
+    @Operation(summary = "리뷰 등록", description = "review API")
+    // 매장 정보 등록
+    @PostMapping(consumes = {"multipart/form-data"}, value = "{shopId}/review/registration")
+    public ResponseEntity<ResultDto<Void>> registerShop(@PathVariable Long shopId,
+                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                                                        @RequestPart(value = "data") ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+        CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId,multipartFileList,reviewRegistrationRequestDto );
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                .body(resultDto);
+    }
+
     //리뷰 수정
     @PutMapping("/review/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewUpdate(@PathVariable Long reviewId,
@@ -49,18 +63,5 @@ public class ReviewController {
 //    }
 
 
-    @Tag(name = "review", description = "review API")
-    @Operation(summary = "리뷰 등록", description = "review API")
-    // 매장 정보 등록
-    @PostMapping(consumes = {"multipart/form-data"}, value = "{shopId}/review/registration")
-    public ResponseEntity<ResultDto<Void>> registerShop(@PathVariable Long shopId,
-                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "data") ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId,multipartFileList,reviewRegistrationRequestDto );
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
-    }
 
 }

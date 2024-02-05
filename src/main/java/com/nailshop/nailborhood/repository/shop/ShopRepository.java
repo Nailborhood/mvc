@@ -1,8 +1,6 @@
 package com.nailshop.nailborhood.repository.shop;
 
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailListResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailLookupResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
