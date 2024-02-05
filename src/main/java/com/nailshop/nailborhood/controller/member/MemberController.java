@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("/checkEmailAvailable")
+    @GetMapping("/checkEmail")
     public ResponseEntity<ResultDto<CheckDto>> emailOverlapCheck(@RequestBody CheckDto checkDto) {
         CommonResponseDto<Object> commonResponseDto = memberService.checkEmailIsAvailable(checkDto);
         ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -23,5 +23,27 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
+    @GetMapping("/checkNickname")
+    public ResponseEntity<ResultDto<CheckDto>> nicknameOverlapCheck(@RequestBody CheckDto checkDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.checkNicknameIsAvailable(checkDto);
+        ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((CheckDto) commonResponseDto.getData());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+    @GetMapping("/checkPhoneNum")
+    public ResponseEntity<ResultDto<CheckDto>> phoneNumOverlapCheck(@RequestBody CheckDto checkDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.checkPhoneNumIsAvailable(checkDto);
+        ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((CheckDto) commonResponseDto.getData());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+    @PostMapping("/signupProc")
+    public ResponseEntity<ResultDto<Void>> signUp(@RequestBody SignUpDto signUpDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpDto);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
 
 }
