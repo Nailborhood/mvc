@@ -51,10 +51,11 @@ public class Review extends BaseTime {
     private Shop shop;
 
     @Builder
-    public Review( String contents, Integer rate, boolean isDeleted) {
+    public Review(String contents, Integer rate, boolean isDeleted, Shop shop) {
         this.contents = contents;
         this.rate = rate;
         this.isDeleted = isDeleted;
+        this.shop = shop;
     }
 
     public void reviewUpdate(String contents, Integer rate) {
