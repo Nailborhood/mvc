@@ -45,6 +45,7 @@ public class ArtRegistrationService {
         ArtRef artRef = ArtRef.builder()
                 .name(artRegistrationDto.getName())
                 .content(artRegistrationDto.getContent())
+                .likeCount(0L)
                 .isDeleted(false)
                 .shop(shop)
                 .category(category)
