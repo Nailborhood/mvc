@@ -17,6 +17,7 @@ import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,15 @@ public class AllShopsLookupAdminService {
     // 매장 전체 조회
 
     @Transactional
-    public CommonResponseDto<Object> getAllShops(int page, int size, String sortBy) {
+    public CommonResponseDto<Object> getAllShops(int page, int size, String criteria,String sort) {
 
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
-                                                                  .descending());
+//        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
+//                                                               .descending());
+
+        Pageable pageable = (sort.equals("ASC")) ?
+                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
         // 페이지로 값 가져오기
-        Page<Shop> shops = shopRepository.findAllShopLIst(pageable);
+        Page<Shop> shops = shopRepository.findAllNotDeleted(pageable);
 
 
         if (shops.isEmpty()) {
@@ -51,10 +55,9 @@ public class AllShopsLookupAdminService {
         // shop entity -> dto 변환
         Page<AllShopsLookupResponseDto> data = shops.map(shop -> {
             // shopId에 해당 하는 리뷰 개수
-            long reviewCnt = reviewRepository.countByShopIdAndIsDeletedFalse(shop.getShopId());
+            //long reviewCnt = reviewRepository.countByShopIdAndIsDeletedFalse(shop.getShopId());
             // shopId에 해당 하는 메뉴 개수
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
-            // shopId에 해당 하는 좋아요(메장 저장) 개수 (member 기능 완성되면 추가 예정)
 
             // dto에 shop entity 값을 변환하는 과정
             AllShopsLookupResponseDto dto = new AllShopsLookupResponseDto(
@@ -68,8 +71,9 @@ public class AllShopsLookupAdminService {
                     shop.getStatus(),
                     shop.getIsDeleted(),
                     shop.getCreatedAt(),
-                    reviewCnt,
-                    shop.getFavoriteList().size(),
+                    shop.getReviewCnt(),
+                    shop.getFavoriteCnt(),
+                    shop.getRateAvg(),
                     menuCnt
             );
             // data 에 dto 반환

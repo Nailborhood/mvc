@@ -38,6 +38,15 @@ public class Shop extends BaseTime {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    // 리뷰 개수
+    private int reviewCnt;
+
+    // 매장 저장 개수
+    private int favoriteCnt;
+
+    // 매장 별점 평균
+    private double rateAvg;
+
     // 메뉴
     @OneToMany(mappedBy = "shop")
     private List<Menu> menuList;
@@ -72,7 +81,7 @@ public class Shop extends BaseTime {
 
 
     @Builder
-    public Shop(String name, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, Dong dong ,String phone) {
+    public Shop(String name, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, Dong dong ,String phone ,int reviewCnt, int favoriteCnt, double rateAvg) {
         this.name = name;
         this.address = address;
         this.opentime = opentime;
@@ -82,6 +91,9 @@ public class Shop extends BaseTime {
         this.isDeleted = isDeleted;
         this.dong = dong;
         this.phone = phone;
+        this.reviewCnt = reviewCnt;
+        this.favoriteCnt = favoriteCnt;
+        this.rateAvg = rateAvg;
     }
 
     public  void shopUpdate (String name, String address, String opentime, String website, String content, ShopStatus status, Dong dong ,String phone) {
