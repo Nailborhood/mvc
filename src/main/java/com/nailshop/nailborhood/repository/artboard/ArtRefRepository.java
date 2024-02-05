@@ -38,4 +38,12 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE a.artRefId = :artRefId")
     @Modifying(clearAutomatically = true)
     void decreaseLikeCount(@Param("artRefId") Long artRefId);
+
+    // 좋아요 0으로 변경
+    @Query("UPDATE ArtRef a " +
+            "SET a.likeCount = 0 " +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void makeLikeCountZero(@Param("artRefId") Long artRefId);
+
 }
