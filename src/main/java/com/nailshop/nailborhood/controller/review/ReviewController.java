@@ -53,14 +53,16 @@ public class ReviewController {
     }
 
     // 리뷰 신고
-//    @PostMapping("/review/{review_id}")
-//    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable(value = "review_id") Long reviewId,
-//                                                        @RequestBody ReviewReportDto reviewReportDto)){
-//        CommonResponseDto<Object> commonResponseDto = reviewService.examplePost();
-//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
-//    }
+    @PostMapping("/review/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable(value = "reviewId") Long reviewId,
+                                                        @RequestParam(value = "shopId") Long shopId,
+                                                        @RequestParam(value = "memberId") Long memberId,
+                                                        @RequestBody ReviewReportDto reviewReportDto){
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(reviewId, shopId, memberId, reviewReportDto);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
 
 
 
