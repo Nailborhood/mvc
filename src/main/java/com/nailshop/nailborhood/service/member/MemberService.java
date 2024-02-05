@@ -118,7 +118,7 @@ public class MemberService {
     }
 
     public boolean findByPhoneNum(String phoneNum) {
-        Optional<Member> memberOptional = memberRepository.findByNickname(phoneNum);
+        Optional<Member> memberOptional = memberRepository.findByPhoneNum(phoneNum);
         return memberOptional.isPresent();
     }
 
