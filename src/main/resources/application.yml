@@ -7,6 +7,11 @@ spring:
       - db
       - aws
 
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: true
