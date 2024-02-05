@@ -17,4 +17,8 @@ public interface ArtLikeRepository extends JpaRepository<ArtLike, Long> {
             "WHERE al.artLikeId = :id")
     @Modifying(clearAutomatically = true)
     void toggleStatus(@Param("id") Long artLikeId, @Param("status") boolean b);
+
+    @Query("DELETE FROM ArtLike al WHERE al.artRef.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void deleteByArtRefId(@Param("artRefId") Long artRefId);
 }
