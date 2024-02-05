@@ -36,23 +36,32 @@ public class ReviewService {
     @Transactional
     public CommonResponseDto<Object> reviewUpdate(Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
 
-        // 매장 정보 확인
-        shopRepository.findByShopIdAndIsDeleted(shopId)
+        // 매장 존재 여부
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // 리뷰 가져오기
         Review review = reviewRepository.findReviewByFalse(reviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
+        // 원래 별점 가져오기
+        int natureRate = review.getRate();
+
         // 리뷰 정보 저장
         review.reviewUpdate(reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
         reviewRepository.save(review);
+
+
 
         // 기존 이미지 삭제
         removeExistReviewImg(multipartFileList, review);
 
         // 새로운 이미지 저장
         saveReviewImg(multipartFileList, review);
+
+
+        // 리뷰 평균 별점 수정
+        updateShopRateAvg(shop, natureRate, reviewUpdateDto);
 
 
 
@@ -113,6 +122,27 @@ public class ReviewService {
 
             imgNum++;
         }
+    }
+
+    // 리뷰 평균 별점 수정
+    private void updateShopRateAvg(Shop shop, int natureRate, ReviewUpdateDto reviewUpdateDto) {
+        Long shopId = shop.getShopId();
+        List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
+
+        double totalRate = reviews.stream()
+                .mapToInt(Review::getRate)
+                .sum();
+
+        double newTotal = (totalRate - natureRate) + reviewUpdateDto.getRate();
+
+
+        String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
+        double rateAvg =Double.parseDouble(rateAvgStr);
+//        shop.setRateAvg(totalRate / reviews.size());
+//
+//        shopRepository.save(shop);
+
+        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
     }
 
 
