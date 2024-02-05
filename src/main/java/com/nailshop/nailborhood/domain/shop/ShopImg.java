@@ -30,9 +30,10 @@ public class ShopImg {
     private Shop shop;
 
     @Builder
-    public ShopImg(String imgPath, int imgNum, Boolean isDeleted) {
+    public ShopImg(String imgPath, int imgNum, Boolean isDeleted ,Shop shop) {
         this.imgPath = imgPath;
         this.imgNum = imgNum;
         this.isDeleted = isDeleted;
+        this.shop = shop;
     }
 }
