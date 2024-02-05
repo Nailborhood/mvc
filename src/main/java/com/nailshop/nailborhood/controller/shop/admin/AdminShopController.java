@@ -59,8 +59,9 @@ public class AdminShopController {
     @GetMapping(value = "/admin/shopList")
     public ResponseEntity<ResultDto<AllShopsListResponseDto>> getAllShops(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                          @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> allShopsList = allShopsLookupAdminService.getAllShops(page,size,sortBy);
+                                                                         @RequestParam(value = "orderby",defaultValue = "createdAt",required = false) String criteria,
+                                                                          @RequestParam(value = "sort", defaultValue = "DESC", required = false)String sort){
+        CommonResponseDto<Object> allShopsList = allShopsLookupAdminService.getAllShops(page,size,criteria,sort);
         ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
         resultDto.setData((AllShopsListResponseDto) allShopsList.getData());
 

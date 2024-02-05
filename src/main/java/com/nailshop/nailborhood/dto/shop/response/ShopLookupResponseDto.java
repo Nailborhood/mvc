@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @NoArgsConstructor
-public class AllShopsLookupResponseDto {
+public class ShopLookupResponseDto {
     private Long shopId;
+    private String shopMainImgPath;
     private String name;
     private String phone;
     private String address;
@@ -27,8 +28,9 @@ public class AllShopsLookupResponseDto {
     private long menuCnt; // 메뉴 개수
 
 
-    public AllShopsLookupResponseDto(Long shopId, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg, long menuCnt) {
+    public ShopLookupResponseDto(Long shopId, String shopMainImgPath, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg, long menuCnt) {
         this.shopId = shopId;
+        this.shopMainImgPath = shopMainImgPath;
         this.name = name;
         this.phone = phone;
         this.address = address;
