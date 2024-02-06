@@ -18,7 +18,8 @@ public enum SuccessCode {
     ART_DELETE_SUCCESS("아트판 삭제에 성공했습니다."),
     ART_LIKE_SUCCESS("아트판 좋아요에 성공했습니다."),
     ART_DISLIKE_SUCCESS("아트판 좋아요 취소에 성공했습니다."),
-    ART_ALL_INQUIRY_SUCCESS("아트판 전체 조회에 성공했습니다.");
+    ART_ALL_INQUIRY_SUCCESS("아트판 전체 조회에 성공했습니다."),
+    ART_INQUIRY_SUCCESS("아트판 상세 조회에 성공했습니다.");
 
 
     private final String description;

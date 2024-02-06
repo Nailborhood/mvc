@@ -1,11 +1,14 @@
 package com.nailshop.nailborhood.service.artboard;
 
+import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.dto.artboard.ArtDetailResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -19,7 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class ArtInquiryService {
 
     private final CommonService commonService;
     private final ArtRefRepository artRefRepository;
+    private final ArtImgRepository artImgRepository;
     private final CategoryArtRepository categoryArtRepository;
 
     // 전체 조회
@@ -78,5 +84,37 @@ public class ArtInquiryService {
                 .build();
 
         return commonService.successResponse(SuccessCode.ART_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
+    }
+
+    // 상세 조회
+    public CommonResponseDto<Object> inquiryArt(Long artRefId) {
+
+        // ArtRef get
+        ArtRef artRef = artRefRepository.findById(artRefId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+
+        // ArtImg get
+        List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
+        Map<Integer, String> artImgPathMap = new HashMap<>();
+        for (ArtImg artImg : artImgList){
+            artImgPathMap.put(artImg.getImgNum(), artImg.getImgPath());
+        }
+
+        // ArtDetailResponseDto build
+        String shopName = artRef.getShop().getName();
+        List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRefId);
+
+        ArtDetailResponseDto artDetailResponseDto = ArtDetailResponseDto.builder()
+                .name(artRef.getName())
+                .content(artRef.getContent())
+                .likeCount(artRef.getLikeCount())
+                .shopName(shopName)
+                .categoryTypeList(categoryTypeList)
+                .imgPathMap(artImgPathMap)
+                .createdAt(artRef.getCreatedAt())
+                .updatedAt(artRef.getUpdatedAt())
+                .build();
+
+        return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
     }
 }

@@ -81,4 +81,15 @@ public class ArtController {
 
         return ResponseEntity.status(inquiryAllArt.getHttpStatus()).body(resultDto);
     }
+
+    @Tag(name = "user", description = "user API")
+    @Operation(summary = "아트판 상세 조회", description = "user API")
+    @GetMapping("/user/artboard/inquiry/{artRefId}")
+    public ResponseEntity<ResultDto<ArtDetailResponseDto>> inquiryArtRef(@PathVariable Long artRefId){
+        CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);
+        ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
+        resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
+
+        return ResponseEntity.status(inquiryArt.getHttpStatus()).body(resultDto);
+    }
 }
