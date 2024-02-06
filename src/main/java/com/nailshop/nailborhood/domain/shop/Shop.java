@@ -78,8 +78,6 @@ public class Shop extends BaseTime {
     //private double latitude; // 위도
     //private double longitude; // 경도
 
-
-
     @Builder
     public Shop(String name, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, Dong dong ,String phone ,int reviewCnt, int favoriteCnt, double rateAvg) {
         this.name = name;
@@ -96,7 +94,7 @@ public class Shop extends BaseTime {
         this.rateAvg = rateAvg;
     }
 
-    public  void shopUpdate (String name, String address, String opentime, String website, String content, ShopStatus status, Dong dong ,String phone) {
+    public  void shopUpdate (String name, String address, String opentime, String website, String content, ShopStatus status, Dong dong , String phone) {
         this.name = name;
         this.address = address;
         this.opentime = opentime;
