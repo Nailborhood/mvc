@@ -3,12 +3,14 @@ package com.nailshop.nailborhood.service.artboard;
 import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryArt;
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.dto.artboard.ArtRegistrationDto;
+import com.nailshop.nailborhood.dto.artboard.ArtRegistrationRequestDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
+import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -18,6 +20,7 @@ import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -32,29 +35,42 @@ public class ArtRegistrationService {
     private final ArtRefRepository artRefRepository;
     private final ShopRepository shopRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryArtRepository categoryArtRepository;
 
-    public CommonResponseDto<Object> registerArt(List<MultipartFile> multipartFileList, ArtRegistrationDto artRegistrationDto) {
+    @Transactional
+    public CommonResponseDto<Object> registerArt(List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
 
-        // shop, category 정보 get
-        Shop shop = shopRepository.findById(artRegistrationDto.getShopId())
+        // shop 정보 get
+        Shop shop = shopRepository.findById(artRegistrationRequestDto.getShopId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
-        Category category = categoryRepository.findById(artRegistrationDto.getCategoryId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
 
         // ArtRef 저장
         ArtRef artRef = ArtRef.builder()
-                .name(artRegistrationDto.getName())
-                .content(artRegistrationDto.getContent())
+                .name(artRegistrationRequestDto.getName())
+                .content(artRegistrationRequestDto.getContent())
                 .likeCount(0L)
                 .isDeleted(false)
                 .shop(shop)
-                .category(category)
                 .build();
 
-        artRefRepository.save(artRef);
+        artRef = artRefRepository.save(artRef);
 
         // ArtImg 저장
         saveArtImg(multipartFileList, artRef);
+
+        // CategoryArt 저장
+        for (Long categoryId : artRegistrationRequestDto.getCategoryIdList()){
+
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryArt categoryArt = CategoryArt.builder()
+                    .artRef(artRef)
+                    .category(category)
+                    .build();
+
+            categoryArtRepository.save(categoryArt);
+        }
 
         return commonService.successResponse(SuccessCode.ART_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }

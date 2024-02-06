@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.domain.artboard;
 
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryArt;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import jakarta.persistence.*;
@@ -37,13 +38,12 @@ public class ArtRef extends BaseTime {
     @OneToMany(mappedBy = "artRef")
     private List<ArtImg> artImgList;
 
+    @OneToMany(mappedBy = "artRef")
+    private List<CategoryArt> categoryArtList;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @Builder
     public ArtRef(String name, String content, Long likeCount, Boolean isDeleted, Shop shop, Category category) {
@@ -52,7 +52,6 @@ public class ArtRef extends BaseTime {
         this.likeCount = likeCount;
         this.isDeleted = isDeleted;
         this.shop = shop;
-        this.category = category;
     }
 
     public void updateArtRef(String name, String content){

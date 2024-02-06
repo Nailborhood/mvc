@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ArtLikeDto {
+public class ArtLikeResponseDto {
 
     private Boolean status;
 
     @Builder
-    public ArtLikeDto(Boolean status) {
+    public ArtLikeResponseDto(Boolean status) {
         this.status = status;
     }
 }

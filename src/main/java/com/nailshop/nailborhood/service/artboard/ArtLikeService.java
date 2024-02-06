@@ -3,7 +3,7 @@ package com.nailshop.nailborhood.service.artboard;
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.member.Member;
-import com.nailshop.nailborhood.dto.artboard.ArtLikeDto;
+import com.nailshop.nailborhood.dto.artboard.ArtLikeResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
@@ -54,11 +54,11 @@ public class ArtLikeService {
             artLikeRepository.save(newArtLike);
             artRefRepository.increaseLikeCount(artRefId);
 
-            ArtLikeDto artLikeDto = ArtLikeDto.builder()
+            ArtLikeResponseDto artLikeResponseDto = ArtLikeResponseDto.builder()
                     .status(true)
                     .build();
 
-            return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeDto);
+            return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeResponseDto);
 
         } else {
 
@@ -69,21 +69,21 @@ public class ArtLikeService {
                 artLikeRepository.toggleStatus(existingArtLike.getArtLikeId(), false);
                 artRefRepository.decreaseLikeCount(artRefId);
 
-                ArtLikeDto artLikeDto = ArtLikeDto.builder()
+                ArtLikeResponseDto artLikeResponseDto = ArtLikeResponseDto.builder()
                         .status(false)
                         .build();
 
-                return commonService.successResponse(SuccessCode.ART_DISLIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeDto);
+                return commonService.successResponse(SuccessCode.ART_DISLIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeResponseDto);
             } else {
                 // 좋아요 false -> true
                 artLikeRepository.toggleStatus(existingArtLike.getArtLikeId(), true);
                 artRefRepository.increaseLikeCount(artRefId);
 
-                ArtLikeDto artLikeDto = ArtLikeDto.builder()
+                ArtLikeResponseDto artLikeResponseDto = ArtLikeResponseDto.builder()
                         .status(true)
                         .build();
 
-                return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeDto);
+                return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeResponseDto);
             }
         }
     }
