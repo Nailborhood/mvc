@@ -7,6 +7,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
+import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -28,6 +29,7 @@ public class ArtDeleteService {
     private final ArtImgRepository artImgRepository;
     private final ArtRefRepository artRefRepository;
     private final ArtLikeRepository artLikeRepository;
+    private final CategoryArtRepository categoryArtRepository;
 
     @Transactional
     public CommonResponseDto<Object> deleteArt(List<MultipartFile> multipartFileList, Long artRefId) {
@@ -45,6 +47,9 @@ public class ArtDeleteService {
         // 좋아요 수 0 및 ArtLike 삭제
         artRefRepository.makeLikeCountZero(artRefId);
         artLikeRepository.deleteByArtRefId(artRefId);
+
+        // CategoryArt 삭제
+        categoryArtRepository.deleteByArtRefArtRefId(artRefId);
 
         return commonService.successResponse(SuccessCode.ART_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
