@@ -54,9 +54,7 @@ public class AllShopsLookupAdminService {
 
         // shop entity -> dto 변환
         Page<AllShopsLookupResponseDto> data = shops.map(shop -> {
-            // shopId에 해당 하는 리뷰 개수
-            //long reviewCnt = reviewRepository.countByShopIdAndIsDeletedFalse(shop.getShopId());
-            // shopId에 해당 하는 메뉴 개수
+
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
             // dto에 shop entity 값을 변환하는 과정
