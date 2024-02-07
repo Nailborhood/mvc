@@ -23,7 +23,15 @@ public class Login {
     private Member member;
 
     @Builder
-    public Login(String refreshToken) {
+    public Login(String refreshToken, Member member) {
         this.refreshToken = refreshToken;
+        this.member = member;
     }
+
+    // refresh token 업데이트
+    public Login updateToken(String newRefreshToken) {
+        this.refreshToken = newRefreshToken;
+        return this;
+    }
+
 }
