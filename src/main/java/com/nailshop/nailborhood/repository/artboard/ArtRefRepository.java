@@ -17,6 +17,7 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "FROM ArtRef a " +
             "WHERE a.artRefId = :artRefId AND a.isDeleted = false")
     Optional<ArtRef> findByArtRefIdAndIsDeleted(@Param("artRefId") Long artRefId);
+    // 매장에 해당 하는 아트판 리스트 불러오기
 
     // id로 삭제
     @Query("UPDATE ArtRef a " +
@@ -50,4 +51,11 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
 
     // 전체 조회
     Page<ArtRef> findByIsDeletedFalse(Pageable pageable);
+
+    // 매장에 해당 하는 아트판 리스트 불러오기
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT join a.shop s " +
+            "WHERE s.shopId = :shopId AND s.isDeleted = false ")
+    Page<ArtRef> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
 }

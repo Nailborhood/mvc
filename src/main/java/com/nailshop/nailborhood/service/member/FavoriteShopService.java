@@ -82,7 +82,7 @@ public class FavoriteShopService {
 
         // 찜 상태를 업데이트하고 저장
         favoriteRepository.updateStatus(favoriteId, newStatus);
-        SuccessCode successCode = newStatus ? SuccessCode.FAVORITE_SAVE_SUCCESS : SuccessCode.FAVORITE_CANCLE_SUCCESS;
+        SuccessCode successCode = newStatus ? SuccessCode.FAVORITE_SAVE_SUCCESS : SuccessCode.FAVORITE_CANCEL_SUCCESS;
 
         return createSuccessResponse(newStatus, successCode);
     }

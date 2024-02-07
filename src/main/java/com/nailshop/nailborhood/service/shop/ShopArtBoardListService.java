@@ -1,14 +1,13 @@
 package com.nailshop.nailborhood.service.shop;
 
+
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
-import com.nailshop.nailborhood.dto.artBoard.response.ShopArtBoardListLookupResponseDto;
-import com.nailshop.nailborhood.dto.artBoard.response.ShopArtBoardLookupResponseDto;
+import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
+import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
-import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
-import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
-import com.nailshop.nailborhood.repository.artBoard.ArtImgRepository;
-import com.nailshop.nailborhood.repository.artBoard.ArtRefRepository;
+import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
+import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -30,6 +29,7 @@ public class ShopArtBoardListService {
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
 
+
     @Transactional
     public CommonResponseDto<Object> getAllArtBoardListByShopId(int page, int size, String criteria, String sort, Long shopId) {
 
@@ -48,7 +48,7 @@ public class ShopArtBoardListService {
         Page<ShopArtBoardLookupResponseDto> data = artRefs.map(artRef -> {
             Long artRefId = artRef.getArtRefId();
             // 아트판 이미지 가져오기
-            String artImgPath = artImgRepository.findArtImgByShopIdAndArtRefId(shopId,artRefId);
+            String artImgPath = artImgRepository.findArtImgByShopIdAndArtRefId(shopId, artRefId);
             // dto에 shop entity 값을 변환하는 과정
             ShopArtBoardLookupResponseDto dto = new ShopArtBoardLookupResponseDto(
                     artRefId,
@@ -66,7 +66,6 @@ public class ShopArtBoardListService {
         List<ShopArtBoardLookupResponseDto> artBoardLookupResponseDtoList = data.getContent();
 
 
-
         // 페이지네이션 설정
         PaginationDto paginationDto = PaginationDto.builder()
                                                    .totalPages(data.getTotalPages())
@@ -77,8 +76,9 @@ public class ShopArtBoardListService {
 
         // 페이지네이션을 포함한 매장 리스트 반환
         ShopArtBoardListLookupResponseDto shopArtBoardListLookupResponseDto = ShopArtBoardListLookupResponseDto.builder()
-                                                                                                           .shopArtBoardLookupResponseDtoList(artBoardLookupResponseDtoList)
-                                                                                                           .build();
+                                                                                                               .shopArtBoardLookupResponseDtoList(artBoardLookupResponseDtoList)
+                                                                                                               .paginationDto(paginationDto)
+                                                                                                               .build();
 
 
         return commonService.successResponse(SuccessCode.SHOP_ART_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopArtBoardListLookupResponseDto);
