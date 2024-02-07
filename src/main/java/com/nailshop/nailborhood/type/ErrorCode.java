@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     LOGIN_FAIL("아이디 혹은 비밀번호가 일치하지 않습니다."),
 
-    MYINFO_FAIL("내 정보 조회에 실패하였습니다.")
+    MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),

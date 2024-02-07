@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ public class SignUpDto {
     private String email;
     private String password;
     private String name;
-    private LocalDateTime birthday;
+    private LocalDate birthday;
     private String phoneNum;
     private String gender;
     private String address;
