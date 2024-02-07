@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.artBoard.response;
+package com.nailshop.nailborhood.dto.artboard.response;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,18 +1,16 @@
 package com.nailshop.nailborhood.service.shop;
 
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.dto.artBoard.response.ShopArtBoardListLookupResponseDto;
+import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
-import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.MenuDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopDetailLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopImgListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;

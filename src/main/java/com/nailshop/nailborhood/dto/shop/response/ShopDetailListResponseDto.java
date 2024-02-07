@@ -1,6 +1,6 @@
 package com.nailshop.nailborhood.dto.shop.response;
 
-import com.nailshop.nailborhood.dto.artBoard.response.ShopArtBoardLookupResponseDto;
+import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import lombok.Builder;
 import lombok.Getter;

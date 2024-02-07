@@ -1,6 +1,6 @@
 package com.nailshop.nailborhood.controller.shop;
 
-import com.nailshop.nailborhood.dto.artBoard.response.ShopArtBoardListLookupResponseDto;
+import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;

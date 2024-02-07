@@ -46,9 +46,9 @@ public class ShopReviewListLookupService {
 
         // review entity -> dto 변환
         Page<ShopReviewLookupResponseDto> data = reviews.map(review -> {
-           Long reviewId = review.getReviewId();
+            Long reviewId = review.getReviewId();
             // 리뷰 이미지 가져오기
-            String reviewImgPath = reviewImgRepository.findReviewImgByShopIdAndReviewId(shopId,reviewId);
+            String reviewImgPath = reviewImgRepository.findReviewImgByShopIdAndReviewId(shopId, reviewId);
             // dto에 shop entity 값을 변환하는 과정
             ShopReviewLookupResponseDto dto = new ShopReviewLookupResponseDto(
                     reviewId,
@@ -66,7 +66,6 @@ public class ShopReviewListLookupService {
         List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList = data.getContent();
 
 
-
         // 페이지네이션 설정
         PaginationDto paginationDto = PaginationDto.builder()
                                                    .totalPages(data.getTotalPages())
@@ -78,6 +77,7 @@ public class ShopReviewListLookupService {
         // 페이지네이션을 포함한 매장 리스트 반환
         ShopReviewListLookupResponseDto shopReviewListLookupResponseDto = ShopReviewListLookupResponseDto.builder()
                                                                                                          .shopReviewLookupResponseDto(shopReviewLookupResponseDtoList)
+                                                                                                         .paginationDto(paginationDto)
                                                                                                          .build();
 
 
