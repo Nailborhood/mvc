@@ -3,8 +3,7 @@ package com.nailshop.nailborhood.service.shop;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopLookupResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.*;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
@@ -24,10 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-public class ShopListLookupHomeService {
+public class ShopListLookupLocalService {
     private final CommonService commonService;
     private final DongRepository dongRepository;
     private final ShopRepository shopRepository;
@@ -61,14 +61,13 @@ public class ShopListLookupHomeService {
         // 페이지네이션을 포함한 매장 리스트 반환
         ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtos, paginationDto);
 
-        return createCommonResponseDto(shopListResponseDto);
+        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
 
 
-    // 전체 매장 조회 (주소(동) )
+    // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListbyDong(int page, int size, String sort, String criteria ,Long dongId) {
-
+    public CommonResponseDto<Object> getShopListbyDong(int page, int size, String sort, String criteria, Long dongId) {
 
 
         // 정렬기준 설정
@@ -94,7 +93,7 @@ public class ShopListLookupHomeService {
         // 페이지네이션을 포함한 매장 리스트 반환
         ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtos, paginationDto);
 
-        return createCommonResponseDto(shopListResponseDto);
+        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
 
     // entity -> dto 변환 메서드
@@ -152,12 +151,6 @@ public class ShopListLookupHomeService {
                                   .paginationDto(paginationDto)
                                   .build();
     }
-
-    // 공통 응답 DTO를 생성하는 메서드
-    private CommonResponseDto<Object> createCommonResponseDto(ShopListResponseDto shopListResponseDto) {
-        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
-    }
-
 
 
 
