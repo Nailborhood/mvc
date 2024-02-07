@@ -27,9 +27,10 @@ public class ArtImg {
     private ArtRef artRef;
 
     @Builder
-    public ArtImg(String imgPath, int imgNum, Boolean isDeleted) {
+    public ArtImg(String imgPath, int imgNum, Boolean isDeleted, ArtRef artRef) {
         this.imgPath = imgPath;
         this.imgNum = imgNum;
         this.isDeleted = isDeleted;
+        this.artRef = artRef;
     }
 }
