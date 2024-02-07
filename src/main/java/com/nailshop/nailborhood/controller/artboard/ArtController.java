@@ -49,10 +49,9 @@ public class ArtController {
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 삭제", description = "owner API")
-    @DeleteMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/delete/{artRefId}")
-    public ResponseEntity<ResultDto<Void>> deleteArtRef(@PathVariable Long artRefId,
-                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList){
-        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(multipartFileList, artRefId);
+    @DeleteMapping( "/owner/artboard/delete/{artRefId}")
+    public ResponseEntity<ResultDto<Void>> deleteArtRef(@PathVariable Long artRefId){
+        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(artRefId);
         ResultDto<Void> resultDto = ResultDto.in(deleteArt.getStatus(), deleteArt.getMessage());
 
         return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
