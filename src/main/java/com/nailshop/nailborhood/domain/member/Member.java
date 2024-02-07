@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Member extends BaseTime {
 
     private String password;
 
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     @Column(name = "phone_num")
     private String phoneNum;
@@ -75,7 +76,7 @@ public class Member extends BaseTime {
     private List<ReviewReport> reviewReportList;
 
     @Builder
-    public Member( String email, String name, String password,LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
+    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
 
         this.email = email;
         this.name = name;

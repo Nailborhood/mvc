@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class MemberInfoDto {
 
     private String email;
     private String name;
-    private LocalDateTime birthday;
+    private LocalDate birthday;
     private String phoneNum;
     private String gender;
     private String address;
@@ -23,8 +24,7 @@ public class MemberInfoDto {
     private LocalDateTime createdAt;
 
     @Builder
-
-    public MemberInfoDto(String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
+    public MemberInfoDto(String email, String name, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
         this.email = email;
         this.name = name;
         this.birthday = birthday;
