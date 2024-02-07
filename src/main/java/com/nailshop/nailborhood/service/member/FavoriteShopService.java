@@ -61,7 +61,7 @@ public class FavoriteShopService {
         // 찜 정보를 저장
         Favorite savefavorite = favoriteRepository.save(favorite);
 
-        return createSuccessResponse(savefavorite.isStatus(), SuccessCode.FAVORITE_SAVE_SUCCESS);
+        return createSuccessResponse(savefavorite.getStatus(), SuccessCode.FAVORITE_SAVE_SUCCESS);
     }
 
     // 기존 찜이 있다면, 상태 변경 메서드
@@ -69,7 +69,7 @@ public class FavoriteShopService {
         Long favoriteId = existingFavorite.getFavoriteId();
 
         // 기존 찜 상태를 반전 (찜함 -> 찜하지 않음, 찜하지 않음 -> 찜함)
-        boolean newStatus = !existingFavorite.isStatus();
+        boolean newStatus = !existingFavorite.getStatus();
 
         // 새로운 찜 상태에 따라 매장의 찜 카운트를 증가 또는 감소
         if (newStatus) {
@@ -93,7 +93,6 @@ public class FavoriteShopService {
                                                                      .status(status)
                                                                      .build();
 
-        // 성공 응답을 생성하고 반환합니다.
         return commonService.successResponse(successCode.getDescription(), HttpStatus.OK, favoriteResponseDto);
     }
 
