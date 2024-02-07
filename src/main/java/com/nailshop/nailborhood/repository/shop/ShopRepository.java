@@ -38,4 +38,18 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateRateAvgByShopId(@Param("rateAvg") double rateAvg, @Param("shopId") Long shopId);
+
+    // 매장 찜 증가
+    @Query("UPDATE Shop s " +
+            "SET s.favoriteCnt = s.favoriteCnt + 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateFavoriteCntIncreaseByShopId(@Param("shopId") Long shopId);
+
+    // 매장 찜 감소
+    @Query("UPDATE Shop s " +
+            "SET s.favoriteCnt = s.favoriteCnt - 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateFavoriteCntDecreaseByShopId(@Param("shopId") Long shopId);
 }
