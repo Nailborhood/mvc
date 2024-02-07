@@ -13,6 +13,7 @@ import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
+import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +43,12 @@ public class ShopRegistrationService {
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAdressSeparation()
                                                     .getDongName();
-        Dong dong = dongRepository.findByName(dongName)
-                                  .get();
+       Optional<Dong> optionalDong = dongRepository.findByName(dongName);
+       if(optionalDong.isEmpty()){
+           return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
+       }
 
-
+        Dong dong =  optionalDong.get();
         // 매장 세부정보 등록
         Shop shop = Shop.builder()
                         .status(ShopStatus.BEFORE_OPEN)
