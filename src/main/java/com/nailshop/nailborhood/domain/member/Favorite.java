@@ -27,7 +27,9 @@ public class Favorite {
     private Shop shop;
 
     @Builder
-    public Favorite( boolean status) {
+    public Favorite(boolean status, Member member, Shop shop) {
         this.status = status;
+        this.member = member;
+        this.shop = shop;
     }
 }
