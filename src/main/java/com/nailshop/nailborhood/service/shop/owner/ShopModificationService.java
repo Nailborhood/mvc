@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +47,12 @@ public class ShopModificationService {
         // 주소(동) 수정
         String dongName = shopModifiactionRequestDto.getStoreAdressSeparation()
                                                     .getDongName();
-        Dong dong = dongRepository.findByName(dongName)
-                                  .get();
+        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
+        if(optionalDong.isEmpty()){
+            return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
+        }
+
+        Dong dong =  optionalDong.get();
 
 
         // 기존 메뉴 삭제
