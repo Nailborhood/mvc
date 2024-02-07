@@ -5,8 +5,8 @@ import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.shop.ShopMenuDto;
-import com.nailshop.nailborhood.dto.shop.ShopModifiactionRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +47,12 @@ public class ShopModificationService {
         // 주소(동) 수정
         String dongName = shopModifiactionRequestDto.getStoreAdressSeparation()
                                                     .getDongName();
-        Dong dong = dongRepository.findByName(dongName)
-                                  .get();
+        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
+        if(optionalDong.isEmpty()){
+            return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
+        }
+
+        Dong dong =  optionalDong.get();
 
 
         // 기존 메뉴 삭제
@@ -69,7 +74,7 @@ public class ShopModificationService {
                 shopModifiactionRequestDto.getWebsite(),
                 shopModifiactionRequestDto.getContent(),
                 ShopStatus.valueOf(String.valueOf(shopModifiactionRequestDto.getStatus())),
-               dong,
+                dong,
                 shopModifiactionRequestDto.getPhone());
 
         shopRepository.save(shop);
