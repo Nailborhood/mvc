@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.domain.review;
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Customer;
+import com.nailshop.nailborhood.domain.shop.Shop;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class Review extends BaseTime {
 
     private String contents;
 
-    private String rate;
+    private Integer rate;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
@@ -45,10 +46,15 @@ public class Review extends BaseTime {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
     @Builder
-    public Review( String contents, String rate, boolean isDeleted) {
+    public Review(String contents, Integer rate, boolean isDeleted, Shop shop) {
         this.contents = contents;
         this.rate = rate;
         this.isDeleted = isDeleted;
+        this.shop = shop;
     }
 }
