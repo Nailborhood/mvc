@@ -17,7 +17,10 @@ public enum SuccessCode {
     EMAIL_AVAILABLE("사용 가능한 이메일입니다"),
     NICKNAME_AVAILABLE("사용 가능한 닉네임입니다."),
     PHONENUM_AVAILABLE("사용 가능한 전화번호입니다."),
-    SIGNUP_SUCCESS("회원가입이 완료되었습니다.")
+    SIGNUP_SUCCESS("회원가입이 완료되었습니다."),
+
+    LOGIN_SUCCESS("로그인에 성공하였습니다."),
+    MYINFO_SUCCESS("내 정보 조회에 성공하였습니다.")
     ;
 
     private final String description;
