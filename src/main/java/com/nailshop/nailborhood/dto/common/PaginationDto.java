@@ -14,7 +14,7 @@ public class PaginationDto {
     private boolean isLastPage;
 
     @Builder
-    public PaginationDto(Integer totalPages, Long totalElements, Integer pageNo, Boolean isLastPage) {
+    public PaginationDto(int totalPages, Long totalElements, int pageNo, boolean isLastPage) {
         this.totalPages = totalPages;
         this.totalElements = totalElements;
         this.pageNo = pageNo + 1;
