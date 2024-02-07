@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,17 +34,19 @@ public class ArtDeleteService {
     private final CategoryArtRepository categoryArtRepository;
 
     @Transactional
-    public CommonResponseDto<Object> deleteArt(List<MultipartFile> multipartFileList, Long artRefId) {
+    public CommonResponseDto<Object> deleteArt(Long artRefId) {
 
         // ArtRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
 
-        // ArtRef 삭제(isDeleted -> true)
-        artRefRepository.deleteByArtRefId(artRefId, true);
-
         // 이미지 삭제(isDeleted -> true)
-        deleteArtImg(multipartFileList, artRef);
+        List<ArtImg> artImgList = artRef.getArtImgList();
+
+        for (ArtImg artImg : artImgList){
+            s3UploadService.deleteArtImg(artImg.getImgPath());
+            artImgRepository.deleteByArtImgId(artImg.getArtImgId(), true);
+        }
 
         // 좋아요 수 0 및 ArtLike 삭제
         artRefRepository.makeLikeCountZero(artRefId);
@@ -51,25 +55,9 @@ public class ArtDeleteService {
         // CategoryArt 삭제
         categoryArtRepository.deleteByArtRefArtRefId(artRefId);
 
+        // ArtRef 삭제(isDeleted -> true)
+        artRefRepository.deleteByArtRefId(artRefId, true);
+
         return commonService.successResponse(SuccessCode.ART_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
-    }
-
-    private void deleteArtImg(List<MultipartFile> multipartFileList, ArtRef artRef){
-
-        Long artRefId = artRef.getArtRefId();
-
-        if (multipartFileList != null) {
-            // url 값 삭제
-            List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
-            for (ArtImg artImg : artImgList) {
-
-                // s3 이미지 삭제
-                String artImgUrl = artImg.getImgPath();
-                s3UploadService.deleteShopImg(artImgUrl);
-
-                // DB isDeleted true 변경
-                artImgRepository.deleteByArtImgId(artImg.getArtImgId(), true);
-            }
-        }
     }
 }
