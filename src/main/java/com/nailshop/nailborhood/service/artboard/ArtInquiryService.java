@@ -21,10 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +34,30 @@ public class ArtInquiryService {
     private final CategoryArtRepository categoryArtRepository;
 
     // 전체 조회
-    public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy) {
+    public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category) {
+
+
+        // category 리스트화
+        List<Long> categoryIdList = null;
+        if (category != null && !category.isEmpty()){
+
+            categoryIdList = Arrays.stream(category.split(","))
+                    .map(Long::parseLong)
+                    .toList();
+        }
 
         // Page 설정 및 ArtRefList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
-        Page<ArtRef> artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
+        Page<ArtRef> artRefPage;
+        if (categoryIdList == null || categoryIdList.isEmpty()){
+            // 카테고리 선택 x
+            artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
+        } else {
+            // 카테고리 선택 o
+            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, pageable);
+        }
+
         if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
 
         List<ArtRef> artRefList = artRefPage.getContent();
