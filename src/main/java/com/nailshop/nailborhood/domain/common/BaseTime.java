@@ -20,5 +20,6 @@ public abstract class BaseTime {
     private LocalDateTime createdAt; // 셍성 시간
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 수정 시간
 }

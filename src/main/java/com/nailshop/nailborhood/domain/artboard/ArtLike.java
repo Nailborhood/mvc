@@ -28,7 +28,9 @@ public class ArtLike {
     private Member member;
 
     @Builder
-    public ArtLike(Boolean status) {
+    public ArtLike(Boolean status, ArtRef artRef, Member member) {
         this.status = status;
+        this.artRef = artRef;
+        this.member = member;
     }
 }

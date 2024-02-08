@@ -16,7 +16,7 @@ public class Favorite {
     @Column(name = "favorite_id")
     private Long favoriteId;
 
-    private boolean status;
+    private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -27,7 +27,9 @@ public class Favorite {
     private Shop shop;
 
     @Builder
-    public Favorite( boolean status) {
+    public Favorite(Boolean status, Member member, Shop shop) {
         this.status = status;
+        this.member = member;
+        this.shop = shop;
     }
 }

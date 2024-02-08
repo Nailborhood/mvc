@@ -22,7 +22,7 @@ public class Category {
     private String type;
 
     @OneToMany(mappedBy = "category")
-    private List<ArtRef> artRefList;
+    private List<CategoryArt> categoryArtList;
 
     @OneToMany(mappedBy = "category")
     private List<Review> reviewList;
