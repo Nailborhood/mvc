@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.domain.review;
 
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -37,6 +38,9 @@ public class Review extends BaseTime {
 
     @OneToMany(mappedBy = "review")
     private List<ReviewLike> reviewLikeList;
+
+    @OneToMany(mappedBy = "review")
+    private List<CategoryReview> categoryReviewList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

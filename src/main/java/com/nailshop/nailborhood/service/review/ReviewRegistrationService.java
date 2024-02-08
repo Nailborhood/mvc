@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.service.review;
 
+import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -7,6 +9,8 @@ import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -30,6 +34,8 @@ public class ReviewRegistrationService {
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
     private final ReviewImgRepository reviewImgRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryReviewRepository categoryReviewRepository;
 
     @Transactional
     // 리뷰 등록
@@ -51,6 +57,20 @@ public class ReviewRegistrationService {
 
         // 리뷰 사진 등록
         saveReviewImg(multipartFileList, review);
+
+        // CategoryReview 저장
+        for (Long categoryId : reviewRegistrationRequestDto.getCategoryListId()){
+
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryReview categoryReview = CategoryReview.builder()
+                    .category(category)
+                    .review(review)
+                    .build();
+
+            categoryReviewRepository.save(categoryReview);
+        }
 
         // 리뷰 등록 시 매장 별점 평균 변경
         updateShopRateAvg(shop);
