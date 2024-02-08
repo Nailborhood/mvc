@@ -13,9 +13,4 @@ public class ReviewRegistrationRequestDto {
     private Integer rate;
 
     private List<Long> categoryListId;
-
-    public ReviewRegistrationRequestDto(String contents, Integer rate) {
-        this.contents = contents;
-        this.rate = rate;
-    }
 }
