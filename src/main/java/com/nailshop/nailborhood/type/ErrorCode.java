@@ -6,7 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    EXAMPLE_EXCEPTION("에러 예시 코드 입니다."),
+
+    // 멤버
+    CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),
@@ -17,7 +19,7 @@ public enum ErrorCode {
     ART_NOT_FOUND("아트판 정보를 찾을 수 없습니다."),
     // 매장
     SHOP_NOT_FOUND("매장 정보를 찾을 수 없습니다"),
-    SHOPSTAUTS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
+    SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
 
     // Member
     MEMBER_NOT_FOUND("유저 정보 조회에 실패하였습니다."),
@@ -29,14 +31,17 @@ public enum ErrorCode {
 
     LOGIN_FAIL("아이디 혹은 비밀번호가 일치하지 않습니다."),
 
+    // 리뷰
+    REVIEW_NOT_FOUND("리뷰를 찾을 수 없습니다."),
+
     MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),
-  
+
     //리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
     ART_NOT_REGISTRATION("등록된 아트판이 없습니다");
-  
+
     private final String description;
 }
