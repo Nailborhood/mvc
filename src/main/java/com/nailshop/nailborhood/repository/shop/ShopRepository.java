@@ -19,19 +19,35 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId =:shopId AND s.isDeleted = false ")
     Optional<Shop> findByShopIdAndIsDeleted(@Param("shopId") Long shopId);
 
-
+    // 매장 리스트 page 처리
     @Query("SELECT s FROM Shop s WHERE s.isDeleted = false")
     Page<Shop> findAllNotDeleted(Pageable pageable);
 
+    // 주소(동) dongId에 해당되는 매장 리스트
     @Query("SELECT s " +
             "FROM Shop s " +
             "left JOIN s.dong d " +
             "WHERE s.isDeleted = false AND d.dongId =:dongId")
     Page<Shop> findAllNotDeletedByDongId(Pageable pageable, @Param("dongId") Long dongId);
 
+    // 매장 별점 (리뷰 등록 시 rateAvg update)
     @Query("UPDATE Shop s " +
             "SET s.rateAvg = :rateAvg " +
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateRateAvgByShopId(@Param("rateAvg") double rateAvg, @Param("shopId") Long shopId);
+
+    // 매장 찜 증가
+    @Query("UPDATE Shop s " +
+            "SET s.favoriteCnt = s.favoriteCnt + 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateFavoriteCntIncreaseByShopId(@Param("shopId") Long shopId);
+
+    // 매장 찜 감소
+    @Query("UPDATE Shop s " +
+            "SET s.favoriteCnt = s.favoriteCnt - 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateFavoriteCntDecreaseByShopId(@Param("shopId") Long shopId);
 }

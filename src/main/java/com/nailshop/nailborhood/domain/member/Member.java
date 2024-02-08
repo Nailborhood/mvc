@@ -1,7 +1,6 @@
 package com.nailshop.nailborhood.domain.member;
 
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
-import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.review.ReviewLike;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
@@ -11,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +28,9 @@ public class Member extends BaseTime {
 
     private String name;
 
-    private LocalDateTime birthday;
+    private String password;
+
+    private LocalDate birthday;
 
     @Column(name = "phone_num")
     private String phoneNum;
@@ -58,6 +60,8 @@ public class Member extends BaseTime {
     private Owner owner;
     @OneToOne(mappedBy = "member")
     private Admin admin;
+    @OneToOne(mappedBy = "member")
+    private Login login;
 
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -72,10 +76,11 @@ public class Member extends BaseTime {
     private List<ReviewReport> reviewReportList;
 
     @Builder
-    public Member( String email, String name, LocalDateTime birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
+    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
 
         this.email = email;
         this.name = name;
+        this.password = password;
         this.birthday = birthday;
         this.phoneNum = phoneNum;
         this.gender = gender;
