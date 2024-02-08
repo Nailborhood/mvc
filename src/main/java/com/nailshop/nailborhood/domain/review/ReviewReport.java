@@ -34,10 +34,11 @@ public class ReviewReport {
     private Member member;
 
     @Builder
-    public ReviewReport( String contents, LocalDateTime date, String status,Review review) {
+    public ReviewReport( String contents, LocalDateTime date, String status,Review review,Member member) {
         this.contents = contents;
         this.date = date;
         this.status = status;
         this.review = review;
+        this.member = member;
     }
 }
