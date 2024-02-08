@@ -5,10 +5,9 @@ import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.example.ExampleDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
-import com.nailshop.nailborhood.repository.member.CustomerRepository;
+import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -31,14 +30,14 @@ public class ReviewInquiryService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
-    private final CustomerRepository customerRepository;
+    private final CustomerRepositoryKe customerRepositoryKe;
 
 
     // 리뷰 상세조회
     public CommonResponseDto<Object> detailReview(Long reviewId, Long customerId, Long shopId) {
 
         // 고객 정보와 존재 여부
-        Customer customer = customerRepository.findById(customerId)
+        Customer customer = customerRepositoryKe.findById(customerId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CUSTOMER_NOT_FOUND));
 
         // 매장 존재 여부

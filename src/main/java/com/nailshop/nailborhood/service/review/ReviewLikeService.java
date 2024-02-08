@@ -7,7 +7,7 @@ import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewLikeResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
-import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -27,13 +27,13 @@ public class ReviewLikeService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
-    private final MemberRepository memberRepository;
+    private final MemberRepositoryKe memberRepositoryKe;
 
 
     @Transactional
     public CommonResponseDto<Object> reviewLike(Long reviewId, Long shopId, Long memberId) {
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepositoryKe.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
