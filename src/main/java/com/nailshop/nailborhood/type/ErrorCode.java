@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     // 멤버
     MEMBER_NOT_FOUND("멤버를 찾을 수 없습니다."),
+    CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),

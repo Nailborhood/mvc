@@ -17,7 +17,7 @@ public class ReviewLike {
     @Column(name = "review_like_id")
     private Long reviewLikeId;
 
-    private boolean status;
+    private Boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
@@ -28,8 +28,9 @@ public class ReviewLike {
     private Member member;
 
     @Builder
-    public ReviewLike(boolean status, Review review) {
+    public ReviewLike(Boolean status, Review review, Member member) {
         this.status = status;
         this.review = review;
+        this.member = member;
     }
 }

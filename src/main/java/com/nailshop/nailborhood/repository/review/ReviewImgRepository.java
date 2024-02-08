@@ -22,4 +22,19 @@ public interface ReviewImgRepository extends JpaRepository<ReviewImg, Long> {
             "WHERE ri.review.reviewId = :reviewId ")
     void deleteByReviewId(@Param("reviewId") Long reviewId);
 
+    // 리뷰 이미지 삭제하기 위한 이미지 리스트
+    @Query("SELECT ri " +
+            "FROM ReviewImg  ri " +
+            "WHERE ri.review.reviewId = :reviewId ")
+    List<ReviewImg> findDeleteReviewImgPathList(@Param("reviewId") Long reviewId);
+
+    // 리뷰 이미지 isdeleted true로 변경
+    @Query("UPDATE ReviewImg ri " +
+            "SET ri.isDeleted = :status " +
+            "WHERE ri.reviewImgId = :reviewImgId ")
+    @Modifying(clearAutomatically = true)
+    void deleteByReviewImgId(@Param("reviewImgId") Long reviewImgId, @Param("status") Boolean status);
+
+
+
 }

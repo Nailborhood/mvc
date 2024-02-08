@@ -45,6 +45,7 @@ public class ReviewRegistrationService {
                               .isDeleted(false)
                               .rate(reviewRegistrationRequestDto.getRate())
                               .shop(shop)
+                              .likeCnt(0L)
                               .build();
 
         review = reviewRepository.save(review);
