@@ -26,6 +26,9 @@ public class Review extends BaseTime {
 
     private Integer rate;
 
+    @Column(name = "like_cnt")
+    private Long likeCnt;
+
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
@@ -51,9 +54,10 @@ public class Review extends BaseTime {
     private Shop shop;
 
     @Builder
-    public Review(String contents, Integer rate, boolean isDeleted, Shop shop, Customer customer) {
+    public Review(String contents, Integer rate, Long likeCnt, boolean isDeleted, Shop shop, Customer customer) {
         this.contents = contents;
         this.rate = rate;
+        this.likeCnt = likeCnt;
         this.isDeleted = isDeleted;
         this.shop = shop;
         this.customer = customer;

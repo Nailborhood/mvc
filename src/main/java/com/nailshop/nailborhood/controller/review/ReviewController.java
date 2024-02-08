@@ -54,7 +54,7 @@ public class ReviewController {
 
     // 리뷰 신고
     @PostMapping("/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable(value = "reviewId") Long reviewId,
+    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestParam(value = "memberId") Long memberId,
                                                         @RequestBody ReviewReportDto reviewReportDto){
@@ -64,6 +64,15 @@ public class ReviewController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }
 
+    // 리뷰 삭제
+    @DeleteMapping("/review/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewDelete(@PathVariable Long reviewId,
+                                                        @RequestParam(value = "shopId") Long shopId){
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(reviewId, shopId);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
 
 
 }

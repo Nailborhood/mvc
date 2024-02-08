@@ -17,7 +17,12 @@ public enum SuccessCode {
     // 리뷰
     REVIEW_REGISTRATION_SUCCESS("리뷰 등록을 성공했습니다"),
     REVIEW_UPDATE_SUCCESS("리뷰 수정에 성공했습니다."),
-    REVIEW_REPORT_SUCCESS("리뷰 신고에 성공했습니다.");
+    REVIEW_REPORT_SUCCESS("리뷰 신고에 성공했습니다."),
+    REVIEW_DELETE_SUCCESS("리뷰 삭제에 성공했습니다."),
+    REVIEW_LIKE_SUCCESS("리뷰 공감에 성공했습니다."),
+    REVIEW_LIKE_CANCEL_SUCCESS("리뷰 공감을 취소했습니다."),
+    REVIEW_INQUIRY_SUCCESS("리뷰 상세조회에 성공했습니다.");
+
 
 
 
