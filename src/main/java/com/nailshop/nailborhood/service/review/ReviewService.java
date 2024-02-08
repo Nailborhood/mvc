@@ -5,12 +5,11 @@ import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.ReviewReportDto;
 import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
-import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
@@ -39,7 +38,7 @@ public class ReviewService {
     private final ReviewImgRepository reviewImgRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final ShopRepository shopRepository;
-    private final MemberRepository memberRepository;
+    private final MemberRepositoryKe memberRepositoryKe;
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
 
@@ -82,7 +81,7 @@ public class ReviewService {
     @Transactional
     public CommonResponseDto<Object> reviewReport(Long reviewId, Long shopId,Long memberId, ReviewReportDto reviewReportDto) {
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepositoryKe.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
