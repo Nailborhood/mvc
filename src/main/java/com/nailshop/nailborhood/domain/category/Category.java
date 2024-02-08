@@ -25,7 +25,7 @@ public class Category {
     private List<CategoryArt> categoryArtList;
 
     @OneToMany(mappedBy = "category")
-    private List<Review> reviewList;
+    private List<CategoryReview> categoryReviewList;
 
     @Builder
     public Category(String type) {
