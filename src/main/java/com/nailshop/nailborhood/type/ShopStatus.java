@@ -11,6 +11,7 @@ public enum ShopStatus {
     OPEN("운영중"),
     CLOSED("영업종료");
 
-    private final String key;
+
+    private final String description;
 
 }
