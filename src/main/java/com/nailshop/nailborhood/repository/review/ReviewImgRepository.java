@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+
 public interface ReviewImgRepository extends JpaRepository<ReviewImg, Long> {
 
     // 리뷰 ID로 리뷰 IMG 삭제
