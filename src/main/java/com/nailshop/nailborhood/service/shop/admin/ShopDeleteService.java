@@ -61,24 +61,6 @@ public class ShopDeleteService {
         // menu 삭제
         menuRepository.deleteAllByShopId(shopId);
 
-        // 리뷰
-/*        List<Review> reviewList = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
-
-
-        if (!reviewList.isEmpty()) {
-            for (Review review : reviewList) {
-                // 리뷰 이미지 삭제
-                List<ReviewImg> reviewImgList = reviewImgRepository.findAllByReviewId(review.getReviewId());
-                for (ReviewImg reviewImg : reviewImgList) {
-                    String reviewImgImgPath = reviewImg.getImgPath();
-                    s3UploadService.deleteReviewImg(reviewImgImgPath);
-                    reviewImgRepository.deleteAllByReviewImgId(reviewImg.getReviewImgId());
-                }
-
-                // 리뷰 삭제 ( 리뷰 별점 0 , 리뷰 isDeleted =true )
-                reviewRepository.reviewDeleteByReviewId(review.getReviewId());
-            }
-        }*/
 
         // 아트판
         List<ArtRef> artRefList = artRefRepository.findAllByShopIdAndIsDeleted(shopId);
@@ -105,15 +87,7 @@ public class ShopDeleteService {
         }
 
 
-        // 매장 찜
-/*        List<Favorite> favoriteList = favoriteRepository.findAllByShopIdAndIsDeleted(shopId);
 
-        if (!favoriteList.isEmpty()) {
-            for (Favorite favorite : favoriteList) {
-                // 매장 찜 삭제
-                favoriteRepository.updateStatus(favorite.getFavoriteId(), false);
-            }
-        }*/
 
         // 매장
         // 매장 이미지 삭제
