@@ -2,6 +2,9 @@ package com.nailshop.nailborhood.controller.review;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.review.ReviewReportDto;
+import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
+import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.service.review.ReviewRegistrationService;
@@ -14,12 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
 @RequiredArgsConstructor
+@RestController
 @RequestMapping("/nailshop")
 public class ReviewController {
 
+    private final ReviewService reviewService;
     private final ReviewRegistrationService reviewRegistrationService;
+
 
     @Tag(name = "review", description = "review API")
     @Operation(summary = "리뷰 등록", description = "review API")
@@ -32,6 +37,42 @@ public class ReviewController {
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+                .body(resultDto);
     }
+
+    //리뷰 수정
+    @PutMapping("/review/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewUpdate(@PathVariable Long reviewId,
+                                                        @RequestParam(value = "shopId") Long shopId,
+                                                        @RequestPart(value = "img") List<MultipartFile> multipartFileList,
+                                                        @RequestPart(value = "data") ReviewUpdateDto reviewUpdateDto){
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(reviewId, shopId, multipartFileList,reviewUpdateDto);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+    // 리뷰 신고
+    @PostMapping("/review/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable Long reviewId,
+                                                        @RequestParam(value = "shopId") Long shopId,
+                                                        @RequestParam(value = "memberId") Long memberId,
+                                                        @RequestBody ReviewReportDto reviewReportDto){
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(reviewId, shopId, memberId, reviewReportDto);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/review/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewDelete(@PathVariable Long reviewId,
+                                                        @RequestParam(value = "shopId") Long shopId){
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(reviewId, shopId);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+
 }

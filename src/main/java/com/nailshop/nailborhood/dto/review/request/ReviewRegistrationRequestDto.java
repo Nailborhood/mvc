@@ -3,6 +3,8 @@ package com.nailshop.nailborhood.dto.review.request;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class ReviewRegistrationRequestDto {
@@ -10,8 +12,5 @@ public class ReviewRegistrationRequestDto {
 
     private Integer rate;
 
-    public ReviewRegistrationRequestDto(String contents, Integer rate) {
-        this.contents = contents;
-        this.rate = rate;
-    }
+    private List<Long> categoryListId;
 }
