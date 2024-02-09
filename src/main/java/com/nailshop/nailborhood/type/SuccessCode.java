@@ -13,13 +13,23 @@ public enum SuccessCode {
     SHOP_MODIFICATION_SUCCESS("매장 수정을 성공했습니다."),
     ALL_SHOP_LOOKUP_SUCCESS("매장 조회를 성공했습니다"),
     SHOP_DETAIL_LOOKUP_SUCCESS("매장 상세 조회를 성공했습니다"),
-    REVIEW_REGISTRATION_SUCCESS("리뷰 등록을 성공했습니다"),
 
     SHOP_ART_LOOKUP_SUCCESS("매장 아트판 조회를 성공했습니다"),
     SHOP_REVIEW_LOOKUP_SUCCESS("매장 리뷰 조회를 성공했습니다"),
     FAVORITE_SAVE_SUCCESS("매장 찜 등록에 성공했습니다"),
     FAVORITE_CANCEL_SUCCESS("매장 찜을 취소 했습니다"),
     SHOP_DELETE_SUCCESS("매장을 삭제했습니다"),
+
+    // 리뷰
+    REVIEW_REGISTRATION_SUCCESS("리뷰 등록을 성공했습니다"),
+    REVIEW_UPDATE_SUCCESS("리뷰 수정에 성공했습니다."),
+    REVIEW_REPORT_SUCCESS("리뷰 신고에 성공했습니다."),
+    REVIEW_DELETE_SUCCESS("리뷰 삭제에 성공했습니다."),
+    REVIEW_LIKE_SUCCESS("리뷰 공감에 성공했습니다."),
+    REVIEW_LIKE_CANCEL_SUCCESS("리뷰 공감을 취소했습니다."),
+    REVIEW_INQUIRY_SUCCESS("리뷰 상세조회에 성공했습니다."),
+
+
 
     // 아트판
     ART_REGISTRATION_SUCCESS("아트판 등록에 성공했습니다."),
@@ -29,7 +39,7 @@ public enum SuccessCode {
     ART_DISLIKE_SUCCESS("아트판 좋아요 취소에 성공했습니다."),
     ART_ALL_INQUIRY_SUCCESS("아트판 전체 조회에 성공했습니다."),
     ART_INQUIRY_SUCCESS("아트판 상세 조회에 성공했습니다."),
-  
+
     // 멤버
     MEMBER_FOUND("유저 정보 조회에 성공하였습니다."),
     EMAIL_AVAILABLE("사용 가능한 이메일입니다"),
