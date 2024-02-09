@@ -18,6 +18,7 @@ public enum SuccessCode {
     SHOP_REVIEW_LOOKUP_SUCCESS("매장 리뷰 조회를 성공했습니다"),
     FAVORITE_SAVE_SUCCESS("매장 찜 등록에 성공했습니다"),
     FAVORITE_CANCEL_SUCCESS("매장 찜을 취소 했습니다"),
+    SHOP_DELETE_SUCCESS("매장을 삭제했습니다"),
 
     // 리뷰
     REVIEW_REGISTRATION_SUCCESS("리뷰 등록을 성공했습니다"),
