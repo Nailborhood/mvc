@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.domain.review.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +25,11 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "LEFT join r.shop s " +
             "WHERE s.shopId = :shopId AND s.isDeleted = false ")
     Page<Review> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
+
+    @Query("UPDATE Review r " +
+            "SET r.isDeleted = true, " +
+            "r.rate = 0" +
+            "where r.reviewId = :reviewId")
+    @Modifying(clearAutomatically = true)
+    void reviewDeleteByReviewId(@Param("reviewId") Long reviewId);
 }

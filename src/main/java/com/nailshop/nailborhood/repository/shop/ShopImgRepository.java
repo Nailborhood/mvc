@@ -38,4 +38,11 @@ public interface ShopImgRepository extends JpaRepository<ShopImg,Long> {
             "LEFT JOIN si.shop s " +
             "WHERE s.shopId = :shopId ")
     List<ShopImgListResponseDto> findAllByShopImgListByShopId(@Param("shopId")Long shopId);
+
+    @Query("UPDATE ShopImg  si " +
+            "SET si.isDeleted = :status " +
+            "WHERE si.shopImgId = :shopImgId")
+    @Modifying(clearAutomatically = true)
+    void deleteByShopImgId(@Param("shopImgId") Long shopImgId, @Param("status") boolean status);
+
 }
