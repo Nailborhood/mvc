@@ -28,6 +28,9 @@ public enum SuccessCode {
     REVIEW_LIKE_SUCCESS("리뷰 공감에 성공했습니다."),
     REVIEW_LIKE_CANCEL_SUCCESS("리뷰 공감을 취소했습니다."),
     REVIEW_INQUIRY_SUCCESS("리뷰 상세조회에 성공했습니다."),
+    All_REVIEW_REPORT_SUCCESS("리뷰 신고 조회에 성공했습니다"),
+    REVIEW_REPORT_STATUS_REJECT_SUCCESS("리뷰 신고가 반려 처리되었습니다"),
+    REVIEW_REPORT_STATUS_ACCEPT_SUCCESS("리뷰 신고 처리되었습니다"),
 
 
 
