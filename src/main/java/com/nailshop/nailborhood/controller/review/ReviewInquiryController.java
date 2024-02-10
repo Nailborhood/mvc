@@ -18,7 +18,7 @@ public class ReviewInquiryController {
 
 
     // 리뷰 상세 조회
-    @GetMapping("/review/{reviewId}")
+    @GetMapping("user/review/inquiry/{reviewId}")
     public ResponseEntity<ResultDto<ReviewDetailResponseDto>> detailReview(@PathVariable Long reviewId,
                                                                            @RequestParam(value = "customerId") Long customerId,
                                                                            @RequestParam(value = "shopId") Long shopId){
