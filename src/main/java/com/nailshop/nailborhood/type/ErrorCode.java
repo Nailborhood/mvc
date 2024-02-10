@@ -35,6 +35,8 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND("리뷰를 찾을 수 없습니다."),
 
     MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
+    REVIEW_REPORT_NOT_FOUND("신고된 리뷰를 찾을 수 없습니다"),
+    REVIEW_REPORT_INCORRECT("리뷰 신고 상태가 올바르지 않습니다"),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),

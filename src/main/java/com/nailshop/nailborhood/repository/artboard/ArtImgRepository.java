@@ -33,4 +33,8 @@ public interface ArtImgRepository extends JpaRepository<ArtImg, Long> {
             "LEFT JOIN a.shop s " +
             "WHERE a.artRefId = :artRefId AND s.shopId = :shopId AND ai.imgNum = 1")
     String findArtImgByShopIdAndArtRefId(@Param("shopId") Long shopId, @Param("artRefId") Long artRefId);
+
+
+
+
 }
