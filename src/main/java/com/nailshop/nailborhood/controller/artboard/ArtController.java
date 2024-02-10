@@ -72,9 +72,10 @@ public class ArtController {
     @Operation(summary = "아트판 전체 조회", description = "user API")
     @GetMapping("/user/artboard/inquiry")
     public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                      @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                      @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy);
+                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
         resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
