@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.repository.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "AND m.password = :password " +
             "AND m.isDeleted = false")
     Optional<Member> findExistMember(String email, String password);
+
+    Page<Member> findAll(Pageable pageable);
 }
