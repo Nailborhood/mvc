@@ -7,12 +7,15 @@ import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,7 @@ public class ReviewInquiryService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final CustomerRepositoryKe customerRepositoryKe;
+    private final CategoryReviewRepository categoryReviewRepository;
 
 
     // 리뷰 상세조회
@@ -52,6 +56,12 @@ public class ReviewInquiryService {
         String nickName = customer.getMember().getNickname();
         String profileImg = customer.getMember().getProfileImg();
 
+        // 매장 이름, 영업상태, 신고상태, 카테고리
+        // TODO : 리뷰 신고 상태 추가해야함
+        ShopStatus shopStatus = shop.getStatus();
+        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
+
+        //리뷰 이미지
         List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
         Map<Integer, String> reviewImgPathMap = new HashMap<>();
         for (ReviewImg reviewImg : reviewImgList) {
@@ -60,6 +70,9 @@ public class ReviewInquiryService {
 
         ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.builder()
                 .reviewId(reviewId)
+                .shopName(shop.getName())
+                .shopStatus(shopStatus)
+                .categoryTypeList(categoryList)
                 .imgPathMap(reviewImgPathMap)
                 .contents(review.getContents())
                 .rate(review.getRate())
