@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.review;
+package com.nailshop.nailborhood.dto.review.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

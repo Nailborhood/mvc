@@ -2,11 +2,10 @@ package com.nailshop.nailborhood.controller.review;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.review.ReviewReportDto;
-import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
 import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
-import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.service.review.ReviewRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +64,7 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/review/{reviewId}")
+    @DeleteMapping("/mypage/review/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewDelete(@PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId){
         CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(reviewId, shopId);
