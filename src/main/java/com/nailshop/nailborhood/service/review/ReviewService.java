@@ -1,14 +1,18 @@
 package com.nailshop.nailborhood.service.review;
 
+import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.review.ReviewReportDto;
-import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
@@ -39,6 +43,8 @@ public class ReviewService {
     private final ReviewLikeRepository reviewLikeRepository;
     private final ShopRepository shopRepository;
     private final MemberRepositoryKe memberRepositoryKe;
+    private final CategoryRepository categoryRepository;
+    private final CategoryReviewRepository categoryReviewRepository;
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
 
@@ -54,8 +60,6 @@ public class ReviewService {
         Review review = reviewRepository.findReviewByFalse(reviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
-        // 원래 별점 가져오기
-//        int originalRate = review.getRate();
 
         // 리뷰 정보 저장
         review.reviewUpdate(reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
@@ -68,10 +72,22 @@ public class ReviewService {
         // 새로운 이미지 저장
         saveReviewImg(multipartFileList, review);
 
-
         // 리뷰 평균 별점 수정
         updateShopRateAvg(shop);
 
+        // 리뷰 카테고리 수정
+        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+
+        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryReview categoryReview = CategoryReview.builder()
+                    .review(review)
+                    .category(category)
+                    .build();
+            categoryReviewRepository.save(categoryReview);
+        }
 
 
         return commonService.successResponse(SuccessCode.REVIEW_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
