@@ -36,7 +36,6 @@ public class ArtInquiryService {
     // 전체 조회
     public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category) {
 
-
         // category 리스트화
         List<Long> categoryIdList = null;
         if (category != null && !category.isEmpty()){
@@ -85,7 +84,7 @@ public class ArtInquiryService {
             artResponseDtoList.add(artResponseDto);
         }
 
-        // Pagination 설정
+        // PaginationDto build
         PaginationDto paginationDto = PaginationDto.builder()
                 .totalPages(artRefPage.getTotalPages())
                 .totalElements(artRefPage.getTotalElements())
