@@ -5,7 +5,10 @@ import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
+import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
+import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
+import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
@@ -18,9 +21,13 @@ import com.nailshop.nailborhood.type.ReviewReportStatus;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,13 +95,52 @@ public class ReviewInquiryService {
 
 
     // 리뷰 조회
-//    public CommonResponseDto<Object> allReview(int page, int size, String sortBy) {
-//
-//
-//
-//        ExampleDto exampleDto = new ExampleDto("반환 예시 입니다.");
-//
-//        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, exampleDto);
-//    }
+    public CommonResponseDto<Object> allReview(int page, int size, String sortBy) {
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        Page<Review> reviewPage = reviewRepository.findBAllIsDeletedFalse(pageRequest);
+
+        if(reviewPage.isEmpty()){
+            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+        }
+
+        List<Review> reviewList = reviewPage.getContent();
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+
+        for(Review review : reviewList ){
+
+            String mainImgPath = review.getReviewImgList().get(0).getImgPath();
+
+            List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
+
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .reviewId(review.getReviewId())
+                    .mainImgPath(mainImgPath)
+                    .categoryTypeList(categoryTypeList)
+                    .contents(review.getContents())
+                    .rate(review.getRate())
+                    .likeCnt(review.getLikeCnt())
+                    .createdAt(review.getCreatedAt())
+                    .updatedAt(review.getUpdatedAt())
+                    .build();
+
+            reviewResponseDtoList.add(reviewResponseDto);
+        }
+
+        PaginationDto paginationDto = PaginationDto.builder()
+                .totalPages(reviewPage.getTotalPages())
+                .totalElements(reviewPage.getTotalElements())
+                .pageNo(reviewPage.getNumber())
+                .isLastPage(reviewPage.isLast())
+                .build();
+
+        ReviewListResponseDto reviewListResponseDto = ReviewListResponseDto.builder()
+                .reviewResponseDtoList(reviewResponseDtoList)
+                .paginationDto(paginationDto)
+                .build();
+
+
+        return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
+    }
 
 }

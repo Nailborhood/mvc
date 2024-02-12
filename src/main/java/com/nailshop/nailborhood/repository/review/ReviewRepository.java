@@ -34,17 +34,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Modifying(clearAutomatically = true)
     void updateReviewContents(@Param("reviewId") Long reviewId, @Param("contents") String contents);
 
-    // 리뷰 상세
-//    @Query("SELECT NEW com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto(" +
-//            "c.customerId, " +
-//            "r.reviewId, " +
-//            "") " +
-//            "FROM Review r " +
-//            "LEFT JOIN r.shop s " +
-//            "LEFT JOIN r.customer c " +
-//            "LEFT JOIN c.member m " +
-//            "WHERE r.review" +
-//    "")
+    // 리뷰 전체 조회
+    @Query("SELECT r FROM Review r WHERE r.isDeleted = false ")
+    Page<Review> findBAllIsDeletedFalse(Pageable pageable);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +

@@ -144,7 +144,11 @@ public class ReviewService {
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
 
-        // 이미지 삭제
+        // reviewID 해당  카테고리 삭제
+        // TODO 카테고리 삭제 안됨
+        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+
+        // 이미지 삭제 true -> false
         List<ReviewImg> reviewImgPathList = reviewImgRepository.findDeleteReviewImgPathList(reviewId);
 
         // url 삭제
@@ -160,6 +164,9 @@ public class ReviewService {
         reviewRepository.likeCntZero(reviewId);
         reviewLikeRepository.deleteByReviewId(reviewId);
 
+
+
+        //TODO : review 삭제 시 리뷰 신고 컬럼 삭제
 
         // 리뷰 isdeleted 값 true로
         reviewRepository.deleteReviewId(reviewId, true);
