@@ -15,9 +15,8 @@ public class ShopDetailListResponseDto {
     private ShopDetailLookupResponseDto shopDetailLookupResponseDto;
     private List<ShopImgListResponseDto> shopImgListResponseDto;
     private List<MenuDetailResponseDto> menuDetailResponseDto;
-    //TODO: 리뷰 리스트 , 아트 리스트
-    private List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList;
-    private List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList;
+    private List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList; // 리뷰리스트
+    private List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList; // 아트 리스트
 
     public ShopDetailListResponseDto(ShopDetailLookupResponseDto shopDetailLookupResponseDto, List<ShopImgListResponseDto> shopImgListResponseDto, List<MenuDetailResponseDto> menuDetailResponseDto, List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList, List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList) {
         this.shopDetailLookupResponseDto = shopDetailLookupResponseDto;
