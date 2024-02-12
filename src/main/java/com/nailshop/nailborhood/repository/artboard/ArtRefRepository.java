@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,5 +67,12 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE s.shopId = :shopId AND s.isDeleted = false")
     List<ArtRef> findAllByShopIdAndIsDeleted(Long shopId);
 
+
+    // 아트 검색 (네일이름, 매장이름)
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) AND a.isDeleted = false ")
+    Page<ArtRef> findArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
 
 }

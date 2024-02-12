@@ -37,6 +37,11 @@ public enum SuccessCode {
     MY_FAVORITE_SHOP_INQUIRY_SUCCESS("내가 찜한 매장들 조회에 성공했습니다."),
 
 
+    // 검색
+    SEARCH_BY_REVIEW_SUCCESS("리뷰 검색에 성공했습니다."),
+    SEARCH_BY_ART_SUCCESS("아트판 검색에 성공했습니다."),
+
+
 
     // 아트판
     ART_REGISTRATION_SUCCESS("아트판 등록에 성공했습니다."),
