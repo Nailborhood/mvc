@@ -26,6 +26,7 @@ public class ReviewResponseDto {
         this.reviewId = reviewId;
         this.mainImgPath = mainImgPath;
         this.categoryTypeList = categoryTypeList;
+        this.shopName = shopName;
         this.contents = contents;
         this.rate = rate;
         this.likeCnt = likeCnt;

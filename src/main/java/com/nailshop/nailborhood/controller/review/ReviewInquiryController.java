@@ -2,7 +2,7 @@ package com.nailshop.nailborhood.controller.review;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.review.response.MyReviewListResponseDto;
+import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
@@ -43,16 +43,4 @@ public class ReviewInquiryController {
         return ResponseEntity.status(allReview.getHttpStatus()).body(resultDto);
     }
 
-    // 내가 쓴 리뷰
-    @GetMapping("/mypage/review/inquiry")
-    public ResponseEntity<ResultDto<MyReviewListResponseDto>> myReview(@RequestHeader("Authorization") String accessToken,
-                                                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                       @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> myReview = reviewInquiryService.myReview(accessToken, page, size, sortBy);
-        ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
-        resultDto.setData((MyReviewListResponseDto) myReview.getData());
-
-        return ResponseEntity.status(myReview.getHttpStatus()).body(resultDto);
-    }
 }

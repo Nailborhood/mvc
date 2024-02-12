@@ -32,7 +32,9 @@ public enum SuccessCode {
     All_REVIEW_REPORT_SUCCESS("리뷰 신고 조회에 성공했습니다"),
     REVIEW_REPORT_STATUS_REJECT_SUCCESS("리뷰 신고가 반려 처리되었습니다"),
     REVIEW_REPORT_STATUS_ACCEPT_SUCCESS("리뷰 신고 처리되었습니다"),
+
     MY_REVIEW_INQUIRY_SUCCESS("내가 작성한 리뷰들 조회에 성공했습니다."),
+    MY_FAVORITE_SHOP_INQUIRY_SUCCESS("내가 찜한 매장들 조회에 성공했습니다."),
 
 
 

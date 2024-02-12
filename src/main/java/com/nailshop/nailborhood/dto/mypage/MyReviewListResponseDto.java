@@ -1,6 +1,7 @@
-package com.nailshop.nailborhood.dto.review.response;
+package com.nailshop.nailborhood.dto.mypage;
 
 import com.nailshop.nailborhood.dto.common.PaginationDto;
+import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
