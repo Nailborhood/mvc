@@ -6,6 +6,8 @@ import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
+import com.nailshop.nailborhood.dto.example.ExampleDto;
+import com.nailshop.nailborhood.dto.review.response.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
@@ -15,11 +17,13 @@ import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ReviewReportStatus;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +46,7 @@ public class ReviewInquiryService {
     private final ReviewImgRepository reviewImgRepository;
     private final CustomerRepositoryKe customerRepositoryKe;
     private final CategoryReviewRepository categoryReviewRepository;
+    private final TokenProvider tokenProvider;
 
 
     // 리뷰 상세조회
@@ -97,8 +102,8 @@ public class ReviewInquiryService {
     // 리뷰 조회
     public CommonResponseDto<Object> allReview(int page, int size, String sortBy) {
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
-        Page<Review> reviewPage = reviewRepository.findBAllIsDeletedFalse(pageRequest);
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        Page<Review> reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
 
         if(reviewPage.isEmpty()){
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
@@ -141,6 +146,59 @@ public class ReviewInquiryService {
 
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
+    }
+
+
+
+    // 내가 쓴 리뷰 조회 (마이페이지)
+    public CommonResponseDto<Object> myReview(String accessToken, int page, int size, String sortBy) {
+
+        Long memberId = tokenProvider.getUserId(accessToken);
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+
+
+        Page<Review> myReviewPage = reviewRepository.findMyReviewListByMemberId(memberId, pageable);
+        if (myReviewPage.isEmpty()) throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+
+        List<Review> myReviewList = myReviewPage.getContent();
+        List<ReviewResponseDto> myReviewResponseDtoList = new ArrayList<>();
+
+        for(Review review : myReviewList ){
+
+            String mainImgPath = review.getReviewImgList().get(0).getImgPath();
+            String shopName = review.getShop().getName();
+
+            List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
+
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .reviewId(review.getReviewId())
+                    .mainImgPath(mainImgPath)
+                    .categoryTypeList(categoryTypeList)
+                    .shopName(shopName)
+                    .contents(review.getContents())
+                    .rate(review.getRate())
+                    .likeCnt(review.getLikeCnt())
+                    .createdAt(review.getCreatedAt())
+                    .updatedAt(review.getUpdatedAt())
+                    .build();
+
+            myReviewResponseDtoList.add(reviewResponseDto);
+        }
+
+        PaginationDto paginationDto = PaginationDto.builder()
+                .totalPages(myReviewPage.getTotalPages())
+                .totalElements(myReviewPage.getTotalElements())
+                .pageNo(myReviewPage.getNumber())
+                .isLastPage(myReviewPage.isLast())
+                .build();
+
+        MyReviewListResponseDto myReviewListResponseDto = MyReviewListResponseDto.builder()
+                .reviewResponseDtoList(myReviewResponseDtoList)
+                .paginationDto(paginationDto)
+                .build();
+
+
+        return commonService.successResponse(SuccessCode.MY_REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, myReviewListResponseDto);
     }
 
 }

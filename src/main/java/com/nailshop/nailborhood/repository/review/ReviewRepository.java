@@ -36,7 +36,15 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 
     // 리뷰 전체 조회
     @Query("SELECT r FROM Review r WHERE r.isDeleted = false ")
-    Page<Review> findBAllIsDeletedFalse(Pageable pageable);
+    Page<Review> findAllIsDeletedFalse(Pageable pageable);
+
+    // 내가 쓴 리뷰 조회
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "WHERE m.memberId = :memberId AND r.isDeleted = false ")
+    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +
