@@ -28,13 +28,19 @@ public enum ErrorCode {
     PHONENUM_NOT_AVAILABLE("이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH_WITH_PATTERN("비밀번호 형식과 맞지 않는 비밀번호 입니다."),
     SIGNUP_FAIL("회원가입에 실패하였습니다."),
+    DROPOUT_FAIL("회원탈퇴에 실패하였습니다."),
+    DROPOUT_ALREADY("이미 탈퇴한 회원입니다."),
 
     LOGIN_FAIL("아이디 혹은 비밀번호가 일치하지 않습니다."),
+    LOGOUT_FAIL("로그아웃에 실패하였습니다."),
+ 
+    MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
+    MYINFO_UPDATE_FAIL("내 정보 수정에 실패하였습니다."),
+    PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
+    PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
 
     // 리뷰
     REVIEW_NOT_FOUND("리뷰를 찾을 수 없습니다."),
-
-    MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
     REVIEW_REPORT_NOT_FOUND("신고된 리뷰를 찾을 수 없습니다"),
     REVIEW_REPORT_INCORRECT("리뷰 신고 상태가 올바르지 않습니다"),
 
