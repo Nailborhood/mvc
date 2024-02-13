@@ -32,6 +32,8 @@ public enum ErrorCode {
 
     MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
     MYINFO_UPDATE_FAIL("내 정보 수정에 실패하였습니다."),
+    PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
+    PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),

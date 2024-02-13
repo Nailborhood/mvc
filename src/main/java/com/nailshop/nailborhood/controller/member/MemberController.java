@@ -86,7 +86,7 @@ public class MemberController {
 //    }
 
     @PutMapping("/myPage/modMyInfo")
-    public ResponseEntity<?> modMyInfo(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<MemberInfoDto>> modMyInfo(@RequestHeader(AUTH) String accessToken,
                                        @RequestBody ModMemberInfoRequestDto modMemberInfoRequestDto) {
         CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(accessToken, modMemberInfoRequestDto);
         ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -95,7 +95,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader(AUTH) String accessToken){
+    public ResponseEntity<ResultDto<Object>> logout(@RequestHeader(AUTH) String accessToken){
         CommonResponseDto<Object> commonResponseDto = memberService.logout(accessToken);
         HttpHeaders newHeader = new HttpHeaders();
         newHeader.add(HttpHeaders.SET_COOKIE, "cookieName=refreshToken=" + "; Path=/; Max-Age=0");
@@ -103,6 +103,23 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                 .headers(newHeader)
                 .body(result);
+    }
+
+    @PostMapping("/myPage/passwordCheck")
+    public ResponseEntity<ResultDto<Object>> passwordCheck(@RequestHeader(AUTH) String accessToken,
+                                           @RequestBody BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto){
+        CommonResponseDto<Object> commonResponseDto = memberService.beforeUpdatePassword(accessToken, beforeModPasswordCheckRequestDto);
+        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((boolean) commonResponseDto.getData());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+    @PostMapping("/myPage/modifyPassword")
+    public ResponseEntity<ResultDto<Void>> modifyPassword(@RequestHeader(AUTH) String accessToken,
+                                           @RequestBody ModPasswordRequestDto modPasswordRequestDto){
+        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(accessToken, modPasswordRequestDto);
+        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
 }

@@ -312,10 +312,31 @@ public class MemberService {
                 .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         loginRepository.updateRefreshTokenByMemberId(id, null);
 
-//            cookie = ResponseCookie
-//                    .from("refreshToken", "")
-//                    .maxAge(1)
-//                    .build();
             return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, null);
+    }
+
+    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto){
+        Long id = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        boolean match = passwordCheck(member.getEmail(), beforeModPasswordCheckRequestDto.getPasswordCheck());
+        return commonService.successResponse(SuccessCode.PASSWORD_CHECK_SUCCESS.getDescription(), HttpStatus.OK, match);
+    }
+
+    @Transactional
+    public CommonResponseDto<Object> updatePassword(String accessToken, ModPasswordRequestDto modPasswordRequestDto) {
+        boolean match = modPasswordRequestDto.getPassword().equals(modPasswordRequestDto.getPasswordCheck());
+        if(!match)
+            return commonService.errorResponse(ErrorCode.PASSWORD_CHECK_FAIL.getDescription(), HttpStatus.BAD_REQUEST, modPasswordRequestDto);
+        else{
+            Long id = tokenProvider.getUserId(accessToken);
+            Member member = memberRepository.findById(id)
+                    .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+
+            String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getPassword());
+            memberRepository.updateMemberPasswordByMemberId(id,encodedPassword);
+
+            return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
+        }
     }
 }
