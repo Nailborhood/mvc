@@ -62,8 +62,8 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     // 매장 상태 변경
     @Query("UPDATE Shop s " +
-            "SET s.status = :changeStatus " +
+            "SET s.status = :status " +
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
-    void updateShopStatusByShopId(@Param("shopId") Long shopId, @Param("changStatus") ShopStatus changeStatus);
+    void updateShopStatusByShopId(@Param("shopId") Long shopId, @Param("status") ShopStatus changeStatus);
 }
