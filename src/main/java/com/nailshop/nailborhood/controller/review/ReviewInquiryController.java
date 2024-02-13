@@ -21,9 +21,8 @@ public class ReviewInquiryController {
     // 리뷰 상세 조회
     @GetMapping("user/review/inquiry/{reviewId}")
     public ResponseEntity<ResultDto<ReviewDetailResponseDto>> detailReview(@PathVariable Long reviewId,
-                                                                           @RequestParam(value = "customerId") Long customerId,
                                                                            @RequestParam(value = "shopId") Long shopId){
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, customerId, shopId);
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
