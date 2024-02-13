@@ -122,4 +122,13 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
+    @PostMapping("/dropout")
+    public ResponseEntity<ResultDto<Void>> memberDropOut(@RequestHeader(AUTH) String accessToken){
+        CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(accessToken);
+        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+
+
 }

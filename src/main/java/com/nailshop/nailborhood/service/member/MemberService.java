@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.service.member;
 
+import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Login;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
@@ -13,6 +14,7 @@ import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,8 @@ public class MemberService {
 
     private final CommonService commonService;
     private final TokenProvider tokenProvider;
+
+    private final EntityManager entityManager;
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -68,15 +72,6 @@ public class MemberService {
             return commonService.successResponse(SuccessCode.PHONENUM_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
     }
 
-//    public CommonResponseDto<Object> checkPasswordMatchesWithRules(CheckDto checkDto) {
-//        boolean matches = matchWithPasswordPattern(checkDto.getCheck());
-//        checkDto.setExist(matches);
-//        if(matches) return commonService.successResponse(ErrorCode.PASSWORD_NOT_MATCH_WITH_PATTERN.getDescription(), HttpStatus.OK,checkDto);
-//        else return commonService.successResponse(SuccessCode)
-//
-//    }
-
-
     public CommonResponseDto<Object> signUp(SignUpDto signUpDto) {
         if (findByEmail(signUpDto.getEmail()))
             return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpDto);
@@ -104,6 +99,7 @@ public class MemberService {
                     .build();
             try {
                 memberRepository.save(member);
+                // Customer 테이블 컬럼 생성 필요
                 return commonService.successResponse(SuccessCode.SIGNUP_SUCCESS.getDescription(), HttpStatus.OK, null);
             } catch (Exception e) {
                 return commonService.errorResponse(ErrorCode.SIGNUP_FAIL.getDescription(), HttpStatus.BAD_GATEWAY, signUpDto);
@@ -184,26 +180,26 @@ public class MemberService {
         }
     }
 
-//    @Transactional
-//    public CommonResponseDto<Object> renewToken(String refreshToken) {
-//        // 유저 get
-//        Login login = loginRepository.findByRefreshToken(refreshToken)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.EXAMPLE_EXCEPTION.getDescription()));
-//
-//        Member member = login.getMember();
-//
-//        GeneratedToken generatedToken = tokenProvider.generateToken(member);
-//
-//        login.updateToken(generatedToken.getRefreshToken());
-//
-//        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-//                .accessToken(generatedToken.getAccessToken())
-//                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-//                .build();
-//
-//        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
-//    }
-//
+    @Transactional
+    public CommonResponseDto<Object> renewToken(String refreshToken) {
+        // 유저 get
+        Login login = loginRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EXAMPLE_EXCEPTION.getDescription()));
+
+        Member member = login.getMember();
+
+        GeneratedToken generatedToken = tokenProvider.generateToken(member);
+
+        login.updateToken(generatedToken.getRefreshToken());
+
+        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
+                .accessToken(generatedToken.getAccessToken())
+                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
+                .build();
+
+        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
+    }
+
 
 
     public boolean passwordCheck(String email, String password) {
@@ -273,7 +269,6 @@ public class MemberService {
             boolean nicknameUpdated = memberRepository.findByNickname(modInfoDto.getNickname()).isPresent();
             boolean phoneNumUpdated = memberRepository.findByPhoneNum(modInfoDto.getPhoneNum()).isPresent();
 
-            // 검증로직 점검 필요
             if (nicknameUpdated && phoneNumUpdated)
                 return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
             else
@@ -337,6 +332,26 @@ public class MemberService {
             memberRepository.updateMemberPasswordByMemberId(id,encodedPassword);
 
             return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
+        }
+    }
+
+    @Transactional
+    public CommonResponseDto<Object> deleteMember(String accessToken) {
+        Long id = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        if(member.isDeleted()) return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        else {
+            memberRepository.updateMemberIsDeletedById(id);
+            entityManager.flush();
+            String email = member.getEmail();
+            boolean checkDropout = memberRepository.findByEmail(email).get().isDeleted();
+
+            // 검증로직 점검 필요, 영속성 컨텍스트 해결 필요
+            if(checkDropout)
+                return commonService.successResponse(SuccessCode.DROPOUT_SUCCESS.getDescription(), HttpStatus.OK, null);
+            else
+                return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 }

@@ -40,8 +40,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void updateMemberPasswordByMemberId(
             @Param("id") Long id, @Param("password") String password);
 
-
-
-
+    @Modifying
+    @Query("UPDATE Member m SET " +
+            "m.isDeleted = true "+
+            "WHERE m.memberId = :id")
+    void updateMemberIsDeletedById(@Param("id") Long id);
 
 }
