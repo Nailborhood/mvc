@@ -19,6 +19,9 @@ public enum SuccessCode {
     FAVORITE_SAVE_SUCCESS("매장 찜 등록에 성공했습니다"),
     FAVORITE_CANCEL_SUCCESS("매장 찜을 취소 했습니다"),
     SHOP_DELETE_SUCCESS("매장을 삭제했습니다"),
+    SHOP_STATUS_BEFORE_OPEN("매장 상태:'영업전'으로 변경되었습니다"),
+    SHOP_STATUS_OPEN("매장 상태:'영업중'으로 변경되었습니다"),
+    SHOP_STATUS_CLOSED("매장 상태:'운영종료'로 변경되었습니다"),
 
     // 리뷰
     REVIEW_REGISTRATION_SUCCESS("리뷰 등록을 성공했습니다"),
