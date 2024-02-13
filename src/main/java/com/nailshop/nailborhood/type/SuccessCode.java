@@ -30,10 +30,19 @@ public enum SuccessCode {
     REVIEW_DELETE_SUCCESS("리뷰 삭제에 성공했습니다."),
     REVIEW_LIKE_SUCCESS("리뷰 공감에 성공했습니다."),
     REVIEW_LIKE_CANCEL_SUCCESS("리뷰 공감을 취소했습니다."),
-    REVIEW_INQUIRY_SUCCESS("리뷰 상세조회에 성공했습니다."),
+    REVIEW_DETAIL_INQUIRY_SUCCESS("리뷰 상세조회에 성공했습니다."),
+    REVIEW_INQUIRY_SUCCESS("리뷰 전체조회에 성공했습니다."),
     All_REVIEW_REPORT_SUCCESS("리뷰 신고 조회에 성공했습니다"),
     REVIEW_REPORT_STATUS_REJECT_SUCCESS("리뷰 신고가 반려 처리되었습니다"),
     REVIEW_REPORT_STATUS_ACCEPT_SUCCESS("리뷰 신고 처리되었습니다"),
+
+    MY_REVIEW_INQUIRY_SUCCESS("내가 작성한 리뷰들 조회에 성공했습니다."),
+    MY_FAVORITE_SHOP_INQUIRY_SUCCESS("내가 찜한 매장들 조회에 성공했습니다."),
+
+
+    // 검색
+    SEARCH_BY_REVIEW_SUCCESS("리뷰 검색에 성공했습니다."),
+    SEARCH_BY_ART_SUCCESS("아트판 검색에 성공했습니다."),
 
 
 
@@ -60,7 +69,7 @@ public enum SuccessCode {
     MYINFO_SUCCESS("내 정보 조회에 성공하였습니다."),
     MYINFO_UPDATE_SUCCESS("내 정보 수정에 성공하였습니다."),
     PASSWORD_CHECK_SUCCESS("비밀번호가 일치합니다."),
-    PASSWORD_UPDATE_SUCCESS("비밀번호 수정에 성공하였습니다.")
+    PASSWORD_UPDATE_SUCCESS("비밀번호 수정에 성공하였습니다."),
 
 
     //관리자

@@ -34,17 +34,17 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Modifying(clearAutomatically = true)
     void updateReviewContents(@Param("reviewId") Long reviewId, @Param("contents") String contents);
 
-    // 리뷰 상세
-//    @Query("SELECT NEW com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto(" +
-//            "c.customerId, " +
-//            "r.reviewId, " +
-//            "") " +
-//            "FROM Review r " +
-//            "LEFT JOIN r.shop s " +
-//            "LEFT JOIN r.customer c " +
-//            "LEFT JOIN c.member m " +
-//            "WHERE r.review" +
-//    "")
+    // 리뷰 전체 조회
+    @Query("SELECT r FROM Review r WHERE r.isDeleted = false ")
+    Page<Review> findAllIsDeletedFalse(Pageable pageable);
+
+    // 내가 쓴 리뷰 조회
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "WHERE m.memberId = :memberId AND r.isDeleted = false ")
+    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +
@@ -89,4 +89,12 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "where r.reviewId = :reviewId")
     @Modifying(clearAutomatically = true)
     void reviewDeleteByReviewId(@Param("reviewId") Long reviewId);
+
+    // 리뷰 검색 ( 매장이름, 내용 )
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
+    Page<Review> findReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
+
 }
