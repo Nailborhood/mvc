@@ -15,7 +15,7 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("nailborhood")
+@RequestMapping("/nailborhood")
 public class FavoriteController {
     private final FavoriteShopService favoriteShopService;
 

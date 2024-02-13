@@ -18,7 +18,7 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("nailborhood")
+@RequestMapping("/nailborhood")
 public class ArtController {
 
     private final ArtRegistrationService artRegistrationService;
