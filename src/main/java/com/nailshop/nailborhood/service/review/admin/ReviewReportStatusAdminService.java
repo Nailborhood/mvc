@@ -30,6 +30,7 @@ public class ReviewReportStatusAdminService {
     private final ReviewReportRepository reviewReportRepository;
     private final CommonService commonService;
 
+    // TODO: customer 에서 nickname 가져오기
     // 리뷰 신고 조회
     public CommonResponseDto<Object> getReviewReports(int page, int size, String sort) {
 
@@ -53,6 +54,7 @@ public class ReviewReportStatusAdminService {
                                 .getReviewId(),
                     reviewReport.getReview()
                                 .getContents()
+
             );
             return dto;
         });
@@ -79,7 +81,7 @@ public class ReviewReportStatusAdminService {
 
     @Transactional
     // 리뷰 신고 처리
-    public CommonResponseDto<Object> changeShopStatus(Long reportId, String status) {
+    public CommonResponseDto<Object> changeReviewStatus(Long reportId, String status) {
 
         String reviewStatus = null;
         SuccessCode successCode = null;
@@ -91,8 +93,6 @@ public class ReviewReportStatusAdminService {
         } else if (status.equals("accept")) {
             reviewStatus = ReviewReportStatus.REVIEW_REPORT_ACCEPTED.getDescription();
             successCode = SuccessCode.REVIEW_REPORT_STATUS_ACCEPT_SUCCESS;
-        } else {
-
         }
 
         if(reviewStatus == null ) {

@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemeberFavoriteRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FavoriteShopService {
+    private final TokenProvider tokenProvider;
     private final FavoriteRepository favoriteRepository;
     private final CommonService commonService;
     private final ShopRepository shopRepository;
@@ -28,8 +30,10 @@ public class FavoriteShopService {
     //TODO: memberId -> 토큰으로 변경
 
     @Transactional
-    public CommonResponseDto<Object> favoriteShop(Long shopId, Long memberId) {
+    public CommonResponseDto<Object> favoriteShop(Long shopId, String accessToken) {
         // TODO accessToken 에서 memberId 가져오기
+        Long memberId = tokenProvider.getUserId(accessToken);
+
         Member member = memeberFavoriteRepository.findByMemberId(memberId);
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
