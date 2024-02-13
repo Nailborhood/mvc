@@ -69,7 +69,6 @@ public class ShopDetailService {
         List<ShopImgListResponseDto> shopImgListResponseDtoList = shopImgRepository.findAllByShopImgListByShopId(shopId);
 
 
-        //TODO: 리뷰, 아트판 limit 4개 가져오기 shopDetailListResponseDto 에 추가해야함
         CommonResponseDto<Object> reviewList = shopReviewListLookupService.getAllReviewListByShopId(1, 4, "createdAt", "DESC", shopId);
         ResultDto<ShopReviewListLookupResponseDto> reviewResultDto = ResultDto.in(reviewList.getStatus(), reviewList.getMessage());
         reviewResultDto.setData((ShopReviewListLookupResponseDto) reviewList.getData());

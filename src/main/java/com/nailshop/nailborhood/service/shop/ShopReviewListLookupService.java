@@ -28,7 +28,7 @@ public class ShopReviewListLookupService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
 
-    //TODO: 매장 리뷰 조회
+    // 매장 리뷰 조회
     // 카데고리 없이 전체 리뷰 조회
     @Transactional
     public CommonResponseDto<Object> getAllReviewListByShopId(int page, int size, String criteria, String sort, Long shopId) {
@@ -84,6 +84,6 @@ public class ShopReviewListLookupService {
         return commonService.successResponse(SuccessCode.SHOP_REVIEW_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopReviewListLookupResponseDto);
     }
 
-    // TODO: 카데고리 별 매장 리뷰 조회 필요?
+
 
 }

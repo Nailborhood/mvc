@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.repository.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.email = :email " +
             "AND m.password = :password " +
             "AND m.isDeleted = false")
+
     Optional<Member> findExistMember(@Param("email") String email,@Param("password") String password);
 
     @Modifying
@@ -46,4 +49,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.memberId = :id")
     void updateMemberIsDeletedById(@Param("id") Long id);
 
+    Page<Member> findAll(Pageable pageable);
+  
 }

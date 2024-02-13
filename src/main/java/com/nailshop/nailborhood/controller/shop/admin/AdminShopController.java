@@ -7,7 +7,9 @@ import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.dto.shop.response.AllShopsListResponseDto;
 import com.nailshop.nailborhood.service.shop.admin.AllShopsLookupAdminService;
+import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
 import com.nailshop.nailborhood.service.shop.admin.ShopRegistrationService;
+import com.nailshop.nailborhood.service.shop.admin.ShopStatusChangeService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +28,8 @@ public class AdminShopController {
     private final ShopRegistrationService shopRegistrationService;
     private final ShopModificationService shopModificationService;
     private final AllShopsLookupAdminService allShopsLookupAdminService;
+    private final ShopDeleteService shopDeleteService;
+    private final ShopStatusChangeService shopStatusChangeService;
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 정보 등록", description = "admin API")
@@ -66,5 +70,29 @@ public class AdminShopController {
         resultDto.setData((AllShopsListResponseDto) allShopsList.getData());
 
         return ResponseEntity.status(allShopsList.getHttpStatus()).body(resultDto);
+    }
+
+    @Tag(name = "admin", description = "admin API")
+    @Operation(summary = "매장 삭제", description = "admin API")
+    // 매장 정보 등록
+    @DeleteMapping(  "/admin/deleteShop/{shopId}")
+    public ResponseEntity<ResultDto<Void>> deleteShop(@PathVariable Long shopId) {
+        CommonResponseDto<Object> commonResponseDto = shopDeleteService.deleteShop(shopId);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
+    }
+
+    @Tag(name = "admin", description = "admin API")
+    @Operation(summary = "매장 상태 변경 ", description = "admin API")
+    // 매장 상태 변경
+    @PutMapping( "/admin/shopStatus/{reportId}")
+    public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@PathVariable Long shopId,
+                                                                    @RequestParam(value = "status") String status ) {
+        CommonResponseDto<Object> commonResponseDto = shopStatusChangeService.changeShopStatus(shopId, status);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
     }
 }

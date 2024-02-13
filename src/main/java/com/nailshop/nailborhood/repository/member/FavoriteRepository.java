@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface FavoriteRepository extends JpaRepository<Favorite,Long> {
 
     // memberId 와 shopId로 매장 찜 상태 불러오기
@@ -23,4 +25,9 @@ public interface FavoriteRepository extends JpaRepository<Favorite,Long> {
     @Modifying(clearAutomatically = true)
     void updateStatus(@Param("favoriteId") Long favoriteId, @Param("status") boolean newStatus);
 
+    @Query("SELECT f " +
+            "FROM Favorite f " +
+            "LEFT JOIN f.shop s " +
+            "WHERE  s.shopId = :shopId")
+    List<Favorite> findAllByShopIdAndIsDeleted(@Param("shopId") Long shopId);
 }
