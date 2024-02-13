@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("nailborhood")
 public class MemberController {
     private final MemberService memberService;
-    private final String AUTH = HttpHeaders.AUTHORIZATION;
 
 
 

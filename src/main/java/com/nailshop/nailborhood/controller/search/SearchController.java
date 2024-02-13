@@ -8,13 +8,11 @@ import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.service.search.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("nailborhood")
 public class SearchController {
 
     private final SearchService searchService;

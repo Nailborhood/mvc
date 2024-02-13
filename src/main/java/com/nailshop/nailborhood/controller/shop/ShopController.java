@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nailshop")
+@RequestMapping("/nailborhood")
 public class ShopController {
 
     private final ShopListLookupLocalService shopListLookupLocalService;

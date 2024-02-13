@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nailshop")
+@RequestMapping("/nailborhood")
 public class AdminShopController {
 
     private final ShopRegistrationService shopRegistrationService;

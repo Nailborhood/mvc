@@ -16,8 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("nailborhood")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -40,7 +43,7 @@ public class ReviewController {
 
     //리뷰 수정
     @PutMapping("/review/update/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewUpdate(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<Void>> reviewUpdate(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestPart(value = "img") List<MultipartFile> multipartFileList,
@@ -53,7 +56,7 @@ public class ReviewController {
 
     // 리뷰 신고
     @PostMapping("/review/report/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<Void>> reviewReport(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestBody ReviewReportDto reviewReportDto){
@@ -65,7 +68,7 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/mypage/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewDelete(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<Void>> reviewDelete(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId){
         CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(accessToken, reviewId, shopId);

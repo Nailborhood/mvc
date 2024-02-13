@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nailshop")
+@RequestMapping("nailborhood")
 public class FavoriteController {
     private final FavoriteShopService favoriteShopService;
 
@@ -22,7 +24,7 @@ public class FavoriteController {
     @Operation(summary = "매장 찜 ", description = "favorite API")
     // 매장 상세 조회
     @GetMapping("/favorite/{shopId}")
-    public ResponseEntity<ResultDto<FavoriteResponseDto>> getShopDetail(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<FavoriteResponseDto>> getShopDetail(@RequestHeader(AUTH) String accessToken,
                                                                         @PathVariable Long shopId){
         CommonResponseDto<Object> favoriteShop = favoriteShopService.favoriteShop(shopId,accessToken);
         ResultDto<FavoriteResponseDto> resultDto = ResultDto.in(favoriteShop.getStatus(), favoriteShop.getMessage());

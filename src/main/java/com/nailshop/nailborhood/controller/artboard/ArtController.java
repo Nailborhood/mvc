@@ -14,9 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(("/nailshop"))
+@RequestMapping("nailborhood")
 public class ArtController {
 
     private final ArtRegistrationService artRegistrationService;
@@ -24,7 +26,6 @@ public class ArtController {
     private final ArtDeleteService artDeleteService;
     private final ArtLikeService artLikeService;
     private final ArtInquiryService artInquiryService;
-    private final String AUTH = HttpHeaders.AUTHORIZATION;
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 등록", description = "owner API")
