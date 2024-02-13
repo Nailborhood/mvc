@@ -25,7 +25,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewRegistrationService reviewRegistrationService;
 
-
+    // TODO: accesstoken 연결
     @Tag(name = "review", description = "review API")
     @Operation(summary = "리뷰 등록", description = "review API")
     // 매장 정보 등록

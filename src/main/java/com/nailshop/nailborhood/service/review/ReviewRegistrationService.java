@@ -37,6 +37,7 @@ public class ReviewRegistrationService {
     private final CategoryRepository categoryRepository;
     private final CategoryReviewRepository categoryReviewRepository;
 
+    // TODO: accessToken -> customer 연결
     @Transactional
     // 리뷰 등록
     public CommonResponseDto<Object> registerReview(Long shopId, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
