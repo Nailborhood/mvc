@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.domain.review;
 
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -26,6 +27,9 @@ public class Review extends BaseTime {
 
     private Integer rate;
 
+    @Column(name = "like_cnt")
+    private Long likeCnt;
+
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
@@ -37,6 +41,9 @@ public class Review extends BaseTime {
 
     @OneToMany(mappedBy = "review")
     private List<ReviewLike> reviewLikeList;
+
+    @OneToMany(mappedBy = "review")
+    private List<CategoryReview> categoryReviewList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
@@ -51,10 +58,17 @@ public class Review extends BaseTime {
     private Shop shop;
 
     @Builder
-    public Review(String contents, Integer rate, boolean isDeleted, Shop shop) {
+    public Review(String contents, Integer rate, Long likeCnt, boolean isDeleted, Shop shop, Customer customer) {
         this.contents = contents;
         this.rate = rate;
+        this.likeCnt = likeCnt;
         this.isDeleted = isDeleted;
         this.shop = shop;
+        this.customer = customer;
+    }
+
+    public void reviewUpdate(String contents, Integer rate) {
+        this.contents = contents;
+        this.rate = rate;
     }
 }

@@ -1,8 +1,7 @@
 package com.nailshop.nailborhood.repository.shop;
 
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailListResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailLookupResponseDto;
+import com.nailshop.nailborhood.type.ShopStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,4 +51,19 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateFavoriteCntDecreaseByShopId(@Param("shopId") Long shopId);
+
+    // 매장 삭제
+    @Query("UPDATE Shop s " +
+            "SET s.isDeleted = true," +
+            "s.status = :shopStatus " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void shopDeleteByShopId(@Param("shopId") Long shopId ,@Param("shopStatus") ShopStatus shopStatus);
+
+    // 매장 상태 변경
+    @Query("UPDATE Shop s " +
+            "SET s.status = :status " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateShopStatusByShopId(@Param("shopId") Long shopId, @Param("status") ShopStatus changeStatus);
 }
