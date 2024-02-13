@@ -22,7 +22,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.email = :email " +
             "AND m.password = :password " +
             "AND m.isDeleted = false")
-
     Optional<Member> findExistMember(@Param("email") String email,@Param("password") String password);
 
     @Modifying
@@ -49,6 +48,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.memberId = :id")
     void updateMemberIsDeletedById(@Param("id") Long id);
 
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "WHERE m.memberId = :memberId AND m.isDeleted = false ")
+    Optional<Member> findByMemberIdAndIsDeleted(@Param("memberId") Long memberId);
+
     Page<Member> findAll(Pageable pageable);
-  
+
 }

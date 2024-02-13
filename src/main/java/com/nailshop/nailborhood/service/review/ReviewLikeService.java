@@ -7,10 +7,12 @@ import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewLikeResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepositoryKe;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -24,20 +26,22 @@ import org.springframework.stereotype.Service;
 public class ReviewLikeService {
 
     private final CommonService commonService;
+    private final TokenProvider tokenProvider;
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
-    private final MemberRepositoryKe memberRepositoryKe;
+    private final MemberRepository memberRepository;
 
 
     @Transactional
-    public CommonResponseDto<Object> reviewLike(Long reviewId, Long shopId, Long memberId) {
+    public CommonResponseDto<Object> reviewLike(String accessToken, Long reviewId, Long shopId) {
 
-        Member member = memberRepositoryKe.findById(memberId)
+        Long memberId = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
-        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+        shopRepository.findByShopIdAndIsDeleted(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // 리뷰 존재 여부

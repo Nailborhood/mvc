@@ -30,10 +30,11 @@ public enum ErrorCode {
     SIGNUP_FAIL("회원가입에 실패하였습니다."),
     DROPOUT_FAIL("회원탈퇴에 실패하였습니다."),
     DROPOUT_ALREADY("이미 탈퇴한 회원입니다."),
+    AUTHOR_NOT_EQUAL("작성자가 일치하지 않습니다."),
 
     LOGIN_FAIL("아이디 혹은 비밀번호가 일치하지 않습니다."),
     LOGOUT_FAIL("로그아웃에 실패하였습니다."),
- 
+
     MYINFO_FAIL("내 정보 조회에 실패하였습니다."),
     MYINFO_UPDATE_FAIL("내 정보 수정에 실패하였습니다."),
     PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),

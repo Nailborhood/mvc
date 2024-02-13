@@ -68,11 +68,20 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE a.isDeleted = false " +
             "AND ca.category.categoryId IN :categoryIdList")
     Page<ArtRef> findByIsDeletedFalseAndCategoryIdListIn(List<Long> categoryIdList, Pageable pageable);
-  
+
     // 매장 Id에 해당하는 아트판
     @Query("SELECT a " +
             "FROM ArtRef a " +
             "LEFT JOIN a.shop s " +
             "WHERE s.shopId = :shopId AND s.isDeleted = false")
     List<ArtRef> findAllByShopIdAndIsDeleted(Long shopId);
+
+
+    // 아트 검색 (네일이름, 매장이름)
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) AND a.isDeleted = false ")
+    Page<ArtRef> findArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
+
 }

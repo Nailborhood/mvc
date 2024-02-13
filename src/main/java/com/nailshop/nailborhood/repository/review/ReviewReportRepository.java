@@ -23,4 +23,14 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
             "LEFT JOIN rr.review r " +
             "WHERE r.isDeleted = false")
     Page<ReviewReport> findAllNotDeleted(Pageable pageable);
+
+    // 리뷰 삭제 시 신고된 리뷰 중 해당 reviewId 컬럼 삭제
+    @Query("DELETE ReviewReport rr " +
+            "WHERE rr.review " +
+            "IN " +
+            "(SELECT r " +
+            "  FROM Review r " +
+            "  WHERE r.reviewId = :reviewId)")
+    @Modifying(clearAutomatically = true)
+    void deleteReviewReportByReviewId(Long reviewId);
 }

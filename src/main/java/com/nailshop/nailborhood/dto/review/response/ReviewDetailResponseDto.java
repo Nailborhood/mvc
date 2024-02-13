@@ -1,10 +1,13 @@
 package com.nailshop.nailborhood.dto.review.response;
 
+import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -12,6 +15,10 @@ import java.util.Map;
 public class ReviewDetailResponseDto {
 
     private Long reviewId;
+    private String shopName;
+    private ShopStatus shopStatus;
+//    private ReviewReportStatus reviewReportStatus;
+    private List<String> categoryTypeList;
     private Map<Integer, String> imgPathMap;
     private String contents;
     private Integer rate;
@@ -22,8 +29,12 @@ public class ReviewDetailResponseDto {
     private LocalDateTime reviewUpdatedAt;
 
     @Builder
-    public ReviewDetailResponseDto(Long reviewId, Map<Integer, String> imgPathMap ,String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+    public ReviewDetailResponseDto(Long reviewId, String shopName, ShopStatus shopStatus, ReviewReportStatus reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
         this.reviewId = reviewId;
+        this.shopName = shopName;
+        this.shopStatus = shopStatus;
+//        this.reviewReportStatus = reviewReportStatus;
+        this.categoryTypeList = categoryTypeList;
         this.imgPathMap = imgPathMap;
         this.contents = contents;
         this.rate = rate;

@@ -1,20 +1,27 @@
 package com.nailshop.nailborhood.service.review;
 
+import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.review.ReviewReportDto;
-import com.nailshop.nailborhood.dto.review.ReviewUpdateDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
+import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
-import com.nailshop.nailborhood.repository.member.MemberRepositoryKe;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
+import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -38,13 +45,20 @@ public class ReviewService {
     private final ReviewImgRepository reviewImgRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final ShopRepository shopRepository;
-    private final MemberRepositoryKe memberRepositoryKe;
+    private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryReviewRepository categoryReviewRepository;
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
+    private final TokenProvider tokenProvider;
 
     // 리뷰 수정
     @Transactional
-    public CommonResponseDto<Object> reviewUpdate(Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+    public CommonResponseDto<Object> reviewUpdate(String accessToken, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+
+        Long memberId = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -54,8 +68,11 @@ public class ReviewService {
         Review review = reviewRepository.findReviewByFalse(reviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
-        // 원래 별점 가져오기
-//        int originalRate = review.getRate();
+        // 작성자와 수정하려는 유저 동일 검증
+        Long loginId = member.getMemberId();
+        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+            throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
+        }
 
         // 리뷰 정보 저장
         review.reviewUpdate(reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
@@ -68,10 +85,22 @@ public class ReviewService {
         // 새로운 이미지 저장
         saveReviewImg(multipartFileList, review);
 
-
         // 리뷰 평균 별점 수정
         updateShopRateAvg(shop);
 
+        // 리뷰 카테고리 수정
+        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+
+        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryReview categoryReview = CategoryReview.builder()
+                    .review(review)
+                    .category(category)
+                    .build();
+            categoryReviewRepository.save(categoryReview);
+        }
 
 
         return commonService.successResponse(SuccessCode.REVIEW_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -79,9 +108,10 @@ public class ReviewService {
 
     // 리뷰 신고
     @Transactional
-    public CommonResponseDto<Object> reviewReport(Long reviewId, Long shopId,Long memberId, ReviewReportDto reviewReportDto) {
+    public CommonResponseDto<Object> reviewReport(String accessToken, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
 
-        Member member = memberRepositoryKe.findById(memberId)
+        Long memberId = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -107,8 +137,6 @@ public class ReviewService {
 
         reviewReportRepository.save(reviewReport);
 
-
-
         return commonService.successResponse(SuccessCode.REVIEW_REPORT_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
@@ -116,7 +144,11 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public CommonResponseDto<Object> reviewDelete(Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewDelete(String accessToken, Long reviewId, Long shopId) {
+
+        Long memberId = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -127,8 +159,13 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
+        Long loginId = member.getMemberId();
+        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+            throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
+        }
 
-        // 이미지 삭제
+
+        // 이미지 삭제 true -> false
         List<ReviewImg> reviewImgPathList = reviewImgRepository.findDeleteReviewImgPathList(reviewId);
 
         // url 삭제
@@ -144,6 +181,11 @@ public class ReviewService {
         reviewRepository.likeCntZero(reviewId);
         reviewLikeRepository.deleteByReviewId(reviewId);
 
+        // reviewID 해당 카테고리 삭제
+        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+
+        // 리뷰 신고 테이블 reviewId 해당 컬럼 삭제
+        reviewReportRepository.deleteReviewReportByReviewId(reviewId);
 
         // 리뷰 isdeleted 값 true로
         reviewRepository.deleteReviewId(reviewId, true);
