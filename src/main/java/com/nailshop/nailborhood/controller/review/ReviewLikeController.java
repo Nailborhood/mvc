@@ -9,14 +9,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("nailborhood")
 public class ReviewLikeController {
 
     private final ReviewLikeService reviewLikeService;
 
     @PostMapping("/like/review/{reviewId}")
-    public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(@RequestHeader(AUTH) String accessToken,
                                                                        @PathVariable Long reviewId,
                                                                        @RequestParam(value = "shopId") Long shopId){
         CommonResponseDto<Object> reviewLikeOn = reviewLikeService.reviewLike(accessToken, reviewId, shopId);

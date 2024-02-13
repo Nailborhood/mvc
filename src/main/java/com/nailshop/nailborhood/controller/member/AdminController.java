@@ -12,14 +12,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nailshop")
+@RequestMapping("nailborhood")
 public class AdminController {
 
     private final ChangeRoleService changeRoleService;
     private final MemberInquiryService memberInquiryService;
-    private final String AUTH = HttpHeaders.AUTHORIZATION;
+
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "사업자 전환", description = "admin API")

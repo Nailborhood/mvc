@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
+@RequestMapping("nailborhood")
 public class ReviewInquiryController {
 
     private final ReviewInquiryService reviewInquiryService;

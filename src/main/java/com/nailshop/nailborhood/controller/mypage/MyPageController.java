@@ -7,20 +7,20 @@ import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.service.mypage.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("nailborhood")
 public class MyPageController {
 
     private final MypageService mypageService;
 
     // 내가 쓴 리뷰
     @GetMapping("/mypage/review/inquiry")
-    public ResponseEntity<ResultDto<MyReviewListResponseDto>> myReview(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<MyReviewListResponseDto>> myReview(@RequestHeader(AUTH) String accessToken,
                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                        @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
@@ -33,7 +33,7 @@ public class MyPageController {
 
     // 찜한 매장 조회
     @GetMapping("/mypage/shop/favorite/inquiry")
-    public ResponseEntity<ResultDto<MyFavoriteListResponseDto>> myFavorite(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResultDto<MyFavoriteListResponseDto>> myFavorite(@RequestHeader(AUTH) String accessToken,
                                                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                            @RequestParam(value = "size", defaultValue = "10", required = false) int size){
         CommonResponseDto<Object> myFavorite = mypageService.myFavorite(accessToken, page, size);

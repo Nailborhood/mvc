@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/nailshop")
+@RequestMapping("/nailborhood")
 public class ReviewReportController {
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 
