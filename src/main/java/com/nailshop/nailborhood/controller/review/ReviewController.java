@@ -18,7 +18,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/nailshop")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -40,24 +39,25 @@ public class ReviewController {
     }
 
     //리뷰 수정
-    @PutMapping("/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewUpdate(@PathVariable Long reviewId,
+    @PutMapping("/review/update/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewUpdate(@RequestHeader("Authorization") String accessToken,
+                                                        @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestPart(value = "img") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "data") ReviewUpdateDto reviewUpdateDto){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(reviewId, shopId, multipartFileList,reviewUpdateDto);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(accessToken, reviewId, shopId, multipartFileList,reviewUpdateDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }
 
     // 리뷰 신고
-    @PostMapping("/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(@PathVariable Long reviewId,
+    @PostMapping("/review/report/{reviewId}")
+    public ResponseEntity<ResultDto<Void>> reviewReport(@RequestHeader("Authorization") String accessToken,
+                                                        @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
-                                                        @RequestParam(value = "memberId") Long memberId,
                                                         @RequestBody ReviewReportDto reviewReportDto){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(reviewId, shopId, memberId, reviewReportDto);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(accessToken, reviewId, shopId,reviewReportDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
@@ -65,9 +65,10 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/mypage/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewDelete(@PathVariable Long reviewId,
+    public ResponseEntity<ResultDto<Void>> reviewDelete(@RequestHeader("Authorization") String accessToken,
+                                                        @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(reviewId, shopId);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(accessToken, reviewId, shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
