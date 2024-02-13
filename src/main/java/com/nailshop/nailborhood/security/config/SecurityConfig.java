@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -49,15 +50,22 @@ public class SecurityConfig {
 //                )
                 .logout((logout) ->
                         logout
+                                .logoutUrl("/logout")
                                 .logoutSuccessUrl("/")
+                                .deleteCookies("refreshToken")
                                 .invalidateHttpSession(true)
                 )
                 .csrf((csrf) ->
                         csrf
                                 .disable()
+                )
+//                .cors((cors) -> cors.configure(http))
+                .sessionManagement((sessionManagement)->
+                                sessionManagement
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                ).exceptionHandling((exceptionConfig) ->
 //                        exceptionConfig.authenticationEntryPoint()
-                ).addFilterBefore(new JwtAuthenticationFilter(tokenProvider),UsernamePasswordAuthenticationFilter.class)
+                ).addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
 
         ;
 
