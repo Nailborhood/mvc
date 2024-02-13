@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.repository.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "FROM Member m " +
             "WHERE m.memberId = :memberId AND m.isDeleted = false ")
     Optional<Member> findByMemberIdAndIsDeleted(@Param("memberId") Long memberId);
+
+    Page<Member> findAll(Pageable pageable);
 }

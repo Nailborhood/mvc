@@ -91,4 +91,8 @@ public class Member extends BaseTime {
         this.isDeleted = isDeleted;
         this.role = role;
     }
+
+    public void changeRole(Role role){
+        this.role = role;
+    }
 }
