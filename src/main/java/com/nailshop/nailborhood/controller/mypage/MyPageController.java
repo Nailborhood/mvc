@@ -13,7 +13,7 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("nailborhood")
+@RequestMapping("/nailborhood")
 public class MyPageController {
 
     private final MypageService mypageService;
