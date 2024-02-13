@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.service.member.admin.MemberInquiryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,13 @@ public class AdminController {
 
     private final ChangeRoleService changeRoleService;
     private final MemberInquiryService memberInquiryService;
+    private final String AUTH = HttpHeaders.AUTHORIZATION;
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "사업자 전환", description = "admin API")
     @PutMapping("/admin/member/changeRole/{memberId}")
-    public ResponseEntity<ResultDto<Void>> changeRole (@PathVariable Long memberId){
+    public ResponseEntity<ResultDto<Void>> changeRole (@RequestHeader(AUTH) String accessToken,
+                                                       @PathVariable Long memberId){
         CommonResponseDto<Object> changeRole = changeRoleService.changeRole(memberId);
         ResultDto<Void> resultDto = ResultDto.in(changeRole.getStatus(), changeRole.getMessage());
 
@@ -32,7 +35,8 @@ public class AdminController {
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "유저 전체 조회(탈퇴 회원 포함)", description = "admin API")
     @GetMapping("/admin/member/inquiry")
-    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
+                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
         CommonResponseDto<Object> inquiryAllMember = memberInquiryService.inquiryAllMember(page, size, sortBy);
