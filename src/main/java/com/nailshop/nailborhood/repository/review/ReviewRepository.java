@@ -20,7 +20,7 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "WHERE s.shopId = :shopId AND s.isDeleted = false AND r.isDeleted = false ")
     List<Review> findAllByShopIdAndIsDeleted(Long shopId);
 
-    // 리뷰 id로  삭제 안된것만 가져오기
+    // 리뷰 id로 삭제 안된것만 가져오기
     @Query("SELECT r " +
             "FROM Review r " +
             "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
@@ -37,6 +37,13 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     // 리뷰 전체 조회
     @Query("SELECT r FROM Review r WHERE r.isDeleted = false ")
     Page<Review> findAllIsDeletedFalse(Pageable pageable);
+
+    // 카테고리 선택 조회
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.categoryReviewList cr " +
+            "WHERE r.isDeleted = false AND cr.category.categoryId IN :categoryIdList ")
+    Page<Review> findByCategoryIdListAndIsDeletedFalse(List<Long> categoryIdList, Pageable pageable);
 
     // 내가 쓴 리뷰 조회
     @Query("SELECT r " +

@@ -31,12 +31,12 @@ public class ReviewInquiryController {
     }
 
     // 리뷰 전체 조회
-    // TODO 리뷰 카테고리 선택 조회
     @GetMapping("/review/inquiry")
     public ResponseEntity<ResultDto<ReviewListResponseDto>> allReview(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                      @RequestParam(value = "sortBy", defaultValue = "likeCnt", required = false) String sortBy){
-        CommonResponseDto<Object> allReview = reviewInquiryService.allReview(page, size, sortBy);
+                                                                      @RequestParam(value = "sortBy", defaultValue = "likeCnt", required = false) String sortBy,
+                                                                      @RequestParam(value = "category", defaultValue = "", required = false) String category){
+        CommonResponseDto<Object> allReview = reviewInquiryService.allReview(page, size, sortBy, category);
         ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(allReview.getStatus(), allReview.getMessage());
         resultDto.setData((ReviewListResponseDto) allReview.getData());
 
