@@ -27,10 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -95,10 +92,27 @@ public class ReviewInquiryService {
 
 
     // 리뷰 전체 조회
-    public CommonResponseDto<Object> allReview(int page, int size, String sortBy) {
+    public CommonResponseDto<Object> allReview(int page, int size, String sortBy, String category) {
+
+        // category 리스트화
+        List<Long> categoryIdList = null;
+        if (category != null && !category.isEmpty()){
+
+            categoryIdList = Arrays.stream(category.split(","))
+                    .map(Long::parseLong)
+                    .toList();
+        }
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
-        Page<Review> reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
+        Page<Review> reviewPage;
+
+        if(categoryIdList == null || categoryIdList.isEmpty()){
+            // 카테고리 x
+            reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
+        }
+        else {
+            reviewPage = reviewRepository.findByCategoryIdListAndIsDeletedFalse(categoryIdList, pageable);
+        }
 
         if(reviewPage.isEmpty()){
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
@@ -109,7 +123,7 @@ public class ReviewInquiryService {
 
         for(Review review : reviewList ){
 
-            String mainImgPath = review.getReviewImgList().get(0).getImgPath();
+            String mainImgPath = review.getReviewImgList().getFirst().getImgPath();
 
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
