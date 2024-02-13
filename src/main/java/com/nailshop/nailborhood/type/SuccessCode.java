@@ -35,6 +35,7 @@ public enum SuccessCode {
     NICKNAME_AVAILABLE("사용 가능한 닉네임입니다."),
     PHONENUM_AVAILABLE("사용 가능한 전화번호입니다."),
     SIGNUP_SUCCESS("회원가입이 완료되었습니다."),
+    DROPOUT_SUCCESS("회원탈퇴가 완료되었습니다."),
 
     LOGIN_SUCCESS("로그인에 성공하였습니다."),
     LOGOUT_SUCCESS("로그아웃에 성공하였습니다."),
