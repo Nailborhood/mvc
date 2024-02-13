@@ -5,6 +5,8 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.mypage.MyFavoriteListResponseDto;
 import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.service.mypage.MypageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ public class MyPageController {
     private final MypageService mypageService;
 
     // 내가 쓴 리뷰
+    @Tag(name = "myPage", description = "myPage API")
+    @Operation(summary = "내가 작성한 리뷰 조회", description = "myPage API")
     @GetMapping("/mypage/review/inquiry")
     public ResponseEntity<ResultDto<MyReviewListResponseDto>> myReview(@RequestHeader(AUTH) String accessToken,
                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -32,6 +36,8 @@ public class MyPageController {
     }
 
     // 찜한 매장 조회
+    @Tag(name = "myPage", description = "myPage API")
+    @Operation(summary = "내가 찜한 매장 조회", description = "myPage API")
     @GetMapping("/mypage/shop/favorite/inquiry")
     public ResponseEntity<ResultDto<MyFavoriteListResponseDto>> myFavorite(@RequestHeader(AUTH) String accessToken,
                                                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
