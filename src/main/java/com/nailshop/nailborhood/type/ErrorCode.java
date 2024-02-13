@@ -28,6 +28,7 @@ public enum ErrorCode {
     PHONENUM_NOT_AVAILABLE("이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH_WITH_PATTERN("비밀번호 형식과 맞지 않는 비밀번호 입니다."),
     SIGNUP_FAIL("회원가입에 실패하였습니다."),
+    AUTHOR_NOT_EQUAL("작성자가 일치하지 않습니다."),
 
     LOGIN_FAIL("아이디 혹은 비밀번호가 일치하지 않습니다."),
 
