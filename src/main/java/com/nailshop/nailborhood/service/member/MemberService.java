@@ -180,25 +180,25 @@ public class MemberService {
         }
     }
 
-    @Transactional
-    public CommonResponseDto<Object> renewToken(String refreshToken) {
-        // 유저 get
-        Login login = loginRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.EXAMPLE_EXCEPTION.getDescription()));
-
-        Member member = login.getMember();
-
-        GeneratedToken generatedToken = tokenProvider.generateToken(member);
-
-        login.updateToken(generatedToken.getRefreshToken());
-
-        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                .accessToken(generatedToken.getAccessToken())
-                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-                .build();
-
-        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
-    }
+//    @Transactional
+//    public CommonResponseDto<Object> renewToken(String refreshToken) {
+//        // 유저 get
+//        Login login = loginRepository.findByRefreshToken(refreshToken)
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.EXAMPLE_EXCEPTION.getDescription()));
+//
+//        Member member = login.getMember();
+//
+//        GeneratedToken generatedToken = tokenProvider.generateToken(member);
+//
+//        login.updateToken(generatedToken.getRefreshToken());
+//
+//        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
+//                .accessToken(generatedToken.getAccessToken())
+//                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
+//                .build();
+//
+//        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
+//    }
 
 
 
