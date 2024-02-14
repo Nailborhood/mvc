@@ -1,16 +1,17 @@
-package com.nailshop.nailborhood.dto.shop.response;
+package com.nailshop.nailborhood.dto.shop.response.detail;
 
 import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@Builder
 @NoArgsConstructor
-public class AllShopsLookupResponseDto {
+public class ShopDetailLookupResponseDto {
     private Long shopId;
     private String name;
     private String phone;
@@ -19,15 +20,12 @@ public class AllShopsLookupResponseDto {
     private String website;
     private String content;
     private ShopStatus status;
-    private Boolean isDeleted;
     private LocalDateTime createdAt;
-    private Integer reviewCnt; // 리뷰 개수
-    private Integer favoriteCnt; // 좋아요 개수
     private double rateAvg;
-    private long menuCnt; // 메뉴 개수
 
 
-    public AllShopsLookupResponseDto(Long shopId, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg, long menuCnt) {
+    @Builder
+    public ShopDetailLookupResponseDto(Long shopId, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, LocalDateTime createdAt, double rateAvg) {
         this.shopId = shopId;
         this.name = name;
         this.phone = phone;
@@ -36,11 +34,8 @@ public class AllShopsLookupResponseDto {
         this.website = website;
         this.content = content;
         this.status = status;
-        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
-        this.reviewCnt = reviewCnt;
-        this.favoriteCnt = favoriteCnt;
         this.rateAvg = rateAvg;
-        this.menuCnt = menuCnt;
+
     }
 }
