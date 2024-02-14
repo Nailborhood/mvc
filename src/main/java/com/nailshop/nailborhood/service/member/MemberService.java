@@ -6,7 +6,7 @@ import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
-import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
+import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.security.dto.GeneratedToken;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final LoginRepository loginRepository;
-    private final CustomerRepositoryKe customerRepositoryKe;
+    private final CustomerRepository customerRepository;
 
     private final CommonService commonService;
     private final TokenProvider tokenProvider;
@@ -111,7 +111,7 @@ public class MemberService {
                     .build();
             try {
                 memberRepository.save(member);
-                customerRepositoryKe.save(customer);
+                customerRepository.save(customer);
                 return commonService.successResponse(SuccessCode.SIGNUP_SUCCESS.getDescription(), HttpStatus.OK, null);
             } catch (Exception e) {
                 return commonService.errorResponse(ErrorCode.SIGNUP_FAIL.getDescription(), HttpStatus.BAD_GATEWAY, signUpRequestDto);
