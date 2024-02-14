@@ -40,6 +40,8 @@ public enum ErrorCode {
     PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
     PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
 
+    UNAUTHORIZED_ACCESS("접근 권한이 없습니다."),
+
     // 리뷰
     REVIEW_NOT_FOUND("리뷰를 찾을 수 없습니다."),
     REVIEW_REPORT_NOT_FOUND("신고된 리뷰를 찾을 수 없습니다"),

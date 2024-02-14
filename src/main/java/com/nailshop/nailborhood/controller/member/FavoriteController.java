@@ -3,7 +3,6 @@ package com.nailshop.nailborhood.controller.member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.response.FavoriteResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.service.member.FavoriteShopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
