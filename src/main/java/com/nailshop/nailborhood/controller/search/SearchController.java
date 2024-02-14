@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.example.ExampleDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.service.search.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,19 @@ public class SearchController {
         CommonResponseDto<Object> commonResponseDto = searchService.searchArtRefInquiry(keyword, page, size, sortBy);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((ArtListResponseDto) commonResponseDto.getData());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+    // 가게 검색
+    @GetMapping("/search/shop")
+    public ResponseEntity<ResultDto<ShopListResponseDto>> searchShopInquiry (@RequestParam(value = "keyword") String keyword,
+                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
+        CommonResponseDto<Object> commonResponseDto = searchService.searchShopInquiry(keyword, page, size, sortBy);
+        ResultDto<ShopListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        resultDto.setData((ShopListResponseDto) commonResponseDto.getData());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }

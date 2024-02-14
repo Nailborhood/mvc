@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.member;
+package com.nailshop.nailborhood.dto.member.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SignUpDto {
+public class SignUpRequestDto {
     private String email;
     private String password;
     private String name;

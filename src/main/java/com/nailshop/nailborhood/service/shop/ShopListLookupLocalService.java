@@ -125,8 +125,7 @@ public class ShopListLookupLocalService {
                     shop.getCreatedAt(),
                     shop.getReviewCnt(),
                     shop.getFavoriteCnt(),
-                    shop.getRateAvg(),
-                    menuCnt
+                    shop.getRateAvg()
             );
             // data 에 dto 반환
             return dto;

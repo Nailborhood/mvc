@@ -25,10 +25,9 @@ public class ShopLookupResponseDto {
     private Integer reviewCnt; // 리뷰 개수
     private Integer favoriteCnt; // 좋아요 개수
     private double rateAvg;
-    private long menuCnt; // 메뉴 개수
 
 
-    public ShopLookupResponseDto(Long shopId, String shopMainImgPath, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg, long menuCnt) {
+    public ShopLookupResponseDto(Long shopId, String shopMainImgPath, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg) {
         this.shopId = shopId;
         this.shopMainImgPath = shopMainImgPath;
         this.name = name;
@@ -43,6 +42,5 @@ public class ShopLookupResponseDto {
         this.reviewCnt = reviewCnt;
         this.favoriteCnt = favoriteCnt;
         this.rateAvg = rateAvg;
-        this.menuCnt = menuCnt;
     }
 }
