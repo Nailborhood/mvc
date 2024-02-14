@@ -14,7 +14,6 @@ import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
-import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
@@ -126,9 +125,8 @@ public class ReviewService {
 //        Long reportedCustomerId = review.getCustomer().getCustomerId();
 
 
-
         ReviewReport reviewReport = ReviewReport.builder()
-                .contents(review.getContents())
+                .contents(reviewReportDto.getReportReason())
                 .status(ReviewReportStatus.REVIEW_REPORT_PENDING.getDescription())
                 .member(member)
                 .review(review)

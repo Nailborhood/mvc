@@ -42,7 +42,9 @@ public class ReviewController {
     }
 
     //리뷰 수정
-    @PutMapping("/review/update/{reviewId}")
+    @Tag(name = "review", description = "review API")
+    @Operation(summary = "리뷰 수정", description = "review API")
+    @PutMapping(consumes = {"multipart/form-data"}, value = "/review/update/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewUpdate(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
@@ -55,6 +57,8 @@ public class ReviewController {
     }
 
     // 리뷰 신고
+    @Tag(name = "review", description = "review API")
+    @Operation(summary = "리뷰 신고", description = "review API")
     @PostMapping("/review/report/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewReport(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
@@ -67,6 +71,8 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
+    @Tag(name = "myPage", description = "myPage API")
+    @Operation(summary = "리뷰 삭제", description = "myPage API")
     @DeleteMapping("/mypage/review/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewDelete(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long reviewId,
