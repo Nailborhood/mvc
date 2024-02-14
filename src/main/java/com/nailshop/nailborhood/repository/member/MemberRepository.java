@@ -14,16 +14,10 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
-    Optional<Member> findByName(String name);
     Optional<Member> findByNickname(String nickname);
     Optional<Member> findByPhoneNum(String phoneNum);
 
-    @Query("SELECT m FROM Member m " +
-            "WHERE m.email = :email " +
-            "AND m.password = :password " +
-            "AND m.isDeleted = false")
-    Optional<Member> findExistMember(@Param("email") String email,@Param("password") String password);
-
+    // 내 정보 수정
     @Modifying
     @Query("UPDATE Member m SET m.address = :address, " +
             "m.phoneNum = :phoneNum, " +
@@ -35,6 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             @Param("id") Long id, @Param("address") String address, @Param("nickname") String nickname,
             @Param("phoneNum") String phoneNum, @Param("gender") String gender,@Param("birthday") LocalDate birthday);
 
+    // 비밀번호 수정
     @Modifying
     @Query("UPDATE Member m SET " +
             "m.password = :password "+
@@ -42,6 +37,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void updateMemberPasswordByMemberId(
             @Param("id") Long id, @Param("password") String password);
 
+    // 회원 탈퇴 처리
     @Modifying
     @Query("UPDATE Member m SET " +
             "m.isDeleted = true "+

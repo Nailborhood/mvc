@@ -25,4 +25,10 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Review> reviewList;
 
+    @Builder
+    public Customer(Long customerId, Member member, List<Review> reviewList) {
+        this.customerId = customerId;
+        this.member = member;
+        this.reviewList = reviewList;
+    }
 }
