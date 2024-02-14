@@ -5,6 +5,8 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewLikeResponseDto;
 import com.nailshop.nailborhood.service.review.ReviewLikeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ public class ReviewLikeController {
 
     private final ReviewLikeService reviewLikeService;
 
+    @Tag(name = "review", description = "review API")
+    @Operation(summary = "리뷰 공감", description = "review API")
     @PostMapping("/like/review/{reviewId}")
     public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(@RequestHeader(AUTH) String accessToken,
                                                                        @PathVariable Long reviewId,

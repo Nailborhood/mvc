@@ -28,7 +28,7 @@ public class AdminController {
     @PutMapping("/admin/member/changeRole/{memberId}")
     public ResponseEntity<ResultDto<Void>> changeRole (@RequestHeader(AUTH) String accessToken,
                                                        @PathVariable Long memberId){
-        CommonResponseDto<Object> changeRole = changeRoleService.changeRole(memberId);
+        CommonResponseDto<Object> changeRole = changeRoleService.changeRole(accessToken, memberId);
         ResultDto<Void> resultDto = ResultDto.in(changeRole.getStatus(), changeRole.getMessage());
 
         return ResponseEntity.status(changeRole.getHttpStatus()).body(resultDto);
@@ -41,7 +41,7 @@ public class AdminController {
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> inquiryAllMember = memberInquiryService.inquiryAllMember(page, size, sortBy);
+        CommonResponseDto<Object> inquiryAllMember = memberInquiryService.inquiryAllMember(accessToken, page, size, sortBy);
         ResultDto<MemberListResponseDto> resultDto = ResultDto.in(inquiryAllMember.getStatus(), inquiryAllMember.getMessage());
         resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 

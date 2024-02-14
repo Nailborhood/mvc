@@ -5,10 +5,10 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResp
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.MenuDetailResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailListResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopDetailLookupResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopImgListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.MenuDetailResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailLookupResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopImgListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
@@ -79,8 +79,8 @@ public class ShopDetailService {
 
         ShopDetailListResponseDto shopDetailListResponseDto = ShopDetailListResponseDto.builder()
                                                                                        .shopDetailLookupResponseDto(shopDetailLookupResponseDto)
-                                                                                       .menuDetailResponseDto(menuDetailResponseDtoList)
-                                                                                       .shopImgListResponseDto(shopImgListResponseDtoList)
+                                                                                       .menuDetailResponseDtoList(menuDetailResponseDtoList)
+                                                                                       .shopImgListResponseDtoList(shopImgListResponseDtoList)
                                                                                        .shopReviewLookupResponseDtoList(reviewResultDto.getData()
                                                                                                                                        .getShopReviewLookupResponseDto())
                                                                                        .shopArtBoardLookupResponseDtoList(artBoardResultDto.getData()

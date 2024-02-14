@@ -5,10 +5,13 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.member.MemberInfoDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,9 +29,15 @@ public class MemberInquiryService {
 
     private final CommonService commonService;
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     // 전체 조회
-    public CommonResponseDto<Object> inquiryAllMember(int page, int size, String sortBy) {
+    public CommonResponseDto<Object> inquiryAllMember(String accessToken, int page, int size, String sortBy) {
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 페이지 설정 및 MemberList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());

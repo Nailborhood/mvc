@@ -185,7 +185,7 @@ public class SearchService {
                 .build();
 
         ShopListResponseDto shopListResponseDto = ShopListResponseDto.builder()
-                .shopLookupResponseDtos(shopLookupResponseDtoList)
+                .shopLookupResponseDtoList(shopLookupResponseDtoList)
                 .paginationDto(paginationDto)
                 .build();
 
