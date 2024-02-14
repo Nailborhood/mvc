@@ -9,6 +9,8 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopLookupResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
@@ -17,6 +19,7 @@ import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,43 +145,37 @@ public class SearchService {
     }
 
     public CommonResponseDto<Object> searchShopInquiry(String keyword, int page, int size, String sortBy) {
-        // TODO - shop response dto 확인해서 연결 필요
-//
-//
-//        Page<ArtRef> artSearchPage = artRefRepository.findArtRefListBySearch(keyword, pageable);
-//        if(artSearchPage.isEmpty()) {
-//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-//        }
-
-
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
         Page<Shop> shopSearchPage = shopRepository.findShopListByKeyword(keyword, pageable);
+        if(shopSearchPage.isEmpty()) {
+            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+        }
 
         List<Shop> shopList = shopSearchPage.getContent();
 
+        List<ShopLookupResponseDto> shopLookupResponseDtoList = new ArrayList<>();
+        for(Shop shop : shopList) {
+            String mainImgPath = shop.getShopImgList().getFirst().getImgPath();
 
-//        List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
-//
-//        for(ArtRef artRef : artRefList ){
-//
-//            String mainImgPath = artRef.getArtImgList().get(0).getImgPath();
-//            String shopName = artRef.getShop().getName();
-//
-//            List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
-//
-//            ArtResponseDto artResponseDto = ArtResponseDto.builder()
-//                    .name(artRef.getName())
-//                    .content(artRef.getContent())
-//                    .likeCount(artRef.getLikeCount())
-//                    .mainImgPath(mainImgPath)
-//                    .shopName(shopName)
-//                    .categoryTypeList(categoryTypeList)
-//                    .createdAt(artRef.getCreatedAt())
-//                    .updatedAt(artRef.getUpdatedAt())
-//                    .build();
-//
-//            artResponseDtoList.add(artResponseDto);
-//        }
+            ShopLookupResponseDto shopLookupResponseDto = ShopLookupResponseDto.builder()
+                    .shopId(shop.getShopId())
+                    .shopMainImgPath(mainImgPath)
+                    .address(shop.getAddress())
+                    .name(shop.getName())
+                    .phone(shop.getPhone())
+                    .opentime(shop.getOpentime())
+                    .website(shop.getWebsite())
+                    .content(shop.getContent())
+                    .status(shop.getStatus())
+                    .isDeleted(shop.getIsDeleted())
+                    .createdAt(shop.getCreatedAt())
+                    .reviewCnt(shop.getReviewCnt())
+                    .favoriteCnt(shop.getFavoriteCnt())
+                    .rateAvg(shop.getRateAvg())
+                    .build();
+
+            shopLookupResponseDtoList.add(shopLookupResponseDto);
+        }
 
         PaginationDto paginationDto = PaginationDto.builder()
                 .totalPages(shopSearchPage.getTotalPages())
@@ -186,10 +184,10 @@ public class SearchService {
                 .isLastPage(shopSearchPage.isLast())
                 .build();
 
-//        ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
-//                .artResponseDtoList(artResponseDtoList)
-//                .paginationDto(paginationDto)
-//                .build();
+        ShopListResponseDto shopListResponseDto = ShopListResponseDto.builder()
+                .shopLookupResponseDtos(shopLookupResponseDtoList)
+                .paginationDto(paginationDto)
+                .build();
 
         return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
