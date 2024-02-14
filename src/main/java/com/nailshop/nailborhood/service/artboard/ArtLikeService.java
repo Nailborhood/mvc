@@ -5,12 +5,15 @@ import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.ArtLikeResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,21 +30,21 @@ public class ArtLikeService {
     private final ArtRefRepository artRefRepository;
     private final ArtLikeRepository artLikeRepository;
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
-    public CommonResponseDto<Object> likeArt(Long artRefId) {
+    public CommonResponseDto<Object> likeArt(String accessToken, Long artRefId) {
 
-        // TODO: 토큰에서 멤버 정보 get
-        Long memberId = 1L;
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+        // 멤버 확인
+        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
 
         // artLike 존재 여부 확인
-        Optional<ArtLike> artLike = artLikeRepository.findByMemberMemberIdAndArtRefArtRefId(memberId, artRefId);
+        Optional<ArtLike> artLike = artLikeRepository.findByMemberMemberIdAndArtRefArtRefId(member.getMemberId(), artRefId);
 
         if (artLike.isEmpty()){
             // 첫 좋아요
