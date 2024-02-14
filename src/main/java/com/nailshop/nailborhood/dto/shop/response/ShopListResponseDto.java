@@ -10,12 +10,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ShopListResponseDto {
-    private List<ShopLookupResponseDto> shopLookupResponseDtos;
+    private List<ShopLookupResponseDto> shopLookupResponseDtoList;
     private PaginationDto paginationDto;
 
     @Builder
-    public ShopListResponseDto(List<ShopLookupResponseDto> shopLookupResponseDtos, PaginationDto paginationDto) {
-        this.shopLookupResponseDtos = shopLookupResponseDtos;
+    public ShopListResponseDto(List<ShopLookupResponseDto> shopLookupResponseDtoList, PaginationDto paginationDto) {
+        this.shopLookupResponseDtoList = shopLookupResponseDtoList;
         this.paginationDto = paginationDto;
     }
 }

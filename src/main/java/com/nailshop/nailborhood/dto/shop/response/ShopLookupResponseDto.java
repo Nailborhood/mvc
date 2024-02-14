@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 @NoArgsConstructor
 public class ShopLookupResponseDto {
     private Long shopId;
@@ -27,6 +26,7 @@ public class ShopLookupResponseDto {
     private double rateAvg;
 
 
+    @Builder
     public ShopLookupResponseDto(Long shopId, String shopMainImgPath, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, Boolean isDeleted, LocalDateTime createdAt, Integer reviewCnt, Integer favoriteCnt, double rateAvg) {
         this.shopId = shopId;
         this.shopMainImgPath = shopMainImgPath;
