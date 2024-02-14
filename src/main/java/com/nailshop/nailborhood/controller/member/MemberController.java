@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,11 +83,12 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
-//    @PostMapping("/renewToken")
-//    public ResponseEntity<?> renewToken(@RequestHeader(AUTH) String accessToken) {
-//        CommonResponseDto<Object> commonResponseDto = memberService.renewToken()
-//        return ResponseEntity.status()
-//    }
+    @PostMapping("/renewToken")
+    public ResponseEntity<?> renewToken(@RequestHeader(HttpHeaders.COOKIE) String refreshToken) {
+        CommonResponseDto<Object> commonResponseDto = memberService.renewToken(refreshToken);
+        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
 
     @PutMapping("/myPage/modMyInfo")
     public ResponseEntity<ResultDto<MemberInfoDto>> modMyInfo(@RequestHeader(AUTH) String accessToken,
@@ -131,7 +133,5 @@ public class MemberController {
         ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
-
-
 
 }
