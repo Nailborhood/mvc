@@ -33,7 +33,7 @@ public class ArtController {
     public ResponseEntity<ResultDto<Void>> registerArt(@RequestHeader(AUTH) String accessToken,
                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                        @RequestPart(value = "data") ArtRegistrationRequestDto artRegistrationRequestDto){
-        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(multipartFileList, artRegistrationRequestDto);
+        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(accessToken, multipartFileList, artRegistrationRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
 
         return ResponseEntity.status(registerArt.getHttpStatus()).body(resultDto);
@@ -46,7 +46,7 @@ public class ArtController {
                                                         @PathVariable Long artRefId,
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "data") ArtUpdateRequestDto artUpdateRequestDto){
-        CommonResponseDto<Object> updateArt = artUpdateService.updateArt(multipartFileList, artUpdateRequestDto, artRefId);
+        CommonResponseDto<Object> updateArt = artUpdateService.updateArt(accessToken, multipartFileList, artUpdateRequestDto, artRefId);
         ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
 
         return ResponseEntity.status(updateArt.getHttpStatus()).body(resultDto);
@@ -57,7 +57,7 @@ public class ArtController {
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
     public ResponseEntity<ResultDto<Void>> deleteArtRef(@RequestHeader(AUTH) String accessToken,
                                                         @PathVariable Long artRefId){
-        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(artRefId);
+        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(accessToken, artRefId);
         ResultDto<Void> resultDto = ResultDto.in(deleteArt.getStatus(), deleteArt.getMessage());
 
         return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
@@ -68,7 +68,7 @@ public class ArtController {
     @PostMapping("/user/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long artRefId){
-        CommonResponseDto<Object> likeArt = artLikeService.likeArt(artRefId);
+        CommonResponseDto<Object> likeArt = artLikeService.likeArt(accessToken, artRefId);
         ResultDto<ArtLikeResponseDto> resultDto = ResultDto.in(likeArt.getStatus(), likeArt.getMessage());
         resultDto.setData((ArtLikeResponseDto) likeArt.getData());
 
