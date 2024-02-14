@@ -200,10 +200,7 @@ public class MemberService {
     }
 
     @Transactional
-    public CommonResponseDto<Object> renewToken(String cookie) {
-        // 쿠키 수정
-        String refreshToken
-                = cookie.replace("refreshToken=", "");
+    public CommonResponseDto<Object> renewToken(String refreshToken) {
 
         // 유저 get
         Login login = loginRepository.findByRefreshToken(refreshToken)

@@ -8,7 +8,6 @@ import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,7 +83,7 @@ public class MemberController {
     }
 
     @PostMapping("/renewToken")
-    public ResponseEntity<?> renewToken(@RequestHeader(HttpHeaders.COOKIE) String refreshToken) {
+    public ResponseEntity<?> renewToken (@CookieValue("refreshToken") String refreshToken) {
         CommonResponseDto<Object> commonResponseDto = memberService.renewToken(refreshToken);
         ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
