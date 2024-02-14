@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long> {
     // 리뷰 신고 처리 상태 변경
@@ -33,4 +34,13 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
             "  WHERE r.reviewId = :reviewId)")
     @Modifying(clearAutomatically = true)
     void deleteReviewReportByReviewId(Long reviewId);
+
+    // 리뷰 Id에 해당하는 신고된 리뷰 찾기
+    @Query("SELECT rr " +
+            "FROM ReviewReport rr " +
+            "LEFT JOIN rr.review r " +
+            "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
+    ReviewReport findReviewReportByReviewId(@Param("reviewId") Long reviewId);
+
+
 }
