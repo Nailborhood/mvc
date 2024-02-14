@@ -1,7 +1,7 @@
 package com.nailshop.nailborhood.repository.shop;
 
 import com.nailshop.nailborhood.domain.shop.ShopImg;
-import com.nailshop.nailborhood.dto.shop.response.ShopImgListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopImgListResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,7 +31,7 @@ public interface ShopImgRepository extends JpaRepository<ShopImg,Long> {
     String findByShopImgByShopIdAndShopImgId(@Param("shopId")Long shopId);
 
     // shopId에 해당되는 매장 이미지 리스트 불러오기
-    @Query("SELECT NEW com.nailshop.nailborhood.dto.shop.response.ShopImgListResponseDto(" +
+    @Query("SELECT NEW com.nailshop.nailborhood.dto.shop.response.detail.ShopImgListResponseDto(" +
             "si.imgPath AS imgPath," +
             "si.imgNum AS imgNum)" +
             "FROM ShopImg  si " +

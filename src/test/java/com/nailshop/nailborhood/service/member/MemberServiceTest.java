@@ -1,7 +1,7 @@
 package com.nailshop.nailborhood.service.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
-import com.nailshop.nailborhood.dto.member.ModMemberInfoRequestDto;
+import com.nailshop.nailborhood.dto.member.request.ModMemberInfoRequestDto;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -63,12 +63,12 @@ public class MemberServiceTest {
     @Test
     public void updateMember_updated() {
         ModMemberInfoRequestDto modMemberInfoRequestDto = ModMemberInfoRequestDto.builder()
-                .address("서울시 마포구 공덕동")
-                .phoneNum("010-0000-0001")
-                .nickname("testNickname3")
-                .gender("M")
-                .birthday(LocalDate.of(1996, 11, 13))
-                .build();
+                                                                                 .address("서울시 마포구 공덕동")
+                                                                                 .phoneNum("010-0000-0001")
+                                                                                 .nickname("testNickname3")
+                                                                                 .gender("M")
+                                                                                 .birthday(LocalDate.of(1996, 11, 13))
+                                                                                 .build();
 
         Long id = memberRepository.findByEmail("test1@email.com").get().getMemberId();
 

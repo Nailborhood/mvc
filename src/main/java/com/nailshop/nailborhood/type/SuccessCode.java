@@ -43,6 +43,7 @@ public enum SuccessCode {
     // 검색
     SEARCH_BY_REVIEW_SUCCESS("리뷰 검색에 성공했습니다."),
     SEARCH_BY_ART_SUCCESS("아트판 검색에 성공했습니다."),
+    SEARCH_BY_SHOP_SUCCESS("매장 검색에 성공했습니다."),
 
 
 

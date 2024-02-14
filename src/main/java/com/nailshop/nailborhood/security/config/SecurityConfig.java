@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/nailborhood/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .formLogin((form) ->
