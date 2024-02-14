@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.*;
+import com.nailshop.nailborhood.dto.member.request.*;
 import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -29,40 +30,40 @@ public class MemberController {
 
 
     @GetMapping("/checkEmail")
-    public ResponseEntity<ResultDto<CheckDto>> emailOverlapCheck(@RequestBody CheckDto checkDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.checkEmailIsAvailable(checkDto);
-        ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((CheckDto) commonResponseDto.getData());
+    public ResponseEntity<ResultDto<DuplicationCheckDto>> emailOverlapCheck(@RequestBody DuplicationCheckDto duplicationCheckDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.checkEmailIsAvailable(duplicationCheckDto);
+        ResultDto<DuplicationCheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((DuplicationCheckDto) commonResponseDto.getData());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
     @GetMapping("/checkNickname")
-    public ResponseEntity<ResultDto<CheckDto>> nicknameOverlapCheck(@RequestBody CheckDto checkDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.checkNicknameIsAvailable(checkDto);
-        ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((CheckDto) commonResponseDto.getData());
+    public ResponseEntity<ResultDto<DuplicationCheckDto>> nicknameOverlapCheck(@RequestBody DuplicationCheckDto duplicationCheckDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.checkNicknameIsAvailable(duplicationCheckDto);
+        ResultDto<DuplicationCheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((DuplicationCheckDto) commonResponseDto.getData());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
     @GetMapping("/checkPhoneNum")
-    public ResponseEntity<ResultDto<CheckDto>> phoneNumOverlapCheck(@RequestBody CheckDto checkDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.checkPhoneNumIsAvailable(checkDto);
-        ResultDto<CheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((CheckDto) commonResponseDto.getData());
+    public ResponseEntity<ResultDto<DuplicationCheckDto>> phoneNumOverlapCheck(@RequestBody DuplicationCheckDto duplicationCheckDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.checkPhoneNumIsAvailable(duplicationCheckDto);
+        ResultDto<DuplicationCheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        result.setData((DuplicationCheckDto) commonResponseDto.getData());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
     @PostMapping("/signupProc")
-    public ResponseEntity<ResultDto<Void>> signUp(@RequestBody SignUpDto signUpDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpDto);
+    public ResponseEntity<ResultDto<Void>> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }
 
     @PostMapping("/loginProc")
-    public ResponseEntity<ResultDto<?>> login(@RequestBody LoginDto loginDto){
-        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(loginDto);
+    public ResponseEntity<ResultDto<?>> login(@RequestBody LoginRequestDto loginRequestDto){
+        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(loginRequestDto);
         ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         Map<String, Object> resultMap = (Map<String, Object>) commonResponseDto.getData();
         TokenResponseDto tokenResponseDto = (TokenResponseDto) resultMap.get("accessToken");

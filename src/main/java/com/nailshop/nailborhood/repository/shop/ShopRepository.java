@@ -66,4 +66,10 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateShopStatusByShopId(@Param("shopId") Long shopId, @Param("status") ShopStatus changeStatus);
+
+    // 매장 검색
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE s.name Like %:keyword%  AND s.isDeleted = false " )
+    Page<Shop> findShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
 }
