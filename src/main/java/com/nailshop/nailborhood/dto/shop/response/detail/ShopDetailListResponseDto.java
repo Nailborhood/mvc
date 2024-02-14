@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.shop.response;
+package com.nailshop.nailborhood.dto.shop.response.detail;
 
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Getter
-@Builder
 @NoArgsConstructor
 public class ShopDetailListResponseDto {
     private ShopDetailLookupResponseDto shopDetailLookupResponseDto;
-    private List<ShopImgListResponseDto> shopImgListResponseDto;
-    private List<MenuDetailResponseDto> menuDetailResponseDto;
+    private List<ShopImgListResponseDto> shopImgListResponseDtoList;
+    private List<MenuDetailResponseDto> menuDetailResponseDtoList;
     private List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList; // 리뷰리스트
     private List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList; // 아트 리스트
 
-    public ShopDetailListResponseDto(ShopDetailLookupResponseDto shopDetailLookupResponseDto, List<ShopImgListResponseDto> shopImgListResponseDto, List<MenuDetailResponseDto> menuDetailResponseDto, List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList, List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList) {
+    @Builder
+    public ShopDetailListResponseDto(ShopDetailLookupResponseDto shopDetailLookupResponseDto, List<ShopImgListResponseDto> shopImgListResponseDtoList, List<MenuDetailResponseDto> menuDetailResponseDtoList, List<ShopReviewLookupResponseDto> shopReviewLookupResponseDtoList, List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList) {
         this.shopDetailLookupResponseDto = shopDetailLookupResponseDto;
-        this.shopImgListResponseDto = shopImgListResponseDto;
-        this.menuDetailResponseDto = menuDetailResponseDto;
+        this.shopImgListResponseDtoList = shopImgListResponseDtoList;
+        this.menuDetailResponseDtoList = menuDetailResponseDtoList;
         this.shopReviewLookupResponseDtoList = shopReviewLookupResponseDtoList;
         this.shopArtBoardLookupResponseDtoList = shopArtBoardLookupResponseDtoList;
     }

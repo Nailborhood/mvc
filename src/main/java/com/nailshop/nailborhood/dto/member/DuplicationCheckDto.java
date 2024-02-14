@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CheckDto {
+public class DuplicationCheckDto {
     private String check;
     private boolean isExist;
 }

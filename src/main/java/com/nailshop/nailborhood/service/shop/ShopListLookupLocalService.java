@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -53,13 +52,13 @@ public class ShopListLookupLocalService {
         Page<ShopLookupResponseDto> data = convertToDto(shops);
 
         // 매장 리스트 가져오기
-        List<ShopLookupResponseDto> shopLookupResponseDtos = data.getContent();
+        List<ShopLookupResponseDto> shopLookupResponseDtoList = data.getContent();
 
         // 페이지네이션 설정
         PaginationDto paginationDto = createPaginationDto(data);
 
         // 페이지네이션을 포함한 매장 리스트 반환
-        ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtos, paginationDto);
+        ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtoList, paginationDto);
 
         return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
@@ -67,7 +66,7 @@ public class ShopListLookupLocalService {
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListbyDong(int page, int size, String sort, String criteria, Long dongId) {
+    public CommonResponseDto<Object> getShopListByDong(int page, int size, String sort, String criteria, Long dongId) {
 
 
         // 정렬기준 설정
@@ -85,13 +84,13 @@ public class ShopListLookupLocalService {
         Page<ShopLookupResponseDto> data = convertToDto(shops);
 
         // 매장 리스트 가져오기
-        List<ShopLookupResponseDto> shopLookupResponseDtos = data.getContent();
+        List<ShopLookupResponseDto> shopLookupResponseDtoList = data.getContent();
 
         // 페이지네이션 설정
         PaginationDto paginationDto = createPaginationDto(data);
 
         // 페이지네이션을 포함한 매장 리스트 반환
-        ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtos, paginationDto);
+        ShopListResponseDto shopListResponseDto = createShopListResponseDto(shopLookupResponseDtoList, paginationDto);
 
         return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
@@ -100,11 +99,6 @@ public class ShopListLookupLocalService {
     private Page<ShopLookupResponseDto> convertToDto(Page<Shop> shops) {
         // shop entity -> dto 변환
         return shops.map(shop -> {
-            // shopId에 해당 하는 리뷰 개수
-            // long reviewCnt = reviewRepository.countByShopIdAndIsDeletedFalse(shop.getShopId());
-            // shopId에 해당 하는 메뉴 개수
-            long menuCnt = menuRepository.countByShopId(shop.getShopId());
-            // shopId에 해당 하는 좋아요(메장 저장) 개수 (member 기능 완성되면 추가 예정)
 
             // shopImg imgNum =1 가져오기
             String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shop.getShopId());
@@ -125,8 +119,7 @@ public class ShopListLookupLocalService {
                     shop.getCreatedAt(),
                     shop.getReviewCnt(),
                     shop.getFavoriteCnt(),
-                    shop.getRateAvg(),
-                    menuCnt
+                    shop.getRateAvg()
             );
             // data 에 dto 반환
             return dto;
@@ -145,9 +138,9 @@ public class ShopListLookupLocalService {
 
 
     // 매장 정보 리스트와 페이지네이션 정보를 포함한 DTO를 생성하는 메서드
-    private ShopListResponseDto createShopListResponseDto(List<ShopLookupResponseDto> shopLookupResponseDtos, PaginationDto paginationDto) {
+    private ShopListResponseDto createShopListResponseDto(List<ShopLookupResponseDto> shopLookupResponseDtoList, PaginationDto paginationDto) {
         return ShopListResponseDto.builder()
-                                  .shopLookupResponseDtos(shopLookupResponseDtos)
+                                  .shopLookupResponseDtoList(shopLookupResponseDtoList)
                                   .paginationDto(paginationDto)
                                   .build();
     }
