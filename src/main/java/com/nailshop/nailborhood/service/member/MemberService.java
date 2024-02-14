@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.domain.member.Login;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.*;
+import com.nailshop.nailborhood.dto.member.request.*;
 import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
@@ -17,7 +18,6 @@ import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -47,53 +47,53 @@ public class MemberService {
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-    public CommonResponseDto<Object> checkEmailIsAvailable(CheckDto checkDto) {
-        boolean exist = findByEmail(checkDto.getCheck());
-        checkDto.setExist(exist);
+    public CommonResponseDto<Object> checkEmailIsAvailable(DuplicationCheckDto duplicationCheckDto) {
+        boolean exist = findByEmail(duplicationCheckDto.getCheck());
+        duplicationCheckDto.setExist(exist);
         if (exist)
-            return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
         else
-            return commonService.successResponse(SuccessCode.EMAIL_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.successResponse(SuccessCode.EMAIL_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
     }
 
-    public CommonResponseDto<Object> checkNicknameIsAvailable(CheckDto checkDto) {
-        boolean exist = findByNickname(checkDto.getCheck());
-        checkDto.setExist(exist);
+    public CommonResponseDto<Object> checkNicknameIsAvailable(DuplicationCheckDto duplicationCheckDto) {
+        boolean exist = findByNickname(duplicationCheckDto.getCheck());
+        duplicationCheckDto.setExist(exist);
         if (exist)
-            return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
         else
-            return commonService.successResponse(SuccessCode.NICKNAME_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.successResponse(SuccessCode.NICKNAME_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
     }
 
-    public CommonResponseDto<Object> checkPhoneNumIsAvailable(CheckDto checkDto) {
-        boolean exist = findByPhoneNum(checkDto.getCheck());
-        checkDto.setExist(exist);
+    public CommonResponseDto<Object> checkPhoneNumIsAvailable(DuplicationCheckDto duplicationCheckDto) {
+        boolean exist = findByPhoneNum(duplicationCheckDto.getCheck());
+        duplicationCheckDto.setExist(exist);
         if (exist)
-            return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
         else
-            return commonService.successResponse(SuccessCode.PHONENUM_AVAILABLE.getDescription(), HttpStatus.OK, checkDto);
+            return commonService.successResponse(SuccessCode.PHONENUM_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
     }
 
-    public CommonResponseDto<Object> signUp(SignUpDto signUpDto) {
-        if (findByEmail(signUpDto.getEmail()))
-            return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpDto);
-        else if (findByNickname(signUpDto.getNickname()))
-            return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpDto);
-        else if (findByPhoneNum(signUpDto.getPhoneNum()))
-            return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpDto);
-        else if (!matchWithPasswordPattern(signUpDto.getPassword()))
-            return commonService.errorResponse(ErrorCode.PASSWORD_NOT_MATCH_WITH_PATTERN.getDescription(), HttpStatus.BAD_REQUEST, signUpDto);
+    public CommonResponseDto<Object> signUp(SignUpRequestDto signUpRequestDto) {
+        if (findByEmail(signUpRequestDto.getEmail()))
+            return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpRequestDto);
+        else if (findByNickname(signUpRequestDto.getNickname()))
+            return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpRequestDto);
+        else if (findByPhoneNum(signUpRequestDto.getPhoneNum()))
+            return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, signUpRequestDto);
+        else if (!matchWithPasswordPattern(signUpRequestDto.getPassword()))
+            return commonService.errorResponse(ErrorCode.PASSWORD_NOT_MATCH_WITH_PATTERN.getDescription(), HttpStatus.BAD_REQUEST, signUpRequestDto);
         else {
-            String encPassword = bCryptPasswordEncoder.encode(signUpDto.getPassword());
+            String encPassword = bCryptPasswordEncoder.encode(signUpRequestDto.getPassword());
             Member member = Member.builder()
-                    .email(signUpDto.getEmail())
+                    .email(signUpRequestDto.getEmail())
                     .password(encPassword)
-                    .nickname(signUpDto.getNickname())
-                    .address(signUpDto.getAddress())
-                    .name(signUpDto.getName())
-                    .phoneNum(signUpDto.getPhoneNum())
-                    .gender(signUpDto.getGender())
-                    .birthday(signUpDto.getBirthday())
+                    .nickname(signUpRequestDto.getNickname())
+                    .address(signUpRequestDto.getAddress())
+                    .name(signUpRequestDto.getName())
+                    .phoneNum(signUpRequestDto.getPhoneNum())
+                    .gender(signUpRequestDto.getGender())
+                    .birthday(signUpRequestDto.getBirthday())
                     .profileImg("defaultImage")
                     .role(Role.USER)
                     .provider("Nail")
@@ -107,7 +107,7 @@ public class MemberService {
                 customerRepositoryKe.save(customer);
                 return commonService.successResponse(SuccessCode.SIGNUP_SUCCESS.getDescription(), HttpStatus.OK, null);
             } catch (Exception e) {
-                return commonService.errorResponse(ErrorCode.SIGNUP_FAIL.getDescription(), HttpStatus.BAD_GATEWAY, signUpDto);
+                return commonService.errorResponse(ErrorCode.SIGNUP_FAIL.getDescription(), HttpStatus.BAD_GATEWAY, signUpRequestDto);
             }
         }
     }
@@ -134,11 +134,11 @@ public class MemberService {
     }
 
     @Transactional
-    public CommonResponseDto<Object> memberLogin(LoginDto loginDto) {
-        if (!findByEmail(loginDto.getEmail()))
+    public CommonResponseDto<Object> memberLogin(LoginRequestDto loginRequestDto) {
+        if (!findByEmail(loginRequestDto.getEmail()))
             return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
-        else if (findByEmail(loginDto.getEmail()) && passwordCheck(loginDto.getEmail(), loginDto.getPassword())) {
-            Member member = memberRepository.findByEmail(loginDto.getEmail()).get();
+        else if (findByEmail(loginRequestDto.getEmail()) && passwordCheck(loginRequestDto.getEmail(), loginRequestDto.getPassword())) {
+            Member member = memberRepository.findByEmail(loginRequestDto.getEmail()).get();
             if (member.isDeleted())
                 return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
             else {
@@ -212,7 +212,6 @@ public class MemberService {
 
 
     public CommonResponseDto<Object> findMyInfo(String accessToken) {
-        // TODO 예외처리 수정
 
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
@@ -230,7 +229,6 @@ public class MemberService {
                 .createdAt(member.getCreatedAt())
                 .build();
 
-        // SUCCESS_CODE 수정 필요
         return commonService.successResponse(SuccessCode.MYINFO_SUCCESS.getDescription(), HttpStatus.OK, memberInfoDto);
     }
 

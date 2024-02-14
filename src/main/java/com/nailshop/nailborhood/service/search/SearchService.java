@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.service.search;
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.review.Review;
+import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
@@ -13,6 +14,7 @@ import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
+import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -33,6 +35,7 @@ public class SearchService {
     private final CommonService commonService;
     private final ReviewRepository reviewRepository;
     private final ArtRefRepository artRefRepository;
+    private final ShopRepository shopRepository;
     private final CategoryReviewRepository categoryReviewRepository;
     private final CategoryArtRepository categoryArtRepository;
 
@@ -43,14 +46,14 @@ public class SearchService {
                 .descending());
 
         Page<Review> reviewSearchPage = reviewRepository.findReviewListBySearch(keyword, pageable);
-        if(reviewSearchPage.isEmpty()) {
+        if (reviewSearchPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
         List<Review> reviewList = reviewSearchPage.getContent();
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
-        for(Review review : reviewList ){
+        for (Review review : reviewList) {
 
             String mainImgPath = review.getReviewImgList().get(0).getImgPath();
             String shopName = review.getShop().getName();
@@ -94,14 +97,14 @@ public class SearchService {
                 .descending());
 
         Page<ArtRef> artSearchPage = artRefRepository.findArtRefListBySearch(keyword, pageable);
-        if(artSearchPage.isEmpty()) {
+        if (artSearchPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
         }
 
         List<ArtRef> artRefList = artSearchPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
-        for(ArtRef artRef : artRefList ){
+        for (ArtRef artRef : artRefList) {
 
             String mainImgPath = artRef.getArtImgList().get(0).getImgPath();
             String shopName = artRef.getShop().getName();
@@ -136,4 +139,60 @@ public class SearchService {
 
         return commonService.successResponse(SuccessCode.SEARCH_BY_ART_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
+
+    public CommonResponseDto<Object> searchShopInquiry(String keyword, int page, int size, String sortBy) {
+        // TODO - shop response dto 확인해서 연결 필요
+//
+//
+//        Page<ArtRef> artSearchPage = artRefRepository.findArtRefListBySearch(keyword, pageable);
+//        if(artSearchPage.isEmpty()) {
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
+
+
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        Page<Shop> shopSearchPage = shopRepository.findShopListByKeyword(keyword, pageable);
+
+        List<Shop> shopList = shopSearchPage.getContent();
+
+
+//        List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
+//
+//        for(ArtRef artRef : artRefList ){
+//
+//            String mainImgPath = artRef.getArtImgList().get(0).getImgPath();
+//            String shopName = artRef.getShop().getName();
+//
+//            List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
+//
+//            ArtResponseDto artResponseDto = ArtResponseDto.builder()
+//                    .name(artRef.getName())
+//                    .content(artRef.getContent())
+//                    .likeCount(artRef.getLikeCount())
+//                    .mainImgPath(mainImgPath)
+//                    .shopName(shopName)
+//                    .categoryTypeList(categoryTypeList)
+//                    .createdAt(artRef.getCreatedAt())
+//                    .updatedAt(artRef.getUpdatedAt())
+//                    .build();
+//
+//            artResponseDtoList.add(artResponseDto);
+//        }
+
+        PaginationDto paginationDto = PaginationDto.builder()
+                .totalPages(shopSearchPage.getTotalPages())
+                .totalElements(shopSearchPage.getTotalElements())
+                .pageNo(shopSearchPage.getNumber())
+                .isLastPage(shopSearchPage.isLast())
+                .build();
+
+//        ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
+//                .artResponseDtoList(artResponseDtoList)
+//                .paginationDto(paginationDto)
+//                .build();
+
+        return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, null);
+    }
+
+
 }

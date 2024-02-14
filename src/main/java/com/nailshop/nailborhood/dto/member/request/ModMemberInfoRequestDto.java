@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.member;
+package com.nailshop.nailborhood.dto.member.request;
 
 import lombok.Builder;
 import lombok.Getter;
