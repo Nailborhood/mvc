@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.domain.member.Login;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.*;
+import com.nailshop.nailborhood.repository.member.CustomerRepositoryKe;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.security.dto.GeneratedToken;
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final LoginRepository loginRepository;
+    private final CustomerRepositoryKe customerRepositoryKe;
 
     private final CommonService commonService;
     private final TokenProvider tokenProvider;
@@ -97,9 +99,12 @@ public class MemberService {
                     .provider("Nail")
                     .isDeleted(false)
                     .build();
+            Customer customer = Customer.builder()
+                    .member(member)
+                    .build();
             try {
                 memberRepository.save(member);
-                // Customer 테이블 컬럼 생성 필요
+                customerRepositoryKe.save(customer);
                 return commonService.successResponse(SuccessCode.SIGNUP_SUCCESS.getDescription(), HttpStatus.OK, null);
             } catch (Exception e) {
                 return commonService.errorResponse(ErrorCode.SIGNUP_FAIL.getDescription(), HttpStatus.BAD_GATEWAY, signUpDto);
@@ -180,27 +185,25 @@ public class MemberService {
         }
     }
 
-//    @Transactional
-//    public CommonResponseDto<Object> renewToken(String refreshToken) {
-//        // 유저 get
-//        Login login = loginRepository.findByRefreshToken(refreshToken)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.EXAMPLE_EXCEPTION.getDescription()));
-//
-//        Member member = login.getMember();
-//
-//        GeneratedToken generatedToken = tokenProvider.generateToken(member);
-//
-//        login.updateToken(generatedToken.getRefreshToken());
-//
-//        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-//                .accessToken(generatedToken.getAccessToken())
-//                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-//                .build();
-//
-//        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
-//    }
+    @Transactional
+    public CommonResponseDto<Object> renewToken(String refreshToken) {
+        // 유저 get
+        Login login = loginRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
 
+        Member member = login.getMember();
 
+        GeneratedToken generatedToken = tokenProvider.generateToken(member);
+
+        login.updateToken(generatedToken.getRefreshToken());
+
+        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
+                .accessToken(generatedToken.getAccessToken())
+                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
+                .build();
+
+        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, tokenResponseDto);
+    }
 
     public boolean passwordCheck(String email, String password) {
         String entityPassword = memberRepository.findByEmail(email).get().getPassword();
