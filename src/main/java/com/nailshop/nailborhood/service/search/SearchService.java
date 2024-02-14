@@ -189,7 +189,7 @@ public class SearchService {
                 .paginationDto(paginationDto)
                 .build();
 
-        return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, null);
+        return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
 
 
