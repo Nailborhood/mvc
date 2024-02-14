@@ -2,10 +2,9 @@ package com.nailshop.nailborhood.controller.shop.admin;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.example.ExampleDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
-import com.nailshop.nailborhood.dto.shop.response.AllShopsListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.service.shop.admin.AllShopsLookupAdminService;
 import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
 import com.nailshop.nailborhood.service.shop.admin.ShopRegistrationService;

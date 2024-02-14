@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.dto.shop.response;
+package com.nailshop.nailborhood.dto.shop.response.admin;
 
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import lombok.Builder;

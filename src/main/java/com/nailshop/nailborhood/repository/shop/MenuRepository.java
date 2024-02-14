@@ -1,7 +1,7 @@
 package com.nailshop.nailborhood.repository.shop;
 
 import com.nailshop.nailborhood.domain.shop.Menu;
-import com.nailshop.nailborhood.dto.shop.response.MenuDetailResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.MenuDetailResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +24,7 @@ public interface MenuRepository extends JpaRepository<Menu,Long> {
     long countByShopId(@Param("shopId") Long shopId);
 
     // 매장 메뉴 리스트 불러오기
-    @Query("SELECT NEW com.nailshop.nailborhood.dto.shop.response.MenuDetailResponseDto(" +
+    @Query("SELECT NEW com.nailshop.nailborhood.dto.shop.response.detail.MenuDetailResponseDto(" +
             "m.menuId AS menuId," +
             "m.name AS menu," +
             "m.price AS price) " +
