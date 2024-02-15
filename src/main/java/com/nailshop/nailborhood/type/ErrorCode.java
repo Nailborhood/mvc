@@ -39,6 +39,7 @@ public enum ErrorCode {
     MYINFO_UPDATE_FAIL("내 정보 수정에 실패하였습니다."),
     PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
     PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
+    PROFILE_UPDATE_FAIL("프로필 업로드에 실패하였습니다."),
 
     UNAUTHORIZED_ACCESS("접근 권한이 없습니다."),
 

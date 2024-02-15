@@ -44,6 +44,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.memberId = :id")
     void updateMemberIsDeletedById(@Param("id") Long id);
 
+    // 프로필 사진 업로드
+    @Modifying
+    @Query("UPDATE Member m SET " +
+            "m.profileImg = :imgURL "+
+            "WHERE m.memberId = :id")
+    void updateMemberProfileImg(@Param("id") Long id, @Param("imgURL") String imgURL);
+
     @Query("SELECT m " +
             "FROM Member m " +
             "WHERE m.memberId = :memberId AND m.isDeleted = false ")

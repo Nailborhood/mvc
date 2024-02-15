@@ -38,6 +38,8 @@ public class SecurityConfig {
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                                 .requestMatchers("/nailborhood/**").permitAll()
+                                .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
+                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .formLogin((form) ->
