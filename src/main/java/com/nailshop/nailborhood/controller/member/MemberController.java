@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -129,6 +130,14 @@ public class MemberController {
     @PostMapping("/dropout")
     public ResponseEntity<ResultDto<Void>> memberDropOut(@RequestHeader(AUTH) String accessToken){
         CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(accessToken);
+        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+    @PutMapping(consumes = {"multipart/form-data"}, value = "/myPage/modProfile")
+    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
+                                                         @RequestPart(value = "file") MultipartFile multipartFile){
+        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
         ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }

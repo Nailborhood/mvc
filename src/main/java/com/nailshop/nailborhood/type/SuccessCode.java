@@ -71,6 +71,7 @@ public enum SuccessCode {
     MYINFO_UPDATE_SUCCESS("내 정보 수정에 성공하였습니다."),
     PASSWORD_CHECK_SUCCESS("비밀번호가 일치합니다."),
     PASSWORD_UPDATE_SUCCESS("비밀번호 수정에 성공하였습니다."),
+    PROFILE_UPDATE_SUCCESS("프로필 업로드에 성공하였습니다."),
 
 
     //관리자
