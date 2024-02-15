@@ -13,6 +13,7 @@ import com.nailshop.nailborhood.security.dto.GeneratedToken;
 import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
+import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import java.time.Duration;
@@ -40,6 +42,7 @@ public class MemberService {
     private final LoginRepository loginRepository;
     private final CustomerRepository customerRepository;
 
+    private final S3UploadService s3UploadService;
     private final CommonService commonService;
     private final TokenProvider tokenProvider;
 
@@ -369,11 +372,28 @@ public class MemberService {
             String email = member.getEmail();
             boolean checkDropout = memberRepository.findByEmail(email).get().isDeleted();
 
-            // 검증로직 점검 필요, 영속성 컨텍스트 해결 필요
             if(checkDropout)
                 return commonService.successResponse(SuccessCode.DROPOUT_SUCCESS.getDescription(), HttpStatus.OK, null);
             else
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+
+    // 프로필 수정
+    public CommonResponseDto<Object> updateProfileImg(String accessToken, MultipartFile multipartFile) {
+        // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
+        Long id = tokenProvider.getUserId(accessToken);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        try {
+            String imgPath = s3UploadService.profileImgUpload(multipartFile);
+
+            memberRepository.updateMemberProfileImg(id, imgPath);
+
+            return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(),HttpStatus.OK ,null);
+        } catch (Exception e) {
+            return commonService.errorResponse(ErrorCode.PROFILE_UPDATE_FAIL.getDescription(),HttpStatus.INTERNAL_SERVER_ERROR ,null);
+        }
+    }
+
 }
