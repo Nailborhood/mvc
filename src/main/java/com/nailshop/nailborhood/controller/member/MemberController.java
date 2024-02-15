@@ -6,6 +6,7 @@ import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
 import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.service.member.MemberService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,9 @@ public class MemberController {
     private final MemberService memberService;
 
 
-
+    @Hidden
     @GetMapping("/")
-    public ResponseEntity<?> main() {
+    public ResponseEntity<?> logoutTest() {
         return ResponseEntity.status(200).body("로그아웃 완료");
     }
 
