@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
@@ -76,13 +74,6 @@ public class MemberController {
                 .body(result);
     }
 
-    @GetMapping("myPage/myInfo")
-    public ResponseEntity<ResultDto<MemberInfoDto>> getMyProfile(@RequestHeader(AUTH) String accessToken) {
-        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(accessToken);
-        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((MemberInfoDto) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
-    }
 
     @PostMapping("/renewToken")
     public ResponseEntity<?> renewToken (@CookieValue("refreshToken") String refreshToken) {
@@ -91,14 +82,6 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
-    @PutMapping("/myPage/modMyInfo")
-    public ResponseEntity<ResultDto<MemberInfoDto>> modMyInfo(@RequestHeader(AUTH) String accessToken,
-                                       @RequestBody ModMemberInfoRequestDto modMemberInfoRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(accessToken, modMemberInfoRequestDto);
-        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((MemberInfoDto) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
-    }
 
     @PostMapping("/logout")
     public ResponseEntity<ResultDto<Object>> logout(@RequestHeader(AUTH) String accessToken){
@@ -111,22 +94,6 @@ public class MemberController {
                 .body(result);
     }
 
-    @PostMapping("/myPage/passwordCheck")
-    public ResponseEntity<ResultDto<Object>> passwordCheck(@RequestHeader(AUTH) String accessToken,
-                                           @RequestBody BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto){
-        CommonResponseDto<Object> commonResponseDto = memberService.beforeUpdatePassword(accessToken, beforeModPasswordCheckRequestDto);
-        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((boolean) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
-    }
-
-    @PostMapping("/myPage/modifyPassword")
-    public ResponseEntity<ResultDto<Void>> modifyPassword(@RequestHeader(AUTH) String accessToken,
-                                           @RequestBody ModPasswordRequestDto modPasswordRequestDto){
-        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(accessToken, modPasswordRequestDto);
-        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
-    }
 
     @PostMapping("/dropout")
     public ResponseEntity<ResultDto<Void>> memberDropOut(@RequestHeader(AUTH) String accessToken){
@@ -135,12 +102,6 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
-    @PutMapping(consumes = {"multipart/form-data"}, value = "/myPage/modProfile")
-    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
-                                                         @RequestPart(value = "file") MultipartFile multipartFile){
-        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
-        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
-    }
+
 
 }

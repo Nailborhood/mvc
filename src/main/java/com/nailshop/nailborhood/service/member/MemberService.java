@@ -329,7 +329,7 @@ public class MemberService {
                 .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         loginRepository.updateRefreshTokenByMemberId(id, null);
 
-            return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, null);
+        return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
     // 비밀번호 수정 전 비밀번호 확인 (마이페이지로 이동 핋요)
