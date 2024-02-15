@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/nailborhood")
@@ -41,9 +43,9 @@ public class ReviewReportController {
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "리뷰 신고 처리 변경 ", description = "admin API")
     // 리뷰 신고 처리 변경
-    @PutMapping( "/admin/reviewReport/{reportId}")
+    @PutMapping("/admin/reviewReport/{reportId}")
     public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@PathVariable Long reportId,
-                                                        @RequestParam(value = "status") String status ) {
+                                                                    @RequestParam(value = "status") String status) {
         CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(reportId, status);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 

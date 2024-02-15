@@ -27,11 +27,11 @@ public class FavoriteShopService {
     private final ShopRepository shopRepository;
     private final MemeberFavoriteRepository memeberFavoriteRepository;
 
-    //TODO: memberId -> 토큰으로 변경
+
 
     @Transactional
     public CommonResponseDto<Object> favoriteShop(Long shopId, String accessToken) {
-        // TODO accessToken 에서 memberId 가져오기
+
         Long memberId = tokenProvider.getUserId(accessToken);
 
         Member member = memeberFavoriteRepository.findByMemberId(memberId);
