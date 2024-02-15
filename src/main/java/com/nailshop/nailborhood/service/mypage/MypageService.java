@@ -11,9 +11,7 @@ import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.FavoriteRepository;
-import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
-import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -132,6 +130,5 @@ public class MypageService {
 
 
         return commonService.successResponse(SuccessCode.MY_FAVORITE_SHOP_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, myFavoriteListResponseDto);
-
     }
 }
