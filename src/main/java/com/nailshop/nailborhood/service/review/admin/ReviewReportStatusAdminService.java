@@ -3,7 +3,6 @@ package com.nailshop.nailborhood.service.review.admin;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
-import com.nailshop.nailborhood.dto.example.ExampleDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
