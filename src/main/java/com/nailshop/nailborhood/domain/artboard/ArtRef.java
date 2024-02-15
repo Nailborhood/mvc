@@ -46,7 +46,7 @@ public class ArtRef extends BaseTime {
     private Shop shop;
 
     @Builder
-    public ArtRef(String name, String content, Long likeCount, Boolean isDeleted, Shop shop, Category category) {
+    public ArtRef(String name, String content, Long likeCount, Boolean isDeleted, Shop shop) {
         this.name = name;
         this.content = content;
         this.likeCount = likeCount;
