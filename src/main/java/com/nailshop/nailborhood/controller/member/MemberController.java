@@ -6,11 +6,12 @@ import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
 import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.service.member.MemberService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public class MemberController {
     private final MemberService memberService;
 
 
-
+    @Hidden
     @GetMapping("/")
-    public ResponseEntity<?> main() {
+    public ResponseEntity<?> logoutTest() {
         return ResponseEntity.status(200).body("로그아웃 완료");
     }
 
@@ -84,7 +85,7 @@ public class MemberController {
     }
 
     @PostMapping("/renewToken")
-    public ResponseEntity<?> renewToken(@RequestHeader(HttpHeaders.COOKIE) String refreshToken) {
+    public ResponseEntity<?> renewToken (@CookieValue("refreshToken") String refreshToken) {
         CommonResponseDto<Object> commonResponseDto = memberService.renewToken(refreshToken);
         ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
@@ -130,6 +131,14 @@ public class MemberController {
     @PostMapping("/dropout")
     public ResponseEntity<ResultDto<Void>> memberDropOut(@RequestHeader(AUTH) String accessToken){
         CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(accessToken);
+        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
+    }
+
+    @PutMapping(consumes = {"multipart/form-data"}, value = "/myPage/modProfile")
+    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
+                                                         @RequestPart(value = "file") MultipartFile multipartFile){
+        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
         ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
