@@ -18,7 +18,7 @@ public class ShopReviewLookupResponseDto {
 
     private LocalDateTime createdAt;
 
-    //TODO: updatedAt , reviewLike 순으로 정렬 고민
+
 
 
     public ShopReviewLookupResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt) {
