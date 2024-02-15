@@ -2,11 +2,12 @@ package com.nailshop.nailborhood.dto.review.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@NoArgsConstructor
 public class ReviewReportLookupDto {
     private Long reportId;
 
@@ -20,16 +21,17 @@ public class ReviewReportLookupDto {
 
     private String reviewContents;
 
-    // TODO: 고객 닉네임
-    // private String nickname;
+    private String nickname;
 
 
-    public ReviewReportLookupDto(Long reportId, String reportContents, LocalDateTime date, String status, Long reviewId, String reviewContents) {
+    @Builder
+    public ReviewReportLookupDto(Long reportId, String reportContents, LocalDateTime date, String status, Long reviewId, String reviewContents,String nickname) {
         this.reportId = reportId;
         this.reportContents = reportContents;
         this.date = date;
         this.status = status;
         this.reviewId = reviewId;
         this.reviewContents = reviewContents;
+        this.nickname = nickname;
     }
 }

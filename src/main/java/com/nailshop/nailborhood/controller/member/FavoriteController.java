@@ -18,7 +18,7 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 public class FavoriteController {
     private final FavoriteShopService favoriteShopService;
 
-    // TODO: memberId -> accessToken으로 변경
+
     @Tag(name = "favorite", description = "favorite API")
     @Operation(summary = "매장 찜 ", description = "favorite API")
     // 매장 상세 조회

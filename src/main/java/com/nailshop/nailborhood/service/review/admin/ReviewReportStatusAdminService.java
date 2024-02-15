@@ -30,7 +30,7 @@ public class ReviewReportStatusAdminService {
     private final ReviewReportRepository reviewReportRepository;
     private final CommonService commonService;
 
-    // TODO: customer 에서 nickname 가져오기
+
     // 리뷰 신고 조회
     public CommonResponseDto<Object> getReviewReports(int page, int size, String sort) {
 
@@ -53,7 +53,8 @@ public class ReviewReportStatusAdminService {
                     reviewReport.getReview()
                                 .getReviewId(),
                     reviewReport.getReview()
-                                .getContents()
+                                .getContents(),
+                    reviewReport.getMember().getNickname()
 
             );
             return dto;
