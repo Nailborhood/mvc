@@ -2,7 +2,7 @@ name: ✨ nailborhood backend CD ✨
 
 env:
   PROFILE: dev
-  DOCKER_HUB_REPOSITORY: stampcrush/nailborhood-dev
+  DOCKER_HUB_REPOSITORY: koogoori/nailborhood
 
 on:
   workflow_dispatch:
