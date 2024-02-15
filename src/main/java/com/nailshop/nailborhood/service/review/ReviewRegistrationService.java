@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.service.review;
 
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.category.CategoryReview;
+import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -11,9 +12,11 @@ import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
+import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -29,6 +32,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReviewRegistrationService {
+    private final TokenProvider tokenProvider;
     private final ReviewRepository reviewRepository;
     private final ShopRepository shopRepository;
     private final CommonService commonService;
@@ -36,11 +40,16 @@ public class ReviewRegistrationService {
     private final ReviewImgRepository reviewImgRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryReviewRepository categoryReviewRepository;
+    private final CustomerRepository customerRepository;
 
-    // TODO: accessToken -> customer 연결
+
     @Transactional
     // 리뷰 등록
-    public CommonResponseDto<Object> registerReview(Long shopId, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerReview(Long shopId, String accessToken, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+
+        // token 에서 memberId 가져오기
+        Long memberId = tokenProvider.getUserId(accessToken);
+        Customer customer = customerRepository.findByMemberId(memberId);
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -53,6 +62,7 @@ public class ReviewRegistrationService {
                               .rate(reviewRegistrationRequestDto.getRate())
                               .shop(shop)
                               .likeCnt(0L)
+                              .customer(customer)
                               .build();
 
         review = reviewRepository.save(review);
@@ -61,15 +71,15 @@ public class ReviewRegistrationService {
         saveReviewImg(multipartFileList, review);
 
         // CategoryReview 저장
-        for (Long categoryId : reviewRegistrationRequestDto.getCategoryListId()){
+        for (Long categoryId : reviewRegistrationRequestDto.getCategoryListId()) {
 
             Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+                                                  .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
 
             CategoryReview categoryReview = CategoryReview.builder()
-                    .category(category)
-                    .review(review)
-                    .build();
+                                                          .category(category)
+                                                          .review(review)
+                                                          .build();
 
             categoryReviewRepository.save(categoryReview);
         }
@@ -110,12 +120,12 @@ public class ReviewRegistrationService {
                                   .sum();
 
 
-         String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
-         double rateAvg =Double.parseDouble(rateAvgStr);
+        String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+        double rateAvg = Double.parseDouble(rateAvgStr);
 //        shop.setRateAvg(totalRate / reviews.size());
 //
 //        shopRepository.save(shop);
 
-        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        shopRepository.updateRateAvgByShopId(rateAvg, shopId);
     }
 }

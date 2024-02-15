@@ -26,15 +26,15 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewRegistrationService reviewRegistrationService;
 
-    // TODO: accesstoken 연결
     @Tag(name = "review", description = "review API")
     @Operation(summary = "리뷰 등록", description = "review API")
-    // 매장 정보 등록
+    // 매장내 리뷰 등록
     @PostMapping(consumes = {"multipart/form-data"}, value = "{shopId}/review/registration")
     public ResponseEntity<ResultDto<Void>> registerShop(@PathVariable Long shopId,
+                                                        @RequestHeader(AUTH) String accessToken,
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "data") ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId,multipartFileList,reviewRegistrationRequestDto );
+        CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId,accessToken,multipartFileList,reviewRegistrationRequestDto );
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
