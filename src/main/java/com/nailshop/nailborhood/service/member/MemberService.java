@@ -368,7 +368,7 @@ public class MemberService {
         if(member.isDeleted()) return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         else {
             memberRepository.updateMemberIsDeletedById(id);
-            entityManager.flush();
+            entityManager.clear();
             String email = member.getEmail();
             boolean checkDropout = memberRepository.findByEmail(email).get().isDeleted();
 
