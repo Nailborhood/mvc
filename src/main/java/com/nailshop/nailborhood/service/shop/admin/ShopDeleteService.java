@@ -9,7 +9,6 @@ import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.example.ExampleDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
