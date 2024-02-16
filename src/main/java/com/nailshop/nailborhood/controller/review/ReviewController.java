@@ -26,6 +26,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewRegistrationService reviewRegistrationService;
 
+
     @Tag(name = "review", description = "review API")
     @Operation(summary = "리뷰 등록", description = "review API")
     // 매장내 리뷰 등록
