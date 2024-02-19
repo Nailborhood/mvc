@@ -1,13 +1,16 @@
-server:
-  port: 8080
-
 spring:
   profiles:
-    include:
-      - db
-      - aws
-      - jwt
+    active: local
+    group:
+      local: common, db, aws, jwt
+      blue: blue, common, db, aws, jwt
+      green: green, common, db, aws, jwt
 
+server:
+  env: blue
+
+---
+spring:
   servlet:
     multipart:
       max-file-size: 20MB
@@ -26,3 +29,32 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+serverName: common
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+
+server:
+  port: 8080
+
+serverName: blue_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+
+server:
+  port: 8081
+
+serverName: green_server
+
+---
