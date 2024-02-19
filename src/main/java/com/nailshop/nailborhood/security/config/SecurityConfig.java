@@ -14,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -61,7 +64,9 @@ public class SecurityConfig {
                         csrf
                                 .disable()
                 )
-//                .cors((cors) -> cors.configure(http))
+                .cors((cors) -> cors
+                        .configurationSource(configurationSource())
+                )
                 .sessionManagement((sessionManagement)->
                                 sessionManagement
                                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -75,5 +80,25 @@ public class SecurityConfig {
 
     }
 
+    @Bean
+    public CorsConfigurationSource configurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.addAllowedOriginPattern("http://localhost:8080");
+        configuration.addAllowedOriginPattern("https://localhost:8080");
+        configuration.addAllowedOriginPattern("https://localhost:3000");
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
+        configuration.addAllowedMethod("PATCH");
+        configuration.addAllowedMethod("OPTIONS");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
 }
