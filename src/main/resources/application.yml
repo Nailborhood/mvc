@@ -3,8 +3,8 @@ spring:
     active: local
     group:
       local: common, db, aws, jwt
-      blue: blue, common, db, aws, jwt
-      green: green, common, db, aws, jwt
+      blue: blue, common, rds, aws, jwt
+      green: green, common, rds, aws, jwt
 
 server:
   env: blue
