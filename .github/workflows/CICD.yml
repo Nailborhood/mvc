@@ -24,7 +24,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew bootJar
+          ./gradlew clean build -x test
           
 
       - name: Login to DockerHub
