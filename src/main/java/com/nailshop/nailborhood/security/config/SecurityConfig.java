@@ -85,7 +85,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("http://localhost:3000");
         configuration.addAllowedOriginPattern("http://localhost:8080");
-        configuration.addAllowedOriginPattern("https://localhost:8080");
+        configuration.addAllowedOriginPattern("https://nailborhood.shop");
         configuration.addAllowedOriginPattern("https://localhost:3000");
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
