@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                .requestMatchers("/nailborhood/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
                                         "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**").permitAll()
                                 .anyRequest().authenticated()
@@ -83,9 +83,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("https://nailborhood.shop");
         configuration.addAllowedOriginPattern("http://localhost:3000");
         configuration.addAllowedOriginPattern("http://localhost:8080");
-        configuration.addAllowedOriginPattern("https://nailborhood.shop");
         configuration.addAllowedOriginPattern("https://localhost:3000");
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
