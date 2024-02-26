@@ -20,6 +20,15 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
         run: |
@@ -57,10 +66,10 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.ELASTIC_IP }}/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.ELASTIC_IP }}/nailborhood/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.ELASTIC_IP }}/env")
+            CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.ELASTIC_IP }}/nailborhood/env")
           else
             CURRENT_UPSTREAM=green
           fi
@@ -74,6 +83,7 @@ jobs:
             echo "STOPPED_PORT=8080" >> $GITHUB_ENV
             echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
           fi
+
       - name: Docker compose
         uses: appleboy/ssh-action@master
         with:
@@ -84,10 +94,11 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/naedongnail:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
+
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
-          url: https://${{ secrets.ELASTIC_IP }}/env
+          url: https://${{ secrets.ELASTIC_IP }}/nailborhood/env
           max-attempts: 3
           retry-delay: 10s
 
