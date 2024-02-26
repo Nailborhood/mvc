@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.security.config;
 
+import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAccessDeniedHandler;
+import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAuthenticationEntryPoint;
 import com.nailshop.nailborhood.security.config.jwt.JwtAuthenticationFilter;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import jakarta.servlet.DispatcherType;
@@ -25,6 +27,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -47,11 +51,10 @@ public class SecurityConfig {
                 )
 //                .formLogin((form) ->
 //                        form
-//                                .loginPage("/login")
+//                                .loginPage("/loginProc")
 //                                .usernameParameter("email")
 //                                .passwordParameter("password")
-//                                .loginProcessingUrl("/loginProc")
-//                                .defaultSuccessUrl("/",true)
+//                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
 //                )
                 .logout((logout) ->
                         logout
@@ -72,8 +75,13 @@ public class SecurityConfig {
                                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                ).exceptionHandling((exceptionConfig) ->
 //                        exceptionConfig.authenticationEntryPoint()
-                ).addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
-
+                )
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                        httpSecurityExceptionHandlingConfigurer
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
