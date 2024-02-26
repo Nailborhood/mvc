@@ -40,9 +40,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                .requestMatchers("/nailborhood/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
-                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/**/env").permitAll()
+                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
 //                                .anyRequest().authenticated()
                 )
 //                .formLogin((form) ->
