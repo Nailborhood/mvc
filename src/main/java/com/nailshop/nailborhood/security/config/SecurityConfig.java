@@ -42,21 +42,21 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-//                .authorizeHttpRequests((authorize) ->
-//                        authorize
-//                                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-//                                .requestMatchers("/**").permitAll()
-//                                .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
-//                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
-//                                .anyRequest().authenticated()
-//                )
-//                .formLogin((form) ->
-//                        form
-//                                .loginPage("/loginProc")
-//                                .usernameParameter("email")
-//                                .passwordParameter("password")
-//                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
-//                )
+                .authorizeHttpRequests((authorize) ->
+                        authorize
+                                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
+                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .formLogin((form) ->
+                        form
+                                .loginPage("/loginProc")
+                                .usernameParameter("email")
+                                .passwordParameter("password")
+                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
+                )
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
