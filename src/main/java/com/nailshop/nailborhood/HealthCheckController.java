@@ -23,7 +23,7 @@ public class HealthCheckController {
 
 
 
-    @GetMapping("/nailborhood/hc")
+    @GetMapping("/hc")
     public ResponseEntity<?> healthCheck(){
         Map<String,String> responseData = new HashMap<>();
         responseData.put("serverName", serverName);
