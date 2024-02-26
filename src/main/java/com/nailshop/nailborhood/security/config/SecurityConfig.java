@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 .requestMatchers("/nailborhood/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
                                         "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**").permitAll()
-                                .anyRequest().authenticated()
+//                                .anyRequest().authenticated()
                 )
 //                .formLogin((form) ->
 //                        form
