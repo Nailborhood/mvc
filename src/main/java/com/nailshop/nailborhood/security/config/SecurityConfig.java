@@ -50,13 +50,13 @@ public class SecurityConfig {
 //                                        "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
 //                                .anyRequest().authenticated()
 //                )
-                .formLogin((form) ->
-                        form
-                                .loginPage("/loginProc")
-                                .usernameParameter("email")
-                                .passwordParameter("password")
-                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
-                )
+//                .formLogin((form) ->
+//                        form
+//                                .loginPage("/loginProc")
+//                                .usernameParameter("email")
+//                                .passwordParameter("password")
+//                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
+//                )
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
