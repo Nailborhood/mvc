@@ -64,7 +64,7 @@ public class SecurityConfig {
                                 .deleteCookies("refreshToken")
                                 .invalidateHttpSession(true)
                 )
-                .httpBasic(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf((csrf) ->
                         csrf
                                 .disable()
