@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nailborhood")
 public class HealthCheckController {
 
     @Value("${server.env}")
@@ -25,7 +24,7 @@ public class HealthCheckController {
 
 
 
-    @GetMapping("/hc")
+    @GetMapping("/nailborhood/hc")
     public ResponseEntity<?> healthCheck(){
         Map<String,String> responseData = new HashMap<>();
         responseData.put("serverName", serverName);
@@ -35,7 +34,7 @@ public class HealthCheckController {
     }
 
 
-    @GetMapping("/env")
+    @GetMapping("/nailborhood/env")
     public ResponseEntity<?> getEnv(){
         return ResponseEntity.ok(env);
     }
