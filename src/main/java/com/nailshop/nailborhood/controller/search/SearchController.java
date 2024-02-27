@@ -25,7 +25,7 @@ public class SearchController {
     @GetMapping("/search/review")
     public ResponseEntity<ResultDto<ReviewListResponseDto>> searchReviewInquiry(@RequestParam(value = "keyword") String keyword,
                                                                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                                @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                                                                 @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
         CommonResponseDto<Object> commonResponseDto = searchService.searchReviewInquiry(keyword, page, size, sortBy);
         ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -40,7 +40,7 @@ public class SearchController {
     @GetMapping("/search/artRef")
     public ResponseEntity<ResultDto<ArtListResponseDto>> searchArtRefInquiry(@RequestParam(value = "keyword") String keyword,
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                                                              @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
         CommonResponseDto<Object> commonResponseDto = searchService.searchArtRefInquiry(keyword, page, size, sortBy);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
