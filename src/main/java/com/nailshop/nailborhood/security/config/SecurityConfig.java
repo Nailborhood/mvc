@@ -30,6 +30,12 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final String[] API_WHITE_LIST = {
+            "/nailborhood",
+            "/nailborhood/review/inquiry",
+            "/nailborhood/",
+            "/nailborhood/env"
+    };
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -45,6 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                                .requestMatchers(API_WHITE_LIST).permitAll()
                                 .requestMatchers("/nailborhood/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
                                         "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
