@@ -22,7 +22,6 @@ public class HealthCheckController {
     @Value("${serverName}")
     private String serverName;
 
-    private String testName = "test2";
 
 
 
@@ -31,7 +30,6 @@ public class HealthCheckController {
         Map<String,String> responseData = new HashMap<>();
         responseData.put("serverName", serverName);
         responseData.put("env",env);
-        responseData.put("testName", testName);
 
         return ResponseEntity.ok(responseData);
     }
