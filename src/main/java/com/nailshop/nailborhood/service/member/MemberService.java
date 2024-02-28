@@ -188,7 +188,7 @@ public class MemberService {
                         .secure(true)
                         .sameSite("None")
                         .httpOnly(false)
-                        .domain("localhost")
+                        .domain("https://nailborhood.shop")
                         .build();
 
                 Map<String, Object> loginMap = new HashMap<>();
@@ -232,7 +232,7 @@ public class MemberService {
                 .secure(true)
                 .sameSite("None")
                 .httpOnly(false)
-                .domain("localhost")
+                .domain("https://nailborhood.shop")
                 .build();
 
         Map<String, Object> loginMap = new HashMap<>();
