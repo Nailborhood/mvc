@@ -45,18 +45,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                .requestMatchers("/nailborhood/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
                                         "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
-//                                .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
-//                .formLogin((form) ->
-//                        form
-//                                .loginPage("/loginProc")
-//                                .usernameParameter("email")
-//                                .passwordParameter("password")
-//                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
-//                )
+                .formLogin((form) ->
+                        form
+                                .loginPage("/loginProc")
+                                .usernameParameter("email")
+                                .passwordParameter("password")
+                                .defaultSuccessUrl("/nailborhood/mypage/myInfo",true)
+                )
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
@@ -64,7 +64,7 @@ public class SecurityConfig {
                                 .deleteCookies("refreshToken")
                                 .invalidateHttpSession(true)
                 )
-//                .httpBasic(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf((csrf) ->
                         csrf
                                 .disable()
