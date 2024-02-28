@@ -13,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/nailborhood")
 public class HealthCheckController {
 
     @Value("${server.env}")
