@@ -22,7 +22,7 @@ public class HealthCheckController {
     @Value("${serverName}")
     private String serverName;
 
-    private String testName = "test1";
+    private String testName = "test2";
 
 
 
