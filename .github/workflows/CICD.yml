@@ -48,7 +48,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/santa:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/naedongnail:latest
           build-args: |
             DB_HOST=${{ secrets.DB_HOST }}
             DB_NAME=${{ secrets.DB_NAME }}
@@ -92,7 +92,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/santa:latest
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/naedongnail:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
 
       - name: Check deploy server URL
