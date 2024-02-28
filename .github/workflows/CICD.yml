@@ -2,9 +2,9 @@ name: CICD
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -33,8 +33,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test
-          
+          ./gradlew clean build      
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
