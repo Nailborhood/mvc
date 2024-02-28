@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 .requestMatchers("/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**", "/configuration/**", "/swagger*/**", "/webjars/**",
                                         "/**/favicon.ico", "/favicon.ico", "/error**" , "/api/**" , "/env" , "/**/env").permitAll()
-                                .anyRequest().authenticated()
+//                                .anyRequest().authenticated()
                 )
                 .formLogin((form) ->
                         form
@@ -93,12 +93,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("https://nailborhood.shop");
+        configuration.addAllowedOriginPattern("https://nailborhood.shop/");
 //        configuration.addAllowedOriginPattern("https://nailborhood.shop:8080");
 //        configuration.addAllowedOriginPattern("https://nailborhood.shop:8081");
-        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedOriginPattern("http://localhost:8080");
-        configuration.addAllowedOriginPattern("https://localhost:3000");
+//        configuration.addAllowedOriginPattern("http://localhost:3000");
+//        configuration.addAllowedOriginPattern("http://localhost:8080");
+//        configuration.addAllowedOriginPattern("https://localhost:3000");
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
