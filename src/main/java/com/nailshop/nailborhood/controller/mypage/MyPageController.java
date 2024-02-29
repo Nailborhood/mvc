@@ -114,7 +114,7 @@ public class MyPageController {
     // 매장 정보 등록 , 사업자 신청
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/registration")
     public ResponseEntity<ResultDto<Void>> registerShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "file") List<MultipartFile> fileList,
+                                                        @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
                                                         @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
         CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList, shopRegistrationRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
