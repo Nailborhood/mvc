@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class StoreAdressSeparation {
+public class StoreAddressSeparation {
     private String cityName;
     private String districtsName;
     private String dongName;
