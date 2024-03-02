@@ -45,7 +45,7 @@ public class ShopModificationService {
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         // 주소(동) 수정
-        String dongName = shopModifiactionRequestDto.getStoreAdressSeparation()
+        String dongName = shopModifiactionRequestDto.getStoreAddressSeparation()
                                                     .getDongName();
         Optional<Dong> optionalDong = dongRepository.findByName(dongName);
         if(optionalDong.isEmpty()){

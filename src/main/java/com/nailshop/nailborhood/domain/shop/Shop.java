@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.member.Favorite;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.type.ShopStatus;
 import jakarta.persistence.*;
@@ -55,6 +56,10 @@ public class Shop extends BaseTime {
     @OneToMany(mappedBy = "shop")
     private List<ShopImg> shopImgList;
 
+    // 사업자 증명
+    @OneToMany(mappedBy = "shop")
+    private List<CertificateImg> certificateImgList;
+
     // 매장 저장
     @OneToMany(mappedBy = "shop")
     private List<Favorite> favoriteList;
@@ -73,6 +78,8 @@ public class Shop extends BaseTime {
     @JoinColumn(name = "dong_id")
     private Dong dong;
 
+    @OneToOne(mappedBy = "shop")
+    private Owner owner;
 
 
     //private double latitude; // 위도

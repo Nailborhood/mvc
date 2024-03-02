@@ -3,11 +3,9 @@ package com.nailshop.nailborhood.controller.shop.admin;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
-import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.service.shop.admin.AllShopsLookupAdminService;
 import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
-import com.nailshop.nailborhood.service.shop.admin.ShopRegistrationService;
 import com.nailshop.nailborhood.service.shop.admin.ShopStatusChangeService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,24 +22,12 @@ import java.util.List;
 @RequestMapping("/nailborhood")
 public class AdminShopController {
 
-    private final ShopRegistrationService shopRegistrationService;
     private final ShopModificationService shopModificationService;
     private final AllShopsLookupAdminService allShopsLookupAdminService;
     private final ShopDeleteService shopDeleteService;
     private final ShopStatusChangeService shopStatusChangeService;
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 정보 등록", description = "admin API")
-    // 매장 정보 등록
-    @PostMapping(consumes = {"multipart/form-data"}, value = "/admin/registration")
-    public ResponseEntity<ResultDto<Void>> registerShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList, shopRegistrationRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
-    }
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "매장 정보 수정", description = "owner API")
