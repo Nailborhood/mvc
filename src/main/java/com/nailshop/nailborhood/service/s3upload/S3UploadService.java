@@ -33,6 +33,7 @@ public class S3UploadService {
     private String bucket;
 
     private final String SHOP_PATH = "shop";
+    private final String CERTIFICATE_PATE = "certificate";
     private final String ARTREF_PATH = "artRef";
     private final String REVIEW_PATH = "review";
     private final String PROFILE_PATH = "profile";
@@ -42,6 +43,11 @@ public class S3UploadService {
     // 매장 이미지 업로드
     public List<String> shopImgUpload(List<MultipartFile> multipartFileList) {
         return uploadImg(multipartFileList ,SHOP_PATH);
+    }
+
+    // 사업자 증명 이미지 업로드
+    public List<String> certificateImgUpload(List<MultipartFile> multipartFileList) {
+        return uploadImg(multipartFileList ,CERTIFICATE_PATE);
     }
 
     // 아트판 이미지 업로드
@@ -119,6 +125,11 @@ public class S3UploadService {
     // 이미지 삭제 (매장)
     public void deleteShopImg(String imgPath) {
         deleteImage(imgPath, SHOP_PATH);
+    }
+
+    // 이미지 삭제 (사업자 증명)
+    public void deleteCertificateImg(String imgPath) {
+        deleteImage(imgPath, CERTIFICATE_PATE);
     }
 
     // 이미지 삭제 (아트)

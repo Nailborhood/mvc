@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.shop.Shop;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,10 @@ public class Owner {
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
 
 }

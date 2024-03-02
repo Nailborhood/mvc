@@ -1,16 +1,14 @@
-package com.nailshop.nailborhood.service.shop.admin;
+package com.nailshop.nailborhood.service.shop.owner;
 
 import com.nailshop.nailborhood.domain.address.Dong;
+import com.nailshop.nailborhood.domain.shop.CertificateImg;
 import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
-import com.nailshop.nailborhood.repository.shop.MenuRepository;
-import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
-import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.repository.shop.*;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -35,13 +33,13 @@ public class ShopRegistrationService {
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final ShopImgRepository shopImgRepository;
+    private final CertificateImgRepository certificateImgRepository;
 
     // 매장 등록
-
-    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
         // 동 엔티티 설정
-        String dongName = shopRegistrationRequestDto.getStoreAdressSeparation()
+        String dongName = shopRegistrationRequestDto.getStoreAddressSeparation()
                                                     .getDongName();
        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
        if(optionalDong.isEmpty()){
@@ -72,6 +70,9 @@ public class ShopRegistrationService {
 
         // 매장 사진 등록
         saveShopImg(multipartFileList, shop);
+
+        // 사업자 증명 사진 등록
+        saveCertificateImg(fileList, shop);
         return commonService.successResponse(SuccessCode.SHOP_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
@@ -92,7 +93,7 @@ public class ShopRegistrationService {
 
     }
 
-    // 이미지 저장
+    // 매장 이미지 저장
     private void saveShopImg(List<MultipartFile> multipartFileList, Shop shop) {
         // s3에 이미지 업로드
         List<String> shopImgUrlList = s3UploadService.shopImgUpload(multipartFileList);
@@ -112,4 +113,26 @@ public class ShopRegistrationService {
             imgNum++;
         }
     }
+
+    // 사업자 증명 사진 저장
+    private void saveCertificateImg(List<MultipartFile> fileList, Shop shop) {
+        // s3에 이미지 업로드
+        List<String> certificateImgUrlList = s3UploadService.certificateImgUpload(fileList);
+
+        // 이미지 번호 1번 부터 시작
+        Integer imgNum = 1;
+
+        for (String imgPath : certificateImgUrlList) {
+            CertificateImg certificateImg = CertificateImg.builder()
+                                            .imgPath(imgPath)
+                                            .imgNum(imgNum)
+                                            .isDeleted(false)
+                                            .shop(shop)
+                                            .build();
+            certificateImgRepository.save(certificateImg);
+
+            imgNum++;
+        }
+    }
+
 }
