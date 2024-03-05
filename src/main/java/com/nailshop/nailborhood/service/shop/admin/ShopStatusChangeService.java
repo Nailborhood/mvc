@@ -1,11 +1,15 @@
 package com.nailshop.nailborhood.service.shop.admin;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
+import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
-import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopStatusChangeService {
     private final ShopRepository shopRepository;
     private final CommonService commonService;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     // 매장 상태 변경
-    public CommonResponseDto<Object> changeShopStatus(Long shopId, String status) {
+    public CommonResponseDto<Object> changeShopStatus(String accessToken, Long shopId, String status) {
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         ShopStatus changeStatus = null;
         SuccessCode successCode = null;

@@ -1,17 +1,22 @@
 package com.nailshop.nailborhood.service.shop.admin;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsLookupResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,18 +33,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AllShopsLookupAdminService {
     private final CommonService commonService;
-    private final DongRepository dongRepository;
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
-    private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     // 매장 전체 조회
 
     @Transactional
-    public CommonResponseDto<Object> getAllShops(int page, int size, String criteria,String sort) {
+    public CommonResponseDto<Object> getAllShops(String accessToken, int page, int size, String criteria, String sort) {
 
 //        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
 //                                                               .descending());
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
 
         Pageable pageable = (sort.equals("ASC")) ?
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
