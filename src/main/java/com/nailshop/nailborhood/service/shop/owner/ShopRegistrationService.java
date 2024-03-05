@@ -36,11 +36,13 @@ public class ShopRegistrationService {
     private final CertificateImgRepository certificateImgRepository;
 
     // 매장 등록
-    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto, String accessToken) {
 
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAddressSeparation()
                                                     .getDongName();
+
+
        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
        if(optionalDong.isEmpty()){
            return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
