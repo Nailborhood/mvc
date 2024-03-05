@@ -58,4 +58,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Page<Member> findAll(Pageable pageable);
 
+    // 관리자 회원 검색
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "where m.name LIKE %:keyword")
+    Page<Member> findAllMemberListByKeyword(@Param("keyword")String keyword, Pageable pageable);
 }

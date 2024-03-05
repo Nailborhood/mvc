@@ -84,4 +84,11 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) AND a.isDeleted = false ")
     Page<ArtRef> findArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
 
+    // 관리자 아트 검색 (네일이름, 매장이름)
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) ")
+    Page<ArtRef> findAllArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
+
 }
