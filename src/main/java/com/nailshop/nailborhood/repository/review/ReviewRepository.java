@@ -104,4 +104,11 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
     Page<Review> findReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
 
+    // 관리자 리뷰 검색 ( 매장이름, 내용 )
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) " )
+    Page<Review> findAllReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
+
 }
