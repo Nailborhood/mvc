@@ -109,17 +109,17 @@ public class MyPageController {
     }
 
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "매장 정보 등록", description = "owner API")
-    // 매장 정보 등록 , 사업자 신청
-    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/registration")
-    public ResponseEntity<ResultDto<Void>> registerShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
-                                                        @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList, shopRegistrationRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
-    }
+//    @Tag(name = "owner", description = "owner API")
+//    @Operation(summary = "매장 정보 등록", description = "owner API")
+//    // 매장 정보 등록 , 사업자 신청
+//    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/registration")
+//    public ResponseEntity<ResultDto<Void>> registerShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
+//                                                        @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
+//                                                        @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
+//        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList, shopRegistrationRequestDto);
+//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+//                             .body(resultDto);
+//    }
 }
