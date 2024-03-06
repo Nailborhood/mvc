@@ -28,10 +28,11 @@ public class ReviewReportController {
     @Operation(summary = "리뷰 신고 전체 조회", description = "admin API")
     // 리뷰 신고 전체 조회
     @GetMapping(value = "/admin/reviewReport")
-    public ResponseEntity<ResultDto<ReviewReportListLookupDto>> getAllShops(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+    public ResponseEntity<ResultDto<ReviewReportListLookupDto>> getAllShops(@RequestHeader(AUTH) String accessToken,
+                                                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                             @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> reviewReports = reviewReportStatusAdminService.getReviewReports(page, size, sort);
+        CommonResponseDto<Object> reviewReports = reviewReportStatusAdminService.getReviewReports(accessToken,page, size, sort);
         ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(reviewReports.getStatus(), reviewReports.getMessage());
         resultDto.setData((ReviewReportListLookupDto) reviewReports.getData());
 
@@ -44,9 +45,10 @@ public class ReviewReportController {
     @Operation(summary = "리뷰 신고 처리 변경 ", description = "admin API")
     // 리뷰 신고 처리 변경
     @PutMapping("/admin/reviewReport/{reportId}")
-    public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@PathVariable Long reportId,
+    public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
+                                                                    @PathVariable Long reportId,
                                                                     @RequestParam(value = "status") String status) {
-        CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(reportId, status);
+        CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(accessToken,reportId, status);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())

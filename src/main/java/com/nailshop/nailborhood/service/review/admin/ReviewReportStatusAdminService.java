@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.service.review.admin;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
@@ -7,10 +8,13 @@ import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,10 +32,17 @@ import java.util.List;
 public class ReviewReportStatusAdminService {
     private final ReviewReportRepository reviewReportRepository;
     private final CommonService commonService;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
 
     // 리뷰 신고 조회
-    public CommonResponseDto<Object> getReviewReports(int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReports(String accessToken, int page, int size, String sort) {
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
                                                                .descending());
@@ -81,7 +92,12 @@ public class ReviewReportStatusAdminService {
 
     @Transactional
     // 리뷰 신고 처리
-    public CommonResponseDto<Object> changeReviewStatus(Long reportId, String status) {
+    public CommonResponseDto<Object> changeReviewStatus(String accessToken, Long reportId, String status) {
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         String reviewStatus = null;
         SuccessCode successCode = null;
