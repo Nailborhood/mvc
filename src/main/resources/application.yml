@@ -1,20 +1,65 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local: common, db, aws, jwt
+      blue: blue, common, rds, aws, jwt
+      green: green, common, rds, aws, jwt
+
 server:
-  port: 8080
+  env: blue
+
+---
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:${DATABASE_PORT}/${DATABASE_NAME}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${USER_NAME}
-    password: ${USER_PASSWORD}
+  config:
+    activate:
+      on-profile: common
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: true
     hibernate:
       ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
+    show-sql: false
     properties:
       hibernate.format_sql: true
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+serverName: common
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+
+server:
+  port: 8080
+
+serverName: blue_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+
+server:
+  port: 8081
+
+serverName: green_server
+
+---
