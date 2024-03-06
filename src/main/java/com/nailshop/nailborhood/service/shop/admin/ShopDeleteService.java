@@ -2,40 +2,33 @@ package com.nailshop.nailborhood.service.shop.admin;
 
 import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
-import com.nailshop.nailborhood.domain.member.Favorite;
-import com.nailshop.nailborhood.domain.review.Review;
-import com.nailshop.nailborhood.domain.review.ReviewImg;
-import com.nailshop.nailborhood.domain.shop.Menu;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
-import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.repository.member.MemeberFavoriteRepository;
-import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
-import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
-import com.nailshop.nailborhood.service.artboard.ArtDeleteService;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,12 +42,19 @@ public class ShopDeleteService {
     private final S3UploadService s3UploadService;
     private final ArtLikeRepository artLikeRepository;
     private final CategoryArtRepository categoryArtRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
    @Transactional
-    public CommonResponseDto<Object> deleteShop(Long shopId) {
+    public CommonResponseDto<Object> deleteShop(String accessToken, Long shopId) {
+
+       // 관리자 확인
+       Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+       if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 매장 존재 여부
-        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+       Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // menu 삭제

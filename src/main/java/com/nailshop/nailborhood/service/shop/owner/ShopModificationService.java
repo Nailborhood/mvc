@@ -1,20 +1,25 @@
 package com.nailshop.nailborhood.service.shop.owner;
 
 import com.nailshop.nailborhood.domain.address.Dong;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +42,16 @@ public class ShopModificationService {
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final ShopImgRepository shopImgRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
-    public CommonResponseDto<Object> updateShop(Long shopId, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+    public CommonResponseDto<Object> updateShop(String accessToken, Long shopId, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+
+        // 관리자 확인
+        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 매장 아이디 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
