@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/css/member/signup_style.css}" />
+</head>
+<div layout:fragment="content">
+    <div class="login-title">
+        회원가입
+    </div>
+    <form action="#" class="signup-form">
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="2">
+                    <label for="email-input">이메일</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="email" id="email-input" placeholder="email" required>
+                </td>
+            </tr>
+            <tr id="email-mismatch_message" style="display: none;">
+                <td colspan="2">
+                    <p>이메일 형식이 올바르지 않습니다</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="name-input">이름</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="text" id="name-input" placeholder="name" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="password-input">비밀번호</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="password" id="password-input" placeholder="password" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="password-check-input">비밀번호 확인</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="password" id="password-check-input" placeholder="password check" required>
+                </td>
+            </tr>
+            <tr id="password-mismatch_message" style="display: none;">
+                <td colspan="2">
+                    <p>비밀번호와 일치하지 않습니다</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="birthday-input">생일</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="date" id="birthday-input" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="address-input1">주소</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="text" id="address-input1" placeholder="주소 api 연결 필요" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="text" id="address-input2" placeholder="상세주소" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="nickname-input">닉네임</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="text" id="nickname-input" placeholder="nickname" required>
+                </td>
+            </tr>
+            <tr id="nickname-unavailable_message" style="display: none;">
+                <td colspan="2">
+                    <p>이미 사용 중인 닉네임입니다</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="phonenumber-input">전화전호</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="text" id="phonenumber-input" placeholder="phone number" required>
+                </td>
+            </tr>
+            <tr id="phonenum-unavailable_message" style="display: none;">
+                <td colspan="2">
+                    <p>중복된 전화번호입니다</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label>성별</label>
+                </td>
+            </tr>
+            <tr style="text-align: center;">
+                <td>
+                    <input type="radio" class="gender-radio" name="gender" value="Male" checked="checked">남성
+                </td>
+                <td>
+                    <input type="radio" class="gender-radio" name="gender" value="Female">여성
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <input type="submit" id="submit-button" value="회원가입">
+    </form>
+</div>
+</html>

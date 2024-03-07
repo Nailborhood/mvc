@@ -10,12 +10,15 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
+
 import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/nailborhood")
 public class MemberController {
@@ -26,6 +29,18 @@ public class MemberController {
     @GetMapping("/")
     public ResponseEntity<?> logoutTest() {
         return ResponseEntity.status(200).body("로그아웃 완료");
+    }
+
+    // 로그인 페이지
+    @GetMapping("/login")
+    public String loginPage() {
+        return "member/login_form";
+    }
+
+    // 회원가입 페이지
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "member/signup_form";
     }
 
 
