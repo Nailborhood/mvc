@@ -1,0 +1,102 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.content {
+    align-items: center;
+}
+
+.login-title {
+    font-size: 25px;
+}
+
+.logo-img {
+    width: 130px;
+    height: 40px;
+    margin: 70px 5px 5px 5px;
+}
+
+.logo-img img {
+    width: 130px;
+    object-fit: cover;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 0;
+}
+
+#email-field,
+#password-field {
+    height: 25px;
+    width: 200px;
+    font-size: 15px;
+    outline: var(--shadow_1) auto 1px;
+}
+
+#email-field:focus-visible {
+    outline: var(--main-color_navy) auto 1px;
+}
+#password-field:focus-visible {
+    outline: var(--main-color_navy) auto 1px;
+}
+
+#submit-button {
+    height: 31px;
+    width: 208px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.link-field {
+    font-size: 13px;
+    color: gray;
+}
+
+.link-field span {
+    cursor: pointer;
+}
+
+.social-icons {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: gray solid 1px;
+    width: 208px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.social-icons span {
+    cursor: pointer;
+}
+
+#google-logo {
+    width: 70px;
+    height: 30.7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255, 255, 255);
+    border-radius: 3px;
+}
+
+#google-logo img {
+    width: 23px;
+    height: 23px;
+}
+
+#kakao-logo img {
+    width: 70px;
+}
