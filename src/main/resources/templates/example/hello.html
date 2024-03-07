@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>헬로</title>
+<!--    <link rel="stylesheet" th:href="@{/css/layout/hello.css}" />-->
+</head>
+<div layout:fragment="content">
+    <div class="center">
+        <h3>helloooooooo</h3>
+        <p th:text="${message}">메세지 자리</p>
+    </div>
+</div>
+</html>
