@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<div th:fragment="header" class="header">
+
+    <nav class="header-upper">
+        <div id="info-field">로그인 자리</div>
+    </nav>
+    <header>
+        <div class="logo-field">
+            <img src="/assets/icons/nailborhood_logo.png" />
+        </div>
+        <div class="profile-field">
+            <div id="profile-img-field">
+                <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
+            </div>
+            <div id="profile-mypage-div">
+                <ul>
+                    <li><a href="#">내 정보 수정</a></li>
+                    <li><a href="#">비밀번호 수정</a></li>
+                    <li><a href="#">내 장소 확인</a></li>
+                    <li><a href="#">내 리뷰 확인</a></li>
+                    <li><a href="#">로그아웃</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="header-menu">
+            <ul>
+                <li><a href="#">홈</a></li>
+                <li><a href="#">리뷰</a></li>
+                <li><a href="#">내 주변</a></li>
+                <li><a href="#">아트판</a></li>
+            </ul>
+        </div>
+        </header>
+</div>

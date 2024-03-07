@@ -1,0 +1,40 @@
+@import "reset.css";
+@import "header.css";
+@import "footer.css";
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    /* background-color: #f3f6f8; */
+    font-family: "돋움", Dotum, Arial, simsun, MS mincho, MS-Gothic;
+}
+
+#wrapper {
+    height: auto;
+    min-height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    padding: 15px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+html,
+body {
+    height: 100%;
+}
