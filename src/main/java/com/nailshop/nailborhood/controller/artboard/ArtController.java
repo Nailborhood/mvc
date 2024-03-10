@@ -7,8 +7,9 @@ import com.nailshop.nailborhood.service.artboard.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/nailborhood")
 public class ArtController {
@@ -92,11 +93,14 @@ public class ArtController {
     @Tag(name = "user", description = "user API")
     @Operation(summary = "아트판 상세 조회", description = "user API")
     @GetMapping("/user/artboard/inquiry/{artRefId}")
-    public ResponseEntity<ResultDto<ArtDetailResponseDto>> inquiryArtRef(@PathVariable Long artRefId){
+    public String inquiryArtRef(@PathVariable Long artRefId,
+                                Model model){
         CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
         resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
 
-        return ResponseEntity.status(inquiryArt.getHttpStatus()).body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "artboard/art_detail";
     }
 }

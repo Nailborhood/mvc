@@ -1,25 +1,28 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
 
 <head>
     <meta charset="UTF-8">
     <title>아트 상세</title>
-    <script src="/src/layouts/get_layout.js"></script>
-    <link rel="stylesheet" href="/src/layouts/layout_style.css">
-    <link rel="stylesheet" href="/src/pages/artboard/art_detail_style.css">
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/artboard/art_detail_style.css}">
 </head>
 
 <body>
 <div id="wrapper">
-    <div data-include-path="/src/layouts/header.html"></div>
+    <div th:insert="~{fragments/header}"></div>
     <div class="content-wrapper">
         <div class="image-slider-wrapper">
-            <div class="image-slide active" style="background-image: url('/src/asset/icons/IMG_2411.jpg');"></div>
-            <div class="image-slide" style="background-image: url('/src/asset/icons/kakao_login_medium.png');"></div>
-            <div class="image-slide" style="background-image: url('/src/asset/icons/Google_G_logo.svg.png');"></div>
+            <div th:each="imgEntry : ${result.getData().imgPathMap}"
+                 th:class="${imgEntry.key == 1} ? 'image-slide active' : 'image-slide'"
+                 th:style="|background-image:url(@{/asset/icons/${imgEntry.value}})|">
+            </div>
 
             <div class="like-section">
                 <span class="like-icon">❤️</span>
-                <span class="like-count">123</span>
+                <span class="like-count" th:text="${result.getData().likeCount}">likeCount</span>
             </div>
 
             <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
@@ -27,19 +30,20 @@
         </div>
 
         <div class="art-info-wrapper">
-            <h2>아트 제목</h2>
-            <h3>매장 이름</h3>
-            <p>시술 내역(메뉴)</p>
-            <p>업로드 일시</p>
-            <p>아트판 설명</p>
+            <h2 th:text="${result.getData().name}">title</h2>
+            <h3 th:text="${result.getData().shopName}">shopName</h3>
+            <p th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">categoryTypeList</p>
+            <p th:text="${result.getData().createdAt}">createdAt</p>
+            <p th:text="${result.getData().content}">content</p>
         </div>
 
 
     </div>
-    <div data-include-path="/src/layouts/footer.html"></div>
+    <div th:insert="~{fragments/footer.html}"></div>
 </div>
 
-<script src="art_detail.js"></script>
+<script th:src="@{/js/get_layouts.js}"></script>
+<script th:src="@{/js/artboard/art_detail.js}"></script>
 </body>
 
 </html>
