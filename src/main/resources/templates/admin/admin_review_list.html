@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지-리뷰 리스트</title>
+    <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">리뷰 목록</span>
+        <div class="admin-content-div">
+            <!-- 검색 기능 -->
+            <form th:action="@{/nailborhood/admin/search/review}" method="get">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
+                    <button type="submit" class="search-button">
+                        <img src="../../assets/icons/search_icon.png" alt="Search">
+                    </button>
+                </div>
+            </form>
+            <!--검색 시 해당 매장 없을 때 오류 반환-->
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.REVIEW_NOT_FOUND.description}"></div>
+            <!-- 매장 리스트 -->
+            <table class="chart-list" th:unless="${errorCode}">
+                <thead>
+                <tr>
+                    <th>리뷰 사진</th>
+                    <th>작성자이름</th>
+                    <th>리뷰 내용</th>
+                    <th>카테고리</th>
+                    <th>매장</th>
+                    <th>별점</th>
+                    <th>좋아요 개수</th>
+                    <th>작성 시간</th>
+                    <th>수정 시간</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:if="${reviewList != null}">
+                <tr class="chart-item" th:each="adminReview : ${reviewList.adminReviewResponseDtoList}">
+                    <td><img class="chart-profile" th:src="@{${adminReview.mainImgPath}}" alt="Profile Image"></td>
+                    <td th:text="${adminReview.reviewer}"></td>
+                    <td th:text="${adminReview.contents}"></td>
+                    <td>
+                        <span th:each="categoryType, iterStat : ${adminReview.categoryTypeList}">
+                            <span th:text="${categoryType}"></span>
+                            <span th:if="${!iterStat.last}">,</span>
+                        </span>
+                    </td>
+                    <td th:text="${adminReview.shopName}"></td>
+                    <td th:text="${adminReview.rate}"></td>
+                    <td th:text="${adminReview.likeCnt}"></td>
+                    <td th:text="${adminReview.createdAt}"></td>
+                    <td th:text="${adminReview.updatedAt}"></td>
+                    <td>
+                        <button class="delete-button" th:if="${adminReview.isDeleted == false}">리뷰 삭제</button>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

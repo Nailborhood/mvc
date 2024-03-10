@@ -47,17 +47,23 @@ public class AdminSearchController {
     @Tag(name = "search", description = "search API")
     @Operation(summary = "리뷰 검색", description = "search API")
     @GetMapping("/admin/search/review")
-    public ResponseEntity<ResultDto<ReviewListResponseDto>> searchReviewInquiry(@RequestHeader(AUTH) String accessToken,
-                                                                                @RequestParam(value = "keyword") String keyword,
-                                                                                @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                                                                @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
-        ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        resultDto.setData((ReviewListResponseDto) commonResponseDto.getData());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+    public String searchReviewInquiry(Model model,
+                                      //@RequestHeader(AUTH) String accessToken,
+                                      @RequestParam(value = "keyword",required = false) String keyword,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                      @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                      @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+        //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
+        try {
+            CommonResponseDto<Object> allReviewList = adminSearchService.searchReviewInquiry(keyword, page, size, sortBy);
+            model.addAttribute("reviewList", allReviewList.getData());
+            return "admin/admin_review_list";
+        } catch (NotFoundException e) {
+            //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
+            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
+            //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
+            return "admin/admin_review_list";
+        }
     }
 
     // 아트판 검색
@@ -81,19 +87,20 @@ public class AdminSearchController {
     @GetMapping("/admin/search/shop")
     public String searchShopInquiry(Model model,
                                     //@RequestHeader(AUTH) String accessToken,
-                                    @RequestParam(value = "keyword",required = false) String keyword,
+                                    @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
         //TODO: auth 추가되면 변경
         //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchShopInquiry(accessToken, keyword, page, size, sortBy);
         try {
-            CommonResponseDto<Object> allShopsList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);
-            model.addAttribute("shopList", allShopsList.getData());
+            CommonResponseDto<Object> allShopList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);
+            model.addAttribute("shopList", allShopList.getData());
             return "admin/admin_shop_list";
         } catch (NotFoundException e) {
             //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
             model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+            //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
             return "admin/admin_shop_list";
         }
     }
