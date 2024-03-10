@@ -6,7 +6,9 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.service.search.AdminSearchService;
+import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -85,9 +87,15 @@ public class AdminSearchController {
                                     @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
         //TODO: auth 추가되면 변경
         //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchShopInquiry(accessToken, keyword, page, size, sortBy);
-        CommonResponseDto<Object> allShopsList = adminSearchService.searchShopInquiry( keyword, page, size, sortBy);
-        model.addAttribute("shopList" , allShopsList.getData());
-        return "admin/admin_shop_list";
+        try {
+            CommonResponseDto<Object> allShopsList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);
+            model.addAttribute("shopList", allShopsList.getData());
+            return "admin/admin_shop_list";
+        } catch (NotFoundException e) {
+            //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
+            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+            return "admin/admin_shop_list";
+        }
     }
 
 
