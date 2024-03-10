@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 상세</title>
+    <script src="/src/layouts/get_layout.js"></script>
+    <link rel="stylesheet" href="/src/layouts/layout_style.css">
+    <link rel="stylesheet" href="/src/pages/review/review_detail_style.css">
+</head>
+
+<body>
+<div id="wrapper">
+    <div data-include-path="/src/layouts/header.html"></div>
+
+
+    <div class="review-section">
+        <div class="review-content">
+            <h2>리뷰 제목</h2>
+            <div class="review-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-number">5</span>
+            </div>
+            <div class="review-count">
+                <span class="like">❤️</span>
+                <span class="like-number">25</span>
+            </div>
+            <p class="review-meta">
+                <img src="/src/asset/icons/user.svg" alt="프로필 이미지" class="profile-pic">
+                <span class="review-author">작성자 닉네임</span> |
+                <span class="review-service">시술 내역</span> |
+                <span class="review-date">작성 일시</span> |
+                <span class="review-shop">매장 이름</span>
+            </p>
+
+            <div class="image-gallery">
+                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 1"></div>
+                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 2"></div>
+                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 3"></div>
+            </div>
+
+            <p>리뷰 내용</p>
+        </div>
+    </div>
+
+    <div data-include-path="/src/layouts/footer.html"></div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>아트 상세</title>
+    <script src="/src/layouts/get_layout.js"></script>
+    <link rel="stylesheet" href="/src/layouts/layout_style.css">
+    <link rel="stylesheet" href="/src/pages/artboard/art_detail_style.css">
+</head>
+
+<body>
+<div id="wrapper">
+    <div data-include-path="/src/layouts/header.html"></div>
+    <div class="content-wrapper">
+        <div class="image-slider-wrapper">
+            <div class="image-slide active" style="background-image: url('/src/asset/icons/IMG_2411.jpg');"></div>
+            <div class="image-slide" style="background-image: url('/src/asset/icons/kakao_login_medium.png');"></div>
+            <div class="image-slide" style="background-image: url('/src/asset/icons/Google_G_logo.svg.png');"></div>
+
+            <div class="like-section">
+                <span class="like-icon">❤️</span>
+                <span class="like-count">123</span>
+            </div>
+
+            <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
+            <a class="next" onclick="moveSlide(1)">&#10095;</a>
+        </div>
+
+        <div class="art-info-wrapper">
+            <h2>아트 제목</h2>
+            <h3>매장 이름</h3>
+            <p>시술 내역(메뉴)</p>
+            <p>업로드 일시</p>
+            <p>아트판 설명</p>
+        </div>
+
+
+    </div>
+    <div data-include-path="/src/layouts/footer.html"></div>
+</div>
+
+<script src="art_detail.js"></script>
+</body>
+
+</html>
