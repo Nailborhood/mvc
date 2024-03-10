@@ -11,11 +11,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
+
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/nailborhood")
 public class AdminSearchController {
 
@@ -29,12 +32,13 @@ public class AdminSearchController {
                                                                              @RequestParam(value = "keyword") String keyword,
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                             @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> inquiryAllMember = adminSearchService.searchMemberInquiry(accessToken,keyword, page, size, sortBy);
+                                                                             @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy) {
+        CommonResponseDto<Object> inquiryAllMember = adminSearchService.searchMemberInquiry(accessToken, keyword, page, size, sortBy);
         ResultDto<MemberListResponseDto> resultDto = ResultDto.in(inquiryAllMember.getStatus(), inquiryAllMember.getMessage());
         resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 
-        return ResponseEntity.status(inquiryAllMember.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(inquiryAllMember.getHttpStatus())
+                             .body(resultDto);
     }
 
     // 리뷰 검색
@@ -45,12 +49,13 @@ public class AdminSearchController {
                                                                                 @RequestParam(value = "keyword") String keyword,
                                                                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                                 @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                                                                @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken,keyword, page, size, sortBy);
+                                                                                @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
         ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((ReviewListResponseDto) commonResponseDto.getData());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
     }
 
     // 아트판 검색
@@ -61,27 +66,30 @@ public class AdminSearchController {
                                                                              @RequestParam(value = "keyword") String keyword,
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                                                             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchArtRefInquiry(accessToken,keyword, page, size, sortBy);
+                                                                             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchArtRefInquiry(accessToken, keyword, page, size, sortBy);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((ArtListResponseDto) commonResponseDto.getData());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
     }
 
-    // 가게 검색
+    // 매장 검색
     @GetMapping("/admin/search/shop")
-    public ResponseEntity<ResultDto<ShopListResponseDto>> searchShopInquiry (@RequestHeader(AUTH) String accessToken,
-                                                                             @RequestParam(value = "keyword") String keyword,
-                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchShopInquiry(accessToken,keyword, page, size, sortBy);
-        ResultDto<ShopListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        resultDto.setData((ShopListResponseDto) commonResponseDto.getData());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    public String searchShopInquiry(Model model,
+                                    //@RequestHeader(AUTH) String accessToken,
+                                    @RequestParam(value = "keyword",required = false) String keyword,
+                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+        //TODO: auth 추가되면 변경
+        //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchShopInquiry(accessToken, keyword, page, size, sortBy);
+        CommonResponseDto<Object> allShopsList = adminSearchService.searchShopInquiry( keyword, page, size, sortBy);
+        model.addAttribute("shopList" , allShopsList.getData());
+        return "admin/admin_shop_list";
     }
+
 
     //TODO: 채팅검색
 }
