@@ -1,48 +1,50 @@
 <!DOCTYPE html>
 
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
 <head>
     <meta charset="UTF-8">
     <title>리뷰 상세</title>
-    <script src="/src/layouts/get_layout.js"></script>
-    <link rel="stylesheet" href="/src/layouts/layout_style.css">
-    <link rel="stylesheet" href="/src/pages/review/review_detail_style.css">
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/review/review_detail_style.css}">
 </head>
 
 <body>
 <div id="wrapper">
-    <div data-include-path="/src/layouts/header.html"></div>
-
+    <div th:insert="~{fragments/header}"></div>
 
     <div class="review-section">
         <div class="review-content">
             <h2>리뷰 제목</h2>
             <div class="review-rating">
                 <span class="stars">★★★★★</span>
-                <span class="rating-number">5</span>
+                <span class="rating-number" th:text="${result.getData().rate}">rate</span>
             </div>
             <div class="review-count">
                 <span class="like">❤️</span>
-                <span class="like-number">25</span>
+                <span class="like-number" th:text="${result.getData().likeCnt}">likeCount</span>
             </div>
             <p class="review-meta">
-                <img src="/src/asset/icons/user.svg" alt="프로필 이미지" class="profile-pic">
-                <span class="review-author">작성자 닉네임</span> |
-                <span class="review-service">시술 내역</span> |
-                <span class="review-date">작성 일시</span> |
-                <span class="review-shop">매장 이름</span>
+                <img th:src="@{${result.getData().reviewAuthorProfileImg}}" alt="프로필 이미지" class="profile-pic">
+                <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span> |
+                <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span> |
+                <span class="review-date" th:text="${result.getData().reviewCreatedAt}">작성 일시</span> |
+                <span class="review-shop" th:text="${result.getData().shopName}">매장 이름</span>
             </p>
 
             <div class="image-gallery">
-                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 1"></div>
-                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 2"></div>
-                <div class="image-box"><img src="/src/asset/icons/IMG_2411.jpg" alt="이미지 3"></div>
+                <div class="image-box" th:style="|background-image:url(' + @{${imgPathMap[1]}} + ')|"></div>
+                <div class="image-box" th:style="|background-image:url(' + @{${imgPathMap[2]}} + ')|"></div>
+                <div class="image-box" th:style="|background-image:url(' + @{${imgPathMap[3]}} + ')|"></div>
             </div>
 
-            <p>리뷰 내용</p>
+            <p th:text="${result.getData().contents}">리뷰 내용</p>
         </div>
     </div>
 
-    <div data-include-path="/src/layouts/footer.html"></div>
+    <div th:insert="~{fragments/footer.html}"></div>
 </div>
 </body>
 
