@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.service.search;
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -12,6 +13,8 @@ import com.nailshop.nailborhood.dto.member.MemberInfoDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
+import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewListResponseDto;
+import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
@@ -21,6 +24,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
+import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
@@ -55,26 +59,35 @@ public class AdminSearchService {
     private final TokenProvider tokenProvider;
     private final ShopImgRepository shopImgRepository;
     private final MenuRepository menuRepository;
+    private final CustomerRepository customerRepository;
 
     // 리뷰로 검색
-    public CommonResponseDto<Object> searchReviewInquiry(String accessToken, String keyword, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> searchReviewInquiry(String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+/*        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (!admin.getRole()
-                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
                                                                   .descending());
 
-        Page<Review> reviewSearchPage = reviewRepository.findAllReviewListBySearch(keyword, pageable);
+        Page<Review> reviewSearchPage;
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            reviewSearchPage = reviewRepository.findAllIsDeletedFalse(pageable);
+        } else {
+            reviewSearchPage = reviewRepository.findAllReviewListBySearch(keyword, pageable);
+        }
+
         if (reviewSearchPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
+
         List<Review> reviewList = reviewSearchPage.getContent();
-        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+        List<AdminReviewResponseDto> adminReviewResponseDtoList = new ArrayList<>();
 
         for (Review review : reviewList) {
 
@@ -84,21 +97,31 @@ public class AdminSearchService {
             String shopName = review.getShop()
                                     .getName();
 
+
+            String reviewer = customerRepository.findByMemberId(review.getCustomer()
+                                                                      .getMember()
+                                                                      .getMemberId())
+                                                .getMember()
+                                                .getName();
+
+
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
-            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
-                                                                   .reviewId(review.getReviewId())
-                                                                   .shopName(shopName)
-                                                                   .mainImgPath(mainImgPath)
-                                                                   .categoryTypeList(categoryTypeList)
-                                                                   .contents(review.getContents())
-                                                                   .rate(review.getRate())
-                                                                   .likeCnt(review.getLikeCnt())
-                                                                   .createdAt(review.getCreatedAt())
-                                                                   .updatedAt(review.getUpdatedAt())
-                                                                   .build();
+            AdminReviewResponseDto adminReviewResponseDto = AdminReviewResponseDto.builder()
+                                                                             .reviewId(review.getReviewId())
+                                                                             .shopName(shopName)
+                                                                             .mainImgPath(mainImgPath)
+                                                                             .categoryTypeList(categoryTypeList)
+                                                                             .contents(review.getContents())
+                                                                             .rate(review.getRate())
+                                                                             .likeCnt(review.getLikeCnt())
+                                                                             .createdAt(review.getCreatedAt())
+                                                                             .updatedAt(review.getUpdatedAt())
+                                                                             .reviewer(reviewer)
+                                                                             .isDeleted(review.isDeleted())
+                                                                             .build();
 
-            reviewResponseDtoList.add(reviewResponseDto);
+            adminReviewResponseDtoList.add(adminReviewResponseDto);
         }
 
         PaginationDto paginationDto = PaginationDto.builder()
@@ -108,12 +131,12 @@ public class AdminSearchService {
                                                    .isLastPage(reviewSearchPage.isLast())
                                                    .build();
 
-        ReviewListResponseDto reviewListResponseDto = ReviewListResponseDto.builder()
-                                                                           .reviewResponseDtoList(reviewResponseDtoList)
-                                                                           .paginationDto(paginationDto)
-                                                                           .build();
+        AdminReviewListResponseDto adminReviewListResponseDto = AdminReviewListResponseDto.builder()
+                                                                                          .adminReviewResponseDtoList(adminReviewResponseDtoList)
+                                                                                          .paginationDto(paginationDto)
+                                                                                          .build();
 
-        return commonService.successResponse(SuccessCode.SEARCH_BY_REVIEW_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
+        return commonService.successResponse(SuccessCode.SEARCH_BY_REVIEW_SUCCESS.getDescription(), HttpStatus.OK, adminReviewListResponseDto);
     }
 
     // 아트판으로 검색
