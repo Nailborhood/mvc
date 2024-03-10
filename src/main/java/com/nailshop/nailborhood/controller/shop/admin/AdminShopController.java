@@ -47,6 +47,7 @@ public class AdminShopController {
                              .body(resultDto);
     }
 
+// 매장 검색으로 통합함
 /*    @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 전체 조회", description = "admin API")
     // 전체 매장 조회
@@ -57,7 +58,7 @@ public class AdminShopController {
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                               @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                               @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        //TODO: auth 추가되면 변경
+
         //CommonResponseDto<Object> allShopsList = allShopsLookupAdminService.getAllShops(accessToken, page, size, criteria, sort);
         CommonResponseDto<Object> allShopsList = allShopsLookupAdminService.getAllShops( page, size, criteria, sort);
         model.addAttribute("shopList", allShopsList.getData());
