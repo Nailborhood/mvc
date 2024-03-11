@@ -64,11 +64,6 @@ public class AdminSearchService {
     // 리뷰로 검색
     public CommonResponseDto<Object> searchReviewInquiry(String keyword, int page, int size, String sortBy) {
 
-        // 관리자 확인
-/*        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole()
-                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
                                                                   .descending());
