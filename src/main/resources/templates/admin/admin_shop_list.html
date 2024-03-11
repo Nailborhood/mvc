@@ -21,7 +21,7 @@
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
                     <button type="submit" class="search-button">
-                        <img src="../../assets/icons/search_icon.png" alt="Search">
+                        <img src="/assets/icons/search_icon.png" alt="Search">
                     </button>
                 </div>
             </form>
@@ -61,7 +61,7 @@
                     <td th:text="${shop.opentime}"></td>
                     <td th:text="${shop.address}"></td>
                     <td th:text="${shop.website}"></td>
-                    <td th:text="${shop.createdAt}"></td>
+                    <td th:text="${#temporals.format(shop.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${shop.reviewCnt}"></td>
                     <td th:text="${shop.favoriteCnt}"></td>
                     <td th:text="${shop.rateAvg}"></td>

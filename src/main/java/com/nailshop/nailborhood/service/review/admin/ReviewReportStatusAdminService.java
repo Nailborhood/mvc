@@ -9,7 +9,9 @@ import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
+import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -34,37 +36,49 @@ public class ReviewReportStatusAdminService {
     private final CommonService commonService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ReviewImgRepository reviewImgRepository;
+    private final ReviewRepository reviewRepository;
 
 
     // 리뷰 신고 조회
-    public CommonResponseDto<Object> getReviewReports(String accessToken, int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReports(String keyword,int page, int size, String sort) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
                                                                .descending());
-        Page<ReviewReport> reviewReports = reviewReportRepository.findAllNotDeleted(pageable);
+        Page<ReviewReport> reviewReportPage;
 
-        if (reviewReports.isEmpty()) {
+        if(keyword == null || keyword.trim().isEmpty()) {
+            reviewReportPage = reviewReportRepository.findAllNotDeleted(pageable);
+        }else {
+            reviewReportPage = reviewReportRepository.findAllReviewReportListBySearch(keyword,pageable);
+        }
+
+        if (reviewReportPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_REPORT_NOT_FOUND);
         }
 
         // ReviewReport entity -> dto 변환
-        Page<ReviewReportLookupDto> data = reviewReports.map(reviewReport -> {
+        Page<ReviewReportLookupDto> data = reviewReportPage.map(reviewReport -> {
 
+            String mainImgPath = reviewImgRepository.findByReviewImgListReviewId(reviewReport.getReportId()).getFirst().getImgPath();
             ReviewReportLookupDto dto = new ReviewReportLookupDto(
                     reviewReport.getReportId(),
+                    mainImgPath,
                     reviewReport.getContents(),
                     reviewReport.getDate(),
                     reviewReport.getStatus(),
                     reviewReport.getReview()
                                 .getReviewId(),
+                    reviewReport.getReview().getCustomer().getMember().getNickname(),
                     reviewReport.getReview()
                                 .getContents(),
-                    reviewReport.getMember().getNickname()
+                    reviewReport.getMember().getNickname(),
+                    reviewReport.getReview().getShop().getName()
 
             );
             return dto;
@@ -104,11 +118,17 @@ public class ReviewReportStatusAdminService {
 
 
         if (status.equals("reject")) {
+            // 리뷰 신고 반려 -> 리뷰 남는다 / 신고 테이블 반려됨으로 표시
             reviewStatus = ReviewReportStatus.REVIEW_REPORT_REJECTED.getDescription();
             successCode = SuccessCode.REVIEW_REPORT_STATUS_REJECT_SUCCESS;
+
+
         } else if (status.equals("accept")) {
+            // 리뷰 신고 승인 -> 리뷰 삭제 / 신고 테이블 승인 표시
             reviewStatus = ReviewReportStatus.REVIEW_REPORT_ACCEPTED.getDescription();
             successCode = SuccessCode.REVIEW_REPORT_STATUS_ACCEPT_SUCCESS;
+
+            reviewRepository.deleteReviewId(reportId,true);
         }
 
         if(reviewStatus == null ) {

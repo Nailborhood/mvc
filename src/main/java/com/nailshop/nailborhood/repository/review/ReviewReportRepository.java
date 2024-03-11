@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.repository.review;
 
 
+import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,15 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
             "LEFT JOIN rr.review r " +
             "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
     ReviewReport findReviewReportByReviewId(@Param("reviewId") Long reviewId);
+
+    // 관리자 리뷰신고 검색 ( 신고자 , 리뷰 작성자 , 매장이름 )
+    @Query("SELECT rr " +
+            "FROM ReviewReport rr " +
+            "LEFT JOIN rr.review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE (rr.member.nickname Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) " )
+    Page<ReviewReport> findAllReviewReportListBySearch(@Param("keyword")String keyword, Pageable pageable);
+
 
 
 }
