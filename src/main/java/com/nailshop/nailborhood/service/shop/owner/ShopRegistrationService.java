@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.service.shop.owner;
 
 import com.nailshop.nailborhood.domain.address.Dong;
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.shop.CertificateImg;
 import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -8,7 +10,11 @@ import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.*;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -34,36 +40,42 @@ public class ShopRegistrationService {
     private final MenuRepository menuRepository;
     private final ShopImgRepository shopImgRepository;
     private final CertificateImgRepository certificateImgRepository;
+    private final MemberRepository memberRepository;
+    private final OwnerRepository ownerRepository;
+    private final TokenProvider tokenProvider;
 
     // 매장 등록
     public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto, String accessToken) {
 
+        // member get
+        Member member = memberRepository.findById(tokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAddressSeparation()
-                                                    .getDongName();
+                .getDongName();
 
-
-       Optional<Dong> optionalDong = dongRepository.findByName(dongName);
-       if(optionalDong.isEmpty()){
-           return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
-       }
+        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
+        if(optionalDong.isEmpty()){
+            return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
+        }
 
         Dong dong =  optionalDong.get();
         // 매장 세부정보 등록
         Shop shop = Shop.builder()
-                        .status(ShopStatus.BEFORE_OPEN)
-                        .content(shopRegistrationRequestDto.getContent())
-                        .name(shopRegistrationRequestDto.getName())
-                        .website(shopRegistrationRequestDto.getWebsite())
-                        .address(shopRegistrationRequestDto.getAddress())
-                        .opentime(shopRegistrationRequestDto.getOpentime())
-                        .phone(shopRegistrationRequestDto.getPhone())
-                        .isDeleted(false)
-                        .dong(dong)
-                        .reviewCnt(0)
-                        .favoriteCnt(0)
-                        .rateAvg(0)
-                        .build();
+                .status(ShopStatus.BEFORE_OPEN)
+                .content(shopRegistrationRequestDto.getContent())
+                .name(shopRegistrationRequestDto.getName())
+                .website(shopRegistrationRequestDto.getWebsite())
+                .address(shopRegistrationRequestDto.getAddress())
+                .opentime(shopRegistrationRequestDto.getOpentime())
+                .phone(shopRegistrationRequestDto.getPhone())
+                .isDeleted(false)
+                .dong(dong)
+                .reviewCnt(0)
+                .favoriteCnt(0)
+                .rateAvg(0)
+                .build();
 
         shop = shopRepository.save(shop);
 
@@ -75,6 +87,15 @@ public class ShopRegistrationService {
 
         // 사업자 증명 사진 등록
         saveCertificateImg(fileList, shop);
+
+        // Owner 등록
+        Owner owner = Owner.builder()
+                .isApproved(false)
+                .shop(shop)
+                .member(member)
+                .build();
+
+        ownerRepository.save(owner);
         return commonService.successResponse(SuccessCode.SHOP_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
@@ -84,10 +105,10 @@ public class ShopRegistrationService {
 
         for (ShopMenuDto shopMenuDto : shopMenuDtoList) {
             Menu menu = Menu.builder()
-                            .name(shopMenuDto.getName())
-                            .price(shopMenuDto.getPrice())
-                            .shop(shop)
-                            .build();
+                    .name(shopMenuDto.getName())
+                    .price(shopMenuDto.getPrice())
+                    .shop(shop)
+                    .build();
             menuList.add(menu);
         }
 
@@ -105,11 +126,11 @@ public class ShopRegistrationService {
 
         for (String imgPath : shopImgUrlList) {
             ShopImg shopImg = ShopImg.builder()
-                                     .imgPath(imgPath)
-                                     .imgNum(imgNum)
-                                     .isDeleted(false)
-                                     .shop(shop)
-                                     .build();
+                    .imgPath(imgPath)
+                    .imgNum(imgNum)
+                    .isDeleted(false)
+                    .shop(shop)
+                    .build();
             shopImgRepository.save(shopImg);
 
             imgNum++;
@@ -126,11 +147,11 @@ public class ShopRegistrationService {
 
         for (String imgPath : certificateImgUrlList) {
             CertificateImg certificateImg = CertificateImg.builder()
-                                            .imgPath(imgPath)
-                                            .imgNum(imgNum)
-                                            .isDeleted(false)
-                                            .shop(shop)
-                                            .build();
+                    .imgPath(imgPath)
+                    .imgNum(imgNum)
+                    .isDeleted(false)
+                    .shop(shop)
+                    .build();
             certificateImgRepository.save(certificateImg);
 
             imgNum++;
