@@ -8,16 +8,17 @@
     <title>아트 상세</title>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_detail_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/artboard/art_detail.js}"></script>
 </head>
 
 <body>
-<div id="wrapper">
-    <div th:insert="~{fragments/header}"></div>
+<div layout:fragment="content">
     <div class="content-wrapper">
         <div class="image-slider-wrapper">
             <div th:each="imgEntry : ${result.getData().imgPathMap}"
                  th:class="${imgEntry.key == 1} ? 'image-slide active' : 'image-slide'"
-                 th:style="|background-image:url(@{/asset/icons/${imgEntry.value}})|">
+                 th:style="|background-image:url(@{${imgEntry.value}})|">
             </div>
 
             <div class="like-section">
@@ -33,17 +34,13 @@
             <h2 th:text="${result.getData().name}">title</h2>
             <h3 th:text="${result.getData().shopName}">shopName</h3>
             <p th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">categoryTypeList</p>
-            <p th:text="${result.getData().createdAt}">createdAt</p>
+            <p th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd, HH:mm')}">createdAt</p>
             <p th:text="${result.getData().content}">content</p>
         </div>
 
 
     </div>
-    <div th:insert="~{fragments/footer.html}"></div>
 </div>
-
-<script th:src="@{/js/get_layouts.js}"></script>
-<script th:src="@{/js/artboard/art_detail.js}"></script>
 </body>
 
 </html>
