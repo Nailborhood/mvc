@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>아트 전체 조회</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/artboard/art_list_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/artboard/search.js}"></script>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="search-bar">
+            <div th:replace="fragments/components/search/searchbar.html"></div>
+            <div th:replace="fragments/components/search/check_category.html"></div>
+        </div>
+        <!-- TODO 정렬을 어디에 두어야하는지 결정 필요 -->
+        <div class="art-list">
+            <!-- 페이지의 각 아트 아이템을 순회합니다 -->
+            <div th:each="art, iterStat : ${result.getData().artResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
+                <a th:href="@{/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                    <div class="art-img">
+                        <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
+                    </div>
+                    <div class="art-icon">
+                        <img th:src="@{/assets/icons/slide.svg}">
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div th:replace="fragments/components/pagination/pagination.html"></div>
+    </div>
+</body>
+
+</html>
