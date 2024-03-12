@@ -71,6 +71,7 @@ public class ArtInquiryService {
             List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
 
             ArtResponseDto artResponseDto = ArtResponseDto.builder()
+                    .id(artRef.getArtRefId())
                     .name(artRef.getName())
                     .content(artRef.getContent())
                     .likeCount(artRef.getLikeCount())
