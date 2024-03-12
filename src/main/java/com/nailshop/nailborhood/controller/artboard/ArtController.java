@@ -31,10 +31,10 @@ public class ArtController {
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 등록", description = "owner API")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
-    public ResponseEntity<ResultDto<Void>> registerArt(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> registerArt(/*@RequestHeader(AUTH) String accessToken,*/
                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                        @RequestPart(value = "data") ArtRegistrationRequestDto artRegistrationRequestDto){
-        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(accessToken, multipartFileList, artRegistrationRequestDto);
+        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(/*accessToken, */multipartFileList, artRegistrationRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
 
         return ResponseEntity.status(registerArt.getHttpStatus()).body(resultDto);
@@ -79,15 +79,18 @@ public class ArtController {
     @Tag(name = "user", description = "user API")
     @Operation(summary = "아트판 전체 조회", description = "user API")
     @GetMapping("/user/artboard/inquiry")
-    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
-                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
+    public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                   @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                   Model model){
         CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
         resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
-        return ResponseEntity.status(inquiryAllArt.getHttpStatus()).body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "artboard/art_list";
     }
 
     @Tag(name = "user", description = "user API")
