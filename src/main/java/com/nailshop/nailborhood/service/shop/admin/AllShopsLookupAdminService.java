@@ -12,6 +12,7 @@ import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
+import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -37,19 +38,20 @@ public class AllShopsLookupAdminService {
     private final MenuRepository menuRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ShopImgRepository shopImgRepository;
 
     // 매장 전체 조회
 
     @Transactional
-    public CommonResponseDto<Object> getAllShops(String accessToken, int page, int size, String criteria, String sort) {
+    public CommonResponseDto<Object> getAllShops( int page, int size, String criteria, String sort) {
 
 //        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
 //                                                               .descending());
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
 
         Pageable pageable = (sort.equals("ASC")) ?
@@ -65,11 +67,15 @@ public class AllShopsLookupAdminService {
         // shop entity -> dto 변환
         Page<AllShopsLookupResponseDto> data = shops.map(shop -> {
 
+            // shopImg imgNum =1 가져오기
+            String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shop.getShopId());
+
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
             // dto에 shop entity 값을 변환하는 과정
             AllShopsLookupResponseDto dto = new AllShopsLookupResponseDto(
                     shop.getShopId(),
+                    shopMainImg,
                     shop.getName(),
                     shop.getPhone(),
                     shop.getAddress(),
