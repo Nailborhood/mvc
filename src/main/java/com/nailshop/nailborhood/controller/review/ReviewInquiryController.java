@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/nailborhood")
 public class ReviewInquiryController {
 
@@ -24,13 +26,16 @@ public class ReviewInquiryController {
     @Tag(name = "review", description = "review API")
     @Operation(summary = "리뷰 상세 조회", description = "review API")
     @GetMapping("user/review/inquiry/{reviewId}")
-    public ResponseEntity<ResultDto<ReviewDetailResponseDto>> detailReview(@PathVariable Long reviewId,
-                                                                           @RequestParam(value = "shopId") Long shopId){
+    public String detailReview(@PathVariable Long reviewId,
+                               @RequestParam(value = "shopId") Long shopId,
+                               Model model){
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
-        return ResponseEntity.status(detailReview.getHttpStatus()).body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "review/review_detail";
     }
 
     // 리뷰 전체 조회

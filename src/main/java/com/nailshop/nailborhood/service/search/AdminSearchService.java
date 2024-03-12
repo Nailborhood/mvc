@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.service.search;
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -12,15 +13,22 @@ import com.nailshop.nailborhood.dto.member.MemberInfoDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
+import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewListResponseDto;
+import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopLookupResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsLookupResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
+import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
+import com.nailshop.nailborhood.repository.shop.MenuRepository;
+import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -49,61 +57,86 @@ public class AdminSearchService {
     private final CategoryArtRepository categoryArtRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ShopImgRepository shopImgRepository;
+    private final MenuRepository menuRepository;
+    private final CustomerRepository customerRepository;
 
     // 리뷰로 검색
-    public CommonResponseDto<Object> searchReviewInquiry(String accessToken, String keyword, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> searchReviewInquiry(String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+/*        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole()
+                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
-                .descending());
+                                                                  .descending());
 
-        Page<Review> reviewSearchPage = reviewRepository.findAllReviewListBySearch(keyword, pageable);
+        Page<Review> reviewSearchPage;
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            reviewSearchPage = reviewRepository.findAllIsDeletedFalse(pageable);
+        } else {
+            reviewSearchPage = reviewRepository.findAllReviewListBySearch(keyword, pageable);
+        }
+
         if (reviewSearchPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
+
         List<Review> reviewList = reviewSearchPage.getContent();
-        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+        List<AdminReviewResponseDto> adminReviewResponseDtoList = new ArrayList<>();
 
         for (Review review : reviewList) {
 
-            String mainImgPath = review.getReviewImgList().get(0).getImgPath();
-            String shopName = review.getShop().getName();
+            String mainImgPath = review.getReviewImgList()
+                                       .get(0)
+                                       .getImgPath();
+            String shopName = review.getShop()
+                                    .getName();
+
+
+            String reviewer = customerRepository.findByMemberId(review.getCustomer()
+                                                                      .getMember()
+                                                                      .getMemberId())
+                                                .getMember()
+                                                .getName();
+
 
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
-            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
-                    .reviewId(review.getReviewId())
-                    .shopName(shopName)
-                    .mainImgPath(mainImgPath)
-                    .categoryTypeList(categoryTypeList)
-                    .contents(review.getContents())
-                    .rate(review.getRate())
-                    .likeCnt(review.getLikeCnt())
-                    .createdAt(review.getCreatedAt())
-                    .updatedAt(review.getUpdatedAt())
-                    .build();
+            AdminReviewResponseDto adminReviewResponseDto = AdminReviewResponseDto.builder()
+                                                                             .reviewId(review.getReviewId())
+                                                                             .shopName(shopName)
+                                                                             .mainImgPath(mainImgPath)
+                                                                             .categoryTypeList(categoryTypeList)
+                                                                             .contents(review.getContents())
+                                                                             .rate(review.getRate())
+                                                                             .likeCnt(review.getLikeCnt())
+                                                                             .createdAt(review.getCreatedAt())
+                                                                             .updatedAt(review.getUpdatedAt())
+                                                                             .reviewer(reviewer)
+                                                                             .isDeleted(review.isDeleted())
+                                                                             .build();
 
-            reviewResponseDtoList.add(reviewResponseDto);
+            adminReviewResponseDtoList.add(adminReviewResponseDto);
         }
 
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(reviewSearchPage.getTotalPages())
-                .totalElements(reviewSearchPage.getTotalElements())
-                .pageNo(reviewSearchPage.getNumber())
-                .isLastPage(reviewSearchPage.isLast())
-                .build();
+                                                   .totalPages(reviewSearchPage.getTotalPages())
+                                                   .totalElements(reviewSearchPage.getTotalElements())
+                                                   .pageNo(reviewSearchPage.getNumber())
+                                                   .isLastPage(reviewSearchPage.isLast())
+                                                   .build();
 
-        ReviewListResponseDto reviewListResponseDto = ReviewListResponseDto.builder()
-                .reviewResponseDtoList(reviewResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
+        AdminReviewListResponseDto adminReviewListResponseDto = AdminReviewListResponseDto.builder()
+                                                                                          .adminReviewResponseDtoList(adminReviewResponseDtoList)
+                                                                                          .paginationDto(paginationDto)
+                                                                                          .build();
 
-        return commonService.successResponse(SuccessCode.SEARCH_BY_REVIEW_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
+        return commonService.successResponse(SuccessCode.SEARCH_BY_REVIEW_SUCCESS.getDescription(), HttpStatus.OK, adminReviewListResponseDto);
     }
 
     // 아트판으로 검색
@@ -111,10 +144,11 @@ public class AdminSearchService {
         // 관리자 확인
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole()
+                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
-                .descending());
+                                                                  .descending());
 
         Page<ArtRef> artSearchPage = artRefRepository.findAllArtRefListBySearch(keyword, pageable);
         if (artSearchPage.isEmpty()) {
@@ -126,93 +160,113 @@ public class AdminSearchService {
 
         for (ArtRef artRef : artRefList) {
 
-            String mainImgPath = artRef.getArtImgList().get(0).getImgPath();
-            String shopName = artRef.getShop().getName();
+            String mainImgPath = artRef.getArtImgList()
+                                       .get(0)
+                                       .getImgPath();
+            String shopName = artRef.getShop()
+                                    .getName();
 
             List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
 
             ArtResponseDto artResponseDto = ArtResponseDto.builder()
-                    .name(artRef.getName())
-                    .content(artRef.getContent())
-                    .likeCount(artRef.getLikeCount())
-                    .mainImgPath(mainImgPath)
-                    .shopName(shopName)
-                    .categoryTypeList(categoryTypeList)
-                    .createdAt(artRef.getCreatedAt())
-                    .updatedAt(artRef.getUpdatedAt())
-                    .build();
+                                                          .name(artRef.getName())
+                                                          .content(artRef.getContent())
+                                                          .likeCount(artRef.getLikeCount())
+                                                          .mainImgPath(mainImgPath)
+                                                          .shopName(shopName)
+                                                          .categoryTypeList(categoryTypeList)
+                                                          .createdAt(artRef.getCreatedAt())
+                                                          .updatedAt(artRef.getUpdatedAt())
+                                                          .build();
 
             artResponseDtoList.add(artResponseDto);
         }
 
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(artSearchPage.getTotalPages())
-                .totalElements(artSearchPage.getTotalElements())
-                .pageNo(artSearchPage.getNumber())
-                .isLastPage(artSearchPage.isLast())
-                .build();
+                                                   .totalPages(artSearchPage.getTotalPages())
+                                                   .totalElements(artSearchPage.getTotalElements())
+                                                   .pageNo(artSearchPage.getNumber())
+                                                   .isLastPage(artSearchPage.isLast())
+                                                   .build();
 
         ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
-                .artResponseDtoList(artResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
+                                                                  .artResponseDtoList(artResponseDtoList)
+                                                                  .paginationDto(paginationDto)
+                                                                  .build();
 
         return commonService.successResponse(SuccessCode.SEARCH_BY_ART_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
 
     // 매장 검색
-    public CommonResponseDto<Object> searchShopInquiry(String accessToken, String keyword, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> searchShopInquiry(String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
-        Page<Shop> shopSearchPage = shopRepository.findALlShopListByKeyword(keyword, pageable);
-        if(shopSearchPage.isEmpty()) {
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
+                                                                  .descending());
+        Page<Shop> shopSearchPage;
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            shopSearchPage = shopRepository.findAllNotDeleted(pageable);
+        } else {
+            shopSearchPage = shopRepository.findALlShopListByKeyword(keyword, pageable);
+        }
+
+        if (shopSearchPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
         }
 
-        List<Shop> shopList = shopSearchPage.getContent();
+        // shop entity -> dto 변환
+        Page<AllShopsLookupResponseDto> data = shopSearchPage.map(shop -> {
 
-        List<ShopLookupResponseDto> shopLookupResponseDtoList = new ArrayList<>();
-        for(Shop shop : shopList) {
-            String mainImgPath = shop.getShopImgList().getFirst().getImgPath();
+            // shopImg imgNum =1 가져오기
+            String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shop.getShopId());
 
-            ShopLookupResponseDto shopLookupResponseDto = ShopLookupResponseDto.builder()
-                    .shopId(shop.getShopId())
-                    .shopMainImgPath(mainImgPath)
-                    .address(shop.getAddress())
-                    .name(shop.getName())
-                    .phone(shop.getPhone())
-                    .opentime(shop.getOpentime())
-                    .website(shop.getWebsite())
-                    .content(shop.getContent())
-                    .status(shop.getStatus())
-                    .isDeleted(shop.getIsDeleted())
-                    .createdAt(shop.getCreatedAt())
-                    .reviewCnt(shop.getReviewCnt())
-                    .favoriteCnt(shop.getFavoriteCnt())
-                    .rateAvg(shop.getRateAvg())
-                    .build();
+            long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
-            shopLookupResponseDtoList.add(shopLookupResponseDto);
-        }
+            // dto에 shop entity 값을 변환하는 과정
+            AllShopsLookupResponseDto dto = new AllShopsLookupResponseDto(
+                    shop.getShopId(),
+                    shopMainImg,
+                    shop.getName(),
+                    shop.getPhone(),
+                    shop.getAddress(),
+                    shop.getOpentime(),
+                    shop.getWebsite(),
+                    shop.getContent(),
+                    shop.getStatus(),
+                    shop.getIsDeleted(),
+                    shop.getCreatedAt(),
+                    shop.getReviewCnt(),
+                    shop.getFavoriteCnt(),
+                    shop.getRateAvg(),
+                    menuCnt
+            );
+            // data 에 dto 반환
+            return dto;
+        });
 
+
+        // 매장 리스트 가져오기
+        List<AllShopsLookupResponseDto> allShopsLookupResponseDtoList = data.getContent();
+
+        // 페이지네이션 설정
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(shopSearchPage.getTotalPages())
-                .totalElements(shopSearchPage.getTotalElements())
-                .pageNo(shopSearchPage.getNumber())
-                .isLastPage(shopSearchPage.isLast())
-                .build();
+                                                   .totalPages(data.getTotalPages())
+                                                   .totalElements(data.getTotalElements())
+                                                   .pageNo(data.getNumber())
+                                                   .isLastPage(data.isLast())
+                                                   .build();
 
-        ShopListResponseDto shopListResponseDto = ShopListResponseDto.builder()
-                .shopLookupResponseDtoList(shopLookupResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
-
-        return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
+        // 페이지네이션을 포함한 매장 리스트 반환
+        AllShopsListResponseDto allShopsListResponseDto = AllShopsListResponseDto.builder()
+                                                                                 .allShopsLookupResponseDtoList(allShopsLookupResponseDtoList)
+                                                                                 .paginationDto(paginationDto)
+                                                                                 .build();
+        return commonService.successResponse(SuccessCode.SEARCH_BY_SHOP_SUCCESS.getDescription(), HttpStatus.OK, allShopsListResponseDto);
     }
 
 
@@ -223,19 +277,21 @@ public class AdminSearchService {
         // 관리자 확인
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole()
+                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 페이지 설정 및 MemberList get
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
+                                                                  .descending());
 
-        Page<Member> memberPage = memberRepository.findAllMemberListByKeyword(keyword,pageable);
+        Page<Member> memberPage = memberRepository.findAllMemberListByKeyword(keyword, pageable);
         if (memberPage.isEmpty()) throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 
         List<Member> memberList = memberPage.getContent();
         List<MemberInfoDto> memberInfoDtoList = new ArrayList<>();
 
         // MemberInfoDto build
-        for (Member member : memberList){
+        for (Member member : memberList) {
 
             MemberInfoDto memberInfoDto = MemberInfoDto.builder()
                                                        .email(member.getEmail())
@@ -269,9 +325,6 @@ public class AdminSearchService {
 
         return commonService.successResponse(SuccessCode.MEMBER_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, memberListResponseDto);
     }
-
-
-
 
 
 }
