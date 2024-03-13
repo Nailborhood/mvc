@@ -76,6 +76,20 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     // 관리자 매장 검색
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE s.name Like %:keyword% " )
+            "WHERE s.name Like %:keyword% AND s.isDeleted = false" )
     Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
+
+    // 리뷰 개수 증가
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt + 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntIncreaseByShopId(@Param("shopId") Long shopId);
+
+    // 리뷰 개수 감소
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt - 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntDecreaseByShopId(@Param("shopId") Long shopId);
 }

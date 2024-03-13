@@ -88,7 +88,7 @@ public class ReviewRegistrationService {
         updateShopRateAvg(shop);
 
         // 리뷰 등록 시 리뷰 개수 변경
-        updateShopReviewCnt(shop);
+        shopRepository.updateReviewCntIncreaseByShopId(shopId);
 
         return commonService.successResponse(SuccessCode.REVIEW_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
@@ -132,21 +132,5 @@ public class ReviewRegistrationService {
         shopRepository.updateRateAvgByShopId(rateAvg, shopId);
     }
 
-    private void updateShopReviewCnt(Shop shop) {
-        Long shopId = shop.getShopId();
-        List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
 
-        double totalRate = reviews.stream()
-                                  .mapToInt(Review::getRate)
-                                  .sum();
-
-
-        String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
-        double rateAvg = Double.parseDouble(rateAvgStr);
-//        shop.setRateAvg(totalRate / reviews.size());
-//
-//        shopRepository.save(shop);
-
-        shopRepository.updateRateAvgByShopId(rateAvg, shopId);
-    }
 }
