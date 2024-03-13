@@ -56,7 +56,10 @@ public class ShopDetailService {
                                                                                         s.getContent(),
                                                                                         s.getStatus(),
                                                                                         s.getCreatedAt(),
-                                                                                        s.getRateAvg()
+                                                                                        s.getRateAvg(),
+                                                                                        s.getReviewCnt(),
+                                                                                        s.getFavoriteCnt(),
+                                                                                        s.getIsDeleted()
                                                                                 )
 
 
