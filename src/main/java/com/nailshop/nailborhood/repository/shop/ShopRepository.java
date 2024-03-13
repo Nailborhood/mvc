@@ -76,7 +76,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     // 관리자 매장 검색
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE s.name Like %:keyword% AND s.isDeleted = false" )
+            "WHERE s.name Like %:keyword%" )
     Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
 
     // 리뷰 개수 증가
@@ -92,4 +92,12 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateReviewCntDecreaseByShopId(@Param("shopId") Long shopId);
+
+    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false and s.status = 'BEFORE_OPEN'")
+    Page<Shop> findAllNotDeletedAndBeforeOpen(Pageable pageable);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE (s.name Like %:keyword% ) and s.status = 'BEFORE_OPEN'" )
+    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(String keyword, Pageable pageable);
 }
