@@ -191,6 +191,7 @@ public class ReviewService {
         // 평균 별졈 수정
         updateShopRateAvg(shop);
 
+        shopRepository.updateReviewCntDecreaseByShopId(shopId);
 
         return commonService.successResponse(SuccessCode.REVIEW_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
