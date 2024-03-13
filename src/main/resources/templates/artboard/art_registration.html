@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>아트 등록</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/artboard/art_registration_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/artboard/art_registration.js}"></script>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="body-content">
+            <form th:action="@{/nailborhood/owner/artboard/register}" method="post" enctype="multipart/form-data">
+                <div class="art-write-section">
+
+                    <div class="input-group">
+                        <label for="art-title">아트 제목</label>
+                        <input type="text" id="art-title" name="name" class="art-title-input" placeholder="아트 제목을 입력해주세요." />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="shop-id">매장 ID</label>
+                        <input type="text" id="shop-id" name="shopId" class="shop-id-input" placeholder="매장 ID를 입력해주세요." />
+                    </div>
+
+                    <div class="category">
+                        <div th:replace="/fragments/components/search/check_category.html"></div>
+                    </div>
+
+                    <div class="image-gallery">
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                    </div>
+
+                    <div class="image-upload-button-container">
+                        <input type="file" id="image-input" name="file" accept="image/*" multiple style="display: none;" />
+                        <label for="image-input" class="upload-button">사진 업로드</label>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="art-content">아트 내용</label>
+                        <textarea id="art-content" name="content" class="art-textarea" placeholder="아트 내용을 입력해주세요."></textarea>
+                    </div>
+
+                    <div class="submit-button-container">
+                        <button type="submit" class="submit-button">확인</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
