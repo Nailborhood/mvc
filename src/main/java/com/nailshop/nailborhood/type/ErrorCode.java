@@ -17,6 +17,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
     // 아트판
     ART_NOT_FOUND("아트판 정보를 찾을 수 없습니다."),
+    ART_REGISTRATION_FAIL("아트판 등록에 실패하였습니다."),
     // 매장
     SHOP_NOT_FOUND("매장 정보를 찾을 수 없습니다"),
     SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),

@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.service.artboard.*;
+import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -30,14 +32,34 @@ public class ArtController {
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 등록", description = "owner API")
-    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
-    public ResponseEntity<ResultDto<Void>> registerArt(/*@RequestHeader(AUTH) String accessToken,*/
-                                                       @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                       @RequestPart(value = "data") ArtRegistrationRequestDto artRegistrationRequestDto){
-        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(/*accessToken, */multipartFileList, artRegistrationRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
+    @GetMapping("/owner/artboard/register")
+    public String showRegisterArt(Model model,
+                                  ArtRegistrationRequestDto artRegistrationRequestDto){
 
-        return ResponseEntity.status(registerArt.getHttpStatus()).body(resultDto);
+        model.addAttribute("artDto", artRegistrationRequestDto);
+
+        return "artboard/art_registration";
+    }
+
+    @Tag(name = "owner", description = "owner API")
+    @Operation(summary = "아트판 등록", description = "owner API")
+    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
+    public String registerArt(/*@RequestHeader(AUTH) String accessToken,*/
+                                                       @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                                                       @ModelAttribute ArtRegistrationRequestDto artRegistrationRequestDto,
+                                                       RedirectAttributes redirectAttributes) {
+        try {
+            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(/*accessToken, */multipartFileList, artRegistrationRequestDto);
+            ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
+
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+
+            return "redirect:/nailborhood/user/artboard/inquiry";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
+
+            return "artboard/art_registration";
+        }
     }
 
     @Tag(name = "owner", description = "owner API")
