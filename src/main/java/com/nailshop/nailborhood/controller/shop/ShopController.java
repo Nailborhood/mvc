@@ -4,7 +4,6 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResp
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
@@ -14,9 +13,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/nailborhood")
 public class ShopController {
@@ -63,18 +68,18 @@ public class ShopController {
     @Operation(summary = "매장 상세 조회", description = "Shop API")
     // 매장 상세 조회
     @GetMapping("/shopDetail/{shopId}")
-    public ResponseEntity<ResultDto<ShopDetailListResponseDto>> getShopDetail(@PathVariable Long shopId){
+    public String getShopDetail(Model model,
+                                @PathVariable Long shopId){
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
-        ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
-        resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
 
-        return ResponseEntity.status(shopDetail.getHttpStatus()).body(resultDto);
+        model.addAttribute("shopDetail", shopDetail.getData());
+
+        return "shop/shop_detail";
     }
 
 
     @Tag(name = "ShopReview", description = "Shop API")
     @Operation(summary = "매장 리뷰 조회", description = "Shop API")
-    // 매장 상세 조회
     @GetMapping("/review/{shopId}")
     public ResponseEntity<ResultDto<ShopReviewListLookupResponseDto>> getShopReviewList(@PathVariable Long shopId,
                                                                                         @RequestParam(value = "page", defaultValue = "1", required = false) int page,
