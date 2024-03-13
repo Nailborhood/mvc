@@ -17,7 +17,7 @@
         <span class="admin-title-span">매장 목록</span>
         <div class="admin-content-div">
             <!-- 검색 기능 -->
-            <form th:action="@{/nailborhood/admin/search/shop}" method="get">
+            <form th:action="@{/admin/search/shop}" method="get">
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
                     <button type="submit" class="search-button">
@@ -31,10 +31,10 @@
             <table class="chart-list" th:unless="${errorCode}">
                 <thead>
                 <tr>
+                    <th>매장번호</th>
                     <th>사진</th>
                     <th>이름</th>
                     <th>전화번호</th>
-                    <th>운영상태</th>
                     <th>운영시간</th>
                     <th>주소</th>
                     <th>웹사이트 주소</th>
@@ -43,21 +43,16 @@
                     <th>리뷰 개수</th>
                     <th>리뷰 별점</th>
                     <th>메뉴 개수</th>
+                    <th>운영상태</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody th:if="${shopList != null}">
                 <tr class="chart-item" th:each="shop : ${shopList.allShopsLookupResponseDtoList}">
+                    <td th:text="${shop.shopId}"></td>
                     <td><img class="chart-profile" th:src="@{${shop.shopMainImgPath}}" alt="Profile Image"></td>
                     <td th:text="${shop.name}"></td>
                     <td th:text="${shop.phone}"></td>
-<!--                    <td th:switch="${shop.status}">-->
-<!--                        <span th:case="'OPEN'" th:text="'운영중'"></span>-->
-<!--                        <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>-->
-<!--                        <span th:case="'CLOSED'" th:text="'영업종료'"></span>-->
-<!--                    </td>-->
-                    <td th:text="${shop.status}"></td>
-<!--                    <td th:text="${shop.status == 'OPEN' ? '운영중' : shop.status == 'BEFORE_OPEN' ? '영업전' : '영업종료'}"></td>-->
                     <td th:text="${shop.opentime}"></td>
                     <td th:text="${shop.address}"></td>
                     <td th:text="${shop.website}"></td>
@@ -66,6 +61,11 @@
                     <td th:text="${shop.favoriteCnt}"></td>
                     <td th:text="${shop.rateAvg}"></td>
                     <td th:text="${shop.menuCnt}"></td>
+                    <td th:switch="${#strings.toString(shop.status)}">
+                        <span th:case="'OPEN'" th:text="'운영중'"></span>
+                        <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
+                        <span th:case="'CLOSED'" th:text="'영업종료'"></span>
+                    </td>
                     <td><button class="button" th:if="${shop.isDeleted == false}">매장 삭제</button></td>
                 </tr>
 

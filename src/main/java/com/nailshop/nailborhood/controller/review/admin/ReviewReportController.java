@@ -25,7 +25,6 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/nailborhood")
 public class ReviewReportController {
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 

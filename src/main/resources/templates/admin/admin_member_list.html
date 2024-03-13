@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지-회원 리스트</title>
+   <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">매장 목록</span>
+        <div class="admin-content-div">
+            <!-- 검색 기능 -->
+            <form th:action="@{/admin/search/member}" method="get">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                    <button type="submit" class="search-button">
+                        <img src="/assets/icons/search_icon.png" alt="Search">
+                    </button>
+                </div>
+            </form>
+            <!--검색 시 해당 매장 없을 때 오류 반환-->
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+            <!-- 매장 리스트 -->
+            <table class="chart-list" th:unless="${errorCode}">
+                <thead>
+                <tr>
+                    <th>회원번호</th>
+                    <th>사진</th>
+                    <th>이름</th>
+                    <th>닉네임</th>
+                    <th>전화번호</th>
+                    <th>이메일</th>
+                    <th>생일</th>
+                    <th>주소</th>
+                    <th>성별</th>
+                    <th>가입날짜</th>
+                    <th>회원상태</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:if="${memberList != null}">
+                <tr class="chart-item" th:each="member : ${memberList.memberInfoDtoList}">
+                    <td th:text="${member.memberId}"></td>
+                    <td><img class="chart-profile" th:src="@{${member.profileImg}}" alt="Profile Image"></td>
+                    <td th:text="${member.name}"></td>
+                    <td th:text="${member.nickname}"></td>
+                    <td th:text="${member.phoneNum}"></td>
+                    <td th:text="${member.email}"></td>
+                    <td th:text="${member.birthday}"></td>
+                    <td th:text="${member.address}"></td>
+                    <td th:text="${member.gender}"></td>
+                    <td th:text="${member.createdAt}"></td>
+                    <td th:text="${member.isDeleted == false ? '가입' : '탈퇴'}"></td>
+                    <!--                    <td th:text="${shop.status == 'OPEN' ? '운영중' : shop.status == 'BEFORE_OPEN' ? '영업전' : '영업종료'}"></td>-->
+                    <td><button class="button" th:if="${member.isDeleted == false}">회원 삭제</button></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

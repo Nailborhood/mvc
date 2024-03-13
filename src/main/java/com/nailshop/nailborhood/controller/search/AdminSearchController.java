@@ -23,14 +23,13 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/nailborhood")
 public class AdminSearchController {
 
     private final AdminSearchService adminSearchService;
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 
     // 회원 검색
-
+/*
     @GetMapping("/admin/search/member")
     public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
                                                                              @RequestParam(value = "keyword") String keyword,
@@ -43,7 +42,7 @@ public class AdminSearchController {
 
         return ResponseEntity.status(inquiryAllMember.getHttpStatus())
                              .body(resultDto);
-    }
+    }*/
 
     // 리뷰 검색
 
