@@ -163,7 +163,7 @@ public class ReviewService {
         }
 
 
-        // 이미지 삭제 true -> false
+/*        // 이미지 삭제 true -> false
         List<ReviewImg> reviewImgPathList = reviewImgRepository.findDeleteReviewImgPathList(reviewId);
 
         // url 삭제
@@ -173,25 +173,25 @@ public class ReviewService {
             s3UploadService.deleteReviewImg(imgPath);
 
             reviewImgRepository.deleteByReviewImgId(reviewImgPath.getReviewImgId(),true);
-        }
+        }*/
 
         // 좋아요 수 0, reviewLike 삭제
         reviewRepository.likeCntZero(reviewId);
         reviewLikeRepository.deleteByReviewId(reviewId);
 
+        // 매장 리뷰 cnt 감소 처리
+        shopRepository.updateReviewCntDecreaseByShopId(shopId);
+
         // reviewID 해당 카테고리 삭제
         categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
         // 리뷰 신고 테이블 reviewId 해당 컬럼 삭제
-        reviewReportRepository.deleteReviewReportByReviewId(reviewId);
+/*        reviewReportRepository.deleteReviewReportByReviewId(reviewId);*/
 
         // 리뷰 isdeleted 값 true로
         reviewRepository.deleteReviewId(reviewId, true);
 
-        // 평균 별졈 수정
         updateShopRateAvg(shop);
-
-        shopRepository.updateReviewCntDecreaseByShopId(shopId);
 
         return commonService.successResponse(SuccessCode.REVIEW_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }

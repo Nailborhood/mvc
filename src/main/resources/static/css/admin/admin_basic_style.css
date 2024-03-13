@@ -78,9 +78,9 @@
     border-radius: 50%;
 }
 
-/* 삭제 버튼 */
+/* 버튼 */
 
-.delete-button {
+.button {
     padding: 5px 10px;
     border: none;
     background-color: #1d438a; /* 빨간색 배경 */
@@ -88,6 +88,6 @@
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
 }
 
-.delete-button:hover {
+.button:hover {
     background-color: rgba(43, 107, 225, 0.287);
 }

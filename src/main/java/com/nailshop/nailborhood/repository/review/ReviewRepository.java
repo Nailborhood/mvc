@@ -108,7 +108,11 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.shop s " +
-            "WHERE (r.contents Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) " )
+            "WHERE (r.contents Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
     Page<Review> findAllReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
 
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
+    Review findByReviewId(Long reviewId);
 }

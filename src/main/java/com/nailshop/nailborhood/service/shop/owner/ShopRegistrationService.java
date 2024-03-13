@@ -35,8 +35,9 @@ public class ShopRegistrationService {
     private final ShopImgRepository shopImgRepository;
     private final CertificateImgRepository certificateImgRepository;
 
+    //TODO: 매장 등록 시 status -> beforeOpen / 관리자쪽에서 매장 등록 신청 승인 -> open으로 변경
     // 매장 등록
-    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto, String accessToken) {
+    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAddressSeparation()

@@ -6,6 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 페이지-리뷰 신고 리스트</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/admin/admin_review_report.js}"></script>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
@@ -26,11 +28,12 @@
                 </div>
             </form>
             <!--검색 시 해당 매장 없을 때 오류 반환-->
-            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.REVIEW_NOT_FOUND.description}"></div>
-            <!-- 매장 리스트 -->
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+            <!-- 리스트 -->
             <table class="chart-list" th:unless="${errorCode}">
                 <thead>
                 <tr>
+                    <th>리뷰 번호</th>
                     <th>리뷰 사진</th>
                     <th>작성자 이름</th>
                     <th>리뷰 내용</th>
@@ -44,6 +47,7 @@
                 </thead>
                 <tbody th:if="${reviewReportList != null}">
                 <tr class="chart-item" th:each="reviewReport : ${reviewReportList.reviewReportLookupDtoList}">
+                    <td th:text="${reviewReport.reviewId}"></td>
                     <td><img class="chart-profile" th:src="@{${reviewReport.mainImgPath}}" alt="Profile Image"></td>
                     <td th:text="${reviewReport.reviewer}"></td>
                     <td th:text="${reviewReport.reviewContents}"></td>
@@ -53,10 +57,18 @@
                     <td th:text="${#temporals.format(reviewReport.date, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${reviewReport.status}"></td>
                     <td>
-                        <button class="delete-button" th:if="${reviewReport.status == '신고 대기중'}">신고 승인</button>
+                        <button class="button accept-button" th:if="${reviewReport.status == '신고 대기중'}"
+                                th:reportId="${reviewReport.reportId}" data-status="accept"
+                                th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))" >
+                            신고 승인
+                        </button>
 
 
-                        <button class="delete-button" th:if="${reviewReport.status == '신고 대기중'}">신고 반려</button>
+
+                        <button class="button reject-button" th:if="${reviewReport.status == '신고 대기중'}"
+                                th:reportId="${reviewReport.reportId}" data-status="reject"
+                                th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))" >
+                            신고 반려</button>
                     </td>
                 </tr>
                 </tbody>
@@ -66,6 +78,5 @@
         </div>
     </div>
 </div>
-
 
 </html>

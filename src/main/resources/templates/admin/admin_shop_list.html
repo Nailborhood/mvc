@@ -26,7 +26,7 @@
                 </div>
             </form>
             <!--검색 시 해당 매장 없을 때 오류 반환-->
-            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.SHOP_NOT_FOUND.description}"></div>
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
             <!-- 매장 리스트 -->
             <table class="chart-list" th:unless="${errorCode}">
                 <thead>
@@ -66,7 +66,7 @@
                     <td th:text="${shop.favoriteCnt}"></td>
                     <td th:text="${shop.rateAvg}"></td>
                     <td th:text="${shop.menuCnt}"></td>
-                    <td><button class="delete-button" th:if="${shop.isDeleted == false}">매장 삭제</button></td>
+                    <td><button class="button" th:if="${shop.isDeleted == false}">매장 삭제</button></td>
                 </tr>
 
                 </tbody>
