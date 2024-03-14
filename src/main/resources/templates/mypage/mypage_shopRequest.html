@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+        <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+        <link rel="stylesheet" th:href="@{/css/mypage/mypage_shop_request_style.css}" />
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">매장 신청</span>
+        <div class="content-div">
+            <div class="img-mod-text">
+                <span class="img-text">매장 사진 변경 &nbsp; </span>
+                <label class="input-file-button" for="input-file">
+                    사진 등록
+                </label>
+                <input type="file" id="input-file" style="display: none;" >
+            </div>
+            <div class="img-mod">
+                <div class="shop-img">
+                    <img src="/src/asset/icons/IMG_2411.jpg">
+                </div>
+                <div class="shop-img">
+                    <img src="/src/asset/icons/IMG_2411.jpg">
+                </div>
+                <div class="shop-img">
+                    <img src="/src/asset/icons/IMG_2411.jpg">
+                </div>
+            </div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <label for="certificate-input">사업자 등록증 &nbsp;</label>
+                        <label class="input-file-button" for="certificate-input-button">파일 선택</label>
+                        <input type="file" id="certificate-input-button" style="display: none;" >
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="shopName-input" placeholder="파일 링크" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="shopName-input">매장 이름</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="shopName-input" placeholder="shop name" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="time-input">운영시간</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="time" id="time-input" class="time-input" required> &nbsp; ~ &nbsp;
+                    </td>
+                    <td>
+                        <input type="time" id="time-input" class="time-input" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="phonenumber-input">전화전호</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="phonenumber-input" placeholder="phone number" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="address-input1">주소</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="address-input1" placeholder="주소 api 연결 필요" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="address-input2" placeholder="상세주소" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="info-input">매장 정보</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="info-input" class="large-input" placeholder="info" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="menu-input">메뉴</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="menu-input" placeholder="menu" required>
+                    </td>
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" id="submit-button" class="submit-button"  value="매장 신청">
+        </div>
+    </div>
+</div>
+</html>

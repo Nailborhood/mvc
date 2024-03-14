@@ -9,23 +9,28 @@ import com.nailshop.nailborhood.dto.member.request.ModPasswordRequestDto;
 import com.nailshop.nailborhood.dto.mypage.MyFavoriteListResponseDto;
 import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.mypage.MypageService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
+import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/nailborhood/mypage")
+@Controller
+@RequestMapping("/mypage")
 public class MyPageController {
 
     private final MypageService mypageService;
@@ -109,17 +114,52 @@ public class MyPageController {
     }
 
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "매장 정보 등록", description = "owner API")
-    // 매장 정보 등록 , 사업자 신청
-    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/registration")
-    public ResponseEntity<ResultDto<Void>> registerShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
-                                                        @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList, shopRegistrationRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+    // 매장 신청
+    @GetMapping("/owner/shopRequest")
+    public String requestShop(Model model,
+                                ShopRegistrationRequestDto shopRegistrationRequestDto){
+        model.addAttribute("requestDto",shopRegistrationRequestDto);
+        return "mypage_shopRequest";
     }
+
+    @PostMapping("/owner/shopRequest")
+    public String requestShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                                                        @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
+                                                        @ModelAttribute ShopRegistrationRequestDto shopRegistrationRequestDto) {
+        try{
+            CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList, shopRegistrationRequestDto);
+            ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+            //TODO: 심사 중인 페이지 필요 ( 매장 신청 리스트 보여지면서 "심사중")
+            return "redirect:/";
+        } catch (NotFoundException e) {
+
+            return "mypage_shopRequest";
+        }
+
+    }
+
+    // 매장 신청 조회
+/*    @GetMapping("/owner/shopRequest/list")
+    public String requestShopList(Model model
+                                  ){
+        try{
+            CommonResponseDto<Object> shopRequestList =
+        }catch (NotFoundException e){
+
+        }
+
+        try {
+            CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
+            model.addAttribute("requestList", allShopRequestList.getData());
+            return "admin/admin_shopRequest_list";
+        } catch (NotFoundException e) {
+
+            model.addAttribute("errorCode", ErrorCode.SHOP_REQUEST_NOT_FOUND);
+            //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
+            return "admin/admin_shopRequest_list";
+        }
+    }*/
+
 }
