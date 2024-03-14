@@ -2,6 +2,9 @@ package com.nailshop.nailborhood.service.artboard;
 
 import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
+import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.artboard.ArtDetailResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
@@ -11,6 +14,8 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -32,6 +37,8 @@ public class ArtInquiryService {
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
     private final CategoryArtRepository categoryArtRepository;
+    private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
 
     // 전체 조회
     public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category) {
@@ -132,5 +139,88 @@ public class ArtInquiryService {
                 .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
+    }
+
+    // shopId로 조회
+    public CommonResponseDto<Object> inquiryAllArtByShopId(/*String accessToken, */int page, int size, String sortBy, String category) {
+
+        // member, owner, shop get
+//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        Owner owner = member.getOwner();
+//        Shop shop = owner.getShop();
+
+        // category 리스트화
+        List<Long> categoryIdList = null;
+        if (category != null && !category.isEmpty()){
+
+            categoryIdList = Arrays.stream(category.split(","))
+                    .map(Long::parseLong)
+                    .toList();
+        }
+
+        // Page 설정 및 ArtRefList get
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+
+        Page<ArtRef> artRefPage;
+        if (categoryIdList == null || categoryIdList.isEmpty()){
+            // 카테고리 선택 x
+            artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
+        } else {
+            // 카테고리 선택 o
+            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, pageable);
+        }
+
+        if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+
+        List<ArtRef> artRefList = artRefPage.getContent();
+        List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
+
+//        List<ArtRef> filteredArtRefList = artRefList.stream()
+//                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
+//                .toList();
+//
+//        if (filteredArtRefList.isEmpty()) {
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
+
+        // ArtResponseDto build
+        for (ArtRef artRef : artRefList){
+
+            String mainImgPath = artRef.getArtImgList().getFirst().getImgPath();
+            String shopName = artRef.getShop().getName();
+
+            List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
+
+            ArtResponseDto artResponseDto = ArtResponseDto.builder()
+                    .id(artRef.getArtRefId())
+                    .name(artRef.getName())
+                    .content(artRef.getContent())
+                    .likeCount(artRef.getLikeCount())
+                    .mainImgPath(mainImgPath)
+                    .shopName(shopName)
+                    .categoryTypeList(categoryTypeList)
+                    .createdAt(artRef.getCreatedAt())
+                    .updatedAt(artRef.getUpdatedAt())
+                    .build();
+
+            artResponseDtoList.add(artResponseDto);
+        }
+
+        // PaginationDto build
+        PaginationDto paginationDto = PaginationDto.builder()
+                .totalPages(artRefPage.getTotalPages())
+                .totalElements(artRefPage.getTotalElements())
+                .pageNo(artRefPage.getNumber())
+                .isLastPage(artRefPage.isLast())
+                .build();
+
+        // ArtListResponseDto build
+        ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
+                .artResponseDtoList(artResponseDtoList)
+                .paginationDto(paginationDto)
+                .build();
+
+        return commonService.successResponse(SuccessCode.ART_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
 }
