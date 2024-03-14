@@ -163,7 +163,7 @@ public class ReviewService {
         }
 
 
-/*        // 이미지 삭제 true -> false
+        // 이미지 삭제 true -> false
         List<ReviewImg> reviewImgPathList = reviewImgRepository.findDeleteReviewImgPathList(reviewId);
 
         // url 삭제
@@ -173,7 +173,7 @@ public class ReviewService {
             s3UploadService.deleteReviewImg(imgPath);
 
             reviewImgRepository.deleteByReviewImgId(reviewImgPath.getReviewImgId(),true);
-        }*/
+        }
 
         // 좋아요 수 0, reviewLike 삭제
         reviewRepository.likeCntZero(reviewId);
@@ -203,13 +203,16 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
 
         double totalRate = reviews.stream()
-                .mapToInt(Review::getRate)
-                .sum();
+                                  .mapToInt(Review::getRate)
+                                  .sum();
+        if(totalRate != 0 ) {
+            String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+            double rateAvg = Double.parseDouble(rateAvgStr);
+            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        }else {
+            shopRepository.updateRateAvgByShopId(0,shopId);
+        }
 
-        String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
-        double rateAvg =Double.parseDouble(rateAvgStr);
-
-        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
     }
 
 

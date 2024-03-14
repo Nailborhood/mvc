@@ -244,14 +244,15 @@ public class ReviewReportStatusAdminService {
 
 
             // 리뷰 이미지 삭제
-/*
+
             List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
             for (ReviewImg reviewImg : reviewImgList) {
                 String reviewImgUrl = reviewImg.getImgPath();
                 s3UploadService.deleteReviewImg(reviewImgUrl);
+                reviewImgRepository.deleteByReviewImgId(reviewImg.getReviewImgId(),true);
             }
-            reviewImgRepository.deleteByReviewId(reviewId);
-*/
+
+
             // 삭제 되는 리뷰 좋아요 수 0, reviewLike 삭제
             reviewRepository.likeCntZero(reviewId);
             reviewLikeRepository.deleteByReviewId(reviewId);
@@ -288,11 +289,14 @@ public class ReviewReportStatusAdminService {
         double totalRate = reviews.stream()
                                   .mapToInt(Review::getRate)
                                   .sum();
+        if(totalRate != 0 ) {
+            String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+            double rateAvg = Double.parseDouble(rateAvgStr);
+            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        }else {
+            shopRepository.updateRateAvgByShopId(0,shopId);
+        }
 
-        String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
-        double rateAvg =Double.parseDouble(rateAvgStr);
-
-        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
     }
 
 }

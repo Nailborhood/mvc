@@ -80,6 +80,6 @@ public class ReviewReportController {
           reviewReportStatusAdminService.changeReviewStatus(reportId, status);
 //        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return "redirect:/nailborhood/admin/search/reviewReport";
+        return "redirect:/admin/search/reviewReport";
     }
 }
