@@ -69,7 +69,7 @@ public class AdminShopController {
 
             model.addAttribute("errorCode", ErrorCode.SHOP_REQUEST_NOT_FOUND);
             //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
-            return "admin/admin_shop_list";
+            return "admin/admin_shopRequest_list";
         }
     }
 

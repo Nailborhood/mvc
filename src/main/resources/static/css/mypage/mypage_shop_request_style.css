@@ -1,0 +1,129 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+    margin-bottom: 15px;
+}
+
+.content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;  /* 이 값을 조절하여 'img-mod'의 너비에 맞추어 설정하세요 */
+    margin: 0 auto;
+    position: relative;
+}
+
+.input-file-button {
+    padding: 3px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    border-radius: 5px;
+}
+
+.input-file-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.time-input {
+    width: 234px;
+}
+
+
+.img-mod {
+    align-items: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    position: relative;
+    margin: 15px 0px;
+}
+
+.shop-img {
+    display: block;
+    width: 100%;
+    margin-right: 3px;
+    max-width: 300px;
+    display: block;
+    overflow: hidden;
+    position: relative;
+}
+
+.shop-img img {
+    object-fit: cover;
+    width: 100%;
+    max-width: 300px;
+}
+
+.large-input {
+    height: 100px;
+}
+
+tr {
+    height: 30px;
+}
+td {
+    vertical-align: middle;
+}
+
+table input {
+    height: 30px;
+    width: 500px;
+    font-size: 15px;
+    outline: lightgray auto 1px;
+}
+
+input[type="radio"] {
+    /* -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer; */
+}
+
+/* input[type='radio'] :checked{
+ background-color: #22d3ee;
+  border: 3px solid white;
+  box-shadow: 0 0 0 1.6px #22d3ee;
+} */
+
+table input:focus-visible {
+    outline: var(--main-color_navy) auto 1px;
+}
+
+.gender-radio {
+    width: 15px;
+    height: 15px;
+}
+
+.submit-button {
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.submit-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+

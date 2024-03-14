@@ -131,4 +131,6 @@ public class MypageService {
 
         return commonService.successResponse(SuccessCode.MY_FAVORITE_SHOP_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, myFavoriteListResponseDto);
     }
+
+
 }
