@@ -90,12 +90,12 @@ public class ShopDeleteService {
 
         // 매장
         // 매장 이미지 삭제
-/*        List<ShopImg> shopImgList = shopImgRepository.findByShopImgListByShopId(shopId);
+        List<ShopImg> shopImgList = shopImgRepository.findByShopImgListByShopId(shopId);
         for (ShopImg shopImg : shopImgList) {
             String shopImgImgPath = shopImg.getImgPath();
             s3UploadService.deleteShopImg(shopImgImgPath);
             shopImgRepository.deleteByShopImgId(shopImg.getShopImgId(),true);
-        }*/
+        }
 
         // 매장 삭제
         //  shop -> isDeleted = true, shopStatus = closed

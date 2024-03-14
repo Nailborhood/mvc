@@ -62,7 +62,7 @@ public class AdminShopController {
 
 
         try {
-            CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShops(keyword, page, size, criteria, sort);
+            CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
             model.addAttribute("requestList", allShopRequestList.getData());
             return "admin/admin_shopRequest_list";
         } catch (NotFoundException e) {

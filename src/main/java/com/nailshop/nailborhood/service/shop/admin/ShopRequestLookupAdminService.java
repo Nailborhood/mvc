@@ -41,7 +41,7 @@ public class ShopRequestLookupAdminService {
     // 매장 신청 리스트 조회
 
     @Transactional
-    public CommonResponseDto<Object> getAllShops(String keyword, int page, int size, String criteria, String sort) {
+    public CommonResponseDto<Object> getAllShopRequest(String keyword, int page, int size, String criteria, String sort) {
 
 //        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
 //                                                               .descending());

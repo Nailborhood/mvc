@@ -55,7 +55,7 @@ function changeReportStatus(reportId, status) {
     if(confirm("신고 처리 하시겠습니까?")) {
         $.ajax({
             type: "POST",
-            url: `/nailborhood/admin/search/reviewReport`,
+            url: `/admin/search/reviewReport`,
             data: { reportId: reportId, status: status },
             success: function(response) {
                 location.reload();

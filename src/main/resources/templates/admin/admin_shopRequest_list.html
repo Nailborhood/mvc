@@ -64,7 +64,7 @@
                     <td th:switch="${#strings.toString(request.status)}">
                         <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
                     </td>
-                    <td>
+<!--                    <td>
                         <button class="button accept-button" th:if="${#strings.toString(request.status) == 'BEFORE_OPEN'}"
                                 th:reportId="${request.shopId}" data-status="accept"
                                 th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))" >
@@ -77,7 +77,7 @@
                                 th:reportId="${request.shopId}" data-status="reject"
                                 th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))" >
                             반려</button>
-                    </td>
+                    </td>-->
                 </tr>
 
                 </tbody>
