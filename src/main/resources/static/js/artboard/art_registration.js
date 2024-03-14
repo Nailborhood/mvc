@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-    const imageInput = document.getElementById('image-input');
+    const imageInput = document.getElementById('input-file');
     if (imageInput) {
         imageInput.addEventListener('change', function(event) {
             const files = event.target.files;

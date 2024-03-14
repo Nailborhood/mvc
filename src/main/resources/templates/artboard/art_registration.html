@@ -8,17 +8,22 @@
     <meta charset="UTF-8">
     <title>아트 등록</title>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_registration_style.css}">
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <link rel="stylesheet" th:href="@{/css/owner/owner_side_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/artboard/art_registration.js}"></script>
 </head>
 
 <body>
-    <div layout:fragment="content">
-        <div class="body-content">
+    <div layout:fragment="content" style="flex-direction: row" class="owner-content">
+        <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+        <div class="content">
+            <span class="owner-title-span">아트 등록</span>
+
             <form th:action="@{/nailborhood/owner/artboard/register}" method="post" enctype="multipart/form-data">
-                <div class="art-write-section">
+                <div class="owner-content-div">
 
                     <div class="input-group">
                         <label for="art-title">아트 제목</label>
@@ -31,7 +36,14 @@
                     </div>
 
                     <div class="category">
+                        <span class="category-text">카테고리 선택</span>
                         <div th:replace="/fragments/components/search/check_category.html"></div>
+                    </div>
+
+                    <div class="img-mod-text">
+                        <span class="img-text">아트 사진 등록 &nbsp; </span>
+                        <label class="input-file-button" for="input-file">사진 등록</label>
+                        <input type="file" id="input-file" name="file" accept="image/*" multiple style="display: none;" >
                     </div>
 
                     <div class="image-gallery">
@@ -46,20 +58,23 @@
                         </div>
                     </div>
 
-                    <div class="image-upload-button-container">
-                        <input type="file" id="image-input" name="file" accept="image/*" multiple style="display: none;" />
-                        <label for="image-input" class="upload-button">사진 업로드</label>
-                    </div>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td colspan="2">
+                                <label for="info-input">게시글</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea id="info-input" name="content" class="large-input" placeholder="게시글 내용을 입력하세요." required></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                    <div class="input-group">
-                        <label for="art-content">아트 내용</label>
-                        <textarea id="art-content" name="content" class="art-textarea" placeholder="아트 내용을 입력해주세요."></textarea>
-                    </div>
-
-                    <div class="submit-button-container">
-                        <button type="submit" class="submit-button">확인</button>
-                    </div>
-
+                    <br>
+                    <input type="submit" id="submit-button" class="submit-button" value="아트 등록">
                 </div>
             </form>
         </div>
