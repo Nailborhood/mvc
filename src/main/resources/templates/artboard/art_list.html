@@ -25,7 +25,7 @@
         <div class="art-list">
             <!-- 페이지의 각 아트 아이템을 순회합니다 -->
             <div th:each="art, iterStat : ${result.getData().artResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
-                <a th:href="@{/nailborhood/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
                     <div class="art-img">
                         <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
                     </div>
