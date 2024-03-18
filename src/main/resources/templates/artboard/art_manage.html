@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_manage_style.css}">
+    <script th:src="@{/js/artboard/art_delete.js}"></script>
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/search.js}"></script>
 </head>
@@ -54,7 +55,7 @@
 
                         <div class="button-group">
                             <a th:href="@{/owner/artboard/modify/{id}(id=${art.id})}" class="edit-button-link">수정</a>
-                            <button onclick="deleteFunction()" class="delete-button">삭제</button>
+                            <button type="button" class="delete-button" th:data-id="${art.id}" onclick="artDelete(this)">삭제</button>
                         </div>
                     </div>
                 </div>

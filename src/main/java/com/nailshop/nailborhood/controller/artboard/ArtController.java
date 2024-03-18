@@ -100,9 +100,9 @@ public class ArtController {
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 삭제", description = "owner API")
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
-    public ResponseEntity<ResultDto<Void>> deleteArtRef(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> deleteArtRef(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long artRefId){
-        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(accessToken, artRefId);
+        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(/*accessToken, */artRefId);
         ResultDto<Void> resultDto = ResultDto.in(deleteArt.getStatus(), deleteArt.getMessage());
 
         return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
