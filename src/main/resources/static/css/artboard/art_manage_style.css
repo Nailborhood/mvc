@@ -79,3 +79,61 @@
 .art-info_under div:last-child {
     border-right: none;
 }
+
+.art-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.art-container {
+    position: relative;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.edit-button, .delete-button {
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.edit-button:hover{
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-button:hover{
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.edit-button-link {
+    display: inline-block;
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    background-color: var(--main-color_navy);
+    color: var(--main-color_begie);
+    text-align: center;
+    line-height: 31px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.edit-button-link:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}

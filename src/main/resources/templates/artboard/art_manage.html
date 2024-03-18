@@ -12,7 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/owner/owner_side_style.css}">
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
-    <link rel="stylesheet" th:href="@{/css/owner/art_manage_style.css}">
+    <link rel="stylesheet" th:href="@{/css/artboard/art_manage_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/search.js}"></script>
 </head>
@@ -29,28 +29,34 @@
                 </div>
 
                 <div class="art-list_div">
-                    <a th:each="art : ${result.getData().artResponseDtoList}"
-                       th:href="@{/nailborhood/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
-                        <div class="art-info_img">
-                            <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
-                        </div>
-                        <div class="art-info_text">
-                            <div class="art-info_title" th:text="${art.getName()}">
-                                title
+                    <div th:each="art : ${result.getData().artResponseDtoList}" class="art-container">
+                        <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                            <div class="art-info_img">
+                                <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
                             </div>
-                            <div class="art-info_date" th:text="${#temporals.format(art.getCreatedAt(), 'yyyy-MM-dd, HH:mm')}">
-                                Date
-                            </div>
-                            <div class="art-info_under">
-                                <div class="art-info_category" th:text="${#strings.listJoin(art.getCategoryTypeList(), ', ')}">
-                                    category
+                            <div class="art-info_text">
+                                <div class="art-info_title" th:text="${art.getName()}">
+                                    title
+                                </div>
+                                <div class="art-info_date" th:text="${#temporals.format(art.getCreatedAt(), 'yyyy-MM-dd, HH:mm')}">
+                                    Date
+                                </div>
+                                <div class="art-info_under">
+                                    <div class="art-info_category" th:text="${#strings.listJoin(art.getCategoryTypeList(), ', ')}">
+                                        category
+                                    </div>
+                                </div>
+                                <div class="art-info_content" th:text="${art.getContent()}">
+                                    Content
                                 </div>
                             </div>
-                            <div class="art-info_content" th:text="${art.getContent()}">
-                                Content
-                            </div>
+                        </a>
+
+                        <div class="button-group">
+                            <a th:href="@{/owner/artboard/modify/{id}(id=${art.id})}" class="edit-button-link">수정</a>
+                            <button onclick="deleteFunction()" class="delete-button">삭제</button>
                         </div>
-                    </a>
+                    </div>
                 </div>
 
                 <div class="pagination">
