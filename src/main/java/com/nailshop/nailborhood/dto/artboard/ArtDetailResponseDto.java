@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.dto.artboard;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ArtDetailResponseDto {
 
+    private Long artRefId;
     private String name;
     private String content;
     private Long likeCount;
@@ -22,7 +24,8 @@ public class ArtDetailResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public ArtDetailResponseDto(String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, Map<Integer, String> imgPathMap, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ArtDetailResponseDto(Long artRefId, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, Map<Integer, String> imgPathMap, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.artRefId = artRefId;
         this.name = name;
         this.content = content;
         this.likeCount = likeCount;

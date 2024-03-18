@@ -21,7 +21,6 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/nailborhood")
 public class ArtController {
 
     private final ArtRegistrationService artRegistrationService;
@@ -54,25 +53,48 @@ public class ArtController {
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/nailborhood/user/artboard/inquiry";
+            return "redirect:/user/artboard/inquiry";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
 
             return "artboard/art_registration";
         }
     }
+    @Tag(name = "owner", description = "owner API")
+    @Operation(summary = "아트판 수정", description = "owner API")
+    @GetMapping("/owner/artboard/modify/{artRefId}")
+    public String showUpdateArt(Model model,
+                                @PathVariable Long artRefId){
+        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId);
+        ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
+        resultDto.setData((ArtDetailResponseDto) artDetail.getData());
+
+        model.addAttribute("result", resultDto);
+
+        return "artboard/art_update";
+    }
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 수정", description = "owner API")
-    @PutMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
-    public ResponseEntity<ResultDto<Void>> updateArtRef(@RequestHeader(AUTH) String accessToken,
-                                                        @PathVariable Long artRefId,
-                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "data") ArtUpdateRequestDto artUpdateRequestDto){
-        CommonResponseDto<Object> updateArt = artUpdateService.updateArt(accessToken, multipartFileList, artUpdateRequestDto, artRefId);
-        ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
+    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
+    public String updateArtRef(/*@RequestHeader(AUTH) String accessToken,*/
+                               @PathVariable Long artRefId,
+                               @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                               @ModelAttribute ArtUpdateRequestDto artUpdateRequestDto,
+                               RedirectAttributes redirectAttributes){
 
-        return ResponseEntity.status(updateArt.getHttpStatus()).body(resultDto);
+        try{
+            CommonResponseDto<Object> updateArt = artUpdateService.updateArt(/*accessToken, */multipartFileList, artUpdateRequestDto, artRefId);
+            ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
+
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+
+            return "redirect:/mypage/owner/artboard/manage";
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
+
+            return "artboard/art_update";
+        }
     }
 
     @Tag(name = "owner", description = "owner API")
