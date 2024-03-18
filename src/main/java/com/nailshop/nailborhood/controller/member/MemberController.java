@@ -4,23 +4,20 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
-import com.nailshop.nailborhood.security.dto.TokenResponseDto;
+
 import com.nailshop.nailborhood.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Hidden;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
-import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/nailborhood")
 public class MemberController {
     private final MemberService memberService;
 
@@ -42,6 +39,53 @@ public class MemberController {
     public String signupPage() {
         return "member/signup_form";
     }
+
+    @GetMapping("/logout")
+    public String logout(@RequestHeader(AUTH) String accessToken) {
+        CommonResponseDto<Object> commonResponseDto = memberService.logout(accessToken);
+        HttpHeaders newHeader = new HttpHeaders();
+        newHeader.add(HttpHeaders.SET_COOKIE, "cookieName=refreshToken=" + "; Path=/; Max-Age=0");
+        return "redirect:/login";
+    }
+
+
+
+    @PostMapping("/signupProc")
+    public String signupProc(SignUpRequestDto signUpRequestDto) {
+        CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpRequestDto);
+//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        System.out.println(commonResponseDto.getMessage());
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return "redirect:/login";
+    }
+
+//
+//    @PostMapping(value = "/loginProc")
+//    public void loginProc(@RequestParam("email") String email,
+//                            @RequestParam("password") String password,
+//                            HttpServletRequest request, HttpServletResponse response) {
+//        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(email, password);
+//
+//        if(commonResponseDto.getHttpStatus().equals(HttpStatus.OK)) {
+//            System.out.println("로그인 성공");
+//        } else {
+//            System.out.println("로그인 실패");
+//            System.out.println(commonResponseDto.getMessage());
+//        }
+//    }
+
+//    @PostMapping("/loginProc")
+//    public ResponseEntity<ResultDto<?>> loginProc(@RequestBody LoginRequestDto loginRequestDto){
+//        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(loginRequestDto);
+//        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//        Map<String, Object> resultMap = (Map<String, Object>) commonResponseDto.getData();
+//        TokenResponseDto tokenResponseDto = (TokenResponseDto) resultMap.get("accessToken");
+//        result.setData(tokenResponseDto);
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+//                .header(HttpHeaders.AUTHORIZATION, tokenResponseDto.getAccessToken())
+//                .header(HttpHeaders.SET_COOKIE, resultMap.get("refreshToken").toString())
+//                .body(result);
+//    }
 
 
     @GetMapping("/checkEmail")
@@ -69,26 +113,6 @@ public class MemberController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
-    @PostMapping("/signupProc")
-    public ResponseEntity<ResultDto<Void>> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
-    }
-
-    @PostMapping("/loginProc")
-    public ResponseEntity<ResultDto<?>> login(@RequestBody LoginRequestDto loginRequestDto){
-        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(loginRequestDto);
-        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        Map<String, Object> resultMap = (Map<String, Object>) commonResponseDto.getData();
-        TokenResponseDto tokenResponseDto = (TokenResponseDto) resultMap.get("accessToken");
-        result.setData(tokenResponseDto);
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                .header(HttpHeaders.AUTHORIZATION, tokenResponseDto.getAccessToken())
-                .header(HttpHeaders.SET_COOKIE, resultMap.get("refreshToken").toString())
-                .body(result);
-    }
-
 
     @PostMapping("/renewToken")
     public ResponseEntity<?> renewToken (@CookieValue("refreshToken") String refreshToken) {
@@ -98,8 +122,8 @@ public class MemberController {
     }
 
 
-    @PostMapping("/logout")
-    public ResponseEntity<ResultDto<Object>> logout(@RequestHeader(AUTH) String accessToken){
+    @PostMapping("/logoutProc")
+    public ResponseEntity<ResultDto<Object>> logoutProc(@RequestHeader(AUTH) String accessToken){
         CommonResponseDto<Object> commonResponseDto = memberService.logout(accessToken);
         HttpHeaders newHeader = new HttpHeaders();
         newHeader.add(HttpHeaders.SET_COOKIE, "cookieName=refreshToken=" + "; Path=/; Max-Age=0");
