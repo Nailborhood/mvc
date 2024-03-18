@@ -10,11 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @Controller
@@ -40,6 +37,6 @@ public class OwnerController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("size", size);
 
-        return "owner/art_manage";
+        return "artboard/art_manage";
     }
 }
