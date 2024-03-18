@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,7 +48,6 @@ public class MemberService {
     private final TokenProvider tokenProvider;
 
     private final EntityManager entityManager;
-
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     // 이메일 중복 체크
@@ -99,7 +99,6 @@ public class MemberService {
                     .email(signUpRequestDto.getEmail())
                     .password(encPassword)
                     .nickname(signUpRequestDto.getNickname())
-                    .address(signUpRequestDto.getAddress())
                     .name(signUpRequestDto.getName())
                     .phoneNum(signUpRequestDto.getPhoneNum())
                     .gender(signUpRequestDto.getGender())
@@ -143,9 +142,74 @@ public class MemberService {
     }
 
     // 로그인
+//    @Transactional
+//    public CommonResponseDto<Object> memberLogin(LoginRequestDto loginRequestDto) {
+//        //TODO - 비밀번호가 틀린경우 에러메세지가 안넘어옴 확인 필요
+//
+//        if (!findByEmail(loginRequestDto.getEmail())) // 이메일이 없는 경우
+//            return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
+//        else if (findByEmail(loginRequestDto.getEmail()) && passwordCheck(loginRequestDto.getEmail(), loginRequestDto.getPassword())) {
+//            // 이메일이 존재, 비밀번호가 맞는 경우
+//            Member member = memberRepository.findByEmail(loginRequestDto.getEmail()).get();
+//            if (member.isDeleted()) // 이미 탈퇴한 회원인 경우
+//                return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
+//            else {
+//                // 토큰 발급
+//                GeneratedToken generatedToken = tokenProvider.generateToken(member);
+//
+//                // refresh token db에 저장
+//                Optional<Login> optionalLogin = loginRepository.findByMember_MemberId(member.getMemberId());
+//                Login login;
+//                if (optionalLogin.isEmpty()) {
+//                    login = Login.builder()
+//                            .refreshToken(generatedToken.getRefreshToken())
+//                            .member(member)
+//                            .build();
+//                } else {
+//                    login = optionalLogin.get();
+//                    login.updateToken(generatedToken.getRefreshToken());
+//                }
+//                loginRepository.save(login);
+//
+//                Long id = member.getMemberId();
+//                // 헤더에 넣을 access token
+//                TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
+//                        .memberId(id)
+//                        .accessToken(generatedToken.getAccessToken())
+//                        .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
+//                        .build();
+//
+//                // 쿠키에 넣을 refresh token
+//                ResponseCookie responseCookie = ResponseCookie
+//                        .from("refreshToken", generatedToken.getRefreshToken())
+//                        .maxAge(Duration.ofDays(7))
+//                        .path("/")
+//                        .secure(true)
+//                        .sameSite("None")
+//                        .httpOnly(false)
+////                        .domain("https://nailborhood.shop")
+//                        .build();
+//
+//                Map<String, Object> loginMap = new HashMap<>();
+//                loginMap.put("accessToken", tokenResponseDto);
+//                loginMap.put("refreshToken", responseCookie);
+//
+//                return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, loginMap);
+//            }
+//        } else { // 비밀번호가 틀린 경우
+//            return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
+//        }
+//    }
+
+
     @Transactional
-    public CommonResponseDto<Object> memberLogin(LoginRequestDto loginRequestDto) {
+    public CommonResponseDto<Object> memberLogin(String email, String password) {
         //TODO - 비밀번호가 틀린경우 에러메세지가 안넘어옴 확인 필요
+        //TODO - 스프링 시큐리티 자체 로그인으로 변경 중 - 쿠키 jwt 모두 제거 중
+
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setEmail(email);
+        loginRequestDto.setPassword(password);
 
         if (!findByEmail(loginRequestDto.getEmail())) // 이메일이 없는 경우
             return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
@@ -155,47 +219,8 @@ public class MemberService {
             if (member.isDeleted()) // 이미 탈퇴한 회원인 경우
                 return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
             else {
-                // 토큰 발급
-                GeneratedToken generatedToken = tokenProvider.generateToken(member);
-
-                // refresh token db에 저장
-                Optional<Login> optionalLogin = loginRepository.findByMember_MemberId(member.getMemberId());
-                Login login;
-                if (optionalLogin.isEmpty()) {
-                    login = Login.builder()
-                            .refreshToken(generatedToken.getRefreshToken())
-                            .member(member)
-                            .build();
-                } else {
-                    login = optionalLogin.get();
-                    login.updateToken(generatedToken.getRefreshToken());
-                }
-                loginRepository.save(login);
-
                 Long id = member.getMemberId();
-                // 헤더에 넣을 access token
-                TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                        .memberId(id)
-                        .accessToken(generatedToken.getAccessToken())
-                        .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-                        .build();
-
-                // 쿠키에 넣을 refresh token
-                ResponseCookie responseCookie = ResponseCookie
-                        .from("refreshToken", generatedToken.getRefreshToken())
-                        .maxAge(Duration.ofDays(7))
-                        .path("/")
-                        .secure(true)
-                        .sameSite("None")
-                        .httpOnly(false)
-//                        .domain("https://nailborhood.shop")
-                        .build();
-
-                Map<String, Object> loginMap = new HashMap<>();
-                loginMap.put("accessToken", tokenResponseDto);
-                loginMap.put("refreshToken", responseCookie);
-
-                return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, loginMap);
+                return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, null);
             }
         } else { // 비밀번호가 틀린 경우
             return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
@@ -257,7 +282,6 @@ public class MemberService {
         MemberInfoDto memberInfoDto = MemberInfoDto.builder()
                 .email(member.getEmail())
                 .name(member.getName())
-                .address(member.getAddress())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
                 .nickname(member.getNickname())
@@ -287,7 +311,7 @@ public class MemberService {
             try{
                 // 정보 업데이트
                 memberRepository.updateMemberByMemberId
-                        (id, modInfoDto.getAddress(), modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
+                        (id, modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
 
                     return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
 
@@ -308,7 +332,7 @@ public class MemberService {
             return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, modInfoDto);
         } else {
             memberRepository.updateMemberByMemberId
-                    (id, modInfoDto.getAddress(), modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
+                    (id, modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
 
             boolean nicknameUpdated = memberRepository.findByNickname(modInfoDto.getNickname()).isPresent();
             boolean phoneNumUpdated = memberRepository.findByPhoneNum(modInfoDto.getNickname()).isPresent();

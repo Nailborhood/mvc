@@ -6,12 +6,13 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/member/signup_style.css}" />
+    <script th:src="@{/js/member/signup.js}"></script>
 </head>
 <div layout:fragment="content">
     <div class="login-title">
         회원가입
     </div>
-    <form action="#" class="signup-form">
+    <form action="/signupProc" method="post" class="signup-form">
         <table>
             <tbody>
             <tr>
@@ -21,10 +22,15 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="email" id="email-input" placeholder="email" required>
+                    <input type="email" name="email" id="email-input" placeholder="email" required oninput="checkEmailForm()">
                 </td>
             </tr>
             <tr id="email-mismatch_message" style="display: none;">
+                <td colspan="2">
+                    <p>이메일 형식이 올바르지 않습니다</p>
+                </td>
+            </tr>
+            <tr id="email-duplicate-check" style="display: none;">
                 <td colspan="2">
                     <p>이메일 형식이 올바르지 않습니다</p>
                 </td>
@@ -36,7 +42,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="text" id="name-input" placeholder="name" required>
+                    <input type="text" name="name" id="name-input" placeholder="name" required>
                 </td>
             </tr>
             <tr>
@@ -46,7 +52,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="password" id="password-input" placeholder="password" required>
+                    <input type="password" name="password" id="password-input" placeholder="password" required>
                 </td>
             </tr>
             <tr>
@@ -71,22 +77,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="date" id="birthday-input" required>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <label for="address-input1">주소</label>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input type="text" id="address-input1" placeholder="주소 api 연결 필요" required>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input type="text" id="address-input2" placeholder="상세주소" required>
+                    <input type="date" name="birthday" id="birthday-input" required>
                 </td>
             </tr>
             <tr>
@@ -96,7 +87,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="text" id="nickname-input" placeholder="nickname" required>
+                    <input type="text" name="nickname" id="nickname-input" placeholder="nickname" required>
                 </td>
             </tr>
             <tr id="nickname-unavailable_message" style="display: none;">
@@ -111,7 +102,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="text" id="phonenumber-input" placeholder="phone number" required>
+                    <input type="text" name="phoneNum" id="phonenumber-input" placeholder="phone number" required>
                 </td>
             </tr>
             <tr id="phonenum-unavailable_message" style="display: none;">
