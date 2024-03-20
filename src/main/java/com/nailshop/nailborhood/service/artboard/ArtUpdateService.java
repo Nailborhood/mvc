@@ -42,12 +42,12 @@ public class ArtUpdateService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public CommonResponseDto<Object> updateArt(String accessToken, List<MultipartFile> multipartFileList, ArtUpdateRequestDto artUpdateRequestDto, Long artRefId) {
+    public CommonResponseDto<Object> updateArt(/*String accessToken, */List<MultipartFile> multipartFileList, ArtUpdateRequestDto artUpdateRequestDto, Long artRefId) {
 
         // 멤버 확인
-        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // artRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)
