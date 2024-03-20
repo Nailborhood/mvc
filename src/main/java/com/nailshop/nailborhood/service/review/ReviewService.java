@@ -180,18 +180,19 @@ public class ReviewService {
         reviewRepository.likeCntZero(reviewId);
         reviewLikeRepository.deleteByReviewId(reviewId);
 
+        // 매장 리뷰 cnt 감소 처리
+        shopRepository.updateReviewCntDecreaseByShopId(shopId);
+
         // reviewID 해당 카테고리 삭제
         categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
         // 리뷰 신고 테이블 reviewId 해당 컬럼 삭제
-        reviewReportRepository.deleteReviewReportByReviewId(reviewId);
+/*        reviewReportRepository.deleteReviewReportByReviewId(reviewId);*/
 
         // 리뷰 isdeleted 값 true로
         reviewRepository.deleteReviewId(reviewId, true);
 
-        // 평균 별졈 수정
         updateShopRateAvg(shop);
-
 
         return commonService.successResponse(SuccessCode.REVIEW_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
@@ -203,13 +204,16 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
 
         double totalRate = reviews.stream()
-                .mapToInt(Review::getRate)
-                .sum();
+                                  .mapToInt(Review::getRate)
+                                  .sum();
+        if(totalRate != 0 ) {
+            String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+            double rateAvg = Double.parseDouble(rateAvgStr);
+            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        }else {
+            shopRepository.updateRateAvgByShopId(0,shopId);
+        }
 
-        String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
-        double rateAvg =Double.parseDouble(rateAvgStr);
-
-        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
     }
 
 

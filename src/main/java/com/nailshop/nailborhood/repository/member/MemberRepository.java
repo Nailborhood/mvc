@@ -1,7 +1,9 @@
 package com.nailshop.nailborhood.repository.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.review.Review;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -61,6 +63,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 관리자 회원 검색
     @Query("SELECT m " +
             "FROM Member m " +
-            "where m.name LIKE %:keyword")
+            "WHERE m.name LIKE %:keyword" )
     Page<Member> findAllMemberListByKeyword(@Param("keyword")String keyword, Pageable pageable);
+
+
 }

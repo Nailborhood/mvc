@@ -76,6 +76,39 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     // 관리자 매장 검색
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE s.name Like %:keyword% " )
+            "WHERE s.name Like %:keyword%" )
     Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
+
+    // 신청 매장 전체 조회
+    Page<Shop> findByIsDeletedFalseAndStatus(ShopStatus status, Pageable pageable);
+
+
+    // 리뷰 개수 증가
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt + 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntIncreaseByShopId(@Param("shopId") Long shopId);
+
+    // 리뷰 개수 감소
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt - 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntDecreaseByShopId(@Param("shopId") Long shopId);
+
+    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false and s.status = 'BEFORE_OPEN'")
+    Page<Shop> findAllNotDeletedAndBeforeOpen(Pageable pageable);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE (s.name Like %:keyword% ) and s.status = 'BEFORE_OPEN'" )
+    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(String keyword, Pageable pageable);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.owner o " +
+            "WHERE o.ownerId = :ownerId")
+    Shop findAllShopListByOwnerId(@Param("ownerId") Long ownerId);
+
 }

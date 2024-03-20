@@ -1,0 +1,93 @@
+/*@import "/src/components/admin/admin_side_style.css";*/
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.admin-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+.admin-content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 검색 */
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 50px;
+    margin-top: 30px;
+}
+
+.search-input {
+    width: 800px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 리스트 */
+.chart-list {
+    width: 95%;
+    border-collapse: collapse;
+}
+
+.chart-list thead th {
+    border-bottom: 3px solid #ddd;
+    padding: 10px;
+}
+
+.chart-list tbody tr:nth-child(even) {
+    background-color: #fffbfb;
+}
+
+.chart-item td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.chart-profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+/* 버튼 */
+
+.button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+}
+
+.button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}

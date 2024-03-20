@@ -26,6 +26,7 @@ public class ReviewInquiryController {
     public String detailReview(Model model,
                                @PathVariable Long reviewId,
                                @RequestParam(value = "shopId") Long shopId){
+
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
 
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());

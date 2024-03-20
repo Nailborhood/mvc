@@ -112,6 +112,8 @@ public class Shop extends BaseTime {
         this.phone = phone;
     }
 
-
+    public void changeStatus(ShopStatus status){
+        this.status = status;
+    }
 
 }

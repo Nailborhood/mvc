@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>마이 페이지-매장 신청 리스트</title>
+   <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}">
+    <link rel="stylesheet" th:href="@{/css/request/request_shop_registration_list_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/request_side::request_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">매장 신청 목록</span>
+        <div class="mypage-content-div">
+
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+            <!-- 매장 리스트 -->
+            <table class="chart-list" th:unless="${errorCode}">
+                <thead>
+                <tr>
+                    <th>사진</th>
+                    <th>이름</th>
+                    <th>전화번호</th>
+                    <th>운영시간</th>
+                    <th>주소</th>
+                    <th>웹사이트 주소</th>
+                    <th>등록 일자</th>
+                    <th>메뉴 개수</th>
+                    <th>신청 상태</th>
+                    <th></th>
+
+                </tr>
+                </thead>
+                <tbody th:if="${myShop != null}">
+                <tr class="chart-item">
+                    <td><img class="chart-profile" th:src="@{${myShop.shopMainImgPath}}" alt="Profile Image"></td>
+                    <td th:text="${myShop.name}"></td>
+                    <td th:text="${myShop.phone}"></td>
+                    <td th:text="${myShop.opentime}"></td>
+                    <td th:text="${myShop.address}"></td>
+                    <td th:text="${myShop.website}"></td>
+                    <td th:text="${#temporals.format(myShop.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${myShop.menuCnt}"></td>
+                    <td th:switch="${#strings.toString(myShop.status)}">
+                        <span th:case="'BEFORE_OPEN'" th:text="'심사중'"></span>
+                        <span th:case="'OPEN'" th:text="'승인'"></span>
+                       <!-- <span th:case="'CLOSED'" th:text="'반려'"></span>-->
+                    </td>
+                    <td>
+
+                        <!--TODO: 사장님 페이지 링크 연결-->
+                        <button class="button" th:if="${#strings.toString(myShop.status) == 'OPEN'}"> 사장님페이지</button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

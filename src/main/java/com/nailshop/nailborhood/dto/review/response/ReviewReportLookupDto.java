@@ -11,27 +11,37 @@ import java.time.LocalDateTime;
 public class ReviewReportLookupDto {
     private Long reportId;
 
-    private String reportContents;
+    private String mainImgPath;
 
-    private LocalDateTime date;
+    private String reportContents; // 신고 내용
 
-    private String status;
+    private LocalDateTime date; // 신고 일시
+
+    private String status; // 신고 상태
 
     private Long reviewId;
 
-    private String reviewContents;
+    private String reviewer; // 리뷰 작성자
 
-    private String nickname;
+    private String reviewContents; // 리뷰 내용
+
+    private String reporter; // 신고자
+
+    private String shopName;
+
 
 
     @Builder
-    public ReviewReportLookupDto(Long reportId, String reportContents, LocalDateTime date, String status, Long reviewId, String reviewContents,String nickname) {
+    public ReviewReportLookupDto(Long reportId, String mainImgPath,String reportContents, LocalDateTime date, String status, Long reviewId, String reviewer, String reviewContents, String reporter, String shopName) {
         this.reportId = reportId;
+        this.mainImgPath = mainImgPath;
         this.reportContents = reportContents;
         this.date = date;
         this.status = status;
         this.reviewId = reviewId;
+        this.reviewer = reviewer;
         this.reviewContents = reviewContents;
-        this.nickname = nickname;
+        this.reporter = reporter;
+        this.shopName = shopName;
     }
 }
