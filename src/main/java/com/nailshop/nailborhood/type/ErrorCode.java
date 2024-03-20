@@ -26,6 +26,7 @@ public enum ErrorCode {
     SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
     SHOP_REQUEST_NOT_FOUND("매장 신청 정보를 찾을 수 없습니다"),
     SHOP_REGISTRATION_FAIL("매장 등록 신청에 실패 했습니다"),
+    SHOP_UPDATE_FAIL("매장 수정에 실패 했습니다"),
 
     // Member
     MEMBER_NOT_FOUND("유저 정보 조회에 실패하였습니다."),

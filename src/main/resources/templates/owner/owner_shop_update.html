@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/owner/owner_shop_update_img.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_addMenuList.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_vaildate.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_selectAddress.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_shop_style.css}"/>
+
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="request-content">
+    <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="request-title-span">매장 수정</span>
+
+        <div th:if="${errorCode}">
+            <p th:text="${errorCode.description}"></p>
+        </div>
+        <div th:unless="${errorCode}">
+            <form id="requestForm" th:action="@{'/owner/update/'+${shopDto.getData().shopId}}" method="post"
+                  enctype="multipart/form-data">
+                <div class="content-div">
+                    <div class="request-description-section">
+                        <span class="precautions"> 💅🏻 매장 수정 주의 사항 </span>
+                        <span class="description"> - 모든 항목을 다 작성해주셔야 매장 수정이 됩니다  </span>
+                        <span class="description"> - 매장 정보가 올바르지 않을 경우 매장이 삭제될 수 있습니다  </span>
+                    </div>
+                    <div class="shop-image">
+                        <div class="img-mod-text">
+                            <span class="img-text">매장 사진 수정 &nbsp; </span>
+                            <label class="input-file-button" for="input-file">등록</label>
+                            <label class="delete-file-button">삭제</label>
+                            <span class="description"> 💡 사진은 총 3장 모두 등록해주셔야 합니다 사진 개수가 충족되지 않으면 매장 신청이 어렵습니다 &nbsp; </span>
+                            <input type="file" id="input-file" name="file" accept="image/*" multiple
+                                   style="display: none;">
+                        </div>
+
+                        <div class="image-gallery">
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().imgPathMap[1]} + ');'"
+                                 th:if="${shopDto.getData().imgPathMap[1]}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().imgPathMap[1]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().imgPathMap[2]} + ');'"
+                                 th:if="${shopDto.getData().imgPathMap[2]}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().imgPathMap[2]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().imgPathMap[3]} + ');'"
+                                 th:if="${shopDto.getData().imgPathMap[3]}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().imgPathMap[3]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="shopInformation">
+                        <div>
+                            <div class="shopName">
+                                <div>
+                                    <label for="name">매장 이름</label>
+                                </div>
+                            </div>
+                            <div class="shopName-input">
+                                <div>
+                                    <input type="text" id="name" name="name" placeholder="shop name" required>
+                                </div>
+                            </div>
+                            <div class="opentime">
+                                <div>
+                                    <label for="opentime">운영시간</label>
+                                </div>
+                            </div>
+                            <div class="opentime-input">
+                                <div>
+                                    <input type="text" id="opentime" name="opentime"
+                                           placeholder="운영시간을 입력해주세요 ex) 11:00-19:00 " required>
+                                </div>
+                            </div>
+
+                            <div class="phonenumber">
+                                <div>
+                                    <label for="phone">전화번호</label>
+                                </div>
+                            </div>
+                            <div class="phonenumber-input">
+                                <div>
+                                    <input type="text" id="phone" name="phone" placeholder="매장 전화번호를 입력해주세요" required>
+                                </div>
+                            </div>
+                            <div class="address">
+                                <div>
+                                    <label for="cityName">매장 주소</label>
+                                </div>
+                            </div>
+
+                            <div class="address-select">
+                                <select name="cityName" id="cityName" required>
+                                    <option value="">도시 선택</option>
+                                    <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                            th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
+                                </select>
+
+                                <select name="districtsName" id="districtsName" required>
+                                    <option value="">구 선택</option>
+                                    <option th:each="districts : ${addressDto.districtsDtoList}" th:value="${districts.districtsId}"
+                                            th:text="${districts.districtsName}" th:data-city-id="${districts.cityId}" style="display:none;"></option>
+                                </select>
+
+                                <select name="dongName" id="dongName" required>
+                                    <option value="">동 선택</option>
+                                    <option th:each="dong : ${addressDto.dongDtoList}" th:value="${dong.dongId}"
+                                            th:text="${dong.dongName}" th:data-districts-id="${dong.districtsId}" style="display:none;"></option>
+                                </select>
+                            </div>
+
+                            <div class="address-input">
+                                <div>
+                                    <input type="text" id="address" name="address" placeholder="상세주소를 입력해주세요" required>
+                                </div>
+                            </div>
+                            <div class="shop-info">
+                                <div>
+                                    <label for="content">매장 정보</label>
+                                </div>
+                            </div>
+                            <div class="shop-info-input">
+                                <div>
+                                    <input type="text" id="content" name="content" class="large-input"
+                                           placeholder="매장에 대해 소개해주세요" required>
+                                </div>
+                            </div>
+                            <div class="website">
+                                <div>
+                                    <label for="website">홈페이지 주소</label>
+                                </div>
+                            </div>
+                            <div class="website-input">
+                                <div>
+                                    <input type="text" id="website" name="website" placeholder="매장 웹사이트" required>
+                                </div>
+                            </div>
+                            <div class="shop-menu">
+                                <div class="shop-menu-title">
+                                    <div>
+                                        <div class="menu-registration">메뉴 등록</div>
+                                    </div>
+                                    <div class="buttonContainer">
+                                        <label class="add-menu-button" id="addMenuButton">추가</label>
+                                        <label class="delete-menu-button" id="deleteMenuButton">삭제</label>
+                                    </div>
+                                </div>
+                                <div class="menuInputsContainer" id="menuInputsContainer">
+
+                                    <div class="menu-item" id="menuItem0">
+                                        <div class="shopMenu">
+                                            <div>
+                                                <label for="menuName0">메뉴 이름</label>
+                                            </div>
+                                        </div>
+                                        <div class="shopMenu-input">
+                                            <div>
+                                                <input type="text" id="menuName0" name="shopMenuDtoList[0].name"
+                                                       placeholder="menu name" required>
+                                            </div>
+                                        </div>
+                                        <div class="shopMenu">
+                                            <div>
+                                                <label for="menuPrice0">메뉴 가격</label>
+                                            </div>
+                                        </div>
+                                        <div class="shopMenu-input">
+                                            <div>
+                                                <input type="text" id="menuPrice0" name="shopMenuDtoList[0].price"
+                                                       placeholder="menu price" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <br>
+
+                            <input type="submit" id="submit-button" class="submit-button" value="매장 신청">
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+</html>

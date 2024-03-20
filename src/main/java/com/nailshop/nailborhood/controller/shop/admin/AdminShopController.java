@@ -26,26 +26,11 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 @RequiredArgsConstructor
 public class AdminShopController {
 
-    private final ShopModificationService shopModificationService;
+
     private final ShopDeleteService shopDeleteService;
     private final ShopStatusChangeService shopStatusChangeService;
     private final ShopRequestLookupAdminService shopRequestLookupAdminService;
 
-
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "매장 정보 수정", description = "owner API")
-    // 매장 정보 수정
-    @PutMapping(consumes = {"multipart/form-data"}, value = "/owner/update/{shopId}")
-    public ResponseEntity<ResultDto<Void>> updateShop(@RequestHeader(AUTH) String accessToken,
-                                                      @PathVariable Long shopId,
-                                                      @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                      @RequestPart(value = "data") ShopModifiactionRequestDto shopModifiactionRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(accessToken, shopId, multipartFileList, shopModifiactionRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
-    }
 
 
 

@@ -28,21 +28,7 @@ public class AdminSearchController {
     private final AdminSearchService adminSearchService;
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 
-    // 회원 검색
-/*
-    @GetMapping("/admin/search/member")
-    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
-                                                                             @RequestParam(value = "keyword") String keyword,
-                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                             @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy) {
-        CommonResponseDto<Object> inquiryAllMember = adminSearchService.searchMemberInquiry(accessToken, keyword, page, size, sortBy);
-        ResultDto<MemberListResponseDto> resultDto = ResultDto.in(inquiryAllMember.getStatus(), inquiryAllMember.getMessage());
-        resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 
-        return ResponseEntity.status(inquiryAllMember.getHttpStatus())
-                             .body(resultDto);
-    }*/
 
     // 리뷰 검색
 
