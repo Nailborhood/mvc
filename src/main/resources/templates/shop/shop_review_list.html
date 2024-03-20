@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>매장 리뷰</title>
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <link rel="stylesheet" href="/css/layout/layout_style.css">
+    <link rel="stylesheet" href="/css/shop/shop_review_list_style.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/header::header"></div>
+        <div layout:fragment="content" class="content">
+<!--            <div class="shop-info" onclick="location.href=@{/shopDetail/{shopId}(shopId=${review.shopId})}">-->
+<!--                <div class="shop-info_img">-->
+<!--                    <img th:src="@{${shopReview.shopReviewLookupResponseDtoList.shopMainImgPath}}" />-->
+<!--                </div>-->
+                <div class="shop-info_text">
+                    <!-- 가게 정보 수정 필요 -->
+                    <div class="shop-info_title">
+                        title
+                    </div>
+                    <div class="shop-info_address">
+                        address
+                    </div>
+                    <div class="shop-info_under">
+                        <div class="shop-info_opentime">
+                            time
+                        </div>
+                        <div class="shop-info_rate">
+                            ⭐️ rate (review count)
+                        </div>
+                        <div class="shop-info_menu">
+                            menu name : menu price
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shop-review_list">
+                <div th:each="review, iterStat : ${shopReview.getData().shopAndReviewLookUpResponseDto}" class="review-list-block" th:if="${iterStat.count <= 20}">
+                    <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId})}" class="review-link" role="link">
+                        <div class="review-img">
+                            <img th:src="@{${review.reviewImgPath}}" alt="review Image">
+                        </div>
+                        <div class="review-icon">
+                            <img th:src="@{/assets/icons/slide.svg}">
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer::footer"></div>
+    </div>
+</body>
+
+</html>

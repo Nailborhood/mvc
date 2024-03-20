@@ -23,14 +23,16 @@
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
                         <div class="heart">
-<!--                            <a class="heart-btn" href="@{/nailborhood/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
+<!--                            TODO : 찜버튼-->
+<!--                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
+<!--                            </a>-->
                             <a class="heart-btn" href="#" role="button">
                                 <img src="/assets/icons/shop/heart.svg" />
                             </a>
                         </div>
                         <span class="heart-cnt" th:text="${shop.favoriteCnt}"></span>
                         <div class="review-post-link-container">
-                            <a class="review-post-link" href="#" role="button">
+                            <a class="review-post-link" href="/{shopId}/review/registration (shopId=${shop.shopId})" role="button">
                                 리뷰쓰기
                             </a>
                         </div>
@@ -99,6 +101,7 @@
                         <img src="/assets/icons/shop/map.svg" class="map-img">
                     </div>
                 </div>
+<!--                TODO : 메뉴 가져오기-->
                 <div class="shop-menu">
                     <div class="menu-left-list">
                         <div class="price-row">
@@ -131,14 +134,14 @@
                 <div class="shop-review">
                     <div class="review-row">
                         <span class="review">리뷰</span>
-                        <a href="#" class="shop-review-link">
+                        <a th:href="@{/review/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-review-link">
                             <img src="/assets/icons/shop/arrow.svg">
                         </a>
                     </div>
                     <div class="division-line"></div>
                     <div class="review-img-row">
                         <div class="review-list-block" th:each="shopReview : ${shopDetail.shopReviewLookupResponseDtoList}">
-                            <a class="review-link" href="#" role="link">
+                            <a class="review-link" th:href="@{/review/inquiry/{reviewId}(reviewId=${shopReview.reviewId})}" role="link">
                                 <div class="review-img">
                                     <img th:src="@{${shopReview.reviewImgPath}}">
                                 </div>

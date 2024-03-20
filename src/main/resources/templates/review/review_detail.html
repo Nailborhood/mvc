@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 상세 페이지</title>
+    <link rel="stylesheet" href="/css/layout/layout_style.css">
+    <link rel="stylesheet" href="/css/review/review_detail_style.css">
+</head>
+
+<body>
+<div id="wrapper">
+    <div th:replace="fragments/header::header"></div>
+    <div layout:fragment="content" class="content">
+        <div class="review-section">
+            <div class="review-content">
+                <p class="review-meta">
+                    <span class="shop-name" th:text="${result.getData().shopName}"></span>&nbsp; |&nbsp;
+                    <span class="shop-menu">시술 내역</span> |&nbsp;
+                     <span class="reserve-date">시술 일시</span> |&nbsp;
+                    <span class="shop-address" th:text="${result.getData().shopAddress}">매장 주소</span>
+                </p>
+                <div class="review-rating">
+<!--                    TODO : 별점에 맞는 별 표시-->
+                    <span class="stars">★★★★★</span>
+                    <span class="rating-number" th:text="${result.getData().rate}">5</span>
+                </div>
+                <div class="review-count">
+                    <span class="like">
+                        <img class="like-img" src="/assets/icons/review/thumbsUp.svg" />
+                    </span>
+                    <span class="like-number" th:text="${result.getData().likeCnt}">25</span>
+                </div>
+                <p class="review-meta">
+                    <img th:src="${result.getData().reviewAuthorProfileImg}" alt="프로필 이미지" class="profile-pic">
+                    <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span> |&nbsp;
+                    <span class="review-date" th:text="${#temporals.format(result.getData().reviewCreatedAt, 'yyyy-MM-dd HH:mm')}">작성 일시</span>|&nbsp;
+                    <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span>
+                </p>
+<!--                <div class="image-gallery">-->
+<!--                    <div th:each="reviewImg : ${result.getData().imgPathMap}"-->
+<!--                         class="image-box"-->
+<!--                         th:style="'background-image:url(' + reviewImg + ')'">-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="image-gallery">
+                    <div class="image-box" th:style="|background-image:url(' + @{${result.getData().imgPathMap[1]}} + ')|"></div>
+                    <div class="image-box" th:style="|background-image:url(' + @{${result.getData().imgPathMap[2]}} + ')|"></div>
+                    <div class="image-box" th:style="|background-image:url(' + @{${result.getData().imgPathMap[3]}} + ')|"></div>
+                </div>
+                <p th:text="${result.getData().contents}">리뷰 내용</p>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/footer::footer"></div>
+</div>
+</body>
+
+</html>

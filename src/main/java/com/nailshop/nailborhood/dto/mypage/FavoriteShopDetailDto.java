@@ -16,10 +16,11 @@ public class FavoriteShopDetailDto {
     private Boolean isDeleted;
     private double rateAvg;
     private int reviewCnt;
+    private String address;
 
 
     @Builder
-    public FavoriteShopDetailDto(Long shopId, String shopName, String mainImgPath, int favoriteCnt, Boolean isDeleted, double rateAvg, int reviewCnt) {
+    public FavoriteShopDetailDto(Long shopId, String shopName, String mainImgPath, int favoriteCnt, Boolean isDeleted, double rateAvg, int reviewCnt, String address) {
         this.shopId = shopId;
         this.shopName = shopName;
         this.mainImgPath = mainImgPath;
@@ -27,6 +28,7 @@ public class FavoriteShopDetailDto {
         this.isDeleted = isDeleted;
         this.rateAvg = rateAvg;
         this.reviewCnt = reviewCnt;
+        this.address = address;
     }
 
 }
