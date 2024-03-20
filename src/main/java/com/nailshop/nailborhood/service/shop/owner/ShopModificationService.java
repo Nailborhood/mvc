@@ -11,7 +11,7 @@ import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
+import com.nailshop.nailborhood.repository.address.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -57,7 +57,7 @@ public class ShopModificationService {
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         // 주소(동) 수정
-        String dongName = shopModifiactionRequestDto.getStoreAddressSeparation()
+        String dongName = shopModifiactionRequestDto.getStoreAddressSeparationDto()
                                                     .getDongName();
         Optional<Dong> optionalDong = dongRepository.findByName(dongName);
         if(optionalDong.isEmpty()){

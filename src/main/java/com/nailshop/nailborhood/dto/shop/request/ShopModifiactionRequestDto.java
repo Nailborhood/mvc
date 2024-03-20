@@ -17,7 +17,7 @@ public class ShopModifiactionRequestDto {
     private String website;
     private String content;
     private ShopStatus status;
-    private StoreAddressSeparation storeAddressSeparation;
+    private StoreAddressSeparationDto storeAddressSeparationDto;
     private List<ShopMenuDto> shopMenuDtoList;
 
 }

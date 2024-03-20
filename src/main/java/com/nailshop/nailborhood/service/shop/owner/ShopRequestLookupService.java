@@ -37,68 +37,41 @@ public class ShopRequestLookupService {
     private final ShopImgRepository shopImgRepository;
 
     // 매장 신청 리스트 조회
-/*
+
     @Transactional
-    public CommonResponseDto<Object> getShopRequestList() {
+    public CommonResponseDto<Object> getShopRequest() {
+
+        //TODO: accessToken or session 연결 필요
+        Long ownerId = 16L;
+        Shop shopRequestList = shopRepository.findAllShopListByOwnerId(ownerId);
 
 
-        Shop shopRequestList = shopRepository.findAllShopListByOwnerId();
-
-
-        if (shopRequestList.isEmpty()) {
+        if (shopRequestList == null) {
             throw new NotFoundException(ErrorCode.SHOP_REQUEST_NOT_FOUND);
         }
 
-        // shop entity -> dto 변환
-        Page<AllShopsLookupResponseDto> data = shopRequestList.map(shop -> {
-
-            // shopImg imgNum =1 가져오기
-            String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shop.getShopId());
-
-            long menuCnt = menuRepository.countByShopId(shop.getShopId());
-
-            // dto에 shop entity 값을 변환하는 과정
-            AllShopsLookupResponseDto dto = new AllShopsLookupResponseDto(
-                    shop.getShopId(),
-                    shopMainImg,
-                    shop.getName(),
-                    shop.getPhone(),
-                    shop.getAddress(),
-                    shop.getOpentime(),
-                    shop.getWebsite(),
-                    shop.getContent(),
-                    shop.getStatus(),
-                    shop.getIsDeleted(),
-                    shop.getCreatedAt(),
-                    shop.getReviewCnt(),
-                    shop.getFavoriteCnt(),
-                    shop.getRateAvg(),
-                    menuCnt
-            );
-            // data 에 dto 반환
-            return dto;
-        });
+        String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shopRequestList.getShopId());
+        long menuCnt = menuRepository.countByShopId(shopRequestList.getShopId());
+        AllShopsLookupResponseDto allShopsLookupResponseDto = AllShopsLookupResponseDto.builder()
+                                                                                       .shopMainImgPath(shopMainImg)
+                                                                                       .shopId(shopRequestList.getShopId())
+                                                                                       .name(shopRequestList.getName())
+                                                                                       .phone(shopRequestList.getPhone())
+                                                                                       .isDeleted(shopRequestList.getIsDeleted())
+                                                                                       .createdAt(shopRequestList.getCreatedAt())
+                                                                                       .address(shopRequestList.getAddress())
+                                                                                       .status(shopRequestList.getStatus())
+                                                                                       .opentime(shopRequestList.getOpentime())
+                                                                                       .website(shopRequestList.getWebsite())
+                                                                                       .content(shopRequestList.getContent())
+                                                                                       .menuCnt(menuCnt)
+                                                                                       .build();
 
 
-        // 매장 리스트 가져오기
-        List<AllShopsLookupResponseDto> allShopsLookupResponseDtoList = data.getContent();
 
-        // 페이지네이션 설정
-        PaginationDto paginationDto = PaginationDto.builder()
-                                                   .totalPages(data.getTotalPages())
-                                                   .totalElements(data.getTotalElements())
-                                                   .pageNo(data.getNumber())
-                                                   .isLastPage(data.isLast())
-                                                   .build();
 
-        // 페이지네이션을 포함한 매장 리스트 반환
-        AllShopsListResponseDto allShopsListResponseDto = AllShopsListResponseDto.builder()
-                                                                                 .allShopsLookupResponseDtoList(allShopsLookupResponseDtoList)
-                                                                                 .paginationDto(paginationDto)
-                                                                                 .build();
-
-        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, allShopsListResponseDto);
-    }*/
+        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, allShopsLookupResponseDto);
+    }
 
 
 }
