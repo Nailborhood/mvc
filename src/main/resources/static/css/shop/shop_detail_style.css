@@ -172,9 +172,9 @@ td {
 .shop-menu {
     display: flex;
     background-color: var(--main-color_begie);
-    padding: 30px;
+    padding: 30px 30px 30px 70px;
     margin: 40px 0px;
-    width: 92%;
+    width: 90%;
 }
 
 .menu-list {
@@ -186,15 +186,15 @@ td {
     justify-content: space-between;
     align-items: center; /* 세로 중앙 정렬을 위해 추가 */
     padding: 10px 0; /* 경계선과 텍스트 사이의 간격을 주기 위해 추가 */
-    width: 550%;
+    width: 400%;
 }
 .separator {
     display: inline-block;
     height: 1px;
     background-color: #C0C0C0;
-    width: 75%; /* 가로 길이를 부모 요소의 100%로 설정합니다. */
+    width: 50%; /* 가로 길이를 부모 요소의 100%로 설정합니다. */
     margin: 0 5px; /* 양 옆에 여백을 주어 텍스트와 가격 사이에 공백을 둡니다. */
-    vertical-align: middle; /* 줄을 텍스트의 가운데로 맞춥니다. */
+    vertical-align: middle;
 }
 
 .shop-art , .shop-review {
@@ -203,7 +203,7 @@ td {
     padding-bottom: 0px;
     padding-top: 0px;
     position: relative;
-    margin-left: 7px;
+    /*margin-left: 7px;*/
     margin-bottom: 13px;
     align-items: center;
 }
@@ -261,7 +261,7 @@ td {
 }
 
 .division-line {
-    width: 100%;
+    width: 820px;
     padding: 10px 10px 15px 10px;
     border-top: 1px solid var(--shadow_2);
 }
