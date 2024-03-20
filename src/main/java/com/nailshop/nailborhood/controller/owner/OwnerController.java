@@ -6,6 +6,8 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
@@ -79,9 +81,9 @@ public class OwnerController {
     @GetMapping("/owner/update/{shopId}")
     public String updateShop(Model model,
                              @PathVariable Long shopId) {
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
-        ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
-        resultDto.setData((ReviewDetailResponseDto) shopDetail.getData());
+        CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shopId);
+        ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+        resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
 
         StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
 

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface DongRepository extends JpaRepository<Dong, Long> {
    // 주소(동) 확인
    Optional <Dong> findByName(String dongName);
+
+    Dong findByDongId(Long dongId);
 }

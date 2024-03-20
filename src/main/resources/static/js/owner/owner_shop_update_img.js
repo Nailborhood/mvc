@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const imageInput = document.getElementById('input-file');
     const imageBoxes = document.querySelectorAll('.image-upload-box');
     const uploadTextElements = document.querySelectorAll('.upload-text');
+    const deleteButton = document.querySelector('.delete-file-button'); // 삭제 버튼 선택
 
     // 새 이미지를 선택했을 때 기존 이미지를 대체하는 함수
     const updateImages = (files) => {
