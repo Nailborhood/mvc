@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ArtResponseDto {
 
+    private Long id;
     private String name;
     private String content;
     private Long likeCount;
@@ -21,7 +22,8 @@ public class ArtResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public ArtResponseDto(String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, String mainImgPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ArtResponseDto(Long id, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, String mainImgPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
         this.name = name;
         this.content = content;
         this.likeCount = likeCount;
