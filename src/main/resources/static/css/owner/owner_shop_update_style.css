@@ -77,39 +77,10 @@
     margin-right: 0;
 }
 
-/*사업자 등록증*/
-.image-certificate {
-    display: flex;
-    flex-wrap: wrap;
-    /*justify-content: center;*/
-    align-items: stretch;
-    width: 100%;
-    margin: 20px auto;
+.hidden-text{
+    display: none;
 }
 
-.image-certificate-upload-box {
-    width: 210px;
-    height: 219px;
-    /*aspect-ratio: 1;*/
-    margin-right: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    border: 1px solid var(--shadow_1);
-    border-radius: 5px;
-    background-color:var(--shadow_1);
-    box-sizing: border-box;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-
-.image-certificate-upload-box:last-child {
-    margin-right: 0;
-}
 
 
 .input-file-button {
@@ -140,19 +111,7 @@
     background-color: var(--hover);
 }
 
-.delete-file-button2 {
-    padding: 3px 10px;
-    border: none;
-    background-color: var(--main-color_navy); /* 빨간색 배경 */
-    color: white; /* 텍스트는 흰색 */
-    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
-    border-radius: 5px;
-    font-size: 12px;
-}
 
-.delete-file-button2:hover {
-    background-color: var(--hover);
-}
 
 .time-input {
     width: 234px;
