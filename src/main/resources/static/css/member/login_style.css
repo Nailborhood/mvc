@@ -33,18 +33,14 @@
     margin: 15px 0;
 }
 
-#email-field,
-#password-field {
+.login-input {
     height: 25px;
     width: 200px;
     font-size: 15px;
     outline: var(--shadow_1) auto 1px;
 }
 
-#email-field:focus-visible {
-    outline: var(--main-color_navy) auto 1px;
-}
-#password-field:focus-visible {
+.login-input:focus-visible {
     outline: var(--main-color_navy) auto 1px;
 }
 

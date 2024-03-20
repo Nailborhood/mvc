@@ -243,7 +243,6 @@ public class AdminSearchService {
                                                        .birthday(member.getBirthday())
                                                        .phoneNum(member.getPhoneNum())
                                                        .gender(member.getGender())
-                                                       .address(member.getAddress())
                                                        .nickname(member.getNickname())
                                                        .profileImg(member.getProfileImg())
                                                        .isDeleted(member.isDeleted())

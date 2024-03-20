@@ -11,13 +11,13 @@
     <div class="logo-img">
         <img src="/assets/icons/nailborhood_logo_korean.png">
     </div>
-    <form action="#" class="login-form">
-        <input type="email" id="email-field" placeholder="email"><br>
-        <input type="password" id="password-field" placeholder="password"><br>
+    <form method="post" action="/loginProc" class="login-form">
+        <input type="text" class="login-input" name="email" id="email" placeholder="email"><br>
+        <input type="password" class="login-input" name="password" id="password" placeholder="password"><br>
         <input type="submit" id="submit-button" value="로그인">
     </form>
     <div class="link-field">
-        <span class="signup_link" onclick="location.href='#'">회원가입</span> |
+        <span class="signup_link" onclick="location.href='/signup'">회원가입</span> |
         <span class="find-email_link" onclick="location.href='#'">이메일 찾기</span> |
         <span class="find-password_link" onclick="location.href='#'">비밀번호 찾기</span>
     </div>
