@@ -43,7 +43,8 @@ public class AppliedShopInquiryService {
 
         // 관리자 확인
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                                          .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
         if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 페이지 설정 및 MemberList get
@@ -61,36 +62,36 @@ public class AppliedShopInquiryService {
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
             AllShopsLookupResponseDto allShopsLookupResponseDto = AllShopsLookupResponseDto.builder()
-                                                                                           .shopId(shop.getShopId())
-                                                                                           .name(shop.getName())
-                                                                                           .phone(shop.getPhone())
-                                                                                           .isDeleted(shop.getIsDeleted())
-                                                                                           .createdAt(shop.getCreatedAt())
-                                                                                           .rateAvg(shop.getRateAvg())
-                                                                                           .address(shop.getAddress())
-                                                                                           .status(shop.getStatus())
-                                                                                           .opentime(shop.getOpentime())
-                                                                                           .website(shop.getWebsite())
-                                                                                           .content(shop.getContent())
-                                                                                           .reviewCnt(shop.getReviewCnt())
-                                                                                           .favoriteCnt(shop.getFavoriteCnt())
-                                                                                           .menuCnt(menuCnt)
-                                                                                           .build();
+                    .shopId(shop.getShopId())
+                    .name(shop.getName())
+                    .phone(shop.getPhone())
+                    .isDeleted(shop.getIsDeleted())
+                    .createdAt(shop.getCreatedAt())
+                    .rateAvg(shop.getRateAvg())
+                    .address(shop.getAddress())
+                    .status(shop.getStatus())
+                    .opentime(shop.getOpentime())
+                    .website(shop.getWebsite())
+                    .content(shop.getContent())
+                    .reviewCnt(shop.getReviewCnt())
+                    .favoriteCnt(shop.getFavoriteCnt())
+                    .menuCnt(menuCnt)
+                    .build();
 
             shopInfoDtoList.add(allShopsLookupResponseDto);
         }
 
         PaginationDto paginationDto = PaginationDto.builder()
-                                                   .totalPages(shopPage.getTotalPages())
-                                                   .pageNo(shopPage.getNumber())
-                                                   .totalElements(shopPage.getTotalElements())
-                                                   .isLastPage(shopPage.isLast())
-                                                   .build();
+                .totalPages(shopPage.getTotalPages())
+                .pageNo(shopPage.getNumber())
+                .totalElements(shopPage.getTotalElements())
+                .isLastPage(shopPage.isLast())
+                .build();
 
         AllShopsListResponseDto allShopsListResponseDto = AllShopsListResponseDto.builder()
-                                                                                 .allShopsLookupResponseDtoList(shopInfoDtoList)
-                                                                                 .paginationDto(paginationDto)
-                                                                                 .build();
+                .allShopsLookupResponseDtoList(shopInfoDtoList)
+                .paginationDto(paginationDto)
+                .build();
 
         return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, allShopsListResponseDto);
     }

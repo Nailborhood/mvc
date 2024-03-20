@@ -11,4 +11,5 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
             "LEFT JOIN o.member m " +
             "WHERE m.memberId =:memberId ")
     Owner findByMemberId(@Param("memberId") Long memberId);
+
 }

@@ -79,6 +79,7 @@ public enum SuccessCode {
     MEMBER_ALL_INQUIRY_SUCCESS("유저 전체 조회에 성공하였습니다."),
     APPROVE_SHOP_REGISTRATION("매장등록신청 승인에 성공하였습니다."),
     REJECT_SHOP_REGISTRATION("매장등록신청 거절에 성공하였습니다.")
+
     ;
 
     private final String description;

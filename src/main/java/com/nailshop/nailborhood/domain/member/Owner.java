@@ -36,5 +36,4 @@ public class Owner {
     public void changeIsApproved(boolean isApproved){
         this.isApproved = isApproved;
     }
-
 }
