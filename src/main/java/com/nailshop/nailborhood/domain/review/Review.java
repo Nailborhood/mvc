@@ -63,7 +63,8 @@ public class Review extends BaseTime {
         this.customer = customer;
     }
 
-    public void reviewUpdate(String contents, Integer rate) {
+    public void reviewUpdate(Long reviewId, String contents, Integer rate) {
+        this.reviewId = reviewId;
         this.contents = contents;
         this.rate = rate;
     }

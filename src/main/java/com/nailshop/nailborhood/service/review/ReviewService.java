@@ -53,9 +53,10 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public CommonResponseDto<Object> reviewUpdate(String accessToken, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+    public CommonResponseDto<Object> reviewUpdate(Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -74,7 +75,7 @@ public class ReviewService {
         }
 
         // 리뷰 정보 저장
-        review.reviewUpdate(reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
+        review.reviewUpdate(reviewUpdateDto.getReviewId() ,reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
         reviewRepository.save(review);
 
 

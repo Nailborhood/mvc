@@ -30,10 +30,11 @@ public class FavoriteShopService {
 
 
     @Transactional
-    public CommonResponseDto<Object> favoriteShop(Long shopId, String accessToken) {
+    public CommonResponseDto<Object> favoriteShop(Long shopId/*, String accessToken*/) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
 
+        Long memberId = 2L;
         Member member = memeberFavoriteRepository.findByMemberId(memberId);
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)

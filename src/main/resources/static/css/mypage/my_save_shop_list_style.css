@@ -1,0 +1,125 @@
+/*@import "/src/components/search/searchbar_style.css";*/
+/*@import "/src/components/pagination/pagination_style.css";*/
+/*@import "/src/templates/fragments/components.css";*/
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+.mypage-content_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.shop-list_div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+}
+
+.shop-item {
+    display: flex;
+    justify-content: center; /* 수평 방향에서 중앙 정렬 */
+    align-items: flex-start;  /* 수직 방향에서 시작 지점으로 정렬 */
+}
+
+.shop-info {
+    width: 750px;
+    height: 140px;
+    background-color: antiquewhite;
+    border-radius: 5px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.shop-info_img {
+    width: 120px;
+    height: 120px;
+    margin-right: 10px;
+}
+
+.shop-info_img img {
+    width: 100%;
+    height: 100%;
+}
+
+.shop-info_text {
+    display: flex;
+    flex-direction: column;
+    line-height: 20px;
+}
+
+.shop-info_title {
+    font-size: 23px;
+    margin: 3px;
+}
+
+.shop-info_address {
+    font-size: 18px;
+    margin: 3px;
+}
+
+.shop-info_under {
+    display: flex;
+    margin-top: 3px;
+}
+
+.shop-info_under div {
+    border-right: 1px solid var(--shadow_3);
+    padding: 0 3px;
+}
+
+.shop-info_under div:last-child {
+    border-right: none;
+}
+.shop-info_under div:first-child {
+    border-right: none;
+}
+
+.shop-btn {
+    height: 140px;
+    width: 100px;
+    background-color: antiquewhite;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* 수평 방향에서 중앙 정렬 */
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-right: 40px;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.update-button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+}
+
+
+.update-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
