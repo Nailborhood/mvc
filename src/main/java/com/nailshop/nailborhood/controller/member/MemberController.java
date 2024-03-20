@@ -40,52 +40,13 @@ public class MemberController {
         return "member/signup_form";
     }
 
-    @GetMapping("/logout")
-    public String logout(@RequestHeader(AUTH) String accessToken) {
-        CommonResponseDto<Object> commonResponseDto = memberService.logout(accessToken);
-        HttpHeaders newHeader = new HttpHeaders();
-        newHeader.add(HttpHeaders.SET_COOKIE, "cookieName=refreshToken=" + "; Path=/; Max-Age=0");
-        return "redirect:/login";
-    }
-
-
-
     @PostMapping("/signupProc")
     public String signupProc(SignUpRequestDto signUpRequestDto) {
         CommonResponseDto<Object> commonResponseDto = memberService.signUp(signUpRequestDto);
-//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         System.out.println(commonResponseDto.getMessage());
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
         return "redirect:/login";
     }
 
-//
-//    @PostMapping(value = "/loginProc")
-//    public void loginProc(@RequestParam("email") String email,
-//                            @RequestParam("password") String password,
-//                            HttpServletRequest request, HttpServletResponse response) {
-//        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(email, password);
-//
-//        if(commonResponseDto.getHttpStatus().equals(HttpStatus.OK)) {
-//            System.out.println("로그인 성공");
-//        } else {
-//            System.out.println("로그인 실패");
-//            System.out.println(commonResponseDto.getMessage());
-//        }
-//    }
-
-//    @PostMapping("/loginProc")
-//    public ResponseEntity<ResultDto<?>> loginProc(@RequestBody LoginRequestDto loginRequestDto){
-//        CommonResponseDto<Object> commonResponseDto = memberService.memberLogin(loginRequestDto);
-//        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//        Map<String, Object> resultMap = (Map<String, Object>) commonResponseDto.getData();
-//        TokenResponseDto tokenResponseDto = (TokenResponseDto) resultMap.get("accessToken");
-//        result.setData(tokenResponseDto);
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-//                .header(HttpHeaders.AUTHORIZATION, tokenResponseDto.getAccessToken())
-//                .header(HttpHeaders.SET_COOKIE, resultMap.get("refreshToken").toString())
-//                .body(result);
-//    }
 
 
     @GetMapping("/checkEmail")
@@ -93,7 +54,6 @@ public class MemberController {
         CommonResponseDto<Object> commonResponseDto = memberService.checkEmailIsAvailable(duplicationCheckDto);
         ResultDto<DuplicationCheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         result.setData((DuplicationCheckDto) commonResponseDto.getData());
-
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
 
@@ -120,19 +80,6 @@ public class MemberController {
         ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(result);
     }
-
-
-    @PostMapping("/logoutProc")
-    public ResponseEntity<ResultDto<Object>> logoutProc(@RequestHeader(AUTH) String accessToken){
-        CommonResponseDto<Object> commonResponseDto = memberService.logout(accessToken);
-        HttpHeaders newHeader = new HttpHeaders();
-        newHeader.add(HttpHeaders.SET_COOKIE, "cookieName=refreshToken=" + "; Path=/; Max-Age=0");
-        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                .headers(newHeader)
-                .body(result);
-    }
-
 
     @PostMapping("/dropout")
     public ResponseEntity<ResultDto<Void>> memberDropOut(@RequestHeader(AUTH) String accessToken){

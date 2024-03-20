@@ -1,12 +1,22 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
 </head>
 <div th:fragment="header" class="header">
 
     <nav class="header-upper">
-        <div id="info-field">로그인 자리</div>
+        <div id="info-field">
+            <span sec:authorize="isAuthenticated()">
+                <a sec:authorize="hasRole('USER')" th:href="@{#}">
+                    <span th:text="${memberNickname}">닉네임 자리</span>
+                </a>
+            </span>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">
+                로그인
+            </a>
+        </div>
     </nav>
     <header>
         <div class="logo-field">
