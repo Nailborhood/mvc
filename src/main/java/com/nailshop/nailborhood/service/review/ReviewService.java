@@ -89,18 +89,18 @@ public class ReviewService {
         updateShopRateAvg(shop);
 
         // 리뷰 카테고리 수정
-        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+//        categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
-        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
-
-            CategoryReview categoryReview = CategoryReview.builder()
-                    .review(review)
-                    .category(category)
-                    .build();
-            categoryReviewRepository.save(categoryReview);
-        }
+//        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
+//            Category category = categoryRepository.findById(categoryId)
+//                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+//
+//            CategoryReview categoryReview = CategoryReview.builder()
+//                    .review(review)
+//                    .category(category)
+//                    .build();
+//            categoryReviewRepository.save(categoryReview);
+//        }
 
 
         return commonService.successResponse(SuccessCode.REVIEW_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);

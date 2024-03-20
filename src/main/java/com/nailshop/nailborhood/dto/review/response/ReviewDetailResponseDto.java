@@ -5,16 +5,19 @@ import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ReviewDetailResponseDto {
 
     private Long reviewId;
+    private Long shopId;
     private String shopName;
     private ShopStatus shopStatus;
     private String shopAddress;
@@ -30,7 +33,8 @@ public class ReviewDetailResponseDto {
     private LocalDateTime reviewUpdatedAt;
 
     @Builder
-    public ReviewDetailResponseDto(Long reviewId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+    public ReviewDetailResponseDto(Long reviewId, Long shopId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+        this.shopId = shopId;
         this.reviewId = reviewId;
         this.shopName = shopName;
         this.shopStatus = shopStatus;

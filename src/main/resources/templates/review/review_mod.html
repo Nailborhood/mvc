@@ -14,12 +14,13 @@
     <div id="wrapper">
         <div th:replace="fragments/header::header"></div>
         <div layout:fragment="content" class="content">
-            <form th:action="@{'/review/update/{reviewId}(reviewId=${result.getData().reviewId})'}" method="post" enctype="multipart/form-data">
+            <form th:action="@{'/review/update/' +${result.getData().reviewId}}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="shopId" th:value="${result.getData().shopId}" />
                 <div class="body-content">
                     <div class="review-write-section">
                         <div class="rating-section">
                             <label for="star-rating" class="rating-label">네일은 어떠셨어요?</label>
-                            <select id="star-rating" name="rating" class="star-rating-input">
+                            <select id="star-rating" name="rate" class="star-rating-input">
                                 <option th:each="i : ${#numbers.sequence(5,1)}"
                                         th:value="${i}"
                                         th:text="${#strings.repeat('★',i)} + ${#strings.repeat('☆', 5-i)}"
@@ -43,12 +44,12 @@
 
                         <div class="image-upload-button-container">
                             <label class="upload-button" for="input-file">사진 등록</label>
-                            <input type="file" id="input-file" name="file" accept="image/*" multiple style="display: none;" >
+                            <input type="file" id="input-file" name="img" accept="image/*" multiple style="display: none;" >
                         </div>
 
                         <div class="input-group">
                             <label for="review-content">리뷰 내용</label>
-                            <textarea id="review-content" class="review-textarea" th:text="${result.getData().contents}"></textarea>
+                            <textarea id="review-content" name="contents" class="review-textarea" th:text="${result.getData().contents}"></textarea>
                         </div>
 
                         <div class="submit-button-container">

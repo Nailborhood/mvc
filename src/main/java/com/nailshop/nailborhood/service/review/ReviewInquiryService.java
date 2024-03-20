@@ -64,7 +64,7 @@ public class ReviewInquiryService {
         ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
         String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
 
-        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
+//        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
 
 
@@ -77,11 +77,12 @@ public class ReviewInquiryService {
 
         ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.builder()
                 .reviewId(reviewId)
+                .shopId(shopId)
                 .shopName(shop.getName())
                 .shopStatus(shopStatus)
                 .shopAddress(shop.getAddress())
                 .reviewReportStatus(reviewReportStatus)
-                .categoryTypeList(categoryList)
+//                .categoryTypeList(categoryList)
                 .imgPathMap(reviewImgPathMap)
                 .contents(review.getContents())
                 .rate(review.getRate())
