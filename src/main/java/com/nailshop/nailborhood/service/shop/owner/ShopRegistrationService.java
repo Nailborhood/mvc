@@ -21,6 +21,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.address.CityRepository;
 import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.address.DongRepository;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.*;
@@ -55,6 +56,7 @@ public class ShopRegistrationService {
     private final TokenProvider tokenProvider;
     private final CityRepository cityRepository;
     private final DistrictsRepository districtsRepository;
+
 
     //TODO: accessToken or session 연결 필요
     // 매장 등록
@@ -129,6 +131,7 @@ public class ShopRegistrationService {
 
         ownerRepository.save(owner);
 
+
         return commonService.successResponse(SuccessCode.SHOP_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
@@ -138,10 +141,10 @@ public class ShopRegistrationService {
 
         for (ShopMenuDto shopMenuDto : shopMenuDtoList) {
             Menu menu = Menu.builder()
-                            .name(shopMenuDto.getName())
-                            .price(shopMenuDto.getPrice())
-                            .shop(shop)
-                            .build();
+                    .name(shopMenuDto.getName())
+                    .price(shopMenuDto.getPrice())
+                    .shop(shop)
+                    .build();
             menuList.add(menu);
         }
 
@@ -159,11 +162,11 @@ public class ShopRegistrationService {
 
         for (String imgPath : shopImgUrlList) {
             ShopImg shopImg = ShopImg.builder()
-                                     .imgPath(imgPath)
-                                     .imgNum(imgNum)
-                                     .isDeleted(false)
-                                     .shop(shop)
-                                     .build();
+                    .imgPath(imgPath)
+                    .imgNum(imgNum)
+                    .isDeleted(false)
+                    .shop(shop)
+                    .build();
             shopImgRepository.save(shopImg);
 
             imgNum++;
@@ -180,11 +183,13 @@ public class ShopRegistrationService {
 
         for (String imgPath : certificateImgUrlList) {
             CertificateImg certificateImg = CertificateImg.builder()
+
                                                           .imgPath(imgPath)
                                                           .imgNum(imgNum)
                                                           .isDeleted(false)
                                                           .shop(shop)
                                                           .build();
+
             certificateImgRepository.save(certificateImg);
 
             imgNum++;
