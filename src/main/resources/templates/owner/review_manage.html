@@ -13,7 +13,7 @@
     <div class="content">
         <span class="owner-title-span">매장 리뷰 관리</span>
         <div class="owner-content-div">
-            <form th:action="@{/nailborhood/owner/review/{shopId}(shopId=${shopId})}" method="get">
+            <form th:action="@{/owner/review/{shopId}(shopId=${shopId})}" method="get">
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
                     <button type="submit" class="search-button">

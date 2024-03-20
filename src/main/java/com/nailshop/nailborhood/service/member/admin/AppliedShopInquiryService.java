@@ -45,10 +45,12 @@ public class AppliedShopInquiryService {
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                           .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole()
+                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 페이지 설정 및 MemberList get
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
+                                                                  .descending());
 
         Page<Shop> shopPage = shopRepository.findByIsDeletedFalseAndStatus(ShopStatus.BEFORE_OPEN, pageable);
         if (shopPage.isEmpty()) throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
@@ -57,7 +59,7 @@ public class AppliedShopInquiryService {
         List<AllShopsLookupResponseDto> shopInfoDtoList = new ArrayList<>();
 
         // ShopInfoDto build
-        for (Shop shop : shopList){
+        for (Shop shop : shopList) {
 
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
