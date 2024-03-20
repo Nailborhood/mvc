@@ -64,6 +64,9 @@ public class ReviewController {
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
+            redirectAttributes.addAttribute("reviewId", reviewId);
+            redirectAttributes.addAttribute("shopId", shopId);
+
             return "redirect:/review/inquiry/{reviewId}";
 
         } catch (Exception e) {
