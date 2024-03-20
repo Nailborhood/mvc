@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class MemberService{
+public class MemberService {
     private final MemberRepository memberRepository;
     private final LoginRepository loginRepository;
     private final CustomerRepository customerRepository;
@@ -51,7 +51,6 @@ public class MemberService{
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
 
 
     // 이메일 중복 체크
@@ -130,10 +129,12 @@ public class MemberService{
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         return memberOptional.isPresent();
     }
+
     private boolean findByNickname(String nickname) {
         Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
         return memberOptional.isPresent();
     }
+
     private boolean findByPhoneNum(String phoneNum) {
         Optional<Member> memberOptional = memberRepository.findByPhoneNum(phoneNum);
         return memberOptional.isPresent();
@@ -227,12 +228,12 @@ public class MemberService{
             // 전화번호 중복
             return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, modInfoDto);
         } else {
-            try{
+            try {
                 // 정보 업데이트
                 memberRepository.updateMemberByMemberId
                         (id, modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
 
-                    return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
+                return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
 
             } catch (Exception e) {
                 return commonService.errorResponse(ErrorCode.MYINFO_UPDATE_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -266,10 +267,10 @@ public class MemberService{
 
 
     // 비밀번호 수정 전 비밀번호 확인 (마이페이지로 이동 핋요)
-    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto){
+    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         boolean match = passwordCheck(member.getEmail(), beforeModPasswordCheckRequestDto.getPasswordCheck());
         return commonService.successResponse(SuccessCode.PASSWORD_CHECK_SUCCESS.getDescription(), HttpStatus.OK, match);
     }
@@ -278,15 +279,15 @@ public class MemberService{
     @Transactional
     public CommonResponseDto<Object> updatePassword(String accessToken, ModPasswordRequestDto modPasswordRequestDto) {
         boolean match = modPasswordRequestDto.getPassword().equals(modPasswordRequestDto.getPasswordCheck());
-        if(!match)
+        if (!match)
             return commonService.errorResponse(ErrorCode.PASSWORD_CHECK_FAIL.getDescription(), HttpStatus.BAD_REQUEST, modPasswordRequestDto);
-        else{
+        else {
             Long id = tokenProvider.getUserId(accessToken);
             Member member = memberRepository.findById(id)
-                    .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
 
             String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getPassword());
-            memberRepository.updateMemberPasswordByMemberId(id,encodedPassword);
+            memberRepository.updateMemberPasswordByMemberId(id, encodedPassword);
 
             return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         }
@@ -297,15 +298,16 @@ public class MemberService{
     public CommonResponseDto<Object> deleteMember(String accessToken) {
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-        if(member.isDeleted()) return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        if (member.isDeleted())
+            return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         else {
             memberRepository.updateMemberIsDeletedById(id);
             entityManager.clear();
             String email = member.getEmail();
             boolean checkDropout = memberRepository.findByEmail(email).get().isDeleted();
 
-            if(checkDropout)
+            if (checkDropout)
                 return commonService.successResponse(SuccessCode.DROPOUT_SUCCESS.getDescription(), HttpStatus.OK, null);
             else
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -317,15 +319,15 @@ public class MemberService{
         // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         try {
             String imgPath = s3UploadService.profileImgUpload(multipartFile);
 
             memberRepository.updateMemberProfileImg(id, imgPath);
 
-            return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(),HttpStatus.OK ,null);
+            return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         } catch (Exception e) {
-            return commonService.errorResponse(ErrorCode.PROFILE_UPDATE_FAIL.getDescription(),HttpStatus.INTERNAL_SERVER_ERROR ,null);
+            return commonService.errorResponse(ErrorCode.PROFILE_UPDATE_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 
