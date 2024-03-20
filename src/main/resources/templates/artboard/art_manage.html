@@ -64,13 +64,13 @@
                     <div class="pagination-div">
                         <ul class="pagination-ul">
                             <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
-                                <a class="page-link" th:href="@{'/mypage/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
                             </li>
                             <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
-                                <a class="page-link" th:href="@{'/mypage/owner/artboard/manage?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}" th:text="${pageNum}"></a>
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}" th:text="${pageNum}"></a>
                             </li>
                             <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
-                                <a class="page-link" th:href="@{'/mypage/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Next</a>
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Next</a>
                             </li>
                         </ul>
                     </div>
