@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>매장 상세</title>
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/shop_detail.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/shop/shop_detail_style.css}">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/header::header"></div>
+        <div layout:fragment="content" class="content">
+            <div class="shop-detail">
+                <div class="shop-title">
+                    <div class="title-star"  th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                        <div class="title-container">
+                            <span class="title" th:text="${shop.name}"></span>
+                        </div>
+                        <div class="heart">
+<!--                            TODO : 찜버튼-->
+<!--                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
+<!--                            </a>-->
+                            <a class="heart-btn" href="#" role="button">
+                                <img src="/assets/icons/shop/heart.svg" />
+                            </a>
+                        </div>
+                        <span class="heart-cnt" th:text="${shop.favoriteCnt}"></span>
+                        <div class="review-post-link-container">
+                            <a class="review-post-link" href="/{shopId}/review/registration (shopId=${shop.shopId})" role="button">
+                                리뷰쓰기
+                            </a>
+                        </div>
+                    </div>
+                    <div id="review" th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                        <span class="review-cnt">⭐️&nbsp;</span>
+                        <span class="score" th:text="${shop.rateAvg}"></span>&nbsp;(
+                        <span class="review-cnt" th:text="${shop.reviewCnt}"></span>&nbsp;)
+                    </div>
+                </div>
+                <div class="image-slider-wrapper">
+                    <div th:each="shopImg : ${shopDetail.shopImgListResponseDtoList}"
+                         th:class="${shopImg.imgNum == 1} ? 'image-slide active' : 'image-slide'"
+                         th:style="|background-image:url(@{${shopImg.imgPath}})|">
+                    </div>
+                    <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
+                    <a class="next" onclick="moveSlide(1)">&#10095;</a>
+                </div>
+                <table>
+                    <tbody th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                    <tr>
+                        <td>
+                            <img class="time-img" src="/assets/icons/shop/time.svg" />
+                            <span class="subtitle">&nbsp;운영시간</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td th:text="${shop.opentime}"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/assets/icons/shop/call.svg" class="phone-img" />
+                            <span class="subtitle">&nbsp;전화</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td th:text="${shop.phone}"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/assets/icons/shop/website.svg" class="website-img" />
+                            <span class="subtitle">&nbsp;</span>
+                            <span class="subtitle" th:text="${shop.website}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/assets/icons/shop/info.svg" class="info-img /">
+                            <span class="info-subtitle">&nbsp;매장정보</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td th:text="${shop.content}"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/assets/icons/shop/location.svg" class="location-img" />
+                            <span class="location-subtitle">&nbsp;</span>
+                            <span class="location-subtitle" th:text="${shop.address}">&nbsp;</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="shop-location">
+                    <div class="map">
+                        <img src="/assets/icons/shop/map.svg" class="map-img">
+                    </div>
+                </div>
+<!--                TODO : 메뉴 가져오기-->
+                <div class="shop-menu">
+                    <div class="menu-left-list">
+                        <div class="price-row">
+                            <span class="menu-txt">젤네일</span>
+                            <div class="separator"></div>
+                            <span class="menu-price">
+                                <span class="menu-number">29,000</span>원
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shop-art">
+                    <div class="art-row">
+                        <span class="art">아트</span>
+                        <a href="#" class="shop-art-link">
+                            <img src="/assets/icons/shop/arrow.svg">
+                        </a>
+                    </div>
+                    <div class="division-line"></div>
+                    <div class="art-img-row">
+                        <div class="art-list-block" th:each="shopArt : ${shopDetail.shopArtBoardLookupResponseDtoList}">
+                            <a class="art-link" href="#" role="link">
+                                <div class="art-img">
+                                    <img th:src="@{${shopArt.artImgPath}}">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="shop-review">
+                    <div class="review-row">
+                        <span class="review">리뷰</span>
+                        <a th:href="@{/review/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-review-link">
+                            <img src="/assets/icons/shop/arrow.svg">
+                        </a>
+                    </div>
+                    <div class="division-line"></div>
+                    <div class="review-img-row">
+                        <div class="review-list-block" th:each="shopReview : ${shopDetail.shopReviewLookupResponseDtoList}">
+                            <a class="review-link" th:href="@{/review/inquiry/{reviewId}(reviewId=${shopReview.reviewId})}" role="link">
+                                <div class="review-img">
+                                    <img th:src="@{${shopReview.reviewImgPath}}">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer::footer"></div>
+    </div>
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/shop_detail.js}"></script>
+</body>
+
+</html>

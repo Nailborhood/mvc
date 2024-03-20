@@ -18,14 +18,17 @@ public class ShopReviewLookupResponseDto {
 
     private LocalDateTime createdAt;
 
+    private String nickName;
 
 
 
-    public ShopReviewLookupResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt) {
+
+    public ShopReviewLookupResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt, String nickName) {
         this.reviewId = reviewId;
         this.contents = contents;
         this.rate = rate;
         this.reviewImgPath = reviewImgPath;
         this.createdAt = createdAt;
+        this.nickName = nickName;
     }
 }

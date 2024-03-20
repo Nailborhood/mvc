@@ -6,6 +6,7 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponse
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MenuDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
@@ -58,7 +59,10 @@ public class ShopDetailService {
                                                                                         s.getContent(),
                                                                                         s.getStatus(),
                                                                                         s.getCreatedAt(),
-                                                                                        s.getRateAvg()
+                                                                                        s.getRateAvg(),
+                                                                                        s.getReviewCnt(),
+                                                                                        s.getFavoriteCnt(),
+                                                                                        s.getIsDeleted()
                                                                                 )
 
 
@@ -72,8 +76,8 @@ public class ShopDetailService {
 
 
         CommonResponseDto<Object> reviewList = shopReviewListLookupService.getAllReviewListByShopId(1, 4, "createdAt", "DESC", shopId);
-        ResultDto<ShopReviewListLookupResponseDto> reviewResultDto = ResultDto.in(reviewList.getStatus(), reviewList.getMessage());
-        reviewResultDto.setData((ShopReviewListLookupResponseDto) reviewList.getData());
+        ResultDto<ShopReviewListResponseDto> reviewResultDto = ResultDto.in(reviewList.getStatus(), reviewList.getMessage());
+        reviewResultDto.setData((ShopReviewListResponseDto) reviewList.getData());
 
         CommonResponseDto<Object> artList = shopArtBoardListService.getAllArtBoardListByShopId(1, 4, "createdAt", "DESC", shopId);
         ResultDto<ShopArtBoardListLookupResponseDto> artBoardResultDto = ResultDto.in(artList.getStatus(), artList.getMessage());
@@ -84,7 +88,7 @@ public class ShopDetailService {
                                                                                        .menuDetailResponseDtoList(menuDetailResponseDtoList)
                                                                                        .shopImgListResponseDtoList(shopImgListResponseDtoList)
                                                                                        .shopReviewLookupResponseDtoList(reviewResultDto.getData()
-                                                                                                                                       .getShopReviewLookupResponseDto())
+                                                                                                                                       .getShopAndReviewLookUpResponseDto())
                                                                                        .shopArtBoardLookupResponseDtoList(artBoardResultDto.getData()
                                                                                                                                            .getShopArtBoardLookupResponseDtoList())
                                                                                        .build();

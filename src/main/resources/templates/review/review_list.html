@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 전체 조회</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/review/review_list_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/review/search.js}"></script>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="search-bar">
+        <div th:replace="fragments/components/search/searchbar.html"></div>
+        <div th:replace="fragments/components/search/check_category.html"></div>
+    </div>
+    <div class="review-list">
+        <div th:each="review, iterStat : ${result.getData().reviewResponseDtoList}" class="review-list-block" th:if="${iterStat.count <= 20}">
+            <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId})}" class="review-link" role="link">
+                <div class="review-img">
+                    <img th:src="@{${review.getMainImgPath()}}" alt="review Image">
+                </div>
+                <div class="review-icon">
+                    <img th:src="@{/assets/icons/slide.svg}">
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div th:replace="fragments/components/pagination/pagination.html"></div>
+</div>
+</body>
+
+</html>

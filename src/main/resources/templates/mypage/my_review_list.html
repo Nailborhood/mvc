@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>내가 쓴 리뷰</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/mypage/my_review_list_style.css}" />
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">내가 작성한 리뷰</span>
+        <div class="mypage-content_div">
+            <div th:each="review : ${result.getData().reviewResponseDtoList}" class="review-list_div">
+                <div class="review-item">
+                    <div class="review-info" onclick="location.href='#'">
+                        <div class="review-info_img">
+                            <img th:src="@{${review.mainImgPath}}">
+                        </div>
+                        <div class="review-info_text">
+                            <!--TODO : 매장이름 링크걸기-->
+                            <div class="review-info_shopName" th:text="${review.shopName}"></div>
+                            <div class="review-info_under">
+                                <div class="review-info_rate">⭐️</div>
+                                <div class="review-info_rate" th:text="${review.rate}"></div>
+                            </div>
+                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            <!--TODO:메뉴넣기-->
+                            <div class="review-info_menu">
+                                menu name : menu price
+                            </div>
+                            <div class="review-info_content" th:text="${review.contents}"></div>
+                        </div>
+                    </div>
+                    <div class="review-btn">
+                        <button class="update-button">리뷰 수정</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

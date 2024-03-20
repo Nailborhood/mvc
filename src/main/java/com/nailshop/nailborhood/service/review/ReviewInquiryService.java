@@ -62,7 +62,7 @@ public class ReviewInquiryService {
         ShopStatus shopStatus = shop.getStatus();
 
         ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
-        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";  // "리뷰 보고서 없음" 대신 적절한 기본값을 설정해주세요.
+        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
 
         List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
@@ -79,6 +79,7 @@ public class ReviewInquiryService {
                 .reviewId(reviewId)
                 .shopName(shop.getName())
                 .shopStatus(shopStatus)
+                .shopAddress(shop.getAddress())
                 .reviewReportStatus(reviewReportStatus)
                 .categoryTypeList(categoryList)
                 .imgPathMap(reviewImgPathMap)

@@ -87,8 +87,8 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT join r.shop s " +
-            "WHERE s.shopId = :shopId AND s.isDeleted = false ")
-    Page<Review> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
+            "WHERE s.shopId = :shopId AND r.isDeleted = false ")
+    Page<Review> findAllNotDeletedByShopId(Pageable pageable, @Param("shopId") Long shopId);
 
     @Query("UPDATE Review r " +
             "SET r.isDeleted = true, " +
@@ -104,7 +104,29 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
     Page<Review> findReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
 
-    // 관리자 리뷰 검색 ( 매장이름, 내용 , 리뷰 작성자 )
+    // 사업자 리뷰 검색 (리뷰 내용, 작성자)
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "INNER JOIN r.reviewReportList rr " +
+            "WHERE (s.shopId = :shopId AND (r.contents Like %:keyword% OR m.nickname LIKE  %:keyword% ) AND r.isDeleted = false) " +
+            "OR (r.isDeleted = true AND rr.status = :status)" )
+    Page<Review> findAllReviewListBySearchOwner(Pageable pageable, @Param("shopId") Long shopId, @Param("keyword")String keyword, @Param("status")String status);
+
+    // 사업자 리뷰 검색 (리뷰 내용, 작성자)
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "INNER JOIN r.reviewReportList rr " +
+            "WHERE s.shopId = :shopId AND r.isDeleted = false OR (r.isDeleted = true AND rr.status = :status)" )
+    Page<Review> findAllReviewListByOwner(Pageable pageable, @Param("shopId") Long shopId, @Param("status")String status);
+
+    // 관리자 리뷰 검색 ( 매장이름, 내용 )
+
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.shop s " +

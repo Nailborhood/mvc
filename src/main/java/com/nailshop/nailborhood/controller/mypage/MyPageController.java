@@ -27,12 +27,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
-@RequiredArgsConstructor
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/mypage")
 public class MyPageController {
 
@@ -42,34 +40,36 @@ public class MyPageController {
     private final ShopRequestLookupService shopRequestLookupService;
 
     // 내가 쓴 리뷰
-    @Tag(name = "myPage", description = "myPage API")
-    @Operation(summary = "내가 작성한 리뷰 조회", description = "myPage API")
     @GetMapping("/review/inquiry")
-    public ResponseEntity<ResultDto<MyReviewListResponseDto>> myReview(@RequestHeader(AUTH) String accessToken,
+    public String myReview(Model model,
+//                                                                       @RequestHeader(AUTH) String accessToken,
                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                       @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy) {
-        CommonResponseDto<Object> myReview = mypageService.myReview(accessToken, page, size, sortBy);
+                                                                       @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
+        CommonResponseDto<Object> myReview = mypageService.myReview(page, size, sortBy);
         ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
         resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
-        return ResponseEntity.status(myReview.getHttpStatus())
-                             .body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "mypage/my_review_list";
+
     }
 
     // 찜한 매장 조회
-    @Tag(name = "myPage", description = "myPage API")
-    @Operation(summary = "내가 찜한 매장 조회", description = "myPage API")
     @GetMapping("/shop/favorite/inquiry")
-    public ResponseEntity<ResultDto<MyFavoriteListResponseDto>> myFavorite(@RequestHeader(AUTH) String accessToken,
+    public String myFavorite(Model model,
+//                             @RequestHeader(AUTH) String accessToken,
                                                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        CommonResponseDto<Object> myFavorite = mypageService.myFavorite(accessToken, page, size);
+                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size){
+        CommonResponseDto<Object> myFavorite = mypageService.myFavorite( page, size);
         ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
         resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 
-        return ResponseEntity.status(myFavorite.getHttpStatus())
-                             .body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "mypage/my_fav_shop_list";
+
     }
 
     // 비밀번호 수정

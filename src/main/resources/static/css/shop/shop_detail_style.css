@@ -1,0 +1,267 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.shop-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.shop-title {
+    padding: 10px 0px;
+    margin: 10px 0px;
+}
+
+.title-star {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0px;
+}
+
+.review-post-link-container {
+    margin-left: 20px;
+}
+
+.title {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.heart {
+    margin-left: 10px;
+    width: 38px;
+    height: 38px;
+}
+
+.heart-cnt {
+    font-size: 15px;
+}
+
+.review-post-link {
+    text-decoration: none;
+    padding: 3px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    border-radius: 5px;
+}
+
+.review-post-link:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+#review {
+    color: var(--shadow_3);
+}
+
+.image-slider-wrapper {
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.image-slide {
+    display: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 550px;
+}
+
+.image-slide.active {
+    display: block;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 16px;
+    color: var(--shadow_1);
+    font-weight: bold;
+    font-size: 40px;
+    transition: 0.6s ease;
+    user-select: none;
+}
+
+.prev {
+    left: 0;
+}
+
+.next {
+    right: 0;
+}
+
+.subtitle {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.location-subtitle {
+    margin-top: 40px;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.info-subtitle {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+tr {
+    height: 40px;
+}
+
+td {
+    font-size: 18px;
+    line-height: 27px;
+    vertical-align: middle;
+}
+
+.phone-img, .time-img, .website-img {
+    margin-top: 10px;
+    height: 25px;
+    width: auto;
+    vertical-align: middle;
+}
+
+.info-img {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 25px;
+    width: auto;
+    vertical-align: middle;
+}
+
+.location-img {
+    margin-top: 38px;
+    margin-bottom: 5px;
+    height: 32px;
+    width: auto;
+    vertical-align: middle;
+}
+
+.map-img {
+    margin-top: 10px;
+    width: 700px;  /* 가로 크기 조정 */
+    height: 300px; /* 세로 크기 조정 */
+}
+
+.shop-menu {
+    display: flex;
+    background-color: var(--main-color_begie);
+    padding: 30px;
+    margin: 40px 0px;
+    width: 92%;
+}
+
+.menu-list {
+    margin-left: 50px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* 세로 중앙 정렬을 위해 추가 */
+    padding: 10px 0; /* 경계선과 텍스트 사이의 간격을 주기 위해 추가 */
+    width: 550%;
+}
+.separator {
+    display: inline-block;
+    height: 1px;
+    background-color: #C0C0C0;
+    width: 75%; /* 가로 길이를 부모 요소의 100%로 설정합니다. */
+    margin: 0 5px; /* 양 옆에 여백을 주어 텍스트와 가격 사이에 공백을 둡니다. */
+    vertical-align: middle; /* 줄을 텍스트의 가운데로 맞춥니다. */
+}
+
+.shop-art , .shop-review {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    position: relative;
+    margin-left: 7px;
+    margin-bottom: 13px;
+    align-items: center;
+}
+
+.art-row , .review-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 98%;
+    margin-bottom: 1px;
+}
+
+.art , .review {
+    font-size: 27px;
+}
+
+.shop-art-link , .shop-review-link , .art-link , .review-link {
+    text-decoration: none;
+}
+
+.shop-art-link img , .shop-review-link img {
+    width: 50px; /* 너비 설정 */
+    height: 40px; /* 높이는 자동으로 설정 */
+}
+
+.art-img-row , .review-img-row {
+    align-items: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.art-list-block , .review-list-block {
+    display: block;
+    position: relative;
+    width: 100%;
+    margin-right: 7px;
+    max-width: 250px;
+}
+
+.art-img , .review-img  {
+    display: block;
+    overflow: hidden;
+    position: relative;
+}
+
+.art-img img, .review-img img {
+    object-fit: cover;
+    width: 100%;
+    max-width: 250px;
+}
+
+.division-line {
+    width: 100%;
+    padding: 10px 10px 15px 10px;
+    border-top: 1px solid var(--shadow_2);
+}

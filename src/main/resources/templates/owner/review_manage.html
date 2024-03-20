@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>매장 리뷰 관리 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/owner/review_manage_style.css}">
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="owner-content">
+    <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="owner-title-span">매장 리뷰 관리</span>
+        <div class="owner-content-div">
+            <form th:action="@{/nailborhood/owner/review/{shopId}(shopId=${shopId})}" method="get">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                    <button type="submit" class="search-button">
+                        <img src="/assets/icons/shop/search.svg" alt="Search">
+                    </button>
+                </div>
+            </form>
+            <div class="review-list_div" th:each="review : ${reviewList.shopReviewLookupResponseDto}">
+                <div class="review-item">
+                    <div class="review-info" onclick="location.href='#'">
+                        <div class="review-info_img">
+                            <img th:src="@{${review.reviewImgPath}}">
+                        </div>
+                        <div class="review-info_text">
+                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            <div class="review-info_nickname" th:text="${review.nickName}"></div>
+                            <div class="review-info_under">
+                                <div class="review-info_rate">⭐️</div>
+                                <div class="review-info_rate" th:text="${review.rate}"></div>
+                                <div class="review-info_menu">
+                                    menu name : menu price
+                                </div>
+                            </div>
+                            <div class="reivew-info_content" th:text="${review.contents}"></div>
+                        </div>
+                    </div>
+                    <div class="review-btn">
+                        <button class="delete-button">리뷰 삭제</button>
+                        <button class="report-button">리뷰 신고</button>
+                    </div>
+                </div>
+            </div>
+            <div data-include-path="/src/components/pagination/pagination.html"></div>
+        </div>
+    </div>
+</div>
+</html>

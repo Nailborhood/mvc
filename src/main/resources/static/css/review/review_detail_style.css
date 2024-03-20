@@ -42,6 +42,10 @@
     font-size: 18px;
 }
 
+.like-img{
+    width: 20px;
+}
+
 .rating-number, .like-number {
     font-size: 18px;
 }
