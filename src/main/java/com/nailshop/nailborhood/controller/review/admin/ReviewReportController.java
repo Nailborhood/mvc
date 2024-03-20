@@ -30,7 +30,7 @@ public class ReviewReportController {
 
     // 리뷰 신고 검색
 
-    @GetMapping("/admin/search/reviewReport")
+    @GetMapping("/admin/search/review/report")
     public String searchReviewReportInquiry(Model model,
                                             //@RequestHeader(AUTH) String accessToken,
                                             @RequestParam(value = "keyword", required = false) String keyword,
@@ -50,8 +50,8 @@ public class ReviewReportController {
         }
     }
 
-
-    @GetMapping("/admin/search/reviewReport/status")
+    // 처리된 리뷰 신고 리스트
+    @GetMapping("/admin/search/review/report/status")
     public String searchReviewReportStatus(Model model,
                                             @RequestParam(value = "keyword", required = false) String keyword,
                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -71,7 +71,7 @@ public class ReviewReportController {
 
 
     // 리뷰 신고 처리 변경
-    @PostMapping("/admin/search/reviewReport")
+    @PostMapping("/admin/search/review/report")
     public String changeReviewReportStatus(@RequestParam Long reportId,
                                            @RequestParam(value = "status") String status) {
         System.out.printf("reportId"+reportId);
@@ -80,6 +80,6 @@ public class ReviewReportController {
           reviewReportStatusAdminService.changeReviewStatus(reportId, status);
 //        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return "redirect:/admin/search/reviewReport";
+        return "redirect:/admin/search/review/report";
     }
 }
