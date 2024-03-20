@@ -50,7 +50,7 @@ public class AdminShopController {
 
 
     // 매장 신청 조회
-    @GetMapping(value = "/admin/search/shopRequest")
+    @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
                               //@RequestHeader(AUTH) String accessToken,
                               @RequestParam(value = "keyword", required = false) String keyword,
@@ -64,12 +64,12 @@ public class AdminShopController {
         try {
             CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
             model.addAttribute("requestList", allShopRequestList.getData());
-            return "admin/admin_shopRequest_list";
+            return "admin/admin_shop_registration_list";
         } catch (NotFoundException e) {
 
             model.addAttribute("errorCode", ErrorCode.SHOP_REQUEST_NOT_FOUND);
             //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
-            return "admin/admin_shopRequest_list";
+            return "admin/admin_shop_registration_list";
         }
     }
 
