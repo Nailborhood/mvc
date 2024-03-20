@@ -45,4 +45,10 @@ public interface ShopImgRepository extends JpaRepository<ShopImg,Long> {
     @Modifying(clearAutomatically = true)
     void deleteByShopImgId(@Param("shopImgId") Long shopImgId, @Param("status") boolean status);
 
+    // 매장 대표 이미지 불러오기
+    @Query("SELECT si.imgPath " +
+            "FROM ShopImg si " +
+            "LEFT JOIN si.shop s " +
+            "WHERE s.shopId = :shopId AND si.imgNum = 1")
+    String findShopImgByShopId(@Param("shopId") Long shopId);
 }

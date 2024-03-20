@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/nailborhood")
 public class ShopController {
 
     private final ShopListLookupLocalService shopListLookupLocalService;
@@ -64,8 +64,7 @@ public class ShopController {
                              .body(resultDto);
     }
 
-    @Tag(name = "ShopDetail", description = "Shop API")
-    @Operation(summary = "매장 상세 조회", description = "Shop API")
+
     // 매장 상세 조회
     @GetMapping("/shopDetail/{shopId}")
     public String getShopDetail(Model model,
@@ -78,19 +77,21 @@ public class ShopController {
     }
 
 
-    @Tag(name = "ShopReview", description = "Shop API")
-    @Operation(summary = "매장 리뷰 조회", description = "Shop API")
+    //매장 리뷰 조회
     @GetMapping("/review/{shopId}")
-    public ResponseEntity<ResultDto<ShopReviewListLookupResponseDto>> getShopReviewList(@PathVariable Long shopId,
-                                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                                        @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+    public String getShopReviewList(Model model,
+                                    @PathVariable Long shopId,
+                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                    @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
         CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page,size,criteria,sort,shopId);
-        ResultDto<ShopReviewListLookupResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
-        resultDto.setData((ShopReviewListLookupResponseDto) shopReview.getData());
+        ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
+        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
 
-        return ResponseEntity.status(shopReview.getHttpStatus()).body(resultDto);
+        model.addAttribute("shopReview", resultDto);
+
+        return "shop/shop_review_list";
     }
 
 

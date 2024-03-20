@@ -37,9 +37,10 @@ public class MypageService {
     private final TokenProvider tokenProvider;
 
     // 내가 쓴 리뷰 조회 (마이페이지)
-    public CommonResponseDto<Object> myReview(String accessToken, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> myReview(int page, int size, String sortBy) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
 
@@ -88,9 +89,10 @@ public class MypageService {
     }
 
     // 찜한 매장 조회
-    public CommonResponseDto<Object> myFavorite(String accessToken, int page, int size) {
+    public CommonResponseDto<Object> myFavorite(int page, int size) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         PageRequest pageable = PageRequest.of(page - 1, size);
 
         Page<Shop> myFavoritePage = favoriteRepository.findFavoriteListByMemberId(memberId, pageable);
@@ -111,6 +113,7 @@ public class MypageService {
                     .isDeleted(shop.getIsDeleted())
                     .rateAvg(shop.getRateAvg())
                     .reviewCnt(shop.getReviewCnt())
+                    .address(shop.getAddress())
                     .build();
 
             myFavoriteResponseDtoList.add(favoriteShopDetailDto);

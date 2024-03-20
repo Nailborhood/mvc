@@ -17,6 +17,7 @@ public class ReviewDetailResponseDto {
     private Long reviewId;
     private String shopName;
     private ShopStatus shopStatus;
+    private String shopAddress;
     private String reviewReportStatus;
     private List<String> categoryTypeList;
     private Map<Integer, String> imgPathMap;
@@ -29,10 +30,11 @@ public class ReviewDetailResponseDto {
     private LocalDateTime reviewUpdatedAt;
 
     @Builder
-    public ReviewDetailResponseDto(Long reviewId, String shopName, ShopStatus shopStatus, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+    public ReviewDetailResponseDto(Long reviewId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
         this.reviewId = reviewId;
         this.shopName = shopName;
         this.shopStatus = shopStatus;
+        this.shopAddress = shopAddress;
         this.reviewReportStatus = reviewReportStatus;
         this.categoryTypeList = categoryTypeList;
         this.imgPathMap = imgPathMap;
