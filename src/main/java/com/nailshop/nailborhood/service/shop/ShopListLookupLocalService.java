@@ -6,7 +6,7 @@ import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.shop.response.*;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
+import com.nailshop.nailborhood.repository.address.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
