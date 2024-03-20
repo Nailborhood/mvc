@@ -9,9 +9,8 @@ import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsLookupResponseDt
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.repository.review.ReviewRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
+import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -31,45 +30,59 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AllShopsLookupAdminService {
+public class ShopRequestLookupAdminService {
     private final CommonService commonService;
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ShopImgRepository shopImgRepository;
 
-    // 매장 전체 조회
+    // 매장 신청 리스트 조회
 
     @Transactional
-    public CommonResponseDto<Object> getAllShops(String accessToken, int page, int size, String criteria, String sort) {
+    public CommonResponseDto<Object> getAllShopRequest(String keyword, int page, int size, String criteria, String sort) {
 
 //        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
 //                                                               .descending());
 
+/*
         // 관리자 확인
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+*/
 
 
         Pageable pageable = (sort.equals("ASC")) ?
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
         // 페이지로 값 가져오기
-        Page<Shop> shops = shopRepository.findAllNotDeleted(pageable);
 
 
-        if (shops.isEmpty()) {
-            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+        Page<Shop> shopRequestList;
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            shopRequestList =  shopRepository.findAllNotDeletedAndBeforeOpen(pageable);
+        } else {
+            shopRequestList = shopRepository.findAllNotDeletedAndBeforeOpenBySearch(keyword,pageable);
+        }
+
+        if (shopRequestList.isEmpty()) {
+            throw new NotFoundException(ErrorCode.SHOP_REQUEST_NOT_FOUND);
         }
 
         // shop entity -> dto 변환
-        Page<AllShopsLookupResponseDto> data = shops.map(shop -> {
+        Page<AllShopsLookupResponseDto> data = shopRequestList.map(shop -> {
+
+            // shopImg imgNum =1 가져오기
+            String shopMainImg = shopImgRepository.findByShopImgByShopIdAndShopImgId(shop.getShopId());
 
             long menuCnt = menuRepository.countByShopId(shop.getShopId());
 
             // dto에 shop entity 값을 변환하는 과정
             AllShopsLookupResponseDto dto = new AllShopsLookupResponseDto(
                     shop.getShopId(),
+                    shopMainImg,
                     shop.getName(),
                     shop.getPhone(),
                     shop.getAddress(),

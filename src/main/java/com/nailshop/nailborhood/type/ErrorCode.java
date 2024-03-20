@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    // 멤버
+    // customer,owner
     CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
+    OWNER_ALREADY_EXIST("이미 매장 신청을 하여, 더이상 매장 신청을 할 수 없습니다"),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),
@@ -17,9 +18,14 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
     // 아트판
     ART_NOT_FOUND("아트판 정보를 찾을 수 없습니다."),
+    ART_REGISTRATION_FAIL("아트판 등록에 실패하였습니다."),
+    ART_UPDATE_FAIL("아트판 수정에 실패하였습니다."),
+    ART_DELETE_FAIL("아트판 삭제에 실패하였습니다."),
     // 매장
     SHOP_NOT_FOUND("매장 정보를 찾을 수 없습니다"),
     SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
+    SHOP_REQUEST_NOT_FOUND("매장 신청 정보를 찾을 수 없습니다"),
+    SHOP_REGISTRATION_FAIL("매장 등록 신청에 실패 했습니다"),
 
     // Member
     MEMBER_NOT_FOUND("유저 정보 조회에 실패하였습니다."),

@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class MemberInfoDto {
 
+    private Long memberId;
     private String email;
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -26,7 +27,8 @@ public class MemberInfoDto {
     private LocalDateTime createdAt;
 
     @Builder
-    public MemberInfoDto(String email, String name, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
+    public MemberInfoDto(Long memberId, String email, String name, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
+        this.memberId = memberId;
         this.email = email;
         this.name = name;
         this.birthday = birthday;

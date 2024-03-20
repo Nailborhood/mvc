@@ -45,12 +45,12 @@ public class ArtRegistrationService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public CommonResponseDto<Object> registerArt(String accessToken, List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerArt(/*String accessToken, */List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
 
         // 멤버 확인
-        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // shop 정보 get
         Shop shop = shopRepository.findById(artRegistrationRequestDto.getShopId())
