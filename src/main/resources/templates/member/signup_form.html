@@ -32,7 +32,8 @@
             </tr>
             <tr id="email-duplicate-check" style="display: none;">
                 <td colspan="2">
-                    <p>이메일 형식이 올바르지 않습니다</p>
+                    <p id="email-available-message" style="display: none;">메세지 자리</p>
+                    <button id="email-check_button" onclick="">중복 확인</button>
                 </td>
             </tr>
             <tr>
@@ -55,6 +56,11 @@
                     <input type="password" name="password" id="password-input" placeholder="password" required>
                 </td>
             </tr>
+            <tr id="password-pattern_message" style="display: none;">
+                <td colspan="2">
+                    <p>비밀번호 형식안내 자리</p>
+                </td>
+            </tr>
             <tr>
                 <td colspan="2">
                     <label for="password-check-input">비밀번호 확인</label>
@@ -62,12 +68,12 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="password" id="password-check-input" placeholder="password check" required>
+                    <input type="password" id="password-check-input" oninput="passwordCheckMatch()" placeholder="password check" required>
                 </td>
             </tr>
-            <tr id="password-mismatch_message" style="display: none;">
+            <tr id="password-match_div" style="display: none;">
                 <td colspan="2">
-                    <p>비밀번호와 일치하지 않습니다</p>
+                    <p id="password-match_message">비밀번호 메세지 자리</p>
                 </td>
             </tr>
             <tr>
