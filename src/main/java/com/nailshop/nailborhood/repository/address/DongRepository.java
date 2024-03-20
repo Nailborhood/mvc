@@ -1,4 +1,4 @@
-package com.nailshop.nailborhood.repository.shop;
+package com.nailshop.nailborhood.repository.address;
 
 
 import com.nailshop.nailborhood.domain.address.Dong;
