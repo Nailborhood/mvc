@@ -101,14 +101,13 @@
                         <img src="/assets/icons/shop/map.svg" class="map-img">
                     </div>
                 </div>
-<!--                TODO : 메뉴 가져오기-->
                 <div class="shop-menu">
                     <div class="menu-left-list">
-                        <div class="price-row">
-                            <span class="menu-txt">젤네일</span>
+                        <div class="price-row" th:each="menu : ${shopDetail.menuDetailResponseDtoList}">
+                            <span class="menu-txt" th:text="${menu.name}">젤네일</span>
                             <div class="separator"></div>
                             <span class="menu-price">
-                                <span class="menu-number">29,000</span>원
+                                <span class="menu-number" th:text="${menu.price}">29,000</span>원
                             </span>
                         </div>
                     </div>
