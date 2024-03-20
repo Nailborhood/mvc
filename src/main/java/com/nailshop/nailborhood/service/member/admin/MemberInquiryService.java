@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.service.member.admin;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.member.MemberInfoDto;
@@ -32,17 +33,26 @@ public class MemberInquiryService {
     private final TokenProvider tokenProvider;
 
     // 전체 조회
-    public CommonResponseDto<Object> inquiryAllMember(String accessToken, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> inquiryAllMember( String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+/*        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
         // 페이지 설정 및 MemberList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
-        Page<Member> memberPage = memberRepository.findAll(pageable);
+
+        Page<Member> memberPage;
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            // 삭제 여부 상관없이 모든 회원 불러오기
+            memberPage = memberRepository.findAll(pageable);
+        } else {
+            // 삭제 여부 상관없이 모든 회원 불러오기
+            memberPage = memberRepository.findAllMemberListByKeyword(keyword, pageable);
+        }
         if (memberPage.isEmpty()) throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 
         List<Member> memberList = memberPage.getContent();
@@ -52,6 +62,7 @@ public class MemberInquiryService {
         for (Member member : memberList){
 
             MemberInfoDto memberInfoDto = MemberInfoDto.builder()
+                    .memberId(member.getMemberId())
                     .email(member.getEmail())
                     .name(member.getName())
                     .birthday(member.getBirthday())

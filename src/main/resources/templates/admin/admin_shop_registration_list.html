@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지-매장 신청 리스트</title>
+   <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">매장 신청 목록</span>
+        <div class="admin-content-div">
+            <!-- 검색 기능 -->
+           <form th:action="@{/admin/search/shop/request}" method="get">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                    <button type="submit" class="search-button">
+                        <img src="/assets/icons/search_icon.png" alt="Search">
+                    </button>
+                </div>
+            </form>
+            <!--검색 시 해당 매장 없을 때 오류 반환-->
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+            <!-- 매장 리스트 -->
+            <table class="chart-list" th:unless="${errorCode}">
+                <thead>
+                <tr>
+                    <th>매장번호</th>
+                    <th>사진</th>
+                    <th>이름</th>
+                    <th>전화번호</th>
+                    <th>운영시간</th>
+                    <th>주소</th>
+                    <th>웹사이트 주소</th>
+                    <th>등록 일자</th>
+                    <th>좋아요 개수</th>
+                    <th>리뷰 개수</th>
+                    <th>리뷰 별점</th>
+                    <th>메뉴 개수</th>
+                    <th>운영상태</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:if="${requestList != null}">
+                <tr class="chart-item" th:each="request : ${requestList.allShopsLookupResponseDtoList}">
+                    <td th:text="${request.shopId}"></td>
+                    <td><img class="chart-profile" th:src="@{${request.shopMainImgPath}}" alt="Profile Image"></td>
+                    <td th:text="${request.name}"></td>
+                    <td th:text="${request.phone}"></td>
+                    <td th:text="${request.opentime}"></td>
+                    <td th:text="${request.address}"></td>
+                    <td th:text="${request.website}"></td>
+                    <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${request.reviewCnt}"></td>
+                    <td th:text="${request.favoriteCnt}"></td>
+                    <td th:text="${request.rateAvg}"></td>
+                    <td th:text="${request.menuCnt}"></td>
+                    <td th:switch="${#strings.toString(request.status)}">
+                        <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
+                    </td>
+<!--                    <td>
+                        <button class="button accept-button" th:if="${#strings.toString(request.status) == 'BEFORE_OPEN'}"
+                                th:reportId="${request.shopId}" data-status="accept"
+                                th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))" >
+                            승인
+                        </button>
+
+
+
+                        <button class="button reject-button" th:if="${#strings.toString(request.status) == 'BEFORE_OPEN'}"
+                                th:reportId="${request.shopId}" data-status="reject"
+                                th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))" >
+                            반려</button>
+                    </td>-->
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

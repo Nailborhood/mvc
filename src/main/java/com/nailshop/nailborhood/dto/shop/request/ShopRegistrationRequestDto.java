@@ -3,11 +3,14 @@ package com.nailshop.nailborhood.dto.shop.request;
 import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Getter
+@Setter
 @Builder
 public class ShopRegistrationRequestDto {
 
@@ -18,7 +21,8 @@ public class ShopRegistrationRequestDto {
     private String website;
     private String content;
     private ShopStatus status;
-    private StoreAddressSeparation storeAddressSeparation;
+    private StoreAddressSeparationDto storeAddressSeparationDto;
     private List<ShopMenuDto> shopMenuDtoList;
+
 
 }

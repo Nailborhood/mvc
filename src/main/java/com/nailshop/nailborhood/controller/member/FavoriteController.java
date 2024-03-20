@@ -21,7 +21,7 @@ public class FavoriteController {
 
     @Tag(name = "favorite", description = "favorite API")
     @Operation(summary = "매장 찜 ", description = "favorite API")
-    // 매장 상세 조회
+    // 매장 찜
     @GetMapping("/favorite/{shopId}")
     public ResponseEntity<ResultDto<FavoriteResponseDto>> getShopDetail(@RequestHeader(AUTH) String accessToken,
                                                                         @PathVariable Long shopId){

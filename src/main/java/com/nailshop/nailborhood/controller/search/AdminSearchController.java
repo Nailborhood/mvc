@@ -5,8 +5,10 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
+import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.service.review.admin.ReviewReportStatusAdminService;
 import com.nailshop.nailborhood.service.search.AdminSearchService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,14 +23,13 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/nailborhood")
 public class AdminSearchController {
 
     private final AdminSearchService adminSearchService;
+    private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 
     // 회원 검색
-    @Tag(name = "search", description = "admin API")
-    @Operation(summary = "유저 검색(탈퇴 회원 포함)", description = "admin API")
+/*
     @GetMapping("/admin/search/member")
     public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
                                                                              @RequestParam(value = "keyword") String keyword,
@@ -41,19 +42,16 @@ public class AdminSearchController {
 
         return ResponseEntity.status(inquiryAllMember.getHttpStatus())
                              .body(resultDto);
-    }
+    }*/
 
     // 리뷰 검색
-    @Tag(name = "search", description = "search API")
-    @Operation(summary = "리뷰 검색", description = "search API")
+
     @GetMapping("/admin/search/review")
     public String searchReviewInquiry(Model model,
-                                      //@RequestHeader(AUTH) String accessToken,
                                       @RequestParam(value = "keyword",required = false) String keyword,
                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                       @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                       @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
-        //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
         try {
             CommonResponseDto<Object> allReviewList = adminSearchService.searchReviewInquiry(keyword, page, size, sortBy);
             model.addAttribute("reviewList", allReviewList.getData());
@@ -66,7 +64,11 @@ public class AdminSearchController {
         }
     }
 
+
+
+
     // 아트판 검색
+
     @Tag(name = "search", description = "search API")
     @Operation(summary = "아트 검색", description = "search API")
     @GetMapping("/admin/search/artRef")
@@ -84,6 +86,7 @@ public class AdminSearchController {
     }
 
     // 매장 검색
+
     @GetMapping("/admin/search/shop")
     public String searchShopInquiry(Model model,
                                     //@RequestHeader(AUTH) String accessToken,
@@ -91,8 +94,7 @@ public class AdminSearchController {
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
-        //TODO: auth 추가되면 변경
-        //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchShopInquiry(accessToken, keyword, page, size, sortBy);
+
         try {
             CommonResponseDto<Object> allShopList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);
             model.addAttribute("shopList", allShopList.getData());
