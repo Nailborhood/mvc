@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
@@ -15,6 +16,7 @@ import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.ShopStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -97,8 +99,10 @@ public class OwnerController {
                              @PathVariable Long shopId,
                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                              @ModelAttribute ShopModifiactionRequestDto shopModifiactionRequestDto,
+                             @ModelAttribute StoreAddressSeparationDto storeAddressSeparationDto,
                              RedirectAttributes redirectAttributes) {
         try {
+            shopModificationService.updateAddressInfo(shopModifiactionRequestDto, storeAddressSeparationDto);
             CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(shopId, multipartFileList, shopModifiactionRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -112,5 +116,11 @@ public class OwnerController {
         }
 
 
+    }
+
+    // enum 타임리프로 리턴
+    @ModelAttribute("shopStatus")
+    public ShopStatus[] shopStatuses(){
+        return ShopStatus.values();
     }
 }

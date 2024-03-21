@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
     // 도시 선택 시 이벤트 리스너
-    document.getElementById('cityName').addEventListener('change', function() {
+    document.getElementById('cityId').addEventListener('change', function() {
         var cityId = this.value;
         console.log('1111');
         filterDistricts(cityId);
     });
 
     // 구 선택 시 이벤트 리스너
-    document.getElementById('districtsName').addEventListener('change', function() {
+    document.getElementById('districtsId').addEventListener('change', function() {
         var districtsId = this.value;
         filterDongs(districtsId);
     });
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function filterDistricts(cityId) {
     console.log(cityId);
 
-    var districts = document.getElementById('districtsName').options;
+    var districts = document.getElementById('districtsId').options;
     console.log(districts);
     for (var i = 0; i < districts.length; i++) {
         if (districts[i].getAttribute('data-city-id') == cityId || districts[i].value == "") {
@@ -27,14 +27,14 @@ function filterDistricts(cityId) {
         }
     }
     // 구 선택 초기화
-    document.getElementById('districtsName').value = '';
+    document.getElementById('districtsId').value = '';
     // 동 선택 초기화 및 숨김 처리
     filterDongs('');
 }
 
 // 구에 따른 동 필터링
 function filterDongs(districtsId) {
-    var dongs = document.getElementById('dongName').options;
+    var dongs = document.getElementById('dongId').options;
     console.log(districtsId);
     console.log(dongs);
     for (var i = 0; i < dongs.length; i++) {
@@ -45,5 +45,5 @@ function filterDongs(districtsId) {
         }
     }
     // 동 선택 초기화
-    document.getElementById('dongName').value = '';
+    document.getElementById('dongId').value = '';
 }

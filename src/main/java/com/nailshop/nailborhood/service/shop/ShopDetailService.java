@@ -9,10 +9,7 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponse
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.CityDto;
-import com.nailshop.nailborhood.dto.shop.response.DistrictsDto;
-import com.nailshop.nailborhood.dto.shop.response.DongDto;
-import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.*;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.*;
 import com.nailshop.nailborhood.exception.NotFoundException;
@@ -31,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -93,20 +91,39 @@ public class ShopDetailService {
         ResultDto<ShopArtBoardListLookupResponseDto> artBoardResultDto = ResultDto.in(artList.getStatus(), artList.getMessage());
         artBoardResultDto.setData((ShopArtBoardListLookupResponseDto) artList.getData());
 
-        ShopDetailListResponseDto shopDetailListResponseDto = ShopDetailListResponseDto.builder()
-                                                                                       .shopDetailLookupResponseDto(shopDetailLookupResponseDto)
-                                                                                       .menuDetailResponseDtoList(menuDetailResponseDtoList)
-                                                                                       .shopImgListResponseDtoList(shopImgListResponseDtoList)
-                                                                                       .shopReviewLookupResponseDtoList(reviewResultDto.getData()
-                                                                                                                                       .getShopAndReviewLookUpResponseDto())
-                                                                                       .shopArtBoardLookupResponseDtoList(artBoardResultDto.getData()
-                                                                                                                                           .getShopArtBoardLookupResponseDtoList())
-                                                                                       .build();
+        // 리뷰 데이터 처리
+        List<ShopAndReviewLookUpResponseDto> reviewListData;
+        if (reviewResultDto.getData() != null && reviewResultDto.getData().getShopAndReviewLookUpResponseDto() != null) {
+            reviewListData =  reviewResultDto.getData().getShopAndReviewLookUpResponseDto();
+        } else {
+            // 리뷰가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
+            reviewListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+        }
 
-        return commonService.successResponse(SuccessCode.SHOP_DETAIL_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopDetailListResponseDto);
-    }
+        // 아트보드 데이터 처리
+        List<ShopArtBoardLookupResponseDto> artBoardListData;
+        if (artBoardResultDto.getData() != null && artBoardResultDto.getData().getShopArtBoardLookupResponseDtoList() != null) {
+            artBoardListData = artBoardResultDto.getData().getShopArtBoardLookupResponseDtoList();
+        } else {
+            // 아트가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
+            artBoardListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+        }
 
-    // 내 매장 조회
+
+            ShopDetailListResponseDto shopDetailListResponseDto = ShopDetailListResponseDto.builder()
+                                                                                           .shopDetailLookupResponseDto(shopDetailLookupResponseDto)
+                                                                                           .menuDetailResponseDtoList(menuDetailResponseDtoList)
+                                                                                           .shopImgListResponseDtoList(shopImgListResponseDtoList)
+                                                                                           .shopReviewLookupResponseDtoList(reviewListData)
+                                                                                           .shopArtBoardLookupResponseDtoList(artBoardListData)
+                                                                                           .build();
+
+            return commonService.successResponse(SuccessCode.SHOP_DETAIL_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopDetailListResponseDto);
+
+        }
+
+
+    // 내 매장 조회 (매장 수정 용)
     @Transactional
     public CommonResponseDto<Object> getMyShopDetail(Long shopId) {
 
@@ -182,3 +199,4 @@ public class ShopDetailService {
 
 
 }
+

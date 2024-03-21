@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.service.shop.owner;
 
+import com.nailshop.nailborhood.domain.address.City;
+import com.nailshop.nailborhood.domain.address.Districts;
 import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.member.Owner;
@@ -9,8 +11,12 @@ import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.address.CityRepository;
+import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.address.DongRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
@@ -47,6 +53,8 @@ public class ShopModificationService {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final OwnerRepository ownerRepository;
+    private final CityRepository cityRepository;
+    private final DistrictsRepository districtsRepository;
 
     //TODO: user 연결 필요
     @Transactional
@@ -68,19 +76,40 @@ public class ShopModificationService {
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         // 주소(동) 수정
-        String city = shopModifiactionRequestDto.getStoreAddressSeparationDto()
-                                                .getCityName();
-        String districts = shopModifiactionRequestDto.getStoreAddressSeparationDto()
-                                                     .getDistrictsName();
-        String dongName = shopModifiactionRequestDto.getStoreAddressSeparationDto()
-                                                    .getDongName();
+        Long cityId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                .getCityId();
+        Long districtsId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                     .getDistrictsId();
+        Long dongId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                .getDongId();
 
+        City city = cityRepository.findByCityId(cityId);
+        Districts districts = districtsRepository.findByDistrictsId(districtsId);
+        Dong dong = dongRepository.findAllByDongId(dongId);
+
+/*
         Optional<Dong> optionalDong = dongRepository.findByName(dongName);
         if (optionalDong.isEmpty()) {
             return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
         }
 
-        Dong dong = optionalDong.get();
+        Dong dong = optionalDong.get();*/
+
+
+        // 매장 정보 저장
+        shop.shopUpdate(
+                shopModifiactionRequestDto.getName(),
+                String.join(" ", city.getName(), districts.getName(), dong.getName(), shopModifiactionRequestDto.getAddress()),
+                shopModifiactionRequestDto.getOpentime(),
+                shopModifiactionRequestDto.getWebsite(),
+                shopModifiactionRequestDto.getContent(),
+                shopModifiactionRequestDto.getPhone(),
+                shopModifiactionRequestDto.getStatus());
+
+
+      /*  shop = shopRepository.save(shop);*/
+        shopRepository.updateDongIdByShopId(dongId,shop.getShopId());
+
 
 
         // 기존 메뉴 삭제
@@ -94,18 +123,6 @@ public class ShopModificationService {
 
         // 새로운 이미지 저장
         saveShopImg(multipartFileList, shop);
-
-        // 매장 정보 저장
-       shop.shopUpdate(shopModifiactionRequestDto.getName(),
-               String.join(" ", city, districts, dongName, shopModifiactionRequestDto.getAddress()),
-                shopModifiactionRequestDto.getOpentime(),
-                shopModifiactionRequestDto.getWebsite(),
-                shopModifiactionRequestDto.getContent(),
-                dong,
-                shopModifiactionRequestDto.getPhone());
-
-
-        shopRepository.save(shop);
 
 
         return commonService.successResponse(SuccessCode.SHOP_MODIFICATION_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -169,6 +186,9 @@ public class ShopModificationService {
     }
 
 
+    public void updateAddressInfo(ShopModifiactionRequestDto shopModifiactionRequestDto, StoreAddressSeparationDto storeAddressSeparationDto) {
 
+        shopModifiactionRequestDto.setStoreAddressSeparationDto(storeAddressSeparationDto);
+    }
 
 }
