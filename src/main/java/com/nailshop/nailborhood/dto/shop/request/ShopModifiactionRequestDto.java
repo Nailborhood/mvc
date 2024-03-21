@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class ShopModifiactionRequestDto {
 
+    private Long shopId;
     private String name;
     private String phone;
     private String address;

@@ -102,14 +102,15 @@ public class Shop extends BaseTime {
     }
 
 
-    public  void shopUpdate (String name, String address, String opentime, String website, String content, Dong dong , String phone) {
+    public  void shopUpdate (String name, String address, String opentime, String website, String content, String phone , ShopStatus status) {
+
         this.name = name;
         this.address = address;
         this.opentime = opentime;
         this.website = website;
         this.content = content;
-        this.dong = dong;
         this.phone = phone;
+        this.status = status;
     }
 
     public void changeStatus(ShopStatus status){

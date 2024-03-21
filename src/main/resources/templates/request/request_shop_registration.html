@@ -112,23 +112,29 @@
                             </div>
 
                             <div class="address-select">
-                                <select name="cityName" id="cityName" required>
+                                <select name="cityId" id="cityId" required>
                                     <option value="">도시 선택</option>
                                     <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
                                             th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
                                 </select>
 
-                                <select name="districtsName" id="districtsName" required>
+                                <select name="districtsId" id="districtsId" required>
                                     <option value="">구 선택</option>
                                     <option th:each="districts : ${addressDto.districtsDtoList}" th:value="${districts.districtsId}"
                                             th:text="${districts.districtsName}" th:data-city-id="${districts.cityId}" style="display:none;"></option>
                                 </select>
 
-                                <select name="dongName" id="dongName" required>
+                                <select name="dongId" id="dongId" required>
                                     <option value="">동 선택</option>
                                     <option th:each="dong : ${addressDto.dongDtoList}" th:value="${dong.dongId}"
                                             th:text="${dong.dongName}" th:data-districts-id="${dong.districtsId}" style="display:none;"></option>
                                 </select>
+                            </div>
+
+                            <div class="address">
+                                <div>
+                                    <label for="address">상세 주소</label>
+                                </div>
                             </div>
 
                             <div class="address-input">
