@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class StoreAddressSeparationDto {
-    private String cityName;
-    private String districtsName;
-    private String dongName;
+    private Long cityId;
+    private Long districtsId;
+    private Long dongId;
+
 }

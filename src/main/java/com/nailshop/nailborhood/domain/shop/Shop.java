@@ -101,15 +101,16 @@ public class Shop extends BaseTime {
         this.rateAvg = rateAvg;
     }
 
-    public  void shopUpdate (String name, String address, String opentime, String website, String content, ShopStatus status, Dong dong , String phone) {
+
+    public  void shopUpdate (String name, String address, String opentime, String website, String content, String phone , ShopStatus status) {
+
         this.name = name;
         this.address = address;
         this.opentime = opentime;
         this.website = website;
         this.content = content;
-        this.status = status;
-        this.dong = dong;
         this.phone = phone;
+        this.status = status;
     }
 
     public void changeStatus(ShopStatus status){
