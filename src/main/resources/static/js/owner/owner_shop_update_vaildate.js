@@ -8,15 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         isFormValid = false;
     }
 
-    // 사업자 등록증 제출 유효성검사
-    if (inputFile2.files.length === 0) {
-        alert("사업자 등록증을 등록해주세요");
-        isFormValid = false;
-    }
-
-    if (!isFormValid) {
-        e.preventDefault(); // 유효하지 않은 경우, 폼 제출 방지
-    }
 
     /*document.getElementById('error-message').textContent = '';
 

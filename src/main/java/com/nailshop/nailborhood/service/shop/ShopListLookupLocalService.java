@@ -66,15 +66,29 @@ public class ShopListLookupLocalService {
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListByDong(int page, int size, String sort, String criteria, Long dongId) {
+    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId) {
 
 
         // 정렬기준 설정
         Pageable pageable = (sort.equals("ASC")) ?
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
-        // 페이지로 값 가져오기
-        Page<Shop> shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
 
+       // dongId 유무
+        Page<Shop> shops;
+        if(keyword == null || keyword.trim()
+                                     .isEmpty()) {
+            if (dongId == null) {
+                shops = shopRepository.findAllNotDeleted(pageable);
+            } else {
+                shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
+            }
+        }else {
+            if (dongId == null) {
+                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
+            } else {
+                shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId,keyword);
+            }
+        }
         if (shops.isEmpty()) {
             throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
         }
@@ -144,7 +158,6 @@ public class ShopListLookupLocalService {
                                   .paginationDto(paginationDto)
                                   .build();
     }
-
 
 
 }
