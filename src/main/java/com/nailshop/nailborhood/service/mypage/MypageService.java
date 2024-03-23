@@ -63,6 +63,7 @@ public class MypageService {
                     .mainImgPath(mainImgPath)
                     .categoryTypeList(categoryTypeList)
                     .shopName(shopName)
+                    .shopAddress(review.getShop().getAddress())
                     .contents(review.getContents())
                     .rate(review.getRate())
                     .likeCnt(review.getLikeCnt())
