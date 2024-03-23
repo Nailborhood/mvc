@@ -59,6 +59,7 @@ public class MypageService {
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
+                    .shopId(review.getShop().getShopId())
                     .mainImgPath(mainImgPath)
                     .categoryTypeList(categoryTypeList)
                     .shopName(shopName)
