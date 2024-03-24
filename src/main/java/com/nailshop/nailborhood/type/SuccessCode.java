@@ -16,8 +16,8 @@ public enum SuccessCode {
 
     SHOP_ART_LOOKUP_SUCCESS("매장 아트판 조회를 성공했습니다"),
     SHOP_REVIEW_LOOKUP_SUCCESS("매장 리뷰 조회를 성공했습니다"),
-    FAVORITE_SAVE_SUCCESS("매장 찜 등록에 성공했습니다"),
-    FAVORITE_CANCEL_SUCCESS("매장 찜을 취소 했습니다"),
+    FAVORITE_SAVE_SUCCESS("관심 매장에 추가 했습니다"),
+    FAVORITE_CANCEL_SUCCESS("관심 매장에서 삭제 했습니다"),
     SHOP_DELETE_SUCCESS("매장을 삭제했습니다"),
     SHOP_STATUS_BEFORE_OPEN("매장 상태:'영업전'으로 변경되었습니다"),
     SHOP_STATUS_OPEN("매장 상태:'영업중'으로 변경되었습니다"),
