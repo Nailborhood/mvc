@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -67,9 +68,11 @@ public class ShopController {
         resultDto.setData((ShopListResponseDto) allShopsList.getData());
 
         StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
+        List<Map<String, String>> criteriaOptions = shopListLookupLocalService.createCriteriaOptions();
 
         model.addAttribute("resultDto", resultDto);
         model.addAttribute("addressDto", storeAddressSeparationListDtoList);
+        model.addAttribute("criteriaOptions", criteriaOptions);
         return "shop/shop_local_list";
     }
 

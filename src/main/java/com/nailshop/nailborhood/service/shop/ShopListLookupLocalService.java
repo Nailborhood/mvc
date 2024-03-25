@@ -22,7 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -157,6 +160,29 @@ public class ShopListLookupLocalService {
                                   .shopLookupResponseDtoList(shopLookupResponseDtoList)
                                   .paginationDto(paginationDto)
                                   .build();
+    }
+
+
+    // 조회 정렬 기준 orderby 설정
+    public List<Map<String, String>> createCriteriaOptions() {
+        List<Map<String, String>> sortOptions = new ArrayList<>();
+
+        Map<String, String> option1 = new HashMap<>();
+        option1.put("value", "createdAt");
+        option1.put("text", "최신순");
+        sortOptions.add(option1);
+
+        Map<String, String> option2 = new HashMap<>();
+        option2.put("value", "favoriteCnt");
+        option2.put("text", "인기순");
+        sortOptions.add(option2);
+
+        Map<String, String> option3 = new HashMap<>();
+        option3.put("value", "rateAvg");
+        option3.put("text", "평점순");
+        sortOptions.add(option3);
+
+        return sortOptions;
     }
 
 
