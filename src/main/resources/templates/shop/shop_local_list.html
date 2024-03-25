@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>매장 상세</title>
+    <title>매장 지역 검색</title>
     <!--    <script th:src="@{/js/get_layouts.js}"></script>-->
     <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>
     <script th:src="@{/js/shop/shop_local_list_search.js}"></script>
@@ -19,71 +19,92 @@
     <div layout:fragment="content" class="content">
         <div class="shop-local-list-content">
             <!-- 검색 기능 -->
-            <form id="searchForm" method="get">
+            <!-- <form id="searchForm" th:action="@{/shop/list}" method="get">-->
+            <form id="searchForm" class="searchForm" method="get">
                 <div class="search-container">
                     <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
                     <button type="submit" class="search-button">
                         <img src="/assets/icons/search_icon.png" alt="Search">
                     </button>
                 </div>
-                <div class="address-select">
-                    <select name="cityId" id="cityId" >
-                        <option value="">도시 선택</option>
-                        <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
-                                th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
-                    </select>
+                <div class="search-select-box">
+                    <div class="address-select">
+                        <select name="cityId" id="cityId">
+                            <option value="">도시 선택</option>
+                            <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                    th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
+                        </select>
 
-                    <select name="districtsId" id="districtsId" >
-                        <option value="">구 선택</option>
-                        <option th:each="districts : ${addressDto.districtsDtoList}" th:value="${districts.districtsId}"
-                                th:text="${districts.districtsName}" th:data-city-id="${districts.cityId}"
-                                style="display:none;"></option>
-                    </select>
+                        <select name="districtsId" id="districtsId">
+                            <option value="">구 선택</option>
+                            <option th:each="districts : ${addressDto.districtsDtoList}"
+                                    th:value="${districts.districtsId}"
+                                    th:text="${districts.districtsName}" th:data-city-id="${districts.cityId}"
+                                    style="display:none;"></option>
+                        </select>
 
-                    <select name="dongId" id="dongId" >
-                        <option value="">동 선택</option>
-                        <option th:each="dong : ${addressDto.dongDtoList}" th:value="${dong.dongId}"
-                                th:text="${dong.dongName}" th:data-districts-id="${dong.districtsId}"
-                                style="display:none;"></option>
-                    </select>
+                        <select name="dongId" id="dongId">
+                            <option value="">동 선택</option>
+                            <option th:each="dong : ${addressDto.dongDtoList}" th:value="${dong.dongId}"
+                                    th:text="${dong.dongName}" th:data-districts-id="${dong.districtsId}"
+                                    style="display:none;"></option>
+                        </select>
+                    </div>
+                    <div class="clearButton">
+                        <button class="clearStorageButton" id="clearStorageButton">
+                            <img src="/assets/icons/shop/reset.png" alt="reset">
+                            초기화
+                        </button>
+                    </div>
+                    <div class="orderby-select">
+                        <select name="orderby" id="orderby">
+                            <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                                    th:text="${criteria.text}"
+                                    th:selected="${criteria.value == selectedOrderby}">Option
+                            </option>
+                        </select>
+                    </div>
                 </div>
+
             </form>
 
 
             <!--검색 시 해당 매장 없을 때 오류 반환-->
             <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
-            <div th:unless="${errorCode}">
+            <div class="all-shop-list" th:unless="${errorCode}">
                 <div class="shop-list_div" th:if="${resultDto != null }">
-                    <div class="shop-info" th:each="shop : ${resultDto.getData().getShopLookupResponseDtoList()}" th:href="@{/shopDetail/{shopId}(shopId=${shop.getShopId()})}" >
-                        <div class="shop-info_img">
-                            <img th:src="@{${shop.getShopMainImgPath()}}">
-                        </div>
-                        <div class="shop-info_text">
-                            <div class="shop-info_title" th:text="${shop.getName()}">
-                                title
+                    <div class="shop-info" th:each="shop : ${resultDto.getData().getShopLookupResponseDtoList()}">
+                        <a th:href="@{/shopDetail/{shopId}(shopId=${shop.getShopId()})}">
+                            <div class="shop-info_img">
+                                <img th:src="@{${shop.getShopMainImgPath()}}">
                             </div>
-                            <div class="shop-info_address" th:text="${shop.address}" >
-                                address
-                            </div>
-                            <div class="shop-info_under">
-                                <div class="shop-info_opentime" th:text="${shop.opentime}">
-                                    time
+                            <div class="shop-info_text">
+                                <div class="shop-info_title" th:text="${shop.getName()}">
+                                    title
                                 </div>
-                                <div class="shop-info_favorite">
-                                    <span class="favorite-cnt">❤️&nbsp;</span>
-                                    <span class="score" th:text="${shop.favoriteCnt}"></span>&nbsp
+                                <div class="shop-info_address" th:text="${shop.address}">
+                                    address
+                                </div>
+                                <div class="shop-info_under">
+                                    <div class="shop-info_opentime" th:text="${shop.opentime}">
+                                        time
+                                    </div>
+                                    <div class="shop-info_favorite">
+                                        <span class="favorite-cnt">❤️&nbsp;</span>
+                                        <span class="score" th:text="${shop.favoriteCnt}"></span>&nbsp
 
+                                    </div>
+                                    <div class="shop-info_rate">
+                                        <span class="review-cnt">⭐️&nbsp;</span>
+                                        <span class="score" th:text="${shop.rateAvg}"></span>&nbsp;(
+                                        <span class="review-cnt" th:text="${shop.reviewCnt}"></span>&nbsp;)
+                                    </div>
+                                    <!--                                <div class="shop-info_menu">
+                                                                        menu name : menu price
+                                                                    </div>-->
                                 </div>
-                                <div class="shop-info_rate">
-                                    <span class="review-cnt">⭐️&nbsp;</span>
-                                    <span class="score" th:text="${shop.rateAvg}"></span>&nbsp;(
-                                    <span class="review-cnt" th:text="${shop.reviewCnt}"></span>&nbsp;)
-                                </div>
-<!--                                <div class="shop-info_menu">
-                                    menu name : menu price
-                                </div>-->
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                 </div>

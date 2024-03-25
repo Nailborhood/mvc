@@ -16,13 +16,19 @@
     position: relative;
 }
 
+.searchForm {
+    width: 80%;
+    padding: 10px 10px 10px 10px;
+    margin: auto;
+}
+
 /* 검색 */
 
 .search-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 50px;
-    margin-top: 30px;
+    width: 70%;
+    margin: 30px auto 50px;
 }
 
 .search-input {
@@ -45,12 +51,73 @@
     height: 20px;
 }
 
-
-
-.address-select{
-    margin-bottom: 10px;
+.search-select-box {
+    display: flex;
+    gap: 10px
 }
 
+.address-select {
+    margin-bottom: 10px;
+    margin-left: 10px;
+
+}
+
+.search-select-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.search-select-box button {
+    padding: 3px 10px;
+    border: none;
+    /*background-color:var(--main-color_navy);*/
+    background: none;
+    color: gray;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    align-items: normal;
+    display: flex;
+    gap: 3px;
+    justify-content: space-evenly;
+}
+
+.clearButton {
+    margin-top: 5px;
+}
+
+.search-select-box button:hover {
+    background-color: var(--hover);
+}
+
+.search-select-box .clearButton img {
+    width: 15px;
+    height: 15px;
+}
+
+.orderby-select{
+    margin-left: 225px;
+}
+
+.orderby-select select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 70px;
+}
+
+.all-shop-list {
+    margin: auto;
+}
+
+.shop-info a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    text-decoration: none;
+}
 
 .shop-list_div {
     display: flex;
