@@ -46,8 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const storedDistrictsId = localStorage.getItem('districtsId');
     const storedDongId = localStorage.getItem('dongId');
     const storedKeyword = localStorage.getItem("keywordInput");
-
-    const storedOrderby = localStorage.getItem('orderby') || 'createdAt'; // 'default값'을 여러분의 기본값으로 설정하세요
+    const storedOrderby = localStorage.getItem('orderby') || 'createdAt';
 
 
 
@@ -120,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var form = document.getElementById('searchForm');
         form.action = '/shop/list';
-
 
 
     });
