@@ -59,10 +59,13 @@ public enum ErrorCode {
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),
 
-    //리뷰
+    // 리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
     ART_NOT_REGISTRATION("등록된 아트판이 없습니다"),
-    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다.");
+    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
+
+    // 채팅
+    CHAT_ROOM_NOT_FOUND("채팅룸이 없습니다");
 
     private final String description;
 }
