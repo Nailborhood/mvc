@@ -1,0 +1,94 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.chat-list-content {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 30px auto;
+    position: relative;
+}
+
+
+.all-chat-list {
+    margin: auto;
+}
+
+.chat-info a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    text-decoration: none;
+}
+
+.chat-list_div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+}
+
+.chat-info {
+    width: 600px;
+    height: 140px;
+    background-color: antiquewhite;
+    border-radius: 5px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.shop-info_img {
+    width: 120px;
+    height: 120px;
+    margin-right: 10px;
+}
+
+.shop-info_img img {
+    width: 100%;
+    height: 100%;
+}
+
+.shop-info_text {
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-info_title {
+    font-size: 20px;
+    margin: 3px;
+}
+
+.chat-info_under {
+    display: flex;
+    margin-top: 3px;
+}
+
+.chat-info_under div {
+    border-right: 1px solid var(--shadow_3);
+    padding: 0 3px;
+}
+
+.chat-info_under div:last-child {
+    border-right: none;
+}
+
+.chat-info_under .chat-info_contents {
+    font-size: 14px;
+}
+
+.chat-info_under .chat-info_date {
+    font-size: 11px;
+    color: #333333;
+}
