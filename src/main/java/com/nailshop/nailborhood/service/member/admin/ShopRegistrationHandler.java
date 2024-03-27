@@ -31,13 +31,13 @@ public class ShopRegistrationHandler {
     private final OwnerRepository ownerRepository;
 
     @Transactional
-    public CommonResponseDto<Object> shopApprove(String accessToken, Long shopId) {
+    public CommonResponseDto<Object> shopApprove(/*String accessToken, */Long shopId) {
 
         // 권한 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // shop, owner 정보 get
         Shop shop = shopRepository.findById(shopId)
@@ -58,13 +58,13 @@ public class ShopRegistrationHandler {
     }
 
     @Transactional
-    public CommonResponseDto<Object> shopReject(String accessToken, Long shopId){
+    public CommonResponseDto<Object> shopReject(/*String accessToken, */Long shopId){
 
         // 권한 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // shop, owner 정보 get
         Shop shop = shopRepository.findById(shopId)
