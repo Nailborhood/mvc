@@ -65,13 +65,23 @@ public class OwnerController {
             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
             @RequestParam(value = "category", defaultValue = "", required = false) String category,
             Model model) {
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(/*accessToken, */page, size, sortBy, category);
-        ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
-        resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
-        model.addAttribute("result", resultDto);
-        model.addAttribute("sortBy", sortBy);
-        model.addAttribute("size", size);
+        boolean error = false;
+
+        try {
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(/*accessToken, */page, size, sortBy, category);
+            ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+            resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
+            model.addAttribute("result", resultDto);
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("size", size);
+            model.addAttribute("error", error);
+        } catch (Exception e) {
+
+            error = true;
+            model.addAttribute("error", error);
+        }
 
         return "artboard/art_manage";
     }
