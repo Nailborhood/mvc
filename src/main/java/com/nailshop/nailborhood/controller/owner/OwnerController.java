@@ -80,7 +80,7 @@ public class OwnerController {
     // TODO: user 연결 필요
     // 매장 정보 수정
 
-    @GetMapping("/owner/update/{shopId}")
+    @GetMapping("/owner/shop/update/{shopId}")
     public String updateShop(Model model,
                              @PathVariable Long shopId) {
         CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shopId);
@@ -94,7 +94,7 @@ public class OwnerController {
         return "owner/owner_shop_update";
     }
 
-    @PostMapping("/owner/update/{shopId}")
+    @PostMapping("/owner/shop/update/{shopId}")
     public String updateShop(Model model,
                              @PathVariable Long shopId,
                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
