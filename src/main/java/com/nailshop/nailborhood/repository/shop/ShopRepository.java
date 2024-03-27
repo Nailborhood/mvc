@@ -77,7 +77,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query("SELECT s " +
             "FROM Shop s " +
             "WHERE s.name Like %:keyword%" )
-    Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
+    Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     // 신청 매장 전체 조회
     Page<Shop> findByIsDeletedFalseAndStatus(ShopStatus status, Pageable pageable);
@@ -103,7 +103,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query("SELECT s " +
             "FROM Shop s " +
             "WHERE (s.name Like %:keyword% ) and s.status = 'BEFORE_OPEN'" )
-    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(String keyword, Pageable pageable);
+    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT s " +
             "FROM Shop s " +
@@ -116,4 +116,9 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateDongIdByShopId(@Param("dongId") Long dongId, @Param("shopId") Long shopId);
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "left JOIN s.dong d " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND d.dongId =:dongId")
+    Page<Shop> findAllNotDeletedByDongIdAndKeyword(Pageable pageable, @Param("dongId") Long dongId,@Param("keyword") String keyword);
 }
