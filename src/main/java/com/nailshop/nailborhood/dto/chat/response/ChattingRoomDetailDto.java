@@ -9,4 +9,6 @@ public class ChattingRoomDetailDto {
 
     private Long roomId;
     private String roomName;
+    private Long ownerId;
+    private Long adminId;
 }
