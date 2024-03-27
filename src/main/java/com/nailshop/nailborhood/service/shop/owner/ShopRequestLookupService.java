@@ -42,7 +42,7 @@ public class ShopRequestLookupService {
     public CommonResponseDto<Object> getShopRequest() {
 
         //TODO: accessToken or session 연결 필요
-        Long ownerId = 16L;
+        Long ownerId = 17L;
         Shop shopRequestList = shopRepository.findAllShopListByOwnerId(ownerId);
 
 
