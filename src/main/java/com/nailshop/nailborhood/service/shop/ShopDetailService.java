@@ -8,9 +8,7 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResp
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.*;
-import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.*;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.address.CityRepository;
@@ -30,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -198,5 +195,10 @@ public class ShopDetailService {
     }
 
 
+    // 채팅에서 사장님 매장 id 가져오기
+    public Shop findMyShopId(Long ownerId) {
+
+        return shopRepository.findAllShopListByOwnerId(ownerId);
+    }
 }
 
