@@ -79,21 +79,25 @@ public class ShopRegistrationService {
 
 
         // 주소
-        String city = shopRegistrationRequestDto.getStoreAddressSeparationDto()
-                                                .getCityName();
-        String districts = shopRegistrationRequestDto.getStoreAddressSeparationDto()
-                                                     .getDistrictsName();
-        String dongName = shopRegistrationRequestDto.getStoreAddressSeparationDto()
-                                                    .getDongName();
+        Long cityId = shopRegistrationRequestDto.getStoreAddressSeparationDto()
+                                                .getCityId();
+        Long districtsId = shopRegistrationRequestDto.getStoreAddressSeparationDto()
+                                                     .getDistrictsId();
+        Long dongId = shopRegistrationRequestDto.getStoreAddressSeparationDto()
+                                                    .getDongId();
+
+        City city = cityRepository.findByCityId(cityId);
+        Districts districts = districtsRepository.findByDistrictsId(districtsId);
+        Dong dong = dongRepository.findByDongId(dongId);
 
 
-        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
+/*        Optional<Dong> optionalDong = dongRepository.findByName(dongName);
         if (optionalDong.isEmpty()) {
             return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
         }
 
         Dong dong = optionalDong.get();
-
+*/
 
         // 매장 세부정보 등록
         Shop shop = Shop.builder()
@@ -101,7 +105,7 @@ public class ShopRegistrationService {
                         .content(shopRegistrationRequestDto.getContent())
                         .name(shopRegistrationRequestDto.getName())
                         .website(shopRegistrationRequestDto.getWebsite())
-                        .address(String.join(" ", city, districts, dongName, shopRegistrationRequestDto.getAddress()))
+                        .address(String.join(" ", city.getName(), districts.getName(), dong.getName(), shopRegistrationRequestDto.getAddress()))
                         .opentime(shopRegistrationRequestDto.getOpentime())
                         .phone(shopRegistrationRequestDto.getPhone())
                         .isDeleted(false)
@@ -141,10 +145,10 @@ public class ShopRegistrationService {
 
         for (ShopMenuDto shopMenuDto : shopMenuDtoList) {
             Menu menu = Menu.builder()
-                    .name(shopMenuDto.getName())
-                    .price(shopMenuDto.getPrice())
-                    .shop(shop)
-                    .build();
+                            .name(shopMenuDto.getName())
+                            .price(shopMenuDto.getPrice())
+                            .shop(shop)
+                            .build();
             menuList.add(menu);
         }
 
@@ -162,11 +166,11 @@ public class ShopRegistrationService {
 
         for (String imgPath : shopImgUrlList) {
             ShopImg shopImg = ShopImg.builder()
-                    .imgPath(imgPath)
-                    .imgNum(imgNum)
-                    .isDeleted(false)
-                    .shop(shop)
-                    .build();
+                                     .imgPath(imgPath)
+                                     .imgNum(imgNum)
+                                     .isDeleted(false)
+                                     .shop(shop)
+                                     .build();
             shopImgRepository.save(shopImg);
 
             imgNum++;
