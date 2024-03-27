@@ -33,4 +33,18 @@ public class MessageController {
     }
 
 
+/*    @MessageMapping("/admin/chatroom/{roomId}") // 클라이언트에서 /send/chatroom/{roomId}로 메시지를 보낼 때 해당 메소드가 호출됩니다.
+    public void sendAdminMessage(@DestinationVariable Long roomId, MessageRequestDto messageRequestDto) {
+
+
+
+        //TODO: httpsession 에서 가져와서 넘기기
+        // ex :messageService.saveMessage( roomId, messageRequestDto, session);
+        messageService.saveMessage( roomId, messageRequestDto);
+
+        // 메시지를 해당 채팅방 ID를 구독하고 있는 클라이언트들에게 전달
+        messagingTemplate.convertAndSend("/sub/admin/chatroom/" + roomId, messageRequestDto);
+    }*/
+
+
 }
