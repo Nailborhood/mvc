@@ -115,7 +115,7 @@
                 <div class="shop-art">
                     <div class="art-row">
                         <span class="art">아트</span>
-                        <a href="#" class="shop-art-link">
+                        <a th:href="@{/art/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-art-link">
                             <img src="/assets/icons/shop/arrow.svg">
                         </a>
                     </div>
