@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- SockJS와 Stomp.js 포함 -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script th:src="@{/js/chat/admin_chat.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/admin/admin_chat_style.css}"/>
+
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">채팅룸</span>
+
+        <div th:if="${errorCode}">
+            <p th:text="${errorCode.description}"></p>
+        </div>
+        <div th:unless="${errorCode}">
+            <form id="chatRoomForm"
+                  th:action="@{'/chatroom/'+${chatRoomDto.getRoomId()}}"
+                  method="post">
+                <input type="hidden" id="roomId" th:value="${chatRoomDto.getRoomId()}">
+                <div id="messageDto"  th:attr="data-message-dto=${messageResponseDtoListJson}" hidden></div>
+                <div class="content-div">
+                    <!-- 채팅 박스 -->
+                    <div class="chatBoxWrapper">
+                        <!-- 채팅룸 정보 -->
+<!--                        <div class="chatRoomInfo">
+                            <div class="chat-room-name" th:text="${chatRoomDto.getRoomName()}"></div>
+                        </div>-->
+                        <!-- 매장 정보 -->
+                        <div class="shopInformation">
+                            <div class="shopImg">
+                                <img class="shop-img" th:src="@{${shopDto.getData().getShopImgListResponseDtoList().get(0).getImgPath()}}" alt="Profile Image">
+                            </div>
+                            <div class="shopName" th:text="${shopDto.getData().getShopDetailLookupResponseDto().getName()}">
+
+                            </div>
+                        </div>
+                        <div class="chatArea"  >
+
+
+
+                            <!-- 사용자의 채팅 메시지 표시 영역 -->
+<!--                            <div class="myChat">
+                                <div class="chatBox">
+                                    <div class="chat-content">
+                                    </div>
+                                    <div class="chatTime">
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <!-- 상대방의 채팅 메시지 표시 영역 -->
+<!--                            <div class="userChat">
+                                <div class="chatBox">
+                                    <div class="chat-content">
+                                    </div>
+                                    <div class="chatTime">
+                                    </div>
+                                </div>
+                            </div>-->
+
+
+                        </div>
+
+                        <!-- 채팅 메시지 입력 영역 -->
+                        <div class="inputArea">
+                            <!--  TODO:  session 연결되면 없어질것-->
+                            <input type="text" id="writer" placeholder="작성자">
+                            <input type="text" id="message" placeholder="메시지를 입력하세요...">
+                            <button type="submit" >전송</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+</html>
