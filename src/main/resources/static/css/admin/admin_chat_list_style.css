@@ -22,7 +22,7 @@
     margin: auto;
 }
 
-.chat-info a{
+.chat-info a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,7 +38,7 @@
 }
 
 .chat-info {
-    width: 600px;
+    width: 460px;
     height: 140px;
     background-color: antiquewhite;
     border-radius: 5px;
@@ -63,16 +63,18 @@
 .shop-info_text {
     display: flex;
     flex-direction: column;
+
 }
 
 .shop-info_title {
     font-size: 20px;
     margin: 3px;
+    font-weight: bold;
 }
 
 .chat-info_under {
     display: flex;
-    margin-top: 3px;
+    margin-top: 15px;
 }
 
 .chat-info_under div {
@@ -85,10 +87,67 @@
 }
 
 .chat-info_under .chat-info_contents {
-    font-size: 14px;
+    font-size: 15px;
+    color: #767678;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
 }
 
 .chat-info_under .chat-info_date {
     font-size: 11px;
     color: #333333;
+}
+
+/* 검색 */
+.searchForm {
+    width: 80%;
+    padding: 10px 10px 10px 10px;
+    margin: auto;
+}
+
+
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 70%;
+    margin: 30px auto 50px;
+}
+
+.search-input {
+    width: 800px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.error-code {
+    margin: auto;
+}
+
+.shop-info_title_and_date {
+    display: flex;
+}
+
+.shop-info_title_and_date .chat-info_date {
+    font-size: 13px;
+    margin: 7px;
+    color: #767678;
+
 }
