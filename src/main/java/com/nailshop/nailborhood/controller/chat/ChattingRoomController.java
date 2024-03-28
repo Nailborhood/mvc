@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import com.nailshop.nailborhood.domain.shop.Shop;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomDetailAndShopInfoDto;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomDetailDto;
+import com.nailshop.nailborhood.dto.chat.response.ChattingRoomListResponseDto;
 import com.nailshop.nailborhood.dto.chat.response.MessageListDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -21,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -81,7 +84,7 @@ public class ChattingRoomController {
     // 관리자 페이지
 
     // 채팅룸 리스트 조회
-    @GetMapping("/admin/chat/list")
+/*    @GetMapping("/admin/chat/list")
     public String getChatList(Model model){
         try{
             //TODO: session 연결
@@ -94,6 +97,31 @@ public class ChattingRoomController {
             return "admin/admin_chat_list";
         }catch (NotFoundException e){
             return "admin/admin_chat_list";
+        }
+
+    }*/
+
+    // 채팅룸 검색
+    @GetMapping("/admin/search/chat")
+    public String searchChatList(Model model,
+                                 @RequestParam(value = "keyword",required = false) String keyword,
+                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                 @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                 @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
+        try{
+            //TODO: session 연결
+            Long adminId =1L;
+            // 채팅룸 리스트 & 채팅룸 해당 매장 정보 & 메세지 리스트
+            CommonResponseDto<Object> allChatList = chattingRoomService.searchChatRoomList(adminId,keyword,page,size,sortBy);
+            ResultDto<ChattingRoomListResponseDto> resultDto = ResultDto.in(allChatList.getStatus(), allChatList.getMessage());
+            resultDto.setData((ChattingRoomListResponseDto) allChatList.getData());
+
+            model.addAttribute("chatList",allChatList.getData());
+
+            return "admin/admin_chat_search_list";
+        }catch (NotFoundException e){
+            model.addAttribute("errorCode", ErrorCode.CHAT_ROOM_NOT_FOUND);
+            return "admin/admin_chat_search_list";
         }
 
     }
