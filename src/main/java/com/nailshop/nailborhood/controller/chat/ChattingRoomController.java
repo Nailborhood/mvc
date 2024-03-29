@@ -107,7 +107,7 @@ public class ChattingRoomController {
                                  @RequestParam(value = "keyword",required = false) String keyword,
                                  @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                  @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                 @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
+                                 @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
         try{
             //TODO: session 연결
             Long adminId =1L;
