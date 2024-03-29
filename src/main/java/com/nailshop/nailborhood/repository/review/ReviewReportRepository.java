@@ -86,4 +86,11 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
             "LEFT JOIN rr.review r " +
             "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
     List<ReviewReport> findReviewReportListByReviewId(@Param("reviewId") Long reviewId);
+
+    @Query("SELECT rr " +
+            "FROM ReviewReport rr " +
+            "LEFT JOIN rr.review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE s.shopId = :shopId AND r.isDeleted = false ")
+    List<ReviewReport> findAllByShopId(@Param("shopId") Long shopId);
 }

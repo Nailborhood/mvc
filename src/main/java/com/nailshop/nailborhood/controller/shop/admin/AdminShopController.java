@@ -32,8 +32,6 @@ public class AdminShopController {
     private final ShopRequestLookupAdminService shopRequestLookupAdminService;
 
 
-
-
     // 매장 신청 조회
     @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
@@ -43,7 +41,6 @@ public class AdminShopController {
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                               @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                               @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-
 
 
         try {
@@ -61,10 +58,9 @@ public class AdminShopController {
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 삭제", description = "admin API")
     // 매장 삭제
-    @DeleteMapping("/admin/deleteShop/{shopId}")
-    public ResponseEntity<ResultDto<Void>> deleteShop(@RequestHeader(AUTH) String accessToken,
-                                                      @PathVariable Long shopId) {
-        CommonResponseDto<Object> commonResponseDto = shopDeleteService.deleteShop(accessToken, shopId);
+    @PostMapping("/admin/delete/shop")
+    public ResponseEntity<ResultDto<Void>> deleteShop(@RequestParam Long shopId) {
+        CommonResponseDto<Object> commonResponseDto = shopDeleteService.deleteShop(shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
