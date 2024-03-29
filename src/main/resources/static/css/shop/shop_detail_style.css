@@ -104,6 +104,10 @@
     right: 0;
 }
 
+.prev img, .next img {
+    width: 45px;
+}
+
 .subtitle {
     margin-top: 10px;
     font-size: 20px;
@@ -122,7 +126,7 @@
 }
 
 .info-subtitle {
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 10px;
     font-size: 20px;
     font-weight: 500;
@@ -148,7 +152,7 @@ td {
 }
 
 .info-img {
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 10px;
     height: 25px;
     width: auto;
@@ -246,6 +250,7 @@ td {
     width: 100%;
     margin-right: 7px;
     max-width: 250px;
+    height: 250px;
 }
 
 .art-img , .review-img  {
@@ -258,6 +263,7 @@ td {
     object-fit: cover;
     width: 100%;
     max-width: 250px;
+    height: 250px;
 }
 
 .division-line {
