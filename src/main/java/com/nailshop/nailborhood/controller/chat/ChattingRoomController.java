@@ -72,6 +72,7 @@ public class ChattingRoomController {
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson",messageResponseDtoListJson);
+            model.addAttribute("shopErrorCode",ErrorCode.SHOP_NOT_FOUND);
 
             return "owner/owner_chat_room_detail";
 
@@ -147,6 +148,8 @@ public class ChattingRoomController {
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson",messageResponseDtoListJson);
+            model.addAttribute("shopErrorCode",ErrorCode.SHOP_NOT_FOUND);
+
 
             return "admin/admin_chat_room_detail";
 

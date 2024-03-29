@@ -36,7 +36,10 @@
                             <div class="chat-room-name" th:text="${chatRoomDto.getRoomName()}"></div>
                         </div>-->
                         <!-- 매장 정보 -->
-                        <div class="shopInformation">
+                        <div th:if="${shopErrorCode}">
+                            <p th:text="${shopErrorCode.description}"></p>
+                        </div>
+                        <div class="shopInformation" >
                             <div class="shopImg">
                                 <img class="shop-img" th:src="@{${shopDto.getData().getShopImgListResponseDtoList().get(0).getImgPath()}}" alt="Profile Image">
                             </div>
@@ -72,7 +75,7 @@
                         </div>
 
                         <!-- 채팅 메시지 입력 영역 -->
-                        <div class="inputArea">
+                        <div class="inputArea" th:unless="${shopErrorCode}">
                             <!--  TODO:  session 연결되면 없어질것-->
                             <input type="text" id="writer" placeholder="작성자">
                             <input type="text" id="message" placeholder="메시지를 입력하세요...">

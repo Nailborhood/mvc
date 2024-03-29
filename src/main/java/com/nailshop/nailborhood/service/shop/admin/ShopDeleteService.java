@@ -101,29 +101,23 @@ public class ShopDeleteService {
         }
 
         // 리뷰 신고 삭제
-        List<ReviewReport> reportList = reviewReportRepository.findAllByShopId(shop.getShopId());
+/*        List<ReviewReport> reportList = reviewReportRepository.findAllByShopId(shop.getShopId());
 
         if (!reportList.isEmpty()) {
             for (ReviewReport report : reportList) {
                 reviewReportRepository.deleteById(report.getReportId());
             }
-        }
+        }*/
 
         // 채팅 삭제
-        List<ChattingRoom> chattingRoomList = chattingRoomRepository.findAllByShopId(shop.getShopId());
+/*        List<ChattingRoom> chattingRoomList = chattingRoomRepository.findAllByShopId(shop.getShopId());
 
         if (!chattingRoomList.isEmpty()) {
             for (ChattingRoom chattingRoom : chattingRoomList) {
-                List<Message> messageList = messageRepository.findAllByRoomId(chattingRoom.getRoomId());
-                if(!messageList.isEmpty()){
-                    for(Message message : messageList){
-                        messageRepository.deleteById(message.getMessageId());
-                    }
-                }
 
-                chattingRoomRepository.deleteById(chattingRoom.getRoomId());
+                chattingRoomRepository.deleteByChattingRoomId(chattingRoom.getRoomId(),true);
             }
-        }
+        }*/
 
         // 매장
         // 매장 이미지 삭제

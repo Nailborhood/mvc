@@ -35,10 +35,14 @@ public class ChattingRoom extends BaseTime {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
+    /*@Column(name = "is_deleted")
+    private Boolean isDeleted;*/
+
     @Builder
     public ChattingRoom(String roomName, Admin admin, Owner owner) {
         this.roomName = roomName;
         this.admin = admin;
         this.owner = owner;
+
     }
 }
