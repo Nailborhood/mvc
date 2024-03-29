@@ -108,9 +108,10 @@ public class ReviewService {
 
     // 리뷰 신고
     @Transactional
-    public CommonResponseDto<Object> reviewReport(String accessToken, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
+    public CommonResponseDto<Object> reviewReport(/*String accessToken, */Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -143,9 +144,10 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public CommonResponseDto<Object> reviewDelete(String accessToken, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewDelete(/*String accessToken, */Long reviewId, Long shopId) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
