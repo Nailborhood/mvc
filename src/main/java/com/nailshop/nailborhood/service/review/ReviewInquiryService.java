@@ -64,7 +64,7 @@ public class ReviewInquiryService {
         ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
         String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
 
-//        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
+        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
 
 
@@ -82,7 +82,7 @@ public class ReviewInquiryService {
                 .shopStatus(shopStatus)
                 .shopAddress(shop.getAddress())
                 .reviewReportStatus(reviewReportStatus)
-//                .categoryTypeList(categoryList)
+                .categoryTypeList(categoryList)
                 .imgPathMap(reviewImgPathMap)
                 .contents(review.getContents())
                 .rate(review.getRate())
@@ -98,8 +98,8 @@ public class ReviewInquiryService {
 
 
     // 리뷰 전체 조회
-    public CommonResponseDto<Object> allReview(int page, int size, String sortBy, String category) {
-
+    public CommonResponseDto<Object> allReview(String keyword, int page, int size, String criteria, String category) {
+        // TODO 카테고리랑, 검색 통합?
         // category 리스트화
         List<Long> categoryIdList = null;
         if (category != null && !category.isEmpty()){
@@ -109,20 +109,31 @@ public class ReviewInquiryService {
                     .toList();
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria).descending());
         Page<Review> reviewPage;
 
-        if(categoryIdList == null || categoryIdList.isEmpty()){
-            // 카테고리 x
+        if(keyword == null || keyword.trim()
+                                     .isEmpty()) {
             reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
-        }
-        else {
-            reviewPage = reviewRepository.findByCategoryIdListAndIsDeletedFalse(categoryIdList, pageable);
+        } else {
+            reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
         }
 
-        if(reviewPage.isEmpty()){
+        if (reviewPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
+
+//        if(categoryIdList == null || categoryIdList.isEmpty()){
+//            // 카테고리 x
+//            reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
+//        }
+//        else {
+//            reviewPage = reviewRepository.findByCategoryIdListAndIsDeletedFalse(categoryIdList, pageable);
+//        }
+//
+//        if(reviewPage.isEmpty()){
+//            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//        }
 
         List<Review> reviewList = reviewPage.getContent();
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
@@ -135,8 +146,9 @@ public class ReviewInquiryService {
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
+                    .shopId(review.getShop().getShopId())
                     .mainImgPath(mainImgPath)
-                    .categoryTypeList(categoryTypeList)
+//                    .categoryTypeList(categoryTypeList)
                     .contents(review.getContents())
                     .rate(review.getRate())
                     .likeCnt(review.getLikeCnt())
@@ -161,6 +173,24 @@ public class ReviewInquiryService {
 
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
+    }
+
+    // 조회 정렬 기준 orderby 설정
+    public List<Map<String, String>> createCriteriaOptions() {
+        List<Map<String, String>> sortOptions = new ArrayList<>();
+
+        Map<String, String> option1 = new HashMap<>();
+        option1.put("value", "likeCnt");
+        option1.put("text", "인기순");
+
+        sortOptions.add(option1);
+
+        Map<String, String> option2 = new HashMap<>();
+        option2.put("value", "createdAt");
+        option2.put("text", "최신순");
+        sortOptions.add(option2);
+
+        return sortOptions;
     }
 
 }
