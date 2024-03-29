@@ -122,4 +122,9 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateDongIdByShopId(@Param("dongId") Long dongId, @Param("shopId") Long shopId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE s.shopId =:shopId ")
+    Optional<Shop> findByShopId(@Param("shopId") Long shopId);
 }

@@ -55,21 +55,19 @@ public class AdminShopController {
         }
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 삭제", description = "admin API")
+
     // 매장 삭제
     @PostMapping("/admin/delete/shop")
-    public ResponseEntity<ResultDto<Void>> deleteShop(@RequestParam Long shopId) {
-        CommonResponseDto<Object> commonResponseDto = shopDeleteService.deleteShop(shopId);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+    public String deleteShop(@RequestParam Long shopId) {
+         shopDeleteService.deleteShop(shopId);
+
+        return "redirect:/admin/search/shop";
     }
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 상태 변경 ", description = "admin API")
     // 매장 상태 변경
-    @PutMapping("/admin/shopStatus/{reportId}")
+    @PutMapping("/admin/shopStatus/{shopId}")
     public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long shopId,
                                                                     @RequestParam(value = "status") String status) {
@@ -79,4 +77,5 @@ public class AdminShopController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
     }
+
 }

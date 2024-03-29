@@ -140,7 +140,8 @@ public class ShopDeleteService {
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.changeRole(Role.USER);
-        ownerRepository.deleteById(owner.getOwnerId());
+        // Owner isApproved ->false 로 변경
+        ownerRepository.deleteByOwnerId(owner.getOwnerId(),false);
 
         // 매장 삭제
         //  shop -> isDeleted = true, shopStatus = closed

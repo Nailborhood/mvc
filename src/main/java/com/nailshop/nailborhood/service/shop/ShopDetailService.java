@@ -125,7 +125,7 @@ public class ShopDetailService {
     public CommonResponseDto<Object> getMyShopDetail(Long shopId) {
 
 
-        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+        Shop shop = shopRepository.findByShopId(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         ShopDetailLookupResponseDto shopDetailLookupResponseDto = Stream.of(shop)
                                                                         .map(s -> {

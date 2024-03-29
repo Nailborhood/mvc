@@ -36,7 +36,7 @@
                             <div class="chat-room-name" th:text="${chatRoomDto.getRoomName()}"></div>
                         </div>-->
                         <!-- 매장 정보 -->
-                        <div th:if="${shopErrorCode}">
+                        <div class="shop-error-code" th:if="${shopErrorCode}">
                             <p th:text="${shopErrorCode.description}"></p>
                         </div>
                         <div class="shopInformation" >

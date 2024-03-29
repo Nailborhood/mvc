@@ -119,6 +119,7 @@ public class ChattingRoomController {
 
             model.addAttribute("chatList",allChatList.getData());
 
+
             return "admin/admin_chat_search_list";
         }catch (NotFoundException e){
             model.addAttribute("errorCode", ErrorCode.CHAT_ROOM_NOT_FOUND);
@@ -137,18 +138,21 @@ public class ChattingRoomController {
             ChattingRoomDetailDto chattingRoomDetailDto = chattingRoomService.findChatRoomId(roomId);
             // 매장 정보
             Shop shop = shopDetailService.findMyShopId(chattingRoomDetailDto.getOwnerId());
-            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shop.getShopId());
-            ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
-            resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
+            if(shop.getIsDeleted() ){
+                model.addAttribute("shopErrorCode",ErrorCode.DELETED_SHOP);
+            }
+                CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shop.getShopId());
+                ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+                resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
 
-            // 채팅 메세지
-            List<Map<String,Object>> messageListDto = messageService.getMessageList(roomId);
-            String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
+                // 채팅 메세지
+                List<Map<String, Object>> messageListDto = messageService.getMessageList(roomId);
+                String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
 
-            model.addAttribute("shopDto", resultDto);
-            model.addAttribute("chatRoomDto", chattingRoomDetailDto);
-            model.addAttribute("messageResponseDtoListJson",messageResponseDtoListJson);
-            model.addAttribute("shopErrorCode",ErrorCode.SHOP_NOT_FOUND);
+                model.addAttribute("shopDto", resultDto);
+                model.addAttribute("chatRoomDto", chattingRoomDetailDto);
+                model.addAttribute("messageResponseDtoListJson", messageResponseDtoListJson);
+
 
 
             return "admin/admin_chat_room_detail";
