@@ -33,6 +33,7 @@
                     <div class="chat-list_div" th:if="${chatList != null }">
                         <div class="chat-info" th:each="chat : ${chatList.chattingRoomDetailAndShopInfoDtoList}">
                             <a th:href="@{/admin/chatroom/{roomId}(roomId=${chat.roomId})}">
+                                <div th:if="${shopErrorCode}" class="error-code" th:text="${shopErrorCode.description}"></div>
                                 <div class="shop-info_img">
                                     <img th:src="@{${chat.getMyShopDetailListResponseDto().getShopImgListResponseDtoList().get(0).getImgPath()}}">
                                 </div>
