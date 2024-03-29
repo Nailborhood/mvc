@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -36,6 +37,12 @@ public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long
             "LEFT JOIN cr.owner.shop s " +
             "WHERE s.shopId =:shopId AND s.isDeleted =false")
     List<ChattingRoom> findAllByShopId(@Param("shopId") Long shopId);
+
+/*    @Query("UPDATE ChattingRoom  cr " +
+            "SET cr.isDeleted = :status " +
+            "WHERE cr.roomId = :roomId")
+    @Modifying(clearAutomatically = true)
+    void deleteByChattingRoomId(@Param("roomId") Long roomId, @Param("status") boolean status);*/
 
 
 }

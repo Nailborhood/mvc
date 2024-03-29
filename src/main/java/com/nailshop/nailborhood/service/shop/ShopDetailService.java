@@ -198,7 +198,7 @@ public class ShopDetailService {
     // 채팅에서 사장님 매장 id 가져오기
     public Shop findMyShopId(Long ownerId) {
 
-        return shopRepository.findAllShopListByOwnerId(ownerId);
+        return shopRepository.findAllShopByOwnerId(ownerId).orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
     }
 }
 

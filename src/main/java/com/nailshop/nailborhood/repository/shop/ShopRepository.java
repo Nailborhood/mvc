@@ -111,6 +111,12 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE o.ownerId = :ownerId")
     Shop findAllShopListByOwnerId(@Param("ownerId") Long ownerId);
 
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.owner o " +
+            "WHERE o.ownerId = :ownerId")
+    Optional<Shop> findAllShopByOwnerId(@Param("ownerId") Long ownerId);
+
     @Query("UPDATE Shop s " +
             "SET s.dong.dongId = :dongId " +
             "WHERE s.shopId = :shopId")
