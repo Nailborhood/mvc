@@ -67,7 +67,7 @@ public class ShopModificationService {
 
         Owner shopOwner = ownerRepository.findByMemberId(owner.getMemberId());
         if (!owner.getRole()
-                  .equals(Role.OWNER) && shopOwner.getShop()
+                  .equals(Role.ROLE_OWNER) && shopOwner.getShop()
                                                   .getShopId()
                                                   .equals(shopId))
             throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);

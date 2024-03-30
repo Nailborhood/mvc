@@ -46,7 +46,7 @@ public class AppliedShopInquiryService {
                                           .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (!admin.getRole()
-                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+                  .equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // 페이지 설정 및 MemberList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)

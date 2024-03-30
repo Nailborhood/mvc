@@ -105,7 +105,7 @@ public class MemberService {
                     .gender(signUpRequestDto.getGender())
                     .birthday(signUpRequestDto.getBirthday())
                     .profileImg("defaultImage")
-                    .role(Role.USER)
+                    .role(Role.ROLE_USER)
                     .provider("Nail")
                     .isDeleted(false)
                     .build();
