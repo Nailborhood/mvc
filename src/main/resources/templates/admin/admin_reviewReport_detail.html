@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/admin/admin_review_report.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/admin/admin_review_report_style.css}"/>
+
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">리뷰 신고 상세</span>
+        <div class="report-content">
+            <div class="report">
+                <strong class="reported-title">신고대상 내용</strong>
+                <div class="reported-review">
+                    <span class="reported-nickname" th:text="${reportDetail.reviewer}">닉네임</span>
+                    <p class="reported-content" th:text="${reportDetail.reviewContents}">맘에 안들어욧ㅇ</p>
+                </div>
+                <div class="review-report">
+                    <div class="report-info"> </div>
+                    <span class="reporter" th:text="${reportDetail.reporter}">닉네임</span>
+                    <span class="report-reason">신고 사유</span>
+                    <p class="report-reason" th:text="${reportDetail.reportContents}">맘에 안들어욧ㅇ</p>
+                </div>
+                <div class="submit-btn">
+<!--                    <button type="button" class="report-btn" th:data-id="${result.getData().reviewId}"
+                            th:data-shop-id="${result.getData().shopId}" onclick="reviewReport(this)">신고
+                    </button>-->
+                    <button class="button accept-button" th:if="${reportDetail.status == '신고 대기중'}"
+                            th:reportId="${reportDetail.reportId}" data-status="accept"
+                            th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))" >
+                        신고 승인
+                    </button>
+
+
+
+                    <button class="button reject-button" th:if="${reportDetail.status == '신고 대기중'}"
+                            th:reportId="${reportDetail.reportId}" data-status="reject"
+                            th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))" >
+                        신고 반려</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</html>
