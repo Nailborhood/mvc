@@ -44,7 +44,7 @@ public class MypageService {
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
 
-        Page<Review> myReviewPage = reviewRepository.findMyReviewListByMemberId(memberId, pageable);
+        Page<Review> myReviewPage = reviewRepository.findMyReviewListByMemberId(memberId, pageable, "신고 처리됨");
         if (myReviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
 
         List<Review> myReviewList = myReviewPage.getContent();
