@@ -22,7 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -66,15 +69,29 @@ public class ShopListLookupLocalService {
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListByDong(int page, int size, String sort, String criteria, Long dongId) {
+    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId) {
 
 
         // 정렬기준 설정
         Pageable pageable = (sort.equals("ASC")) ?
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
-        // 페이지로 값 가져오기
-        Page<Shop> shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
 
+       // dongId 유무
+        Page<Shop> shops;
+        if(keyword == null || keyword.trim()
+                                     .isEmpty()) {
+            if (dongId == null) {
+                shops = shopRepository.findAllNotDeleted(pageable);
+            } else {
+                shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
+            }
+        }else {
+            if (dongId == null) {
+                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
+            } else {
+                shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId,keyword);
+            }
+        }
         if (shops.isEmpty()) {
             throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
         }
@@ -145,6 +162,28 @@ public class ShopListLookupLocalService {
                                   .build();
     }
 
+
+    // 조회 정렬 기준 orderby 설정
+    public List<Map<String, String>> createCriteriaOptions() {
+        List<Map<String, String>> sortOptions = new ArrayList<>();
+
+        Map<String, String> option1 = new HashMap<>();
+        option1.put("value", "createdAt");
+        option1.put("text", "최신순");
+        sortOptions.add(option1);
+
+        Map<String, String> option2 = new HashMap<>();
+        option2.put("value", "favoriteCnt");
+        option2.put("text", "인기순");
+        sortOptions.add(option2);
+
+        Map<String, String> option3 = new HashMap<>();
+        option3.put("value", "rateAvg");
+        option3.put("text", "평점순");
+        sortOptions.add(option3);
+
+        return sortOptions;
+    }
 
 
 }
