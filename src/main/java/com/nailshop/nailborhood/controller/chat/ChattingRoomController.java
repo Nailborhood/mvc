@@ -62,6 +62,9 @@ public class ChattingRoomController {
             ChattingRoomDetailDto chattingRoomDetailDto = chattingRoomService.findChatRoomId(roomId);
             // 매장 정보
             Shop shop = shopDetailService.findMyShopId(chattingRoomDetailDto.getOwnerId());
+            if(shop.getIsDeleted() ){
+                model.addAttribute("shopErrorCode",ErrorCode.DELETED_SHOP);
+            }
             CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shop.getShopId());
             ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
             resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
