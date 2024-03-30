@@ -62,6 +62,10 @@
                 </p>
                 <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span>
                 <p class="review-content" th:text="${result.getData().contents}">리뷰 내용</p>
+                <div class="review-btn">
+                    <a th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>
+                    <button type="button" class="delete-button" th:data-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
+                </div>
             </div>
         </div>
     </div>
