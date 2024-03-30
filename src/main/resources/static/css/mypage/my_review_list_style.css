@@ -150,7 +150,7 @@
 }
 
 .division-line {
-    width: 230%;
+    width: 560px;
     border-top: 1px solid var(--shadow_2);
     margin: 4px 0px 8px;
 }

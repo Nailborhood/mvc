@@ -66,7 +66,7 @@
 .review-info_text {
     display: flex;
     flex-direction: column;
-    line-height: 22px;
+    line-height: 24px;
     margin-left: 10px;
 }
 
@@ -83,6 +83,19 @@
 .review-info_under {
     display: flex;
     margin-top: 3px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: larger;
+}
+
+.rating-number {
+    font-size: larger;
+}
+
+.review-info_date {
+    color: #82817e;
 }
 
 .review-btn {
@@ -106,6 +119,7 @@
     background-color: #1d438a; /* 빨간색 배경 */
     color: white; /* 텍스트는 흰색 */
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    font-size: 14px;
 }
 
 .delete-button:hover {
