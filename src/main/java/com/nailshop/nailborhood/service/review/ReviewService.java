@@ -178,9 +178,9 @@ public class ReviewService {
             reviewImgRepository.deleteByReviewImgId(reviewImgPath.getReviewImgId(),true);
         }
 
-        // 좋아요 수 0, reviewLike 삭제
+        // 좋아요 수 0, reviewLike status false로 변경
         reviewRepository.likeCntZero(reviewId);
-        reviewLikeRepository.deleteByReviewId(reviewId);
+        reviewLikeRepository.deleteByReviewId(reviewId, false);
 
         // 매장 리뷰 cnt 감소 처리
         shopRepository.updateReviewCntDecreaseByShopId(shopId);

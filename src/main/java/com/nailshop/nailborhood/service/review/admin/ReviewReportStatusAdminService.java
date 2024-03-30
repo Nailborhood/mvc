@@ -253,9 +253,9 @@ public class ReviewReportStatusAdminService {
             }
 
 
-            // 삭제 되는 리뷰 좋아요 수 0, reviewLike 삭제
+            // 삭제 되는 리뷰 좋아요 수 0, reviewLike status false로 변경
             reviewRepository.likeCntZero(reviewId);
-            reviewLikeRepository.deleteByReviewId(reviewId);
+            reviewLikeRepository.deleteByReviewId(reviewId, false);
 
             // reviewID 해당 카테고리 삭제
             categoryReviewRepository.deleteByReviewReviewId(reviewId);
