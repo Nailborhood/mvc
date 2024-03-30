@@ -23,11 +23,20 @@
 
 /* 검색 */
 
+
+.searchForm {
+    width: 80%;
+    padding: 10px 10px 10px 10px;
+    margin: auto;
+}
+
+
+
 .search-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 50px;
-    margin-top: 30px;
+    width: 70%;
+    margin: 30px auto 50px;
 }
 
 .search-input {
@@ -49,6 +58,7 @@
     width: 20px;
     height: 20px;
 }
+
 
 /* 리스트 */
 .chart-list {

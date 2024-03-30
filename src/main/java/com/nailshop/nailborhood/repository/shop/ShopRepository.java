@@ -111,14 +111,27 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "WHERE o.ownerId = :ownerId")
     Shop findAllShopListByOwnerId(@Param("ownerId") Long ownerId);
 
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.owner o " +
+            "WHERE o.ownerId = :ownerId")
+    Optional<Shop> findAllShopByOwnerId(@Param("ownerId") Long ownerId);
+
     @Query("UPDATE Shop s " +
             "SET s.dong.dongId = :dongId " +
             "WHERE s.shopId = :shopId")
     @Modifying(clearAutomatically = true)
     void updateDongIdByShopId(@Param("dongId") Long dongId, @Param("shopId") Long shopId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE s.shopId =:shopId ")
+    Optional<Shop> findByShopId(@Param("shopId") Long shopId);
+
     @Query("SELECT s " +
             "FROM Shop s " +
             "left JOIN s.dong d " +
             "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND d.dongId =:dongId")
     Page<Shop> findAllNotDeletedByDongIdAndKeyword(Pageable pageable, @Param("dongId") Long dongId,@Param("keyword") String keyword);
+
 }

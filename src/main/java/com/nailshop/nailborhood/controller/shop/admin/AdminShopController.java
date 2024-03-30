@@ -32,8 +32,6 @@ public class AdminShopController {
     private final ShopRequestLookupAdminService shopRequestLookupAdminService;
 
 
-
-
     // 매장 신청 조회
     @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
@@ -43,7 +41,6 @@ public class AdminShopController {
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                               @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                               @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-
 
 
         try {
@@ -58,22 +55,19 @@ public class AdminShopController {
         }
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 삭제", description = "admin API")
+
     // 매장 삭제
-    @DeleteMapping("/admin/deleteShop/{shopId}")
-    public ResponseEntity<ResultDto<Void>> deleteShop(@RequestHeader(AUTH) String accessToken,
-                                                      @PathVariable Long shopId) {
-        CommonResponseDto<Object> commonResponseDto = shopDeleteService.deleteShop(accessToken, shopId);
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+    @PostMapping("/admin/delete/shop")
+    public String deleteShop(@RequestParam Long shopId) {
+         shopDeleteService.deleteShop(shopId);
+
+        return "redirect:/admin/search/shop";
     }
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 상태 변경 ", description = "admin API")
     // 매장 상태 변경
-    @PutMapping("/admin/shopStatus/{reportId}")
+    @PutMapping("/admin/shopStatus/{shopId}")
     public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long shopId,
                                                                     @RequestParam(value = "status") String status) {
@@ -83,4 +77,5 @@ public class AdminShopController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
     }
+
 }
