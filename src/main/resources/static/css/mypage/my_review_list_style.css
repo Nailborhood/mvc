@@ -70,13 +70,10 @@
 .review-info_text {
     display: flex;
     flex-direction: column;
-    line-height: 22px;
+    line-height: 23px;
     margin: 20px;
 }
 
-.review-info_rate img{
-    width: 20px;
-}
 
 .review-info_shopName {
     font-size: 20px;
@@ -92,6 +89,15 @@
 .review-info_under {
     display: flex;
     margin-top: 3px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: larger;
+}
+
+.rating-number {
+    font-size: larger;
 }
 
 .review-info_under div {
@@ -130,7 +136,9 @@
     color: white; /* 텍스트는 흰색 */
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
     text-decoration: none;
+    font-size: 14px;
 }
+
 
 
 .update-button:hover {
