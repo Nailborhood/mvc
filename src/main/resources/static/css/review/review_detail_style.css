@@ -44,7 +44,11 @@
 }
 
 .review-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     width: 50%;
+    height: 590px;
     padding-top: 20px;
     padding-left: 30px;
     box-sizing: border-box;
@@ -146,4 +150,38 @@ button {
     margin-left: 10px;
     color: #82817e;
     text-decoration: none;
+}
+
+.review-btn {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    /*padding: 0 10px;*/
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start; /* 수평 방향에서 중앙 정렬 */
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: 20px;
+    margin-right: 40px;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.delete-button, .update-button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    text-decoration: none;
+}
+
+
+.update-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
 }
