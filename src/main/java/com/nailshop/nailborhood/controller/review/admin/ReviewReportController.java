@@ -80,6 +80,23 @@ public class ReviewReportController {
           reviewReportStatusAdminService.changeReviewStatus(reportId, status);
 //        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return "redirect:/admin/search/review/report";
+        return "redirect:/admin/search/review/report/status";
+    }
+
+
+    // 리뷰 신고 상세 조회
+    @GetMapping("/admin/search/report/detail")
+    public String getReviewReportDetail (@RequestParam Long reportId,Model model){
+        try {
+            CommonResponseDto<Object> reportDetail = reviewReportStatusAdminService.getReviewReportDetail(reportId);
+            model.addAttribute("reportDetail", reportDetail.getData());
+            return "admin/admin_reviewReport_detail";
+        } catch (NotFoundException e) {
+            model.addAttribute("errorCode", ErrorCode.REVIEW_REPORT_NOT_FOUND);
+            //model.addAttribute("errorCode" , ErrorCode.MEMBER_NOT_FOUND);
+            return "admin/admin_reviewReport_detail";
+        }
+
+
     }
 }

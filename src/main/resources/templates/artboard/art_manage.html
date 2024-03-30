@@ -24,7 +24,11 @@
         <div class="content">
             <span class="owner-title-span">매장 아트 관리</span>
 
-            <div class="owner-content-div">
+            <div th:if="${error}" class="empty-art-message">
+                아트판이 없습니다.
+            </div>
+
+            <div th:unless="${error}" class="owner-content-div">
                 <div class="search-bar">
                     <div th:replace="fragments/components/search/searchbar.html"></div>
                 </div>

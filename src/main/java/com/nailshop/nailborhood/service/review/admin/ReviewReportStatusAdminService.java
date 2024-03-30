@@ -49,6 +49,8 @@ public class ReviewReportStatusAdminService {
     private final ShopRepository shopRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final CategoryReviewRepository categoryReviewRepository;
+
+
     // 리뷰 신고 조회
     public CommonResponseDto<Object> getReviewReports(String keyword, int page, int size, String sort) {
 
@@ -64,9 +66,9 @@ public class ReviewReportStatusAdminService {
         if (keyword == null || keyword.trim()
                                       .isEmpty()) {
 
-            reviewReportPage = reviewReportRepository.findAllNotDeleted(pageable,"신고 대기중");
+            reviewReportPage = reviewReportRepository.findAllNotDeleted(pageable, "신고 대기중");
         } else {
-            reviewReportPage = reviewReportRepository.findAllReviewReportListBySearch(keyword, pageable,"신고 대기중");
+            reviewReportPage = reviewReportRepository.findAllReviewReportListBySearch(keyword, pageable, "신고 대기중");
         }
 
         if (reviewReportPage.isEmpty()) {
@@ -223,8 +225,6 @@ public class ReviewReportStatusAdminService {
             reviewReportRepository.updateReviewStatusByReviewId(reportId, reviewStatus);
 
 
-
-
         } else if (status.equals("accept")) {
             // 리뷰 신고 승인 -> 리뷰 삭제 / 신고 테이블 승인 표시
             reviewStatus = ReviewReportStatus.REVIEW_REPORT_ACCEPTED.getDescription();
@@ -249,7 +249,7 @@ public class ReviewReportStatusAdminService {
             for (ReviewImg reviewImg : reviewImgList) {
                 String reviewImgUrl = reviewImg.getImgPath();
                 s3UploadService.deleteReviewImg(reviewImgUrl);
-                reviewImgRepository.deleteByReviewImgId(reviewImg.getReviewImgId(),true);
+                reviewImgRepository.deleteByReviewImgId(reviewImg.getReviewImgId(), true);
             }
 
 
@@ -262,7 +262,8 @@ public class ReviewReportStatusAdminService {
 
             // 매장 리뷰 개수 감소
             Review review = reviewRepository.findByReviewId(reviewId);
-            shopRepository.updateReviewCntDecreaseByShopId(review.getShop().getShopId());
+            shopRepository.updateReviewCntDecreaseByShopId(review.getShop()
+                                                                 .getShopId());
 
 
             // 리뷰 삭제
@@ -289,14 +290,50 @@ public class ReviewReportStatusAdminService {
         double totalRate = reviews.stream()
                                   .mapToInt(Review::getRate)
                                   .sum();
-        if(totalRate != 0 ) {
+        if (totalRate != 0) {
             String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
             double rateAvg = Double.parseDouble(rateAvgStr);
-            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
-        }else {
-            shopRepository.updateRateAvgByShopId(0,shopId);
+            shopRepository.updateRateAvgByShopId(rateAvg, shopId);
+        } else {
+            shopRepository.updateRateAvgByShopId(0, shopId);
         }
 
     }
 
+    // 리뷰 신고 상세 조회
+    public CommonResponseDto<Object> getReviewReportDetail(Long reportId) {
+        ReviewReport report = reviewReportRepository.findByReportIdAndStatus(reportId, "신고 대기중");
+
+        if (report == null) {
+            throw new NotFoundException(ErrorCode.REVIEW_REPORT_NOT_FOUND);
+        }
+
+        List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(report.getReview()
+                                                                                              .getReviewId());
+
+
+        ReviewReportLookupDto reviewReportLookupDto = ReviewReportLookupDto.builder()
+                                                                           .reportId(report.getReportId())
+                                                                           .reporter(report.getMember()
+                                                                                           .getNickname())
+                                                                           .reviewer(report.getReview()
+                                                                                           .getCustomer()
+                                                                                           .getMember()
+                                                                                           .getNickname())
+                                                                           .reportContents(report.getContents())
+                                                                           .reviewContents(report.getReview()
+                                                                                                 .getContents())
+                                                                           .date(report.getDate())
+                                                                           .reviewId(report.getReview()
+                                                                                           .getReviewId())
+                                                                           .status(report.getStatus())
+                                                                           .mainImgPath(reviewImgList.getFirst()
+                                                                                                     .getImgPath())
+                                                                           .shopName(report.getReview()
+                                                                                           .getShop()
+                                                                                           .getName())
+                                                                           .build();
+
+        return commonService.successResponse(SuccessCode.All_REVIEW_REPORT_SUCCESS.getDescription(), HttpStatus.OK, reviewReportLookupDto);
+    }
 }
