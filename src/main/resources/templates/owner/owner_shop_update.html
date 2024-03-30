@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script th:src="@{/js/owner/owner_shop_update_img.js}"></script>
     <script th:src="@{/js/owner/owner_shop_update_addMenuList.js}"></script>
-<!--    <script th:src="@{/js/owner/owner_shop_update_vaildate.js}"></script>-->
+    <script th:src="@{/js/owner/owner_shop_update_vaildate.js}"></script>
     <script th:src="@{/js/owner/owner_shop_update_address.js}"></script>
     <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}"/>
     <link rel="stylesheet" th:href="@{/css/owner/owner_shop_update_style.css}"/>
@@ -23,7 +23,7 @@
             <p th:text="${errorCode.description}"></p>
         </div>
         <div th:unless="${errorCode}">
-            <form id="updateForm" th:action="@{'/owner/update/'+${shopDto.getData().getShopDetailLookupResponseDto().shopId}}" method="post"
+            <form id="updateForm" th:action="@{'/owner/shop/update/'+${shopDto.getData().getShopDetailLookupResponseDto().shopId}}" method="post"
                   enctype="multipart/form-data">
                 <div class="content-div">
                     <div class="request-description-section">

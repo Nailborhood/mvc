@@ -1,0 +1,179 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --shadow_5: #0084ff;
+    --main-color_navy: #1d438a;
+    --hover : rgba(43, 107, 225, 0.287);
+}
+
+.request-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+    margin-bottom: 15px;
+}
+
+.content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+
+
+/* 사용자 채팅 스타일 */
+.myChat {
+    text-align: right;
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+.myChat .chatBox .chat-content  {
+    display: inline-block;
+    position: relative;
+    background-color: var(--shadow_5);
+    border-radius: 20px;
+    color: #fff;
+    padding: 7px 12px;
+    margin-bottom: 10px;
+    max-width: 500px;
+}
+
+.myChat .chatBox .chatTime {
+    font-size: 13px;
+    /*position: absolute;*/
+    left: -40px;
+    top: 15px;
+    color: #1717175b;
+}
+
+/* 상대방 채팅 스타일 */
+.userChat  {
+    margin-top: 30px;
+    margin-right: 50px;
+    text-align: left;
+}
+
+.userChat .chatBox .chat-content{
+    display: inline-block;
+    position: relative;
+    background-color: var(--shadow_2);
+    border-radius: 20px;
+    color: #fff;
+    padding: 7px 12px;
+    margin-bottom: 10px;
+    max-width: 500px;
+}
+
+.userChat .chatBox .chatTime {
+    font-size: 13px;
+    /*position: absolute;*/
+    right: -40px;
+    top: 15px;
+    color: #1717175b;
+}
+
+/* 채팅 메시지 입력 영역 스타일 */
+.inputArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 15px 10px 15px;
+    border-top: 1px solid var(--shadow_1);
+    height: 50px;
+}
+
+/* 채팅 메시지 입력란 스타일 */
+#message {
+    width: 80%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+/* 전송 버튼 스타일 */
+button {
+    width: 10%;
+    height: 40px;
+    background-color: #1d438a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    box-sizing: border-box;
+}
+
+/* 채팅 박스 스타일 */
+.chatBoxWrapper {
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    /* padding: 10px; */
+    width: 500px;
+}
+
+/* 채팅 메시지 영역 스타일 */
+.chatArea {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 40px 8px 40px 8px;
+}
+
+/* 날짜 표시 */
+.dateDivider {
+
+    margin-top: 30px;
+    text-align: center;
+    font-size: 13px;
+    color: #1717175b;
+}
+
+/* 매장 정보 */
+.shopInformation {
+    padding: 10px;
+    border-bottom: 1px solid var(--shadow_2);
+    display: flex;
+    align-items: center;
+}
+
+/* 매장 사진 */
+.shopInformation .shopImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+
+.submit-button {
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.submit-button:hover {
+    background-color: var(--hover);
+}
+
+
+
+
+
