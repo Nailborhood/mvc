@@ -42,6 +42,7 @@ public class OwnerController {
     private final ShopRegistrationService shopRegistrationService;
 
     // 검색기능이랑 통합
+    //사장님 리뷰 검색
     @GetMapping("/owner/review/{shopId}")
     public String getShopReviewList(Model model,
                                     @PathVariable Long shopId,
@@ -49,11 +50,21 @@ public class OwnerController {
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, shopId);
-        model.addAttribute("reviewList", shopReview.getData());
 
-        return "owner/review_manage";
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+        try {
+            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
+            model.addAttribute("reviewList", shopReview.getData());
+
+            return "owner/review_manage";
+
+        } catch (NotFoundException e) {
+
+            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
+
+            return "owner/review_manage";
+        }
+
     }
 
     @Tag(name = "owner", description = "owner API")

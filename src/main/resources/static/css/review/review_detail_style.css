@@ -1,26 +1,66 @@
-.image-gallery {
-    display: flex;
-    justify-content: center;
-    margin: 20px 40px;
-}
-
-.image-box {
-    width: calc(33.333% - 10px);
-    margin: 0 20px;
-    text-align: center;
-}
-
-.image-box img {
-    width: 100%;
-    height: auto;
-}
-
 .review-section {
-    width: 100%;
-    padding: 20px;
-    margin: 0 40px;
-    box-sizing: border-box;
+    display: flex;
+    margin: 20px auto;
 }
+
+.image-slider-wrapper {
+    width: 600px;
+    position: relative;
+}
+
+.image-slide {
+    display: none;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 600px;
+}
+
+.image-slide.active {
+    display: block;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 16px;
+    color: white;
+    transition: 0.6s ease;
+    user-select: none;
+}
+
+.prev {
+    left: -20px;
+}
+
+.next {
+    right: -20px;
+}
+
+.prev img, .next img {
+    width: 45px;
+}
+
+.review-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    height: 590px;
+    padding-top: 20px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    line-height: 22px;
+}
+
+/*.review-section {*/
+/*    width: 100%;*/
+/*    padding: 20px;*/
+/*    margin: 0 300px;*/
+/*    box-sizing: border-box;*/
+/*}*/
 
 .review-rating {
     display: flex;
@@ -34,35 +74,64 @@
     margin-bottom: 10px;
 }
 
+.review-count {
+    margin-left: 120px;
+}
+
 .stars {
     color: #ffc107;
+    font-size: larger;
+}
+
+.rating-number {
+    font-size: larger;
 }
 
 .like {
     font-size: 18px;
+    text-decoration: none;
 }
 
 .like-img{
     width: 20px;
 }
 
-.rating-number, .like-number {
-    font-size: 18px;
+button {
+    background: none; /* 배경 제거 */
+    color: inherit; /* 부모 요소로부터 글자 색상 상속 */
+    border: none; /* 테두리 제거 */
+    font: inherit; /* 부모 요소로부터 폰트 상속 */
+    cursor: pointer; /* 마우스 커서를 손가락 모양으로 변경 */
+    outline: inherit; /* 클릭 시 나타나는 윤곽선 스타일 부모로부터 상속 */
 }
 
-.review-content h2 {
-    font-size: 24px;
-    margin: 10px 0;
+.like-number {
+    font-size: 15px;
+    padding-bottom: 5px;
 }
 
 .review-meta {
-    font-size: 16px;
+    font-size: 14px;
     color: #666;
     margin-bottom: 15px;
 }
 
 .review-author, .review-service, .review-date {
     margin-right: 5px;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.review-date {
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.review-service {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
 }
 
 .profile-pic {
@@ -73,14 +142,46 @@
     margin-right: 5px;
 }
 
-@media (max-width: 768px) {
-    .image-gallery {
-        flex-direction: column;
-        align-items: center;
-    }
+.review-content {
+    margin-top: 15px;
+}
 
-    .image-box {
-        width: 80%;
-        margin: 10px 0;
-    }
+.review-report {
+    margin-left: 10px;
+    color: #82817e;
+    text-decoration: none;
+}
+
+.review-btn {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    /*padding: 0 10px;*/
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start; /* 수평 방향에서 중앙 정렬 */
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: 20px;
+    margin-right: 40px;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.delete-button, .update-button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    text-decoration: none;
+}
+
+
+.update-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
 }

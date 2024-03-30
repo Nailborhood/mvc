@@ -116,33 +116,71 @@ public class ReviewController {
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
         model.addAttribute("result", resultDto);
-//        model.addAttribute("result", resultDto);
 
         return "review/review_mod";
     }
 
     // 리뷰 신고
-    @Tag(name = "review", description = "review API")
-    @Operation(summary = "리뷰 신고", description = "review API")
     @PostMapping("/review/report/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> reviewReport(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestBody ReviewReportDto reviewReportDto){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(accessToken, reviewId, shopId,reviewReportDto);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(/*accessToken, */reviewId, shopId,reviewReportDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+
+    }
+
+//    // 리뷰 신고
+//    @PostMapping("/review/report/{reviewId}")
+//    public String reviewReport(/*@RequestHeader(AUTH) String accessToken,*/
+//            @PathVariable Long reviewId,
+//            @RequestParam(value = "shopId") Long shopId,
+//            @ModelAttribute ReviewReportDto reviewReportDto,
+//            RedirectAttributes redirectAttributes){
+//        try {
+//            CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(/*accessToken, */reviewId, shopId,reviewReportDto);
+//            ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//
+//            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+//
+//            redirectAttributes.addAttribute("reviewId", reviewId);
+//            redirectAttributes.addAttribute("shopId", shopId);
+//
+//            // TODO 리다이렉트 어쩌지
+//            return "redirect:owner/review_manage";
+//
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.REVIEW_REPORT_FAIL);
+//
+//            return "review/review_report";
+//        }
+//
+//    }
+
+    // 리뷰 신고 뷰
+    @GetMapping("/review/report/{reviewId}")
+    public String reviewReportView (Model model,
+                                    /*@RequestHeader(AUTH) String accessToken,*/
+                                    @PathVariable Long reviewId,
+                                    @RequestParam(value = "shopId") Long shopId){
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
+        ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
+        resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
+
+        model.addAttribute("result", resultDto);
+
+        return "review/review_report";
     }
 
     // 리뷰 삭제
-    @Tag(name = "myPage", description = "myPage API")
-    @Operation(summary = "리뷰 삭제", description = "myPage API")
     @DeleteMapping("/mypage/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewDelete(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> reviewDelete(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(accessToken, reviewId, shopId);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(/*accessToken, */ reviewId, shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);

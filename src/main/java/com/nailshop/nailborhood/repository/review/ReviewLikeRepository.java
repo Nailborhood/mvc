@@ -26,9 +26,10 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
     void updateStatus(@Param("reviewLikeId") Long reviewLikeId, @Param("status") boolean b);
 
     // 좋아요 컬럼 삭제
-    @Query("DELETE FROM ReviewLike rl " +
+    @Query("UPDATE ReviewLike rl " +
+            "SET rl.status = :status " +
             "WHERE rl.review.reviewId = :reviewId ")
     @Modifying(clearAutomatically = true)
-    void deleteByReviewId(@Param("reviewId") Long reviewId);
+    void deleteByReviewId(@Param("reviewId") Long reviewId, @Param("status") boolean b);
 
 }

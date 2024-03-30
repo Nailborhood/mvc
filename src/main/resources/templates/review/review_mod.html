@@ -14,7 +14,7 @@
     <div id="wrapper">
         <div th:replace="fragments/header::header"></div>
         <div layout:fragment="content" class="content">
-            <form th:action="@{'/review/update/' +${result.getData().reviewId}}" method="post" enctype="multipart/form-data">
+            <form th:action="@{'/review/update/' + ${result.getData().reviewId}}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="shopId" th:value="${result.getData().shopId}" />
                 <div class="body-content">
                     <div class="review-write-section">
@@ -36,10 +36,11 @@
                             <div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[2]} + '); background-size: cover; background-position: center;'"
                                  th:if="${result.getData().imgPathMap[2]}">
                                 <div class="upload-text" th:classappend="${result.getData().imgPathMap[2]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
-                            </div><div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[3]} + '); background-size: cover; background-position: center;'"
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[3]} + '); background-size: cover; background-position: center;'"
                                        th:if="${result.getData().imgPathMap[3]}">
-                            <div class="upload-text" th:classappend="${result.getData().imgPathMap[3]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
-                        </div>
+                                <div class="upload-text" th:classappend="${result.getData().imgPathMap[3]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
                         </div>
 
                         <div class="image-upload-button-container">

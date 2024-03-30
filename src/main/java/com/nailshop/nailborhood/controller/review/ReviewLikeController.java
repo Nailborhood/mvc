@@ -15,18 +15,16 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/nailborhood")
 public class ReviewLikeController {
 
     private final ReviewLikeService reviewLikeService;
 
-    @Tag(name = "review", description = "review API")
-    @Operation(summary = "리뷰 공감", description = "review API")
+    // 리뷰 좋아요
     @PostMapping("/like/review/{reviewId}")
-    public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(/*@RequestHeader(AUTH) String accessToken,*/
                                                                        @PathVariable Long reviewId,
                                                                        @RequestParam(value = "shopId") Long shopId){
-        CommonResponseDto<Object> reviewLikeOn = reviewLikeService.reviewLike(accessToken, reviewId, shopId);
+        CommonResponseDto<Object> reviewLikeOn = reviewLikeService.reviewLike(/*accessToken,*/ reviewId, shopId);
         ResultDto<ReviewLikeResponseDto> resultDto = ResultDto.in(reviewLikeOn.getStatus(), reviewLikeOn.getMessage());
         resultDto.setData((ReviewLikeResponseDto)reviewLikeOn.getData());
 

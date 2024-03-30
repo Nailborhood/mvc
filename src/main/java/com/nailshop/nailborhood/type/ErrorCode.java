@@ -56,6 +56,7 @@ public enum ErrorCode {
     REVIEW_REPORT_NOT_FOUND("신고된 리뷰를 찾을 수 없습니다"),
     REVIEW_REPORT_INCORRECT("리뷰 신고 상태가 올바르지 않습니다"),
     REVIEW_MODIFY_FAIL("리뷰 수정에 실패했습니다."),
+    REVIEW_REPORT_FAIL("리뷰 신고에 실패했습니다."),
     REVIEW_REGISTER_FAIL("리뷰 작성에 실패하였습니다."),
 
     //주소(동)

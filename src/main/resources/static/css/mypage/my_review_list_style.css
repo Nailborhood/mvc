@@ -21,7 +21,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .review-list_div {
@@ -29,6 +29,13 @@
     flex-wrap: wrap;
     flex-direction: column;
     align-content: center;
+    border-bottom: 1px solid #595857;
+    margin: 10px 0px 13px;
+    padding: 10px 0px;
+}
+
+.mypage-content_div > .review-list_div:last-of-type {
+    border-bottom: none;
 }
 
 .review-item {
@@ -40,8 +47,8 @@
 .review-info {
     width: 750px;
     height: 140px;
-    background-color: antiquewhite;
-    border-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
     padding: 0 10px;
     display: flex;
     align-items: center;
@@ -50,8 +57,8 @@
 }
 
 .review-info_img {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
     margin-right: 10px;
 }
 
@@ -63,22 +70,34 @@
 .review-info_text {
     display: flex;
     flex-direction: column;
-    line-height: 20px;
+    line-height: 23px;
+    margin: 20px;
 }
 
-.review-info_title {
-    font-size: 23px;
-    margin: 3px;
+
+.review-info_shopName {
+    font-size: 20px;
+    padding-bottom: 4px;
 }
 
-.review-info_address {
-    font-size: 18px;
-    margin: 3px;
+.review-info_date, .review-info_address {
+    font-size: 16px;
+    line-height: 24px;
+    color: #82817e;
 }
 
 .review-info_under {
     display: flex;
     margin-top: 3px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: larger;
+}
+
+.rating-number {
+    font-size: larger;
 }
 
 .review-info_under div {
@@ -96,7 +115,6 @@
 .review-btn {
     height: 140px;
     width: 100px;
-    background-color: antiquewhite;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     padding: 0 10px;
@@ -111,15 +129,28 @@
     gap: 10px;
 }
 
-.update-button {
+.delete-button, .update-button {
     padding: 5px 10px;
     border: none;
     background-color: #1d438a; /* 빨간색 배경 */
     color: white; /* 텍스트는 흰색 */
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+    text-decoration: none;
+    font-size: 14px;
 }
+
 
 
 .update-button:hover {
     background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.division-line {
+    width: 230%;
+    border-top: 1px solid var(--shadow_2);
+    margin: 4px 0px 8px;
 }

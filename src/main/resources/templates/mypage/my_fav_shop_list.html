@@ -7,6 +7,8 @@
     <title>내가 저장한 매장</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
     <link rel="stylesheet" th:href="@{/css/mypage/my_save_shop_list_style.css}" />
+    <script th:src="@{/js/mypage/my_fav_list_delete.js}"></script>
+
 </head>
 
 <div layout:fragment="content" style="flex-direction: row" class="mypage-content">
@@ -16,7 +18,7 @@
         <div class="mypage-content_div">
             <div th:each="shop : ${result.getData().favoriteShopDetailDtoList}" class="shop-list_div">
                 <div class="shop-item">
-                    <div class="shop-info" onclick="location.href='#'">
+                    <a class="shop-info" th:href="@{/shopDetail/{shopId}(shopId=${shop.shopId})}" style="text-decoration: none; color: inherit">
                         <div class="shop-info_img">
                             <img th:src="@{${shop.mainImgPath}}">
                         </div>
@@ -30,9 +32,9 @@
                             </div>
                             <div class="shop-info_address" th:text="${shop.address}"></div>
                         </div>
-                    </div>
+                    </a>
                     <div class="shop-btn">
-                        <button class="update-button">저장 취소</button>
+                        <button type="button" class="update-button" th:data-id="${shop.shopId}" onclick="favCancel(this)">제거</button>
                     </div>
                 </div>
             </div>

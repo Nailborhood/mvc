@@ -7,6 +7,8 @@
     <title>내가 쓴 리뷰</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
     <link rel="stylesheet" th:href="@{/css/mypage/my_review_list_style.css}" />
+    <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/review/review_detail.js}"></script>
 </head>
 
 <div layout:fragment="content" style="flex-direction: row" class="mypage-content">
@@ -16,27 +18,25 @@
         <div class="mypage-content_div">
             <div th:each="review : ${result.getData().reviewResponseDtoList}" class="review-list_div">
                 <div class="review-item">
-                    <div class="review-info" onclick="location.href='#'">
+                    <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-info" style="text-decoration: none; color: inherit">
                         <div class="review-info_img">
                             <img th:src="@{${review.mainImgPath}}">
                         </div>
                         <div class="review-info_text">
-                            <!--TODO : 매장이름 링크걸기-->
                             <div class="review-info_shopName" th:text="${review.shopName}"></div>
-                            <div class="review-info_under">
-                                <div class="review-info_rate">⭐️</div>
-                                <div class="review-info_rate" th:text="${review.rate}"></div>
-                            </div>
                             <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
-                            <!--TODO:메뉴넣기-->
-                            <div class="review-info_menu">
-                                menu name : menu price
+                            <div class="review-info_address" th:text="${review.shopAddress}"></div>
+                            <div class="division-line"></div>
+                            <div class="review-info_under">
+                                <span class="stars"></span>&nbsp;
+                                <span class="rating-number" th:text="${review.rate}">5</span>
                             </div>
                             <div class="review-info_content" th:text="${review.contents}"></div>
                         </div>
-                    </div>
+                    </a>
                     <div class="review-btn">
-                        <button class="update-button">리뷰 수정</button>
+                        <a th:href="@{/review/update/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="update-button">리뷰 수정</a>
+                        <button type="button" class="delete-button" th:data-id="${review.reviewId}" th:data-shop-id="${review.shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
                     </div>
                 </div>
             </div>
