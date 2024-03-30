@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}" />
     <link rel="stylesheet" th:href="@{/css/owner/review_manage_style.css}">
     <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/review/review_list_star.js}"></script>
 
 </head>
 <div layout:fragment="content" style="flex-direction: row" class="owner-content">
@@ -23,7 +24,7 @@
                     </button>
                 </div>
             </form>
-            <!--                    TODO: 없는 리뷰 오류 잡기-->
+            <!--TODO: 없는 리뷰 오류 잡기-->
             <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
             <div class="review-list_div" th:each="review : ${reviewList.shopReviewLookupResponseDto}" th:unless="${errorCode}">
                 <div class="review-item">
@@ -35,8 +36,8 @@
                             <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
                             <div class="review-info_nickname" th:text="${review.nickName}"></div>
                             <div class="review-info_under">
-                                <div class="review-info_rate">⭐️</div>
-                                <div class="review-info_rate" th:text="${review.rate}"></div>
+                                <span class="stars"></span>&nbsp;
+                                <span class="rating-number" th:text="${review.rate}">5</span>
                             </div>
                             <div class="review-info_content" th:text="${review.contents}"></div>
                         </div>
