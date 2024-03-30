@@ -33,9 +33,10 @@ public class ReviewLikeService {
 
 
     @Transactional
-    public CommonResponseDto<Object> reviewLike(String accessToken, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewLike(/*String accessToken, */Long reviewId, Long shopId) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = 2L;
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
