@@ -1,0 +1,153 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.chat-list-content {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 30px auto;
+    position: relative;
+}
+
+
+.all-chat-list {
+    margin: auto;
+}
+
+.chat-info a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    text-decoration: none;
+}
+
+.chat-list_div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+}
+
+.chat-info {
+    width: 460px;
+    height: 140px;
+    background-color: antiquewhite;
+    border-radius: 5px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.shop-info_img {
+    width: 120px;
+    height: 120px;
+    margin-right: 10px;
+}
+
+.shop-info_img img {
+    width: 100%;
+    height: 100%;
+}
+
+.shop-info_text {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.shop-info_title {
+    font-size: 20px;
+    margin: 3px;
+    font-weight: bold;
+}
+
+.chat-info_under {
+    display: flex;
+    margin-top: 15px;
+}
+
+.chat-info_under div {
+    border-right: 1px solid var(--shadow_3);
+    padding: 0 3px;
+}
+
+.chat-info_under div:last-child {
+    border-right: none;
+}
+
+.chat-info_under .chat-info_contents {
+    font-size: 15px;
+    color: #767678;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
+}
+
+.chat-info_under .chat-info_date {
+    font-size: 11px;
+    color: #333333;
+}
+
+/* 검색 */
+.searchForm {
+    width: 80%;
+    padding: 10px 10px 10px 10px;
+    margin: auto;
+}
+
+
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 70%;
+    margin: 30px auto 50px;
+}
+
+.search-input {
+    width: 800px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.error-code {
+    margin: auto;
+}
+
+.shop-info_title_and_date {
+    display: flex;
+}
+
+.shop-info_title_and_date .chat-info_date {
+    font-size: 13px;
+    margin: 7px;
+    color: #767678;
+
+}

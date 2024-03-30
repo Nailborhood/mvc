@@ -26,6 +26,8 @@ public enum ErrorCode {
     SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
     SHOP_REQUEST_NOT_FOUND("매장 신청 정보를 찾을 수 없습니다"),
     SHOP_REGISTRATION_FAIL("매장 등록 신청에 실패 했습니다"),
+    SHOP_UPDATE_FAIL("매장 수정에 실패 했습니다"),
+    DELETED_SHOP("삭제된 매장입니다"),
 
     // Member
     MEMBER_NOT_FOUND("유저 정보 조회에 실패하였습니다."),
@@ -55,14 +57,18 @@ public enum ErrorCode {
     REVIEW_REPORT_INCORRECT("리뷰 신고 상태가 올바르지 않습니다"),
     REVIEW_MODIFY_FAIL("리뷰 수정에 실패했습니다."),
     REVIEW_REPORT_FAIL("리뷰 신고에 실패했습니다."),
+    REVIEW_REGISTER_FAIL("리뷰 작성에 실패하였습니다."),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),
 
-    //리뷰
+    // 리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
     ART_NOT_REGISTRATION("등록된 아트판이 없습니다"),
-    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다.");
+    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
+
+    // 채팅
+    CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다");
 
     private final String description;
 }

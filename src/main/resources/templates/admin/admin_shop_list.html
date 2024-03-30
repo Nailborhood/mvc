@@ -6,7 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 페이지-매장 리스트</title>
-   <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script th:src="@{/js/admin/admin_delete_shop.js}"></script>
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
 </head>
@@ -19,7 +21,7 @@
             <!-- 검색 기능 -->
             <form th:action="@{/admin/search/shop}" method="get">
                 <div class="search-container">
-                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
                     <button type="submit" class="search-button">
                         <img src="/assets/icons/search_icon.png" alt="Search">
                     </button>
@@ -66,7 +68,13 @@
                         <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
                         <span th:case="'CLOSED'" th:text="'영업종료'"></span>
                     </td>
-                    <td><button class="button" th:if="${shop.isDeleted == false}">매장 삭제</button></td>
+                    <td>
+                        <button class="button" th:if="${shop.isDeleted == false}"
+                                th:shopId="${shop.shopId}"
+                                th:onclick="deleteShop(this.getAttribute('shopId'))">
+                            매장 삭제
+                        </button>
+                    </td>
                 </tr>
 
                 </tbody>

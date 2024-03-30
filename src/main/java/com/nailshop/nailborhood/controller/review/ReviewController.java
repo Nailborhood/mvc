@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.service.review.ReviewRegistrationService;
+import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,24 +32,48 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewInquiryService reviewInquiryService;
     private final ReviewRegistrationService reviewRegistrationService;
+    private final ShopDetailService shopDetailService;
 
+    @Tag(name = "user", description = "user API")
+    @Operation(summary = "리뷰 등록", description = "user API")
+    @GetMapping("/{shopId}/review/registration")
+    public String showRegisterReview(Model model,
+                                  @PathVariable Long shopId){
+        model.addAttribute("shopId", shopId);
 
-    @Tag(name = "review", description = "review API")
-    @Operation(summary = "리뷰 등록", description = "review API")
-    // 매장내 리뷰 등록
-    @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
-    public ResponseEntity<ResultDto<Void>> registerShop(@PathVariable Long shopId,
-                                                        @RequestHeader(AUTH) String accessToken,
-                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "data") ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId,accessToken,multipartFileList,reviewRegistrationRequestDto );
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                .body(resultDto);
+        return "review/review_registration";
     }
 
-    //리뷰 수정
+    // 리뷰 등록
+    @Tag(name = "review", description = "review API")
+    @Operation(summary = "리뷰 등록", description = "review API")
+    @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
+    public String registerReview(@PathVariable Long shopId,
+                               /*@RequestHeader(AUTH) String accessToken,*/
+                               @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                               @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
+                               RedirectAttributes redirectAttributes) {
+
+        System.out.println(multipartFileList.getFirst());
+        System.out.println(reviewRegistrationRequestDto.getCategoryIdList());
+        System.out.println(reviewRegistrationRequestDto.getContents());
+        System.out.println(reviewRegistrationRequestDto.getRate());
+
+        try {
+            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, /*accessToken, */multipartFileList, reviewRegistrationRequestDto);
+            ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+
+            return "redirect:/review/inquiry";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.REVIEW_REGISTER_FAIL);
+
+            return "review/review_registration";
+        }
+    }
+
+    // 리뷰 수정
     @PostMapping(consumes = {"multipart/form-data"}, value = "/review/update/{reviewId}")
     public String reviewUpdate(
 //                               @RequestHeader(AUTH) String accessToken,

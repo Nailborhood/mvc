@@ -5,7 +5,8 @@ function changeReportStatus(reportId, status) {
             url: `/admin/search/review/report`,
             data: { reportId: reportId, status: status },
             success: function(response) {
-                location.reload();
+                // location.reload();
+                window.location.href = "/admin/search/review/report/status";
             },
             error: function(xhr, status, error) {
                 console.error("Error: " + status + " - " + error);
