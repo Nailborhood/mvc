@@ -6,10 +6,12 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
 import com.nailshop.nailborhood.service.shop.ShopReviewListLookupService;
+import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -85,13 +87,21 @@ public class ShopController {
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
-        CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page,size,criteria,sort,shopId);
-        ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
-        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
 
-        model.addAttribute("shopReview", resultDto);
+        try {
+            CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page,size,criteria,sort,shopId);
+//        ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
+//        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
 
-        return "shop/shop_review_list";
+            model.addAttribute("shopReview", shopReview.getData());
+
+            return "shop/shop_review_list";
+        } catch (NotFoundException e) {
+            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_REGISTRATION);
+
+            return "shop/shop_review_list";
+        }
+
     }
 
 
