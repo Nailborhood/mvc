@@ -6,10 +6,12 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
 import com.nailshop.nailborhood.service.shop.ShopReviewListLookupService;
+import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,6 +33,7 @@ public class ShopController {
     private final ShopDetailService shopDetailService;
     private final ShopReviewListLookupService shopReviewListLookupService;
     private final ShopArtBoardListService shopArtBoardListService;
+    private final ShopRegistrationService shopRegistrationService;
 
     @Tag(name = "Home", description = "Home API")
     @Operation(summary = "매장 전체 조회", description = "Home API")
@@ -50,25 +54,33 @@ public class ShopController {
     @Tag(name = "Local", description = "Local API")
     @Operation(summary = "내 주변 매장 전체 조회", description = "Local API")
     // 전체 매장 조회
-    @GetMapping(value = "/shopList/{dongId}")
-    public ResponseEntity<ResultDto<ShopListResponseDto>> getAllShopsbyDong(@PathVariable Long dongId,
-                                                                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                            @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                            @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong( page, size, sort, criteria, dongId);
+    @GetMapping(value = "/shop/list")
+    public String getAllShopListByDong(@RequestParam(value = "dongId", required = false) Long dongId,
+                                       @RequestParam(value = "keyword", required = false) String keyword,
+                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
+                                       @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
+                                       Model model) {
+//        dongId = 1L;
+        CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId);
         ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
         resultDto.setData((ShopListResponseDto) allShopsList.getData());
 
-        return ResponseEntity.status(allShopsList.getHttpStatus())
-                             .body(resultDto);
+        StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
+        List<Map<String, String>> criteriaOptions = shopListLookupLocalService.createCriteriaOptions();
+
+        model.addAttribute("resultDto", resultDto);
+        model.addAttribute("addressDto", storeAddressSeparationListDtoList);
+        model.addAttribute("criteriaOptions", criteriaOptions);
+        return "shop/shop_local_list";
     }
 
 
     // 매장 상세 조회
     @GetMapping("/shopDetail/{shopId}")
     public String getShopDetail(Model model,
-                                @PathVariable Long shopId){
+                                @PathVariable Long shopId) {
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
 
         model.addAttribute("shopDetail", shopDetail.getData());
@@ -84,8 +96,8 @@ public class ShopController {
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
-        CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page,size,criteria,sort,shopId);
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
+        CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page, size, criteria, sort, shopId);
         ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
         resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
 
@@ -113,6 +125,4 @@ public class ShopController {
 
         return "shop/shop_art_list";
     }
-
-
 }
