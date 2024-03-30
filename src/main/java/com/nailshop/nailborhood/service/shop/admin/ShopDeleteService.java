@@ -139,7 +139,7 @@ public class ShopDeleteService {
         Member member = memberRepository.findById(owner.getMember().getMemberId())
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.changeRole(Role.USER);
+        member.changeRole(Role.ROLE_USER);
         // Owner isApproved ->false 로 변경
         ownerRepository.deleteByOwnerId(owner.getOwnerId(),false);
 

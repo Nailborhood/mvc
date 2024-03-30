@@ -138,7 +138,7 @@ public class AdminSearchService {
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (!admin.getRole()
-                  .equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+                  .equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
                                                                   .descending());
