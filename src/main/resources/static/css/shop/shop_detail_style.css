@@ -265,3 +265,35 @@ td {
     padding: 10px 10px 15px 10px;
     border-top: 1px solid var(--shadow_2);
 }
+
+/* 승인, 반려 버튼 */
+.button-group .approve-button {
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: #4de548;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+    margin-right: 20px;
+}
+
+.button-group .reject-button {
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: #c92424;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.approve-button:hover {
+    background-color: #daf193;
+}
+
+.reject-button:hover{
+    background-color: rgba(229, 97, 97, 0.29);
+}

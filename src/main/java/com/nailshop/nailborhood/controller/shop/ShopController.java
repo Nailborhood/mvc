@@ -111,18 +111,18 @@ public class ShopController {
     @Operation(summary = "매장 아트판 조회", description = "Shop API")
     // 매장 상세 조회
     @GetMapping("/art/{shopId}")
-    public ResponseEntity<ResultDto<ShopArtBoardListLookupResponseDto>> getShopArtList(@PathVariable Long shopId,
-                                                                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                                       @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> shopArt = shopArtBoardListService.getAllArtBoardListByShopId(page, size, criteria, sort, shopId);
+    public String getShopArtList(Model model,
+                                 @PathVariable Long shopId,
+                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                 @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                 @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
+                                 @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+        CommonResponseDto<Object> shopArt = shopArtBoardListService.getAllArtBoardListByShopId(page,size,criteria,sort,shopId);
         ResultDto<ShopArtBoardListLookupResponseDto> resultDto = ResultDto.in(shopArt.getStatus(), shopArt.getMessage());
         resultDto.setData((ShopArtBoardListLookupResponseDto) shopArt.getData());
 
-        return ResponseEntity.status(shopArt.getHttpStatus())
-                             .body(resultDto);
+        model.addAttribute("result", resultDto.getData());
+
+        return "shop/shop_art_list";
     }
-
-
 }

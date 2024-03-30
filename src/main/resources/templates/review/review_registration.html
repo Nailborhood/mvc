@@ -1,65 +1,68 @@
 <!DOCTYPE html>
 
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
 <head>
     <meta charset="UTF-8">
     <title>리뷰 작성</title>
-    <script src="/src/layouts/get_layout.js"></script>
-    <link rel="stylesheet" href="/src/layouts/layout_style.css">
-    <link rel="stylesheet" href="/src/pages/review/review_registration_style.css">
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/review/review_registration_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/review/review_registration.js}"></script>
 </head>
 
 <body>
-<div id="wrapper">
-    <div data-include-path="/src/layouts/header.html"></div>
-    <div class="body-content">
-        <div class="review-write-section">
+    <div layout:fragment="content">
+        <span class="owner-title-span">리뷰 등록</span>
+        <form th:action="@{'/' + ${shopId} + '/review/registration'}" method="post" enctype="multipart/form-data">
+            <div class="body-content">
+                <div class="review-write-section">
+                    <div class="rating-section">
+                        <label for="star-rating" class="rating-label">네일은 어떠셨어요?</label>
+                        <select id="star-rating" name="rate" class="star-rating-input">
+                            <option th:each="i : ${#numbers.sequence(5,1)}"
+                                    th:value="${i}"
+                                    th:text="${#strings.repeat('★',i)} + ${#strings.repeat('☆', 5-i)}">
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="input-group">
-                <label for="review-title">리뷰 제목</label>
-                <input type="text" id="review-title" class="review-title-input" placeholder="리뷰 제목을 입력해주세요." />
+                    <div class="category">
+                        <span class="category-text">카테고리 선택</span>
+                        <div th:replace="/fragments/components/search/check_category.html"></div>
+                    </div>
+
+                    <div class="img-mod-text">
+                        <span class="img-text">아트 사진 등록 &nbsp; </span>
+                        <label class="input-file-button" for="input-file">사진 등록</label>
+                        <input type="file" id="input-file" name="file" accept="image/*" multiple style="display: none;" >
+                    </div>
+
+                    <div class="image-gallery">
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="review-content">리뷰 내용</label>
+                        <textarea id="review-content" name="contents" class="review-textarea" placeholder="리뷰 내용을 입력하세요." required></textarea>
+                    </div>
+
+                    <input type="submit" id="submit-button" class="submit-button" value="리뷰 등록">
+                </div>
             </div>
-
-            <div class="input-group">
-                <label for="review-service">시술 내역</label>
-                <input type="text" id="review-service" class="review-service-input" placeholder="시술 내역을 입력해주세요." />
-            </div>
-
-            <div class="rating-section">
-                <label for="star-rating" class="rating-label">별점</label>
-                <select id="star-rating" name="rating" class="star-rating-input">
-                    <option value="1">★☆☆☆☆</option>
-                    <option value="2">★★☆☆☆</option>
-                    <option value="3">★★★☆☆</option>
-                    <option value="4">★★★★☆</option>
-                    <option value="5">★★★★★</option>
-                </select>
-            </div>
-
-            <div class="image-gallery">
-                <div class="image-upload-box">사진을 업로드 해주세요.</div>
-                <div class="image-upload-box">사진을 업로드 해주세요.</div>
-                <div class="image-upload-box">사진을 업로드 해주세요.</div>
-            </div>
-
-            <div class="image-upload-button-container">
-                <button class="upload-button">사진 업로드</button>
-            </div>
-
-            <div class="input-group">
-                <label for="review-content">리뷰 내용</label>
-                <textarea id="review-content" class="review-textarea" placeholder="리뷰 내용을 입력해주세요."></textarea>
-            </div>
-
-            <div class="submit-button-container">
-                <button class="submit-button">확인</button>
-            </div>
-
-        </div>
+        </form>
     </div>
-
-
-    <div data-include-path="/src/layouts/footer.html"></div>
-</div>
 </body>
 
 </html>

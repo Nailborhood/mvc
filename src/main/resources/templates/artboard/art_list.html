@@ -16,7 +16,11 @@
 </head>
 
 <body>
-    <div layout:fragment="content">
+    <div th:if="${error}" class="empty-art-message">
+        아트판이 없습니다.
+    </div>
+
+    <div th:unless="${error}" layout:fragment="content">
         <div class="search-bar">
             <div th:replace="fragments/components/search/searchbar.html"></div>
             <div th:replace="fragments/components/search/check_category.html"></div>
