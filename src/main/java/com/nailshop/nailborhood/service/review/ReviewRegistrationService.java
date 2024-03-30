@@ -45,10 +45,12 @@ public class ReviewRegistrationService {
 
     @Transactional
     // 리뷰 등록
-    public CommonResponseDto<Object> registerReview(Long shopId, String accessToken, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerReview(Long shopId, /*String accessToken, */List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
 
         // token 에서 memberId 가져오기
-        Long memberId = tokenProvider.getUserId(accessToken);
+//        Long memberId = tokenProvider.getUserId(accessToken);
+//        Customer customer = customerRepository.findByMemberId(memberId);
+        Long memberId = 1L;
         Customer customer = customerRepository.findByMemberId(memberId);
 
         // 매장 존재 여부
@@ -71,7 +73,7 @@ public class ReviewRegistrationService {
         saveReviewImg(multipartFileList, review);
 
         // CategoryReview 저장
-        for (Long categoryId : reviewRegistrationRequestDto.getCategoryListId()) {
+        for (Long categoryId : reviewRegistrationRequestDto.getCategoryIdList()) {
 
             Category category = categoryRepository.findById(categoryId)
                                                   .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));

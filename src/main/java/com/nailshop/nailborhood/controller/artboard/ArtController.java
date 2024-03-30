@@ -128,11 +128,21 @@ public class ArtController {
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
                                    Model model){
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
-        ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
-        resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+        boolean error = false;
 
-        model.addAttribute("result", resultDto);
+        try {
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+            ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+            resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
+            model.addAttribute("result", resultDto);
+            model.addAttribute("error", error);
+        } catch (Exception e) {
+
+            error = true;
+            model.addAttribute(error);
+        }
+
 
         return "artboard/art_list";
     }
