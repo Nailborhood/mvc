@@ -31,7 +31,7 @@ public class OwnerService {
 
     // 매장 리뷰 조회
     @Transactional
-    public CommonResponseDto<Object> getAllReviewListByShopId(String keyword, int page, int size, String criteria, String sort, Long shopId) {
+    public CommonResponseDto<Object> getAllReviewListByShopId(Long shopId, String keyword, int page, int size, String criteria, String sort) {
 
 
         Pageable pageable = (sort.equals("ASC")) ?
@@ -41,9 +41,9 @@ public class OwnerService {
 
         if(keyword == null || keyword.trim()
                                     .isEmpty()) {
-            reviews = reviewRepository.findAllReviewListByOwner(pageable, shopId,"신고 처리됨");
+            reviews = reviewRepository.findAllReviewListByOwner(pageable, shopId);
         } else {
-            reviews = reviewRepository.findAllReviewListBySearchOwner(pageable, shopId, keyword, "신고 처리됨");
+            reviews = reviewRepository.findAllReviewListBySearchOwner(pageable, shopId, keyword);
         }
 
         if (reviews.isEmpty()) {
@@ -62,7 +62,8 @@ public class OwnerService {
                     review.getRate(),
                     reviewImgPath,
                     review.getCreatedAt(),
-                    review.getCustomer().getMember().getNickname()
+                    review.getCustomer().getMember().getNickname(),
+                    review.getShop().getShopId()
             );
             // data 에 dto 반환
             return dto;

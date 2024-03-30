@@ -34,10 +34,10 @@ public class ShopAndReviewLookUpResponseDto {
 
     private String shopMainImgPath;
 
-    // TODO 메뉴 추가
+    private Long shopId;
 
 
-    public ShopAndReviewLookUpResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt, String nickName, String shopName, String shopAddress, String time, double reviewAvg, int reviewCnt, int favoriteCnt, String shopMainImgPath) {
+    public ShopAndReviewLookUpResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt, String nickName, String shopName, String shopAddress, String time, double reviewAvg, int reviewCnt, int favoriteCnt, String shopMainImgPath, Long shopId) {
         this.reviewId = reviewId;
         this.contents = contents;
         this.rate = rate;
@@ -51,5 +51,6 @@ public class ShopAndReviewLookUpResponseDto {
         this.reviewCnt = reviewCnt;
         this.favoriteCnt = favoriteCnt;
         this.shopMainImgPath = shopMainImgPath;
+        this.shopId = shopId;
     }
 }

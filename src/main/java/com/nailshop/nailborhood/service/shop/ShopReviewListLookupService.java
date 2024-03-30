@@ -76,7 +76,8 @@ public class ShopReviewListLookupService {
                     shop.getRateAvg(),
                     shop.getReviewCnt(),
                     shop.getFavoriteCnt(),
-                    shopMainImgPath
+                    shopMainImgPath,
+                    shopId
             );
             // data 에 dto 반환
             return dto;
