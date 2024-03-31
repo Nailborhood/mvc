@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     @Query("SELECT o " +
             "FROM Owner o " +
@@ -25,4 +27,8 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     @Modifying(clearAutomatically = true)
     void deleteByOwnerId(@Param("ownerId") Long ownerId, @Param("status") boolean status);
 
+    @Query("SELECT o " +
+            "FROM Owner o " +
+            "WHERE o.ownerId =:ownerId")
+    Optional<Owner> findByOwnerId(@Param("ownerId") Long ownerId);
 }
