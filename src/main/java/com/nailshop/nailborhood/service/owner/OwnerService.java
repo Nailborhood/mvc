@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -46,9 +47,8 @@ public class OwnerService {
             reviews = reviewRepository.findAllReviewListBySearchOwner(pageable, shopId, keyword);
         }
 
-        if (reviews.isEmpty()) {
-            return commonService.errorResponse(ErrorCode.REVIEW_NOT_REGISTRATION.getDescription(), HttpStatus.OK, null);
-        }
+        if (reviews.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_REGISTRATION);
+
 
         // review entity -> dto 변환
         Page<ShopReviewLookupResponseDto> data = reviews.map(review -> {
