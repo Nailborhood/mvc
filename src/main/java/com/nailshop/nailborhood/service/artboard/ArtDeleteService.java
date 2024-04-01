@@ -46,7 +46,7 @@ public class ArtDeleteService {
         // 멤버 확인
         Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // ArtRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)
