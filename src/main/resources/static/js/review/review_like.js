@@ -6,11 +6,9 @@ $(document).ready(function() {
         var reviewId = $(this).attr('data-review-id');
         var shopId = $(this).attr('data-shop-id');
 
-        var url = `/like/review/${reviewId}?shopId=${shopId}`;
-
         // AJAX 요청을 보냅니다.
         $.ajax({
-            url: url,
+            url: '/like/review/' + reviewId + '?shopId=' + shopId ,
             type: 'POST',
             success: function(response) {
                 // 성공적으로 요청이 처리되었을 때의 동작을 정의합니다.
