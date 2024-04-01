@@ -52,18 +52,24 @@ public class OwnerController {
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
 
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+
+        boolean error = false;
+
         try {
             CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
+            Long ownerShopId = 1L;
             model.addAttribute("reviewList", shopReview.getData());
+            model.addAttribute("ownerShopId", ownerShopId);
+            model.addAttribute("error", error);
 
-            return "owner/review_manage";
 
         } catch (NotFoundException e) {
 
-            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
-
-            return "owner/review_manage";
+            error = true;
+            model.addAttribute("error", error);
         }
+
+        return "owner/review_manage";
 
     }
 
