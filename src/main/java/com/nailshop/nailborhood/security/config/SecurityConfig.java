@@ -3,22 +3,35 @@ package com.nailshop.nailborhood.security.config;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAccessDeniedHandler;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAuthenticationEntryPoint;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.io.IOException;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -62,6 +75,23 @@ public class SecurityConfig {
                                 .passwordParameter("password")
                                 .defaultSuccessUrl("/example")
                                 .failureUrl("/login?error=true")
+                                .successHandler(
+                                        new AuthenticationSuccessHandler() {
+                                            @Override
+                                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                                                System.out.println("authentication : " + authentication.getName());
+                                                System.out.println("authentication : " + authentication.getPrincipal());
+                                                response.sendRedirect("/example");
+                                            }
+                                        })
+                                .failureHandler(
+                                        new AuthenticationFailureHandler() {
+                                            @Override
+                                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                                                System.out.println("exception : " + exception.getMessage());
+                                                response.sendRedirect("/login?error=true");
+                                            }
+                                        })
                 )
                 .logout((logout) ->
                         logout
@@ -70,6 +100,7 @@ public class SecurityConfig {
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )
+//                .oauth2Login()
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement)->
                                 sessionManagement
@@ -81,7 +112,6 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                                 .accessDeniedHandler(customAccessDeniedHandler)
                 )
-//                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
@@ -109,10 +139,12 @@ public class SecurityConfig {
         return source;
     }
 
-//    @Bean
-//    public
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() { return new BCryptPasswordEncoder(); }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
 }
