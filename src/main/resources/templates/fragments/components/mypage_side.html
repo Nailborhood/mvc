@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="mypage_side" style="display: contents">
     <ul class="sidebar-ul ul-left">
-        <li class="sidebar-li"><a href="#">정보 수정</a></li>
-        <li class="sidebar-li"><a href="#">비밀번호 수정</a></li>
-        <li class="sidebar-li"><a th:href="@{/mypage/review/inquiry}">내가 작성한 리뷰</a></li>
-        <li class="sidebar-li"><a th:href="@{/mypage/shop/favorite/inquiry}">관심 매장</a></li>
-        <li class="sidebar-li"><a href="#">로그아웃</a></li>
+        <li class="sidebar-li"><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
+        <li class="sidebar-li"><a href="@{/mypage/password}">비밀번호 수정</a></li>
+        <li class="sidebar-li"><a href="@{/mypage/review/inquiry}">내가 작성한 리뷰</a></li>
+        <li class="sidebar-li"><a href="@{/mypage/shop/favorite/inquiry}">관심 매장</a></li>
+        <li class="sidebar-li"><a href="@{/mypage/logout}">로그아웃</a></li>
     </ul>
     <a class="sidebar-link" th:href="@{/mypage/owner/shop/request}">사업자 모드 전환 신청</a>
-    <a class="sidebar-link" href="#">회원 탈퇴</a>
+    <a class="sidebar-link" th:href="@{/mypage/dropout}">회원 탈퇴</a>
 </div>
 </html>

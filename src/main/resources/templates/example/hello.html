@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{default}">
 <head>
     <meta charset="UTF-8">
@@ -11,6 +12,18 @@
     <div class="center">
         <h3>helloooooooo</h3>
         <p th:text="${message}">메세지 자리</p>
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">로그인</a>
+        </div>
+        <span sec:authorize="isAuthenticated()">
+            <p>principal : </p><p th:text="${#authorization.getAuthentication().getPrincipal()}"></p>
+            <p>MemberVO : </p><p sec:authentication property="principal.member"></p>
+<!--            <p>사용자 이름 : </p><p sec:authentication property="principal.member."></p>-->
+            <p>사용자 아이디 : </p><p sec:authentication property="principal.username"></p>
+<!--            <p>사용자 권한 리스트 : </p><p sec:authentication property="principal.member.authList"></p>-->
+        </span>
+
+
     </div>
 </div>
 </html>

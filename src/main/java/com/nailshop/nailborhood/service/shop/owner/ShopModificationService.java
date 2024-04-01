@@ -72,6 +72,7 @@ public class ShopModificationService {
                                                   .equals(shopId))
             throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
+
         // 매장 아이디 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
