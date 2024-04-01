@@ -7,6 +7,7 @@
     <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/member/signup_style.css}" />
     <script th:src="@{/js/member/signup.js}"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <div layout:fragment="content">
     <div class="login-title">
@@ -32,8 +33,9 @@
             </tr>
             <tr id="email-duplicate-check" style="display: none;">
                 <td colspan="2">
-                    <p id="email-available-message" style="display: none;">메세지 자리</p>
-                    <button id="email-check_button" onclick="">중복 확인</button>
+                    <p id="email-available-message" style="display: none;">사용 가능한 이메일입니다.</p>
+                    <p id="email-unavailable-message" style="display: none;">중복된 이메일입니다.</p>
+                    <button id="email-check_button" onclick="checkEmailDuplicated()">중복 확인</button>
                 </td>
             </tr>
             <tr>
@@ -94,6 +96,11 @@
             <tr>
                 <td colspan="2">
                     <input type="text" name="nickname" id="nickname-input" placeholder="nickname" required>
+                </td>
+            </tr>
+            <tr id="nickname-available_message" style="display: none;">
+                <td colspan="2">
+                    <p>사용 가능한 닉네임입니다</p>
                 </td>
             </tr>
             <tr id="nickname-unavailable_message" style="display: none;">
