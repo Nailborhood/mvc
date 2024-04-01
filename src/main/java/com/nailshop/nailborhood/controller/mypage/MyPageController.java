@@ -106,8 +106,8 @@ public class MyPageController {
         ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         result.setData((boolean) commonResponseDto.getData());
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
-
+                .body(result);
+    }
 
     //  내 정보 확인
     @GetMapping("/myInfo")
@@ -132,15 +132,15 @@ public class MyPageController {
                              .body(result);
     }
 
-    //  내 정보 확인
-    @GetMapping("/myInfo")
-    public ResponseEntity<ResultDto<MemberInfoDto>> getMyProfile(@RequestHeader(AUTH) String accessToken) {
-        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(accessToken);
-        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((MemberInfoDto) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
-    }
+//    //  내 정보 확인
+//    @GetMapping("/myInfo")
+//    public ResponseEntity<ResultDto<MemberInfoDto>> getMyProfile(@RequestHeader(AUTH) String accessToken) {
+//        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(accessToken);
+//        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//        result.setData((MemberInfoDto) commonResponseDto.getData());
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+//                             .body(result);
+//    }
 
     //TODO: accessToken or session 연결 필요
     // 매장 신청
@@ -199,7 +199,7 @@ public class MyPageController {
             model.addAttribute("errorCode", ErrorCode.SHOP_REQUEST_NOT_FOUND);
             return "request/request_shop_registration_list";
         }
-
+    }
 
     // 회원탈퇴
     @GetMapping("/dropoutProc")
