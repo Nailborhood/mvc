@@ -133,7 +133,6 @@ public class MemberService {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         return memberOptional.isPresent();
     }
-
     private boolean findByNickname(String nickname) {
         Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
         return memberOptional.isPresent();
