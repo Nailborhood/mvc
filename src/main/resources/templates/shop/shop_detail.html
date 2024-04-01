@@ -6,8 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <title>매장 상세</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/shop/favorite.js}"></script>
     <script th:src="@{/js/get_layouts.js}"></script>
-    <script th:src="@{/js/shop_detail.js}"></script>
+    <script th:src="@{/js/shop/shop_detail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_detail_style.css}">
 </head>
@@ -22,11 +24,9 @@
                         <div class="title-container">
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
+                        <!--TODO : 좋아요 상태에따른 버튼 변경, 로그인하지않고 좋아요 -> alert창-->
                         <div class="heart">
-<!--                            TODO : 찜버튼-->
-<!--                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
-<!--                            </a>-->
-                            <a class="heart-btn" href="#" role="button">
+                            <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}">
                                 <img src="/assets/icons/shop/heart.svg" />
                             </a>
                         </div>
@@ -157,7 +157,7 @@
         <div th:replace="fragments/footer::footer"></div>
     </div>
     <script th:src="@{/js/get_layouts.js}"></script>
-    <script th:src="@{/js/shop_detail.js}"></script>
+    <script th:src="@{/js/shop/shop_detail.js}"></script>
 </body>
 
 </html>
