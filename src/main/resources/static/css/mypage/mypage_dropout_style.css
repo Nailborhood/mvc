@@ -1,0 +1,41 @@
+@import "mypage_side_style.css";
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+
+.mypage-content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 60px;
+}
+
+
+.mypage-content-div p {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+#dropout-button {
+    height: 31px;
+    width: 208px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}

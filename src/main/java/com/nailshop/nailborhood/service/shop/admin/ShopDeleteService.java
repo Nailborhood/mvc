@@ -66,7 +66,9 @@ public class ShopDeleteService {
         // 관리자 확인
 /*       Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
+
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -139,7 +141,7 @@ public class ShopDeleteService {
         Member member = memberRepository.findById(owner.getMember().getMemberId())
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.changeRole(Role.USER);
+        member.changeRole(Role.ROLE_USER);
         // Owner isApproved ->false 로 변경
         ownerRepository.deleteByOwnerId(owner.getOwnerId(),false);
 

@@ -40,6 +40,7 @@ public class MemberInquiryService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
+
         // 페이지 설정 및 MemberList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
@@ -68,7 +69,6 @@ public class MemberInquiryService {
                     .birthday(member.getBirthday())
                     .phoneNum(member.getPhoneNum())
                     .gender(member.getGender())
-                    .address(member.getAddress())
                     .nickname(member.getNickname())
                     .profileImg(member.getProfileImg())
                     .isDeleted(member.isDeleted())

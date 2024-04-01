@@ -18,14 +18,24 @@
 
 .report {
     max-width: 500px;
-    margin: 0 auto;
+    margin: 50px auto;
     /*padding: 20px;*/
 }
+
 
 .reported-title {
     font-weight: 600;
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+.reported-img{
+    margin: 20px auto;
+}
+
+.reported-img .reported_img{
+    width: 100%;
+    height: auto;
 }
 
 .reported-review {
@@ -66,11 +76,42 @@
 .submit-btn , .report-btn{
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
 .review-report {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    background-color: var(--shadow_1);
+    line-height: 23px;
+    padding: 20px 30px 20px;
+    margin: 10px 0 30px;
+    /*margin-top: 20px;*/
+    /*margin-bottom: 20px;*/
+}
+
+
+
+.review-report .reporter-info {
+    display: flex;
+    gap: 10px;
+}
+
+
+.review-report .reporter-info .reporter_title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.review-report .reason-info {
+    display: flex;
+    gap: 10px;
+}
+.reason-info .report-reason_title {
+    font-size: 14px;
+    font-weight: bold;
+}
+.reason-info .report-reason {
+    /*font-weight: 180;*/
+    font-size: 14px;
 }
 
 .review-report label {
@@ -86,4 +127,18 @@
 .report-btn{
     background-color: #1d438a;
     color: white;
+}
+
+.button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #1d438a; /* 빨간색 배경 */
+    color: white; /* 텍스트는 흰색 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
+
+    gap: 10px;
+}
+
+.button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
 }

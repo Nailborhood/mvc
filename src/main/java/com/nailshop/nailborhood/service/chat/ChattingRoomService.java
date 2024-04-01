@@ -51,9 +51,9 @@ public class ChattingRoomService {
         String shopName = shop.getName();
 
         //owner 정보 가져오기
-        Owner owner = ownerRepository.findById(ownerId)
+        Owner owner = ownerRepository.findByOwnerId(ownerId)
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        ;
+
 
         // Admin 정보 가져오기 TODO: 이렇게 지정하는게 맞는지 확인 필요
         Long adminId = 1L;

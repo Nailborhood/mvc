@@ -52,6 +52,7 @@ public class ArtRegistrationService {
 //                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 //        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
+
         // shop 정보 get
         Shop shop = shopRepository.findById(artRegistrationRequestDto.getShopId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));

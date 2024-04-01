@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             chatMessage.messageDate = new Date().toISOString(); // 현재 시간 설정
 
-/*            // 화면에 메시지 표시
-            showMessageOutput(chatMessage); */
+           // 화면에 메시지 표시
+            /*showMessageOutput(chatMessage);*/
 
             document.getElementById('message').value = '';
         }
@@ -120,7 +120,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('chatRoomForm').addEventListener('submit', function (event) {
         event.preventDefault(); // 폼의 기본 제출을 방지
         sendMessage();
-        window.location.reload();
+       /* showMessageOutput();*/
+       window.location.reload();
     });
 
     // 웹소켓 연결
