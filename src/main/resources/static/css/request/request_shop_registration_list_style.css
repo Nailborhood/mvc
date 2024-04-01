@@ -27,6 +27,7 @@
 
 /* 리스트 */
 .chart-list {
+    margin: 50px auto;
     width: 95%;
     border-collapse: collapse;
 }
