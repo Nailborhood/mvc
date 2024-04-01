@@ -51,6 +51,8 @@ public class ReviewInquiryController {
                             @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
                             @RequestParam(value = "category", defaultValue = "", required = false) String category){
 
+        boolean error = false;
+
         try {
             CommonResponseDto<Object> allReview = reviewInquiryService.allReview(keyword, page, size, criteria, category);
             ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(allReview.getStatus(), allReview.getMessage());
@@ -62,15 +64,16 @@ public class ReviewInquiryController {
 //            model.addAttribute("orderby", criteria);
 //            model.addAttribute("size", size);
             model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("error", error);
 
-            return "review/review_list";
-        } catch (NotFoundException e){
 
-            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
+        } catch (Exception e){
+            error = true;
+            model.addAttribute("error", error);
 
-            return "review/review_list";
         }
 
+        return "review/review_list";
     }
 
 }

@@ -14,40 +14,45 @@
 <body>
     <div id="wrapper">
         <div th:replace="fragments/header::header"></div>
-        <div layout:fragment="content" class="content">
-            <div class="shop-info" >
-<!--                <div class="shop-info" th:each="review : ${shopReview.shopAndReviewLookUpResponseDto}">-->
-<!--                TODO 리뷰가 없을떈 어쩔것인가-->
-                <div class="shop-info_img">
-                    <img th:src="@{${shopReview.ShopAndReviewLookUpResponseDto[0].shopMainImgPath}}" />
-                </div>
-                <div class="shop-info_text">
-                    <!-- 가게 정보 수정 필요 -->
-                    <div class="shop-info_title" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].shopName}">
-                        title
-                    </div>
-                    <div class="shop-info_address" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].shopAddress}">
-                        address
-                    </div>
-                    <div class="shop-info_under">
-                        <div class="shop-info_rate">
-                            <span class="review-cnt">⭐️&nbsp;</span>
-                            <span class="score" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].reviewAvg}"></span>&nbsp;(
-                            <span class="review-cnt" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].reviewCnt}"></span>&nbsp;)
-                        </div>
-                    </div>
-                </div>
+        <div layout:fragment="content">
+            <div th:if="${error}" class="empty-review-message">
+                등록된 리뷰가 없습니다.
             </div>
-            <div class="shop-review_list" >
-                <div class="review-list-block" th:each="review, iterStat : ${shopReview.shopAndReviewLookUpResponseDto}" th:if="${iterStat.count <= 20}" >
-                    <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
-                        <div class="review-img">
-                            <img th:src="@{${review.reviewImgPath}}" alt="review Image">
+            <div class="content" th:unless="${error}">
+                <div class="shop-info" >
+    <!--                <div class="shop-info" th:each="review : ${shopReview.shopAndReviewLookUpResponseDto}">-->
+                    <div class="shop-info_img">
+                        <img th:src="@{${shopReview.ShopAndReviewLookUpResponseDto[0].shopMainImgPath}}" />
+                    </div>
+                    <div class="shop-info_text">
+                        <!-- 가게 정보 수정 필요 -->
+                        <div class="shop-info_title" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].shopName}">
+                            title
                         </div>
-                        <div class="review-icon">
-                            <img th:src="@{/assets/icons/slide.svg}">
+                        <div class="shop-info_address" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].shopAddress}">
+                            address
                         </div>
-                    </a>
+                        <div class="shop-info_under">
+                            <div class="shop-info_rate">
+                                <span class="review-cnt">⭐️&nbsp;</span>
+                                <span class="score" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].reviewAvg}"></span>&nbsp;(
+                                <span class="review-cnt" th:text="${shopReview.ShopAndReviewLookUpResponseDto[0].reviewCnt}"></span>&nbsp;)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop-review_list">
+                    <div class="review-list-block" th:each="review, iterStat : ${shopReview.shopAndReviewLookUpResponseDto}" th:if="${iterStat.count <= 20}" >
+                        <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
+                            <div class="review-img">
+                                <img th:src="@{${review.reviewImgPath}}" alt="review Image">
+                            </div>
+                            <div class="review-icon">
+                                <img th:src="@{/assets/icons/slide.svg}">
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

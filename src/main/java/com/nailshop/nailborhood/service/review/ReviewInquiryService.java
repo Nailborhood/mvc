@@ -119,9 +119,8 @@ public class ReviewInquiryService {
             reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
         }
 
-        if (reviewPage.isEmpty()) {
-            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
-        }
+        if (reviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+
 
 //        if(categoryIdList == null || categoryIdList.isEmpty()){
 //            // 카테고리 x
