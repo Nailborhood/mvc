@@ -67,10 +67,11 @@ public class ShopModificationService {
 
         Owner shopOwner = ownerRepository.findByMemberId(owner.getMemberId());
         if (!owner.getRole()
-                  .equals(Role.OWNER) && shopOwner.getShop()
+                  .equals(Role.ROLE_OWNER) && shopOwner.getShop()
                                                   .getShopId()
                                                   .equals(shopId))
             throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
 
         // 매장 아이디 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)

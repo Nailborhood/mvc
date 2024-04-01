@@ -48,7 +48,7 @@ public class ShopRegistrationHandler {
         Member member = owner.getMember();
 
         // member role 및 isApproved 변경
-        member.changeRole(Role.OWNER);
+        member.changeRole(Role.ROLE_OWNER);
         owner.changeIsApproved(true);
 
         // shop status 변경

@@ -1,0 +1,43 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+    --hover : rgba(43, 107, 225, 0.287);
+}
+
+.request-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+    margin-bottom: 15px;
+}
+
+.content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;  /* 이 값을 조절하여 'img-mod'의 너비에 맞추어 설정하세요 */
+    margin: 0 auto;
+    position: relative;
+}
+
+
+
+.submit-button {
+    margin: 150px auto;
+    height: 31px;
+    width: 150px;
+    font-size: 15px;
+    border: none;
+    background-color: var(--main-color_navy);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--main-color_begie);
+}
+
+.submit-button:hover {
+    background-color: var(--hover);
+}

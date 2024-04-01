@@ -7,7 +7,7 @@
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}"/>
-    <link rel="stylesheet" th:href="@{/css/owner/owner_shop_update_style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_chat_room_form_style.css}"/>
 
 </head>
 <div layout:fragment="content" style="flex-direction: row" class="owner-content">
@@ -23,7 +23,7 @@
                   th:action="@{/chatroom}"
                   method="post">
                 <div class="content-div">
-                    <button type="submit" id="submit-button" class="submit-button">채팅방 입장하기</button>
+                    <button type="submit" id="submit-button" class="submit-button">관리자와 채팅시작</button>
                 </div>
 
             </form>

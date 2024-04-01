@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             showMessageOutput(message); // 메세지 출력함수 호출
         });
+
     }
 
     // 날짜

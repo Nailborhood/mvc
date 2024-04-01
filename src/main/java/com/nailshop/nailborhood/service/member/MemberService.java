@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.dto.member.request.*;
 import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.dto.GeneratedToken;
 import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
@@ -20,6 +21,7 @@ import com.nailshop.nailborhood.type.SuccessCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,11 +50,14 @@ public class MemberService {
 
     private final EntityManager entityManager;
 
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 이메일 중복 체크
-    public CommonResponseDto<Object> checkEmailIsAvailable(DuplicationCheckDto duplicationCheckDto) {
-        boolean exist = findByEmail(duplicationCheckDto.getCheck());
+    public CommonResponseDto<Object> checkEmailIsAvailable(String emailInput) {
+        boolean exist = findByEmail(emailInput);
+        DuplicationCheckDto duplicationCheckDto = new DuplicationCheckDto();
+        duplicationCheckDto.setCheck(emailInput);
         duplicationCheckDto.setExist(exist);
         if (exist)
             return commonService.errorResponse(ErrorCode.EMAIL_NOT_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
@@ -61,8 +66,10 @@ public class MemberService {
     }
 
     // 닉네임 중복 체크
-    public CommonResponseDto<Object> checkNicknameIsAvailable(DuplicationCheckDto duplicationCheckDto) {
-        boolean exist = findByNickname(duplicationCheckDto.getCheck());
+    public CommonResponseDto<Object> checkNicknameIsAvailable(String nicknameInput) {
+        boolean exist = findByNickname(nicknameInput);
+        DuplicationCheckDto duplicationCheckDto = new DuplicationCheckDto();
+        duplicationCheckDto.setCheck(nicknameInput);
         duplicationCheckDto.setExist(exist);
         if (exist)
             return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.OK, duplicationCheckDto);
@@ -99,13 +106,12 @@ public class MemberService {
                     .email(signUpRequestDto.getEmail())
                     .password(encPassword)
                     .nickname(signUpRequestDto.getNickname())
-                    .address(signUpRequestDto.getAddress())
                     .name(signUpRequestDto.getName())
                     .phoneNum(signUpRequestDto.getPhoneNum())
                     .gender(signUpRequestDto.getGender())
                     .birthday(signUpRequestDto.getBirthday())
                     .profileImg("defaultImage")
-                    .role(Role.USER)
+                    .role(Role.ROLE_USER)
                     .provider("Nail")
                     .isDeleted(false)
                     .build();
@@ -123,7 +129,7 @@ public class MemberService {
     }
 
     // Member 찾기 - 이메일, 닉네임, 전화번호
-    private boolean findByEmail(String email) {
+    public boolean findByEmail(String email) {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         return memberOptional.isPresent();
     }
@@ -131,6 +137,7 @@ public class MemberService {
         Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
         return memberOptional.isPresent();
     }
+
     private boolean findByPhoneNum(String phoneNum) {
         Optional<Member> memberOptional = memberRepository.findByPhoneNum(phoneNum);
         return memberOptional.isPresent();
@@ -142,65 +149,6 @@ public class MemberService {
         return Pattern.matches(passwordPattern, password);
     }
 
-    // 로그인
-    @Transactional
-    public CommonResponseDto<Object> memberLogin(LoginRequestDto loginRequestDto) {
-        //TODO - 비밀번호가 틀린경우 에러메세지가 안넘어옴 확인 필요
-
-        if (!findByEmail(loginRequestDto.getEmail())) // 이메일이 없는 경우
-            return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
-        else if (findByEmail(loginRequestDto.getEmail()) && passwordCheck(loginRequestDto.getEmail(), loginRequestDto.getPassword())) {
-            // 이메일이 존재, 비밀번호가 맞는 경우
-            Member member = memberRepository.findByEmail(loginRequestDto.getEmail()).get();
-            if (member.isDeleted()) // 이미 탈퇴한 회원인 경우
-                return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
-            else {
-                // 토큰 발급
-                GeneratedToken generatedToken = tokenProvider.generateToken(member);
-
-                // refresh token db에 저장
-                Optional<Login> optionalLogin = loginRepository.findByMember_MemberId(member.getMemberId());
-                Login login;
-                if (optionalLogin.isEmpty()) {
-                    login = Login.builder()
-                            .refreshToken(generatedToken.getRefreshToken())
-                            .member(member)
-                            .build();
-                } else {
-                    login = optionalLogin.get();
-                    login.updateToken(generatedToken.getRefreshToken());
-                }
-                loginRepository.save(login);
-
-                Long id = member.getMemberId();
-                // 헤더에 넣을 access token
-                TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                        .memberId(id)
-                        .accessToken(generatedToken.getAccessToken())
-                        .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-                        .build();
-
-                // 쿠키에 넣을 refresh token
-                ResponseCookie responseCookie = ResponseCookie
-                        .from("refreshToken", generatedToken.getRefreshToken())
-                        .maxAge(Duration.ofDays(7))
-                        .path("/")
-                        .secure(true)
-                        .sameSite("None")
-                        .httpOnly(false)
-//                        .domain("https://nailborhood.shop")
-                        .build();
-
-                Map<String, Object> loginMap = new HashMap<>();
-                loginMap.put("accessToken", tokenResponseDto);
-                loginMap.put("refreshToken", responseCookie);
-
-                return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, loginMap);
-            }
-        } else { // 비밀번호가 틀린 경우
-            return commonService.errorResponse(ErrorCode.LOGIN_FAIL.getDescription(), HttpStatus.UNAUTHORIZED, null);
-        }
-    }
 
     @Transactional
     public CommonResponseDto<Object> renewToken(String refreshToken) {
@@ -249,15 +197,12 @@ public class MemberService {
     }
 
     // 내 정보 가져오기 (마이 페이지로 이동 필요)
-    public CommonResponseDto<Object> findMyInfo(String accessToken) {
-
-        Long id = tokenProvider.getUserId(accessToken);
+    public CommonResponseDto<Object> findMyInfo(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MYINFO_FAIL.getDescription()));
         MemberInfoDto memberInfoDto = MemberInfoDto.builder()
                 .email(member.getEmail())
                 .name(member.getName())
-                .address(member.getAddress())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
                 .nickname(member.getNickname())
@@ -284,12 +229,12 @@ public class MemberService {
             // 전화번호 중복
             return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, modInfoDto);
         } else {
-            try{
+            try {
                 // 정보 업데이트
                 memberRepository.updateMemberByMemberId
-                        (id, modInfoDto.getAddress(), modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
+                        (id, modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
 
-                    return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
+                return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
 
             } catch (Exception e) {
                 return commonService.errorResponse(ErrorCode.MYINFO_UPDATE_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -297,46 +242,11 @@ public class MemberService {
         }
     }
 
-    @Transactional
-    public CommonResponseDto<Object> updateMyInfoTest(Long id, ModMemberInfoRequestDto modInfoDto) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MYINFO_FAIL.getDescription()));
-
-        if (findByNickname(modInfoDto.getNickname()) && !member.getNickname().equals(modInfoDto.getNickname())) {
-            return commonService.errorResponse(ErrorCode.NICKNAME_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, modInfoDto);
-        } else if (findByPhoneNum(modInfoDto.getPhoneNum()) && !member.getPhoneNum().equals(modInfoDto.getPhoneNum())) {
-            return commonService.errorResponse(ErrorCode.PHONENUM_NOT_AVAILABLE.getDescription(), HttpStatus.BAD_REQUEST, modInfoDto);
-        } else {
-            memberRepository.updateMemberByMemberId
-                    (id, modInfoDto.getAddress(), modInfoDto.getNickname(), modInfoDto.getPhoneNum(), modInfoDto.getGender(), modInfoDto.getBirthday());
-
-            boolean nicknameUpdated = memberRepository.findByNickname(modInfoDto.getNickname()).isPresent();
-            boolean phoneNumUpdated = memberRepository.findByPhoneNum(modInfoDto.getNickname()).isPresent();
-
-            if (nicknameUpdated && phoneNumUpdated)
-                return commonService.successResponse(SuccessCode.MYINFO_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
-            else
-                return commonService.errorResponse(ErrorCode.MYINFO_UPDATE_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
-
-        }
-    }
-
-    // 로그아웃
-    @Transactional
-    public CommonResponseDto<Object> logout(String accessToken) {
-        Long id = tokenProvider.getUserId(accessToken);
-        Login login = loginRepository.findByMember_MemberId(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-        loginRepository.updateRefreshTokenByMemberId(id, null);
-
-        return commonService.successResponse(SuccessCode.LOGIN_SUCCESS.getDescription(), HttpStatus.OK, null);
-    }
-
     // 비밀번호 수정 전 비밀번호 확인 (마이페이지로 이동 핋요)
-    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto){
+    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         boolean match = passwordCheck(member.getEmail(), beforeModPasswordCheckRequestDto.getPasswordCheck());
         return commonService.successResponse(SuccessCode.PASSWORD_CHECK_SUCCESS.getDescription(), HttpStatus.OK, match);
     }
@@ -345,15 +255,15 @@ public class MemberService {
     @Transactional
     public CommonResponseDto<Object> updatePassword(String accessToken, ModPasswordRequestDto modPasswordRequestDto) {
         boolean match = modPasswordRequestDto.getPassword().equals(modPasswordRequestDto.getPasswordCheck());
-        if(!match)
+        if (!match)
             return commonService.errorResponse(ErrorCode.PASSWORD_CHECK_FAIL.getDescription(), HttpStatus.BAD_REQUEST, modPasswordRequestDto);
-        else{
+        else {
             Long id = tokenProvider.getUserId(accessToken);
             Member member = memberRepository.findById(id)
-                    .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
 
             String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getPassword());
-            memberRepository.updateMemberPasswordByMemberId(id,encodedPassword);
+            memberRepository.updateMemberPasswordByMemberId(id, encodedPassword);
 
             return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         }
@@ -361,18 +271,18 @@ public class MemberService {
 
     // 회원 탈퇴
     @Transactional
-    public CommonResponseDto<Object> deleteMember(String accessToken) {
-        Long id = tokenProvider.getUserId(accessToken);
+    public CommonResponseDto<Object> deleteMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-        if(member.isDeleted()) return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        if (member.isDeleted())
+            return commonService.errorResponse(ErrorCode.DROPOUT_ALREADY.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         else {
             memberRepository.updateMemberIsDeletedById(id);
             entityManager.clear();
             String email = member.getEmail();
             boolean checkDropout = memberRepository.findByEmail(email).get().isDeleted();
 
-            if(checkDropout)
+            if (checkDropout)
                 return commonService.successResponse(SuccessCode.DROPOUT_SUCCESS.getDescription(), HttpStatus.OK, null);
             else
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -384,15 +294,15 @@ public class MemberService {
         // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
         Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         try {
             String imgPath = s3UploadService.profileImgUpload(multipartFile);
 
             memberRepository.updateMemberProfileImg(id, imgPath);
 
-            return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(),HttpStatus.OK ,null);
+            return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         } catch (Exception e) {
-            return commonService.errorResponse(ErrorCode.PROFILE_UPDATE_FAIL.getDescription(),HttpStatus.INTERNAL_SERVER_ERROR ,null);
+            return commonService.errorResponse(ErrorCode.PROFILE_UPDATE_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 

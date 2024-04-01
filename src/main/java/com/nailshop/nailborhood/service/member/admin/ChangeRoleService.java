@@ -27,12 +27,12 @@ public class ChangeRoleService {
         // 관리자 확인
         Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole().equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.changeRole(Role.OWNER);
+        member.changeRole(Role.ROLE_OWNER);
 
         return commonService.successResponse(SuccessCode.CHANGE_ROLE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }

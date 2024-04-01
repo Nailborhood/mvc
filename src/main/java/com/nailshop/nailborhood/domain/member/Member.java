@@ -37,8 +37,6 @@ public class Member extends BaseTime {
 
     private String gender;
 
-    private String address;
-
     private String nickname;
 
     @Column(name = "profile_img")
@@ -76,7 +74,7 @@ public class Member extends BaseTime {
     private List<ReviewReport> reviewReportList;
 
     @Builder
-    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
+    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, String gender, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
 
         this.email = email;
         this.name = name;
@@ -84,7 +82,6 @@ public class Member extends BaseTime {
         this.birthday = birthday;
         this.phoneNum = phoneNum;
         this.gender = gender;
-        this.address = address;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.provider = provider;
