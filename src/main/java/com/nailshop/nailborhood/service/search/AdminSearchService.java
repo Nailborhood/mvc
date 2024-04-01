@@ -86,7 +86,9 @@ public class AdminSearchService {
 
         for (Review review : reviewList) {
 
-            String mainImgPath = review.getReviewImgList().getFirst().getImgPath();
+            String mainImgPath = review.getReviewImgList()
+                                       .getFirst()
+                                       .getImgPath();
             String shopName = review.getShop()
                                     .getName();
 
@@ -101,18 +103,20 @@ public class AdminSearchService {
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
             AdminReviewResponseDto adminReviewResponseDto = AdminReviewResponseDto.builder()
-                                                                             .reviewId(review.getReviewId())
-                                                                             .shopName(shopName)
-                                                                             .mainImgPath(mainImgPath)
-                                                                             .categoryTypeList(categoryTypeList)
-                                                                             .contents(review.getContents())
-                                                                             .rate(review.getRate())
-                                                                             .likeCnt(review.getLikeCnt())
-                                                                             .createdAt(review.getCreatedAt())
-                                                                             .updatedAt(review.getUpdatedAt())
-                                                                             .reviewer(reviewer)
-                                                                             .isDeleted(review.isDeleted())
-                                                                             .build();
+                                                                                  .reviewId(review.getReviewId())
+                                                                                  .shopName(shopName)
+                                                                                  .mainImgPath(mainImgPath)
+                                                                                  .categoryTypeList(categoryTypeList)
+                                                                                  .contents(review.getContents())
+                                                                                  .rate(review.getRate())
+                                                                                  .likeCnt(review.getLikeCnt())
+                                                                                  .createdAt(review.getCreatedAt())
+                                                                                  .updatedAt(review.getUpdatedAt())
+                                                                                  .reviewer(reviewer)
+                                                                                  .isDeleted(review.isDeleted())
+                                                                                  .shopId(review.getShop()
+                                                                                                .getShopId())
+                                                                                  .build();
 
             adminReviewResponseDtoList.add(adminReviewResponseDto);
         }

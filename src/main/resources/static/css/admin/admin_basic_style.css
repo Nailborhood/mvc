@@ -61,7 +61,7 @@
 
 
 /* 리스트 */
-.chart-list {
+/*.chart-list {
     width: 95%;
     border-collapse: collapse;
 }
@@ -80,7 +80,34 @@
     padding: 10px;
     text-align: center;
     vertical-align: middle;
+}*/
+
+.chart-list {
+    display: table;
+    width: 100%;
 }
+
+.thead, .tbody {
+    display: table-row-group;
+}
+
+.tr {
+    display: table-row;
+}
+
+.th, .td {
+    display: table-cell;
+    padding: 8px;
+    border: 1px solid #ddd;
+    align-content: center;
+}
+
+.th {
+    background-color: var(--main-color_begie);
+    font-weight: bold;
+}
+
+
 
 .chart-profile {
     width: 50px;
