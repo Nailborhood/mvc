@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_modInfo_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/member/singup_style.css}" />
+    <script th:src="@{/js/member/signup.js}"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">내 정보 수정</span>
+        <div class="mypage-content_div">
+            <div class="mypage-content-div">
+                <form action="/modMyInfo" method="post" class="signup-form">
+                    <table>
+                        <tbody>
+                        <tr><!DOCTYPE html>
+                            <html xmlns:th="http://www.thymeleaf.org"
+                                  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                                  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+                                  layout:decorate="~{default}">
+                            <head>
+                                <meta charset="UTF-8">
+                                <title>내 정보 수정</title>
+                                <link rel="stylesheet" th:href="@{/css/mypage/mypage_modInfo_style.css}" />
+                                <link rel="stylesheet" th:href="@{/css/member/singup_style.css}" />
+                                <script th:src="@{/js/member/signup.js}"></script>
+                                <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+                            </head>
+                            <div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+                                <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+                                <div class="content">
+                                    <span class="mypage-title-span">내 정보 수정</span>
+                                    <div class="mypage-content_div">
+                                        <div class="mypage-content-div">
+                                            <form action="/modMyInfo" method="post" class="signup-form">
+                                                <table>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label for="email-input">이메일</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <input type="email" name="email" id="email-input" th:value="${memberInfo.email}" readonly>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label for="name-input">이름</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <input type="text" name="name" id="name-input" th:value="${memberInfo.name}" required>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label for="birthday-input">생일</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <input type="date" name="birthday" id="birthday-input" th:value="${memberInfo.birthday}" required>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label for="nickname-input">닉네임</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <input type="text" name="nickname" id="nickname-input" th:value="${memberInfo.nickname}" required>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="nickname-unavailable_message" style="display: none;">
+                                                        <td colspan="2">
+                                                            <p>이미 사용 중인 닉네임입니다</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label for="phonenumber-input">전화전호</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <input type="text" name="phoneNum" id="phonenumber-input" th:value="${memberInfo.phoneNum}" required>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="phonenum-unavailable_message" style="display: none;">
+                                                        <td colspan="2">
+                                                            <p>중복된 전화번호입니다</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <label>성별</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="text-align: center;">
+                                                        <td>
+                                                            <input type="radio" class="gender-radio" name="gender" value="Male" th:checked="${memberInfo.gender eq 'M' ? 'checked':''}">남성
+                                                        </td>
+                                                        <td>
+                                                            <input type="radio" class="gender-radio" name="gender" value="Female" th:checked="${memberInfo.gender eq 'F' ? 'checked':''}">여성
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <br>
+                                                <input type="submit" id="submit-button" value="정보수정">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </html>
+                            <td colspan="2">
+                                <label for="email-input">이메일</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="email" name="email" id="email-input" th:value="${memberInfo.email}" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="name-input">이름</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" name="name" id="name-input" th:value="${memberInfo.name}" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="birthday-input">생일</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="date" name="birthday" id="birthday-input" th:value="${memberInfo.birthday}" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="nickname-input">닉네임</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" name="nickname" id="nickname-input" th:value="${memberInfo.nickname}" required>
+                            </td>
+                        </tr>
+                        <tr id="nickname-unavailable_message" style="display: none;">
+                            <td colspan="2">
+                                <p>이미 사용 중인 닉네임입니다</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="phonenumber-input">전화전호</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" name="phoneNum" id="phonenumber-input" th:value="${memberInfo.phoneNum}" required>
+                            </td>
+                        </tr>
+                        <tr id="phonenum-unavailable_message" style="display: none;">
+                            <td colspan="2">
+                                <p>중복된 전화번호입니다</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label>성별</label>
+                            </td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td>
+                                <input type="radio" class="gender-radio" name="gender" value="Male" th:checked="${memberInfo.gender eq 'M' ? 'checked':''}">남성
+                            </td>
+                            <td>
+                                <input type="radio" class="gender-radio" name="gender" value="Female" th:checked="${memberInfo.gender eq 'F' ? 'checked':''}">여성
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <input type="submit" id="submit-button" value="정보수정">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

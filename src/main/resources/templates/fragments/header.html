@@ -9,8 +9,10 @@
     <nav class="header-upper">
         <div id="info-field">
             <span sec:authorize="isAuthenticated()">
-                <a sec:authorize="hasRole('USER')" th:href="@{#}">
-                    <span th:text="${memberNickname}">닉네임 자리</span>
+                <a sec:authorize="hasRole('ROLE_USER')" th:href="@{#}">
+                    <span th:text="${memberNickname}">닉네임 자리</span>님
+                    <input type="hidden" sec:authentication property="principal"/>
+<!--                    <span th:text="${principal}">유저네임</span>-->
                 </a>
             </span>
             <a sec:authorize="isAnonymous()" th:href="@{/login}">
@@ -20,7 +22,9 @@
     </nav>
     <header>
         <div class="logo-field">
-            <img src="/assets/icons/nailborhood_logo.png" />
+            <a th:href="@{/example}">
+                <img src="/assets/icons/nailborhood_logo.png"/>
+            </a>
         </div>
         <div class="profile-field">
             <div id="profile-img-field">
@@ -28,7 +32,7 @@
             </div>
             <div id="profile-mypage-div">
                 <ul>
-                    <li><a href="#">내 정보 수정</a></li>
+                    <li><a th:href="@{/mypage/myInfo}">내 정보 수정</a></li>
                     <li><a href="#">비밀번호 수정</a></li>
                     <li><a href="#">내 장소 확인</a></li>
                     <li><a href="#">내 리뷰 확인</a></li>

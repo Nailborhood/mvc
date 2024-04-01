@@ -1,3 +1,5 @@
+@import "mypage_side_style.css";
+
 :root {
     --main-color_begie: #f7f5f0;
     --shadow_1: #dad2cd;
@@ -7,8 +9,10 @@
     --main-color_navy: #1d438a;
 }
 
-.content {
-    align-items: center;
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
 }
 
 .login-title {
