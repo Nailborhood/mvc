@@ -15,7 +15,10 @@
     <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
     <div class="content">
         <span class="mypage-title-span">내가 저장한 매장</span>
-        <div class="mypage-content_div">
+        <div th:if="${error}" class="empty-shop-message">
+            저장한 매장이 없습니다.
+        </div>
+        <div class="mypage-content_div" th:unless="${error}">
             <div th:each="shop : ${result.getData().favoriteShopDetailDtoList}" class="shop-list_div">
                 <div class="shop-item">
                     <a class="shop-info" th:href="@{/shopDetail/{shopId}(shopId=${shop.shopId})}" style="text-decoration: none; color: inherit">
