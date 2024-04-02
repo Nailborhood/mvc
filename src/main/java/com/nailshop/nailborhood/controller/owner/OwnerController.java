@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.owner;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -10,6 +11,7 @@ import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
@@ -21,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,9 +46,9 @@ public class OwnerController {
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
-    @GetMapping("/owner/review/{shopId}")
+    @GetMapping("/owner/review")
     public String getShopReviewList(Model model,
-                                    @PathVariable Long shopId,
+                                    @AuthenticationPrincipal MemberDetails memberDetails,
                                     @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
@@ -53,13 +56,16 @@ public class OwnerController {
 
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
 
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        Member member = memberDetails.getMember();
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
-            Long ownerShopId = 1L;
+            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, member);
+
             model.addAttribute("reviewList", shopReview.getData());
-            model.addAttribute("ownerShopId", ownerShopId);
             model.addAttribute("error", error);
 
 
