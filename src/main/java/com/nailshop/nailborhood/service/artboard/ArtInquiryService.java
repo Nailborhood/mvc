@@ -61,7 +61,8 @@ public class ArtInquiryService {
             artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
         } else {
             // 카테고리 선택 o
-            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, pageable);
+            int categoryIdListSize = categoryIdList.size();
+            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
         }
 
         if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
@@ -84,6 +85,7 @@ public class ArtInquiryService {
                     .likeCount(artRef.getLikeCount())
                     .mainImgPath(mainImgPath)
                     .shopName(shopName)
+                    .categoryIdList(categoryIdList)
                     .categoryTypeList(categoryTypeList)
                     .createdAt(artRef.getCreatedAt())
                     .updatedAt(artRef.getUpdatedAt())
@@ -169,7 +171,8 @@ public class ArtInquiryService {
             artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
         } else {
             // 카테고리 선택 o
-            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, pageable);
+            int categoryIdListSize = categoryIdList.size();
+            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
         }
 
         if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);

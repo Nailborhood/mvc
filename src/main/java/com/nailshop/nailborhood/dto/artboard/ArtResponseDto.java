@@ -16,18 +16,20 @@ public class ArtResponseDto {
     private String content;
     private Long likeCount;
     private String shopName;
+    private List<Long> categoryIdList;
     private List<String> categoryTypeList;
     private String mainImgPath;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public ArtResponseDto(Long id, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, String mainImgPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ArtResponseDto(Long id, String name, String content, Long likeCount, String shopName, List<Long> categoryIdList, List<String> categoryTypeList, String mainImgPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.content = content;
         this.likeCount = likeCount;
         this.shopName = shopName;
+        this.categoryIdList = categoryIdList;
         this.categoryTypeList = categoryTypeList;
         this.mainImgPath = mainImgPath;
         this.createdAt = createdAt;
