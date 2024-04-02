@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.shop.admin;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.member.admin.ShopRegistrationHandler;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,12 +57,17 @@ public class AdminShopController {
     }
 
     // 매장 신청 상세 조회
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
-    public String getShopDetail(Model model,
+    public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
+                                Model model,
                                 @PathVariable Long shopId){
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
 
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+
         model.addAttribute("shopDetail", shopDetail.getData());
+        model.addAttribute("memberNickname", nicknameSpace);
 
         return "admin/admin_shop_registration";
     }
@@ -89,23 +97,23 @@ public class AdminShopController {
                              .body(resultDto);
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장등록신청 승인", description = "admin API")
+    // 매장등록신청 승인
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/admin/shop/approve/{shopId}")
-    public ResponseEntity<ResultDto<Void>> shopApprove(/*@RequestHeader(AUTH) String accessToken,*/
+    public ResponseEntity<ResultDto<Void>> shopApprove(@AuthenticationPrincipal MemberDetails memberDetails,
                                                        @PathVariable Long shopId){
-        CommonResponseDto<Object> shopApprove = shopRegistrationHandler.shopApprove(/*accessToken, */shopId);
+        CommonResponseDto<Object> shopApprove = shopRegistrationHandler.shopApprove(memberDetails, shopId);
         ResultDto<Void> resultDto = ResultDto.in(shopApprove.getStatus(), shopApprove.getMessage());
 
         return ResponseEntity.status(shopApprove.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장등록신청 거절", description = "admin API")
+    // 매장등록신청 거절
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/admin/shop/reject/{shopId}")
-    public ResponseEntity<ResultDto<Void>> shopReject(/*@RequestHeader(AUTH) String accessToken,*/
+    public ResponseEntity<ResultDto<Void>> shopReject(@AuthenticationPrincipal MemberDetails memberDetails,
                                                       @PathVariable Long shopId){
-        CommonResponseDto<Object> shopReject = shopRegistrationHandler.shopReject(/*accessToken, */shopId);
+        CommonResponseDto<Object> shopReject = shopRegistrationHandler.shopReject(memberDetails, shopId);
         ResultDto<Void> resultDto = ResultDto.in(shopReject.getStatus(), shopReject.getMessage());
 
         return ResponseEntity.status(shopReject.getHttpStatus()).body(resultDto);
