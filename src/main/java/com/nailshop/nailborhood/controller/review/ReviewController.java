@@ -1,10 +1,12 @@
 package com.nailshop.nailborhood.controller.review;
 
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
@@ -33,13 +35,18 @@ public class ReviewController {
     private final ReviewInquiryService reviewInquiryService;
     private final ReviewRegistrationService reviewRegistrationService;
     private final ShopDetailService shopDetailService;
+    private final CategoryRepository categoryRepository;
 
     @Tag(name = "user", description = "user API")
     @Operation(summary = "리뷰 등록", description = "user API")
     @GetMapping("/{shopId}/review/registration")
     public String showRegisterReview(Model model,
                                   @PathVariable Long shopId){
+
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("shopId", shopId);
+        model.addAttribute("categories", categoryList);
 
         return "review/review_registration";
     }
@@ -53,11 +60,6 @@ public class ReviewController {
                                @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
                                RedirectAttributes redirectAttributes) {
-
-        System.out.println(multipartFileList.getFirst());
-        System.out.println(reviewRegistrationRequestDto.getCategoryIdList());
-        System.out.println(reviewRegistrationRequestDto.getContents());
-        System.out.println(reviewRegistrationRequestDto.getRate());
 
         try {
             CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, /*accessToken, */multipartFileList, reviewRegistrationRequestDto);

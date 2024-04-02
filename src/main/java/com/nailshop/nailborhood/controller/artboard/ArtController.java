@@ -1,8 +1,12 @@
 package com.nailshop.nailborhood.controller.artboard;
 
+
+import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.service.artboard.*;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +32,7 @@ public class ArtController {
     private final ArtDeleteService artDeleteService;
     private final ArtLikeService artLikeService;
     private final ArtInquiryService artInquiryService;
+    private final CategoryRepository categoryRepository;
 
     @Tag(name = "owner", description = "owner API")
     @Operation(summary = "아트판 등록", description = "owner API")
@@ -35,7 +40,10 @@ public class ArtController {
     public String showRegisterArt(Model model,
                                   ArtRegistrationRequestDto artRegistrationRequestDto){
 
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("artDto", artRegistrationRequestDto);
+        model.addAttribute("categories", categoryList);
 
         return "artboard/art_registration";
     }
@@ -135,8 +143,11 @@ public class ArtController {
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
+            List<Category> categoryList = categoryRepository.findAll();
+
             model.addAttribute("result", resultDto);
             model.addAttribute("error", error);
+            model.addAttribute("categories", categoryList);
         } catch (Exception e) {
 
             error = true;
