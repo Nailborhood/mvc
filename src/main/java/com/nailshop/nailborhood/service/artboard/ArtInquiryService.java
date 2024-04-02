@@ -14,8 +14,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
-import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -27,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +35,6 @@ public class ArtInquiryService {
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
     private final CategoryArtRepository categoryArtRepository;
-    private final TokenProvider tokenProvider;
-    private final MemberRepository memberRepository;
 
     // 전체 조회
     public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category) {
@@ -145,13 +141,12 @@ public class ArtInquiryService {
     }
 
     // shopId로 조회
-    public CommonResponseDto<Object> inquiryAllArtByShopId(/*String accessToken, */int page, int size, String sortBy, String category) {
+    public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy, String category) {
 
         // member, owner, shop get
-//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-//        Owner owner = member.getOwner();
-//        Shop shop = owner.getShop();
+        Member member = memberDetails.getMember();
+        Owner owner = member.getOwner();
+        Shop shop = owner.getShop();
 
         // category 리스트화
         List<Long> categoryIdList = null;
@@ -180,13 +175,13 @@ public class ArtInquiryService {
         List<ArtRef> artRefList = artRefPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
-//        List<ArtRef> filteredArtRefList = artRefList.stream()
-//                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
-//                .toList();
-//
-//        if (filteredArtRefList.isEmpty()) {
-//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-//        }
+        List<ArtRef> filteredArtRefList = artRefList.stream()
+                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
+                .toList();
+
+        if (filteredArtRefList.isEmpty()) {
+            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+        }
 
         // ArtResponseDto build
         for (ArtRef artRef : artRefList){
