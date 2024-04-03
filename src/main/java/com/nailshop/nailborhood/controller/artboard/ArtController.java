@@ -1,18 +1,17 @@
 package com.nailshop.nailborhood.controller.artboard;
 
-
-import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.*;
 import com.nailshop.nailborhood.type.ErrorCode;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,29 +33,33 @@ public class ArtController {
     private final ArtInquiryService artInquiryService;
     private final CategoryRepository categoryRepository;
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 등록", description = "owner API")
+    // 아트판 등록(GET)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/register")
-    public String showRegisterArt(Model model,
+    public String showRegisterArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                                  Model model,
                                   ArtRegistrationRequestDto artRegistrationRequestDto){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
         List<Category> categoryList = categoryRepository.findAll();
 
         model.addAttribute("artDto", artRegistrationRequestDto);
         model.addAttribute("categories", categoryList);
+        model.addAttribute("memberNickname", nicknameSpace);
 
         return "artboard/art_registration";
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 등록", description = "owner API")
+    // 아트판 등록(POST)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
-    public String registerArt(/*@RequestHeader(AUTH) String accessToken,*/
-                                                       @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                       @ModelAttribute ArtRegistrationRequestDto artRegistrationRequestDto,
-                                                       RedirectAttributes redirectAttributes) {
+    public String registerArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                              @ModelAttribute ArtRegistrationRequestDto artRegistrationRequestDto,
+                              RedirectAttributes redirectAttributes) {
         try {
-            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(/*accessToken, */multipartFileList, artRegistrationRequestDto);
+            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(memberDetails, multipartFileList, artRegistrationRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -68,36 +71,44 @@ public class ArtController {
             return "artboard/art_registration";
         }
     }
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 수정", description = "owner API")
+
+    // 아트판 수정(GET)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/modify/{artRefId}")
-    public String showUpdateArt(Model model,
+    public String showUpdateArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                                Model model,
                                 @PathVariable Long artRefId){
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+
         CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId);
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
         resultDto.setData((ArtDetailResponseDto) artDetail.getData());
 
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("memberNickname", nicknameSpace);
+        model.addAttribute("categories", categoryList);
 
         return "artboard/art_update";
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 수정", description = "owner API")
+    // 아트판 수정(POST)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
-    public String updateArtRef(/*@RequestHeader(AUTH) String accessToken,*/
+    public String updateArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long artRefId,
                                @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                @ModelAttribute ArtUpdateRequestDto artUpdateRequestDto,
                                RedirectAttributes redirectAttributes){
 
         try{
-            CommonResponseDto<Object> updateArt = artUpdateService.updateArt(/*accessToken, */multipartFileList, artUpdateRequestDto, artRefId);
+            CommonResponseDto<Object> updateArt = artUpdateService.updateArt(memberDetails, multipartFileList, artUpdateRequestDto, artRefId);
             ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/mypage/owner/artboard/manage";
+            return "redirect:/owner/artboard/manage";
         } catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
 
@@ -105,8 +116,8 @@ public class ArtController {
         }
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 삭제", description = "owner API")
+    // 아트판 삭제
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
     public ResponseEntity<ResultDto<Void>> deleteArtRef(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long artRefId){
@@ -116,8 +127,8 @@ public class ArtController {
         return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 좋아요", description = "user API")
+    // 아트판 좋아요
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/user/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long artRefId){
@@ -128,8 +139,7 @@ public class ArtController {
         return ResponseEntity.status(likeArt.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 전체 조회", description = "user API")
+    // 아트판 전체 조회
     @GetMapping("/user/artboard/inquiry")
     public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
@@ -158,8 +168,21 @@ public class ArtController {
         return "artboard/art_list";
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 상세 조회", description = "user API")
+    // 아트판 전체 조회(카테고리 선택)
+    @GetMapping("/user/artboard/category/inquiry")
+    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+        ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+        resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
+        return ResponseEntity.status(inquiryAllArt.getHttpStatus()).body(resultDto);
+    }
+
+
+    // 아트판 상세 조회
     @GetMapping("/user/artboard/inquiry/{artRefId}")
     public String inquiryArtRef(@PathVariable Long artRefId,
                                 Model model){
