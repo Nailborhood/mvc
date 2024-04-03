@@ -123,24 +123,13 @@ public class MyPageController {
 
     // 내 정보 수정 - 작업중
     @PostMapping("/modMyInfo")
-    public ResponseEntity<ResultDto<MemberInfoDto>> modMyInfo(@RequestHeader(AUTH) String accessToken,
-                                                              @RequestBody ModMemberInfoRequestDto modMemberInfoRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(accessToken, modMemberInfoRequestDto);
-        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((MemberInfoDto) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
+    public String modMyInfo(@AuthenticationPrincipal MemberDetails memberDetails,
+                            ModMemberInfoRequestDto modMemberInfoRequestDto) {
+        Long id = memberDetails.getMember().getMemberId();
+        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(id, modMemberInfoRequestDto);
+        System.out.println(commonResponseDto.getMessage());
+        return "redirect:/mypage/myInfo";
     }
-
-//    //  내 정보 확인
-//    @GetMapping("/myInfo")
-//    public ResponseEntity<ResultDto<MemberInfoDto>> getMyProfile(@RequestHeader(AUTH) String accessToken) {
-//        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(accessToken);
-//        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//        result.setData((MemberInfoDto) commonResponseDto.getData());
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-//                             .body(result);
-//    }
 
     //TODO: accessToken or session 연결 필요
     // 매장 신청
