@@ -26,8 +26,6 @@ public class AdminController {
     private final ChangeRoleService changeRoleService;
     private final MemberInquiryService memberInquiryService;
     private final AppliedShopInquiryService appliedShopInquiryService;
-    private final ShopRegistrationHandler shopRegistrationHandler;
-
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "사업자 전환", description = "admin API")

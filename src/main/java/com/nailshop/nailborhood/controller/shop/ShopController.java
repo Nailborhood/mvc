@@ -136,9 +136,8 @@ public class ShopController {
     }
 
 
-    @Tag(name = "ShopArtBoard", description = "Shop API")
-    @Operation(summary = "매장 아트판 조회", description = "Shop API")
-    // 매장 상세 조회
+
+    // 매장 아트 조회
     @GetMapping("/art/{shopId}")
     public String getShopArtList(Model model,
                                  @PathVariable Long shopId,
