@@ -64,7 +64,7 @@ public class OwnerController {
     }
 
     // 아트 관리
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/manage")
     public String inquiryAllArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,

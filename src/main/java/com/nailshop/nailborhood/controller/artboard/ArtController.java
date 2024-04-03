@@ -34,7 +34,7 @@ public class ArtController {
     private final CategoryRepository categoryRepository;
 
     // 아트판 등록(GET)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/register")
     public String showRegisterArt(@AuthenticationPrincipal MemberDetails memberDetails,
                                   Model model,
@@ -52,7 +52,7 @@ public class ArtController {
     }
 
     // 아트판 등록(POST)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
     public String registerArt(@AuthenticationPrincipal MemberDetails memberDetails,
                               @RequestPart(value = "file") List<MultipartFile> multipartFileList,
@@ -73,7 +73,7 @@ public class ArtController {
     }
 
     // 아트판 수정(GET)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/modify/{artRefId}")
     public String showUpdateArt(@AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
@@ -84,14 +84,17 @@ public class ArtController {
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
         resultDto.setData((ArtDetailResponseDto) artDetail.getData());
 
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("result", resultDto);
         model.addAttribute("memberNickname", nicknameSpace);
+        model.addAttribute("categories", categoryList);
 
         return "artboard/art_update";
     }
 
     // 아트판 수정(POST)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
     public String updateArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long artRefId,
@@ -105,7 +108,7 @@ public class ArtController {
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/mypage/owner/artboard/manage";
+            return "redirect:/owner/artboard/manage";
         } catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
 
@@ -114,7 +117,7 @@ public class ArtController {
     }
 
     // 아트판 삭제
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
     public ResponseEntity<ResultDto<Void>> deleteArtRef(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long artRefId){
@@ -125,7 +128,7 @@ public class ArtController {
     }
 
     // 아트판 좋아요
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/user/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long artRefId){
@@ -164,6 +167,20 @@ public class ArtController {
 
         return "artboard/art_list";
     }
+
+    // 아트판 전체 조회(카테고리 선택)
+    @GetMapping("/user/artboard/category/inquiry")
+    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+        ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+        resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
+        return ResponseEntity.status(inquiryAllArt.getHttpStatus()).body(resultDto);
+    }
+
 
     // 아트판 상세 조회
     @GetMapping("/user/artboard/inquiry/{artRefId}")

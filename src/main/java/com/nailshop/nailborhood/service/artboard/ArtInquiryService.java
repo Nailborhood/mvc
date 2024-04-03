@@ -61,8 +61,6 @@ public class ArtInquiryService {
             artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
         }
 
-        if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-
         List<ArtRef> artRefList = artRefPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
@@ -144,9 +142,9 @@ public class ArtInquiryService {
     public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy, String category) {
 
         // member, owner, shop get
-        Member member = memberDetails.getMember();
-        Owner owner = member.getOwner();
-        Shop shop = owner.getShop();
+//        Member member = memberDetails.getMember();
+//        Owner owner = member.getOwner();
+//        Shop shop = owner.getShop();
 
         // category 리스트화
         List<Long> categoryIdList = null;
@@ -175,13 +173,13 @@ public class ArtInquiryService {
         List<ArtRef> artRefList = artRefPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
-        List<ArtRef> filteredArtRefList = artRefList.stream()
-                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
-                .toList();
-
-        if (filteredArtRefList.isEmpty()) {
-            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-        }
+//        List<ArtRef> filteredArtRefList = artRefList.stream()
+//                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
+//                .toList();
+//
+//        if (filteredArtRefList.isEmpty()) {
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
 
         // ArtResponseDto build
         for (ArtRef artRef : artRefList){
