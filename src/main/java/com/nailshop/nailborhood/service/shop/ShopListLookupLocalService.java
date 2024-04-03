@@ -69,7 +69,7 @@ public class ShopListLookupLocalService {
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId) {
+    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId, Long districtsId, Long cityId) {
 
 
         // 정렬기준 설정
@@ -78,20 +78,59 @@ public class ShopListLookupLocalService {
 
        // dongId 유무
         Page<Shop> shops;
-        if(keyword == null || keyword.trim()
+/*        if(keyword == null || keyword.trim()
                                      .isEmpty()) {
-            if (dongId == null) {
+            if(cityId != null){
+                shops = shopRepository.findAllNotDeletedByCityId(pageable,cityId);
+
+            }else if(districtsId != null){
+
+            }else if(dongId != null){
+                shops = shopRepository.findAllNotDeletedByDongId(pageable,dongId);
+            }else {
                 shops = shopRepository.findAllNotDeleted(pageable);
-            } else {
-                shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
             }
         }else {
-            if (dongId == null) {
-                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
-            } else {
+            if (cityId != null ) {
+                shops = shopRepository.findAllNotDeletedByCityIdAndKeyword(pageable, cityId, keyword);
+            } else if(districtsId != null) {
+                shops = shopRepository.findAllNotDeletedByDistrictsIdAndKeyword(pageable, districtsId, keyword);
+            } else if(dongId != null){
                 shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId,keyword);
+            }else {
+                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
+            }
+        }*/
+
+
+        if(keyword == null || keyword.trim()
+                                     .isEmpty()) {
+            if(cityId != null){
+                shops = shopRepository.findAllNotDeletedByCityId(pageable,cityId);
+                if(districtsId != null){
+                    shops = shopRepository.findAllNotDeletedByDistrictsId(pageable,districtsId);
+                    if(dongId !=null){
+                        shops = shopRepository.findAllNotDeletedByDongId(pageable,dongId);
+                    }
+                }
+
+            }else {
+                shops = shopRepository.findAllNotDeleted(pageable);
+            }
+        }else {
+            if (cityId != null ) {
+                shops = shopRepository.findAllNotDeletedByCityIdAndKeyword(pageable, cityId, keyword);
+                if(districtsId != null){
+                    shops = shopRepository.findAllNotDeletedByDistrictsIdAndKeyword(pageable, districtsId, keyword);
+                    if(dongId !=null){
+                        shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId,keyword);
+                    }
+                }
+            }else {
+                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
             }
         }
+
         if (shops.isEmpty()) {
             throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
         }

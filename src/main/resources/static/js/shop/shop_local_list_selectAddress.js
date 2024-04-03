@@ -2,16 +2,16 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('cityId').addEventListener('change', function () {
         var cityId = this.value;
         var districts = document.getElementById('districtsId').options;
-
+        document.getElementById('districtsId').value = '';
         for (var i = 0; i < districts.length; i++) {
-            if (districts[i].getAttribute('data-city-id') == cityId) {
+            if (districts[i].getAttribute('data-city-id') === cityId) {
                 districts[i].style.display = 'block';
             } else {
                 districts[i].style.display = 'none';
             }
         }
         // 초기화
-        document.getElementById('districtsId').value = '';
+
         document.getElementById('dongId').value = '';
         var dongs = document.getElementById('dongId').options;
         for (var i = 0; i < dongs.length; i++) {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var districtsId = this.value;
         var dongs = document.getElementById('dongId').options;
         for (var i = 0; i < dongs.length; i++) {
-            if (dongs[i].getAttribute('data-districts-id') == districtsId) {
+            if (dongs[i].getAttribute('data-districts-id') === districtsId) {
                 dongs[i].style.display = 'block';
             } else {
                 dongs[i].style.display = 'none';
