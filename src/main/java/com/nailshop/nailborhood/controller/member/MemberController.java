@@ -25,12 +25,12 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 public class MemberController {
     private final MemberService memberService;
 
-
-    @Hidden
-    @GetMapping("/")
-    public ResponseEntity<?> logoutTest() {
-        return ResponseEntity.status(200).body("로그아웃 완료");
-    }
+//
+//    @Hidden
+//    @GetMapping("/")
+//    public ResponseEntity<?> logoutTest() {
+//        return ResponseEntity.status(200).body("로그아웃 완료");
+//    }
 
     // 로그인 페이지
     @PreAuthorize("isAnonymous()")
