@@ -25,7 +25,7 @@ function checkEmailDuplicated() {
         dataType:"text",
         data : {"email" : emailInput},
         success : function (exist) {
-            if(exist) {
+            if(exist === 'true') {
                 $("#email-unavailable-message").attr('style','display:inline')
                 $("#email-available-message").attr('style','display:none')
             } else {

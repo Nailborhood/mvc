@@ -217,8 +217,7 @@ public class MemberService {
 
     // 내 정보 업데이트 (마이페이지로 이동 필요)
     @Transactional
-    public CommonResponseDto<Object> updateMyInfo(String accessToken, ModMemberInfoRequestDto modInfoDto) {
-        Long id = tokenProvider.getUserId(accessToken);
+    public CommonResponseDto<Object> updateMyInfo(Long id, ModMemberInfoRequestDto modInfoDto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MYINFO_FAIL.getDescription()));
 
