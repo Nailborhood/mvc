@@ -8,46 +8,53 @@
     <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}" />
     <link rel="stylesheet" th:href="@{/css/owner/review_manage_style.css}">
     <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/review/review_list_star.js}"></script>
 
 </head>
-<div layout:fragment="content" style="flex-direction: row" class="owner-content">
-    <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
-    <div class="content">
-        <span class="owner-title-span">매장 리뷰 관리</span>
-        <div class="owner-content-div">
-            <form th:action="@{/owner/review/{shopId}(shopId=${shopId})}" method="get">
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
-                    <button type="submit" class="search-button">
-                        <img src="/assets/icons/shop/search.svg" alt="Search">
-                    </button>
-                </div>
-            </form>
-            <!--                    TODO: 없는 리뷰 오류 잡기-->
-            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
-            <div class="review-list_div" th:each="review : ${reviewList.shopReviewLookupResponseDto}" th:unless="${errorCode}">
-                <div class="review-item">
-                    <a class="review-info" th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" style="text-decoration: none; color: inherit">
-                        <div class="review-info_img">
-                            <img th:src="@{${review.reviewImgPath}}">
-                        </div>
-                        <div class="review-info_text">
-                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
-                            <div class="review-info_nickname" th:text="${review.nickName}"></div>
-                            <div class="review-info_under">
-                                <div class="review-info_rate">⭐️</div>
-                                <div class="review-info_rate" th:text="${review.rate}"></div>
+<body>
+    <div layout:fragment="content" style="flex-direction: row" class="owner-content">
+        <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+        <div class="content">
+            <span class="owner-title-span">매장 리뷰 관리</span>
+
+            <div th:if="${error}" class="empty-review-message">
+                등록된 리뷰가 없습니다.
+            </div>
+
+            <div class="owner-content-div" th:unless="${error}">
+                <form th:action="@{/owner/review/{shopId}(shopId=${shopId})}" method="get">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                        <button type="submit" class="search-button">
+                            <img src="/assets/icons/shop/search.svg" alt="Search">
+                        </button>
+                    </div>
+                </form>
+
+                <div class="review-list_div" th:each="review : ${reviewList.shopReviewLookupResponseDto}">
+                    <div class="review-item">
+                        <a class="review-info" th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" style="text-decoration: none; color: inherit">
+                            <div class="review-info_img">
+                                <img th:src="@{${review.reviewImgPath}}">
                             </div>
-                            <div class="review-info_content" th:text="${review.contents}"></div>
+                            <div class="review-info_text">
+                                <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                                <div class="review-info_nickname" th:text="${review.nickName}"></div>
+                                <div class="review-info_under">
+                                    <span class="stars"></span>&nbsp;
+                                    <span class="rating-number" th:text="${review.rate}">5</span>
+                                </div>
+                                <div class="review-info_content" th:text="${review.contents}"></div>
+                            </div>
+                        </a>
+                        <div class="review-btn">
+                            <button type="button" class="delete-button" th:data-id="${review.reviewId}" th:data-shop-id="${review.shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
+                            <a th:href="@{/review/report/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="report-button" style="text-decoration: none">리뷰 신고</a>
                         </div>
-                    </a>
-                    <div class="review-btn">
-                        <button type="button" class="delete-button" th:data-id="${review.reviewId}" th:data-shop-id="${review.shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
-                        <a th:href="@{/review/report/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="report-button" style="text-decoration: none">리뷰 신고</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
 </html>

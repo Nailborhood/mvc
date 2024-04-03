@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.owner;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -17,6 +18,7 @@ import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -39,27 +41,35 @@ public class OwnerController {
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
-    @GetMapping("/owner/review/{shopId}")
+    @GetMapping("/owner/review")
     public String getShopReviewList(Model model,
-                                    @PathVariable Long shopId,
+                                    @AuthenticationPrincipal MemberDetails memberDetails,
                                     @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
 
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
-        try {
-            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
-            model.addAttribute("reviewList", shopReview.getData());
 
-            return "owner/review_manage";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        Member member = memberDetails.getMember();
+        boolean error = false;
+
+        try {
+            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, member);
+
+            model.addAttribute("reviewList", shopReview.getData());
+            model.addAttribute("error", error);
 
         } catch (NotFoundException e) {
 
-            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
-
-            return "owner/review_manage";
+            error = true;
+            model.addAttribute("error", error);
         }
+
+        return "owner/review_manage";
 
     }
 
