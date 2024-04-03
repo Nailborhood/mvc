@@ -7,8 +7,9 @@
     <meta charset="UTF-8">
     <title>매장 지역 검색</title>
     <!--    <script th:src="@{/js/get_layouts.js}"></script>-->
-    <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>
-    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>
+<!--   <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>-->
+<!--    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>-->
+    <script th:src="@{/js/shop/shop_local_list_searchAll.js}"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_local_list_style.css}">
 </head>
@@ -71,6 +72,7 @@
 
             <!--검색 시 해당 매장 없을 때 오류 반환-->
             <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+
             <div class="all-shop-list" th:unless="${errorCode}">
                 <div class="shop-list_div" th:if="${resultDto != null }">
                     <div class="shop-info" th:each="shop : ${resultDto.getData().getShopLookupResponseDtoList()}">
