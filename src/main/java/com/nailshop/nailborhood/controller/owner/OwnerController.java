@@ -5,12 +5,10 @@ import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
-import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
@@ -20,10 +18,9 @@ import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ShopStatus;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,44 +42,51 @@ public class OwnerController {
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
-    @GetMapping("/owner/review/{shopId}")
+    @GetMapping("/owner/review")
     public String getShopReviewList(Model model,
-                                    @PathVariable Long shopId,
+                                    @AuthenticationPrincipal MemberDetails memberDetails,
                                     @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
 
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        Member member = memberDetails.getMember();
+        boolean error = false;
+
         try {
-            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
-            model.addAttribute("reviewList", shopReview.getData());
+            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, member);
 
-            return "owner/review_manage";
+            model.addAttribute("reviewList", shopReview.getData());
+            model.addAttribute("error", error);
 
         } catch (NotFoundException e) {
 
-            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_FOUND);
-
-            return "owner/review_manage";
+            error = true;
+            model.addAttribute("error", error);
         }
+
+        return "owner/review_manage";
 
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 관리", description = "owner API")
+    // 아트 관리
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/manage")
-    public String inquiryAllArtRef(/*@RequestHeader(AUTH) String accessToken,*/
-            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-            @RequestParam(value = "size", defaultValue = "5", required = false) int size,
-            @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
-            @RequestParam(value = "category", defaultValue = "", required = false) String category,
-            Model model) {
+    public String inquiryAllArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
+                                   @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                   @RequestParam(value = "size", defaultValue = "5", required = false) int size,
+                                   @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                   Model model) {
 
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(/*accessToken, */page, size, sortBy, category);
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(memberDetails, page, size, sortBy, category);
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 

@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.service.review;
 
 import com.nailshop.nailborhood.domain.member.Customer;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
@@ -119,9 +120,8 @@ public class ReviewInquiryService {
             reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
         }
 
-        if (reviewPage.isEmpty()) {
-            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
-        }
+        if (reviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+
 
 //        if(categoryIdList == null || categoryIdList.isEmpty()){
 //            // 카테고리 x

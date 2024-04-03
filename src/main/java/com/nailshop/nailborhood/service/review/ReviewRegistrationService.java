@@ -6,7 +6,6 @@ import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
@@ -16,6 +15,7 @@ import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
@@ -45,12 +45,10 @@ public class ReviewRegistrationService {
 
     @Transactional
     // 리뷰 등록
-    public CommonResponseDto<Object> registerReview(Long shopId, /*String accessToken, */List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerReview(Long shopId, MemberDetails memberDetails, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
 
         // token 에서 memberId 가져오기
-//        Long memberId = tokenProvider.getUserId(accessToken);
-//        Customer customer = customerRepository.findByMemberId(memberId);
-        Long memberId = 1L;
+        Long memberId = memberDetails.getMember().getMemberId();
         Customer customer = customerRepository.findByMemberId(memberId);
 
         // 매장 존재 여부
