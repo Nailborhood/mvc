@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.service.review;
 
 import com.nailshop.nailborhood.domain.member.Customer;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;

@@ -68,7 +68,6 @@ public class OwnerController {
             model.addAttribute("reviewList", shopReview.getData());
             model.addAttribute("error", error);
 
-
         } catch (NotFoundException e) {
 
             error = true;
