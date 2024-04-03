@@ -33,12 +33,14 @@ public class MemberController {
     }
 
     // 로그인 페이지
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String loginPage() {
         return "member/login_form";
     }
 
     // 회원가입 페이지
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/signup")
     public String signupPage() {
         return "member/signup_form";

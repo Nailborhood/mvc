@@ -11,8 +11,12 @@
             <span sec:authorize="isAuthenticated()">
                 <a sec:authorize="hasRole('ROLE_USER')" th:href="@{#}">
                     <span th:text="${memberNickname}">닉네임 자리</span>님
-                    <input type="hidden" sec:authentication property="principal"/>
-<!--                    <span th:text="${principal}">유저네임</span>-->
+                </a>
+                <a sec:authorize="hasRole('ROLE_OWNER')" th:href="@{#}">
+                    <span th:text="${memberNickname}">닉네임 자리</span>님
+                </a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{#}">
+                    <span>관리자 계정</span>
                 </a>
             </span>
             <a sec:authorize="isAnonymous()" th:href="@{/login}">
@@ -31,11 +35,29 @@
                 <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
             </div>
             <div id="profile-mypage-div">
-                <ul>
-                    <li><a th:href="@{/mypage/myInfo}">내 정보 수정</a></li>
-                    <li><a href="#">비밀번호 수정</a></li>
+                <ul sec:authorize="hasRole('ROLE_USER')">
+                    <li><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
+                    <li><a th:href="@{/mypage/password}">비밀번호 수정</a></li>
                     <li><a th:href="@{/mypage/review/inquiry}">내가 작성한 리뷰</a></li>
                     <li><a th:href="@{/mypage/shop/favorite/inquiry}">관심 매장</a></li>
+                    <li><a th:href="@{/mypage/logout}">로그아웃</a></li>
+                </ul>
+                <ul sec:authorize="hasRole('ROLE_ADMIN')">
+                    <li><a th:href="@{/admin/search/member}">회원 목록</a></li>
+                    <li><a th:href="@{/admin/search/shop}">매장 목록</a></li>
+                    <li><a th:href="@{/admin/search/review}">전체 리뷰</a></li>
+                    <li><a th:href="@{/admin/search/review/report}">신고된 리뷰</a></li>
+                    <li><a th:href="@{/admin/search/review/report/status}">신고 처리 상태</a></li>
+                    <li><a th:href="@{/admin/search/shop/request}">매장 신청 목록</a></li>
+                    <li><a th:href="@{/admin/search/chat}">채팅 목록</a></li>
+                    <li><a href="#">로그아웃</a></li>
+                </ul>
+                <ul sec:authorize="hasRole('ROLE_OWNER')">
+                    <li><a th:href="@{/owner/shop/update}">매장 정보 수정</a></li>
+                    <li><a href="#">매장 리뷰 관리</a></li>
+                    <li><a th:href="@{/owner/artboard/manage}">매장 아트 관리</a></li>
+                    <li><a th:href="@{/owner/artboard/register}">아트 등록</a></li>
+                    <li><a href="#">1:1 문의</a></li>
                     <li><a href="#">로그아웃</a></li>
                 </ul>
             </div>
