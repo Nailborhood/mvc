@@ -38,8 +38,24 @@ public class ShopController {
     private final ShopRegistrationService shopRegistrationService;
 
 
-    // 전체 매장 조회 (main)
-    @GetMapping(value = "/home")
+    // main
+/*    @GetMapping(value = "/home")
+    public String getAllShops(*//*@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                      @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                      @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
+                                                                      @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*//*
+                                Model model) {
+
+        CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getHome();
+        ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
+        resultDto.setData((ShopListResponseDto) allShopsList.getData());
+
+        //TODO: main view 만들기
+        return null;
+    }*/
+
+    // 전체 매장 조회
+    @GetMapping(value = "/shopList")
     public ResponseEntity<ResultDto<ShopListResponseDto>> getAllShops(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
@@ -51,7 +67,6 @@ public class ShopController {
         return ResponseEntity.status(allShopsList.getHttpStatus())
                              .body(resultDto);
     }
-
 
     // 내 주변 매장 전체 조회
     @GetMapping(value = "/shop/list")
@@ -66,7 +81,7 @@ public class ShopController {
                                        Model model) {
 //        dongId = 1L;
         try {
-            CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId,cityId);
+            CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId, cityId);
             ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
             resultDto.setData((ShopListResponseDto) allShopsList.getData());
 
@@ -77,13 +92,13 @@ public class ShopController {
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
             return "shop/shop_local_list";
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
             List<Map<String, String>> criteriaOptions = shopListLookupLocalService.createCriteriaOptions();
 
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
-            model.addAttribute("errorCode",ErrorCode.SHOP_NOT_FOUND);
+            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
             return "shop/shop_local_list";
         }
 
