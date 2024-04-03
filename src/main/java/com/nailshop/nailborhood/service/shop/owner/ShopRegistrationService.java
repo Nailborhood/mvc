@@ -21,11 +21,9 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.address.CityRepository;
 import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.address.DongRepository;
-import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.*;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -38,7 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,25 +50,21 @@ public class ShopRegistrationService {
     private final CertificateImgRepository certificateImgRepository;
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
-    private final TokenProvider tokenProvider;
     private final CityRepository cityRepository;
     private final DistrictsRepository districtsRepository;
 
 
-    //TODO: accessToken or session 연결 필요
     // 매장 등록
-    public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList, List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerShop(Member member, List<MultipartFile> multipartFileList, List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
-        // member get
-/*        Member member = memberRepository.findById(tokenProvider.getUserId(accessToken))
-                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));*/
 
-        Long memberId = 2L;
-        Member member = memberRepository.findById(memberId)
+
+        Long memberId = member.getMemberId();
+        memberRepository.findById(memberId)
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 이미 owner ( 신청을 이미 한 사람 ) 은 더이상 매장 신청 할 수 없게 처리
-        Owner existingOwner = ownerRepository.findByMemberId(member.getMemberId());
+        Owner existingOwner = ownerRepository.findByMemberId(memberId);
 
         if (existingOwner != null) {
             throw new NotFoundException(ErrorCode.OWNER_ALREADY_EXIST);
@@ -228,7 +221,7 @@ public class ShopRegistrationService {
 
         for (Dong dong : dongList) {
             dongDtoList.add(DongDto.builder()
-                                   .DongName(dong.getName())
+                                   .dongName(dong.getName())
                                    .dongId(dong.getDongId())
                                    .districtsId(dong.getDistricts()
                                                     .getDistrictsId())
@@ -257,22 +250,22 @@ public class ShopRegistrationService {
         shopRegistrationRequestDto.setStoreAddressSeparationDto(storeAddressSeparationDto);
     }
 
-    // TODO: Session 연결된 후 고민
-/*    public boolean checkExistingOwner() {
 
-        Long memberId = 2L;
-        Member member = memberRepository.findById(memberId)
+   public boolean checkExistingOwner(Member member) {
+
+        Member memberInfo = memberRepository.findById(member.getMemberId())
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 이미 owner ( 신청을 이미 한 사람 ) 은 더이상 매장 신청 할 수 없게 처리
-        Owner existingOwner = ownerRepository.findByMemberId(member.getMemberId());
+        Owner existingOwner = ownerRepository.findByMemberId(memberInfo.getMemberId());
 
 
         if (existingOwner != null) {
             // 이미 신청한 상황
             return false;
         } else {
+            // 매장 신청이 없는 상황
             return true;
         }
-    }*/
+    }
 }

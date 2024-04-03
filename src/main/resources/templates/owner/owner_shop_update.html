@@ -23,7 +23,7 @@
             <p th:text="${errorCode.description}"></p>
         </div>
         <div th:unless="${errorCode}">
-            <form id="updateForm" th:action="@{'/owner/shop/update/'+${shopDto.getData().getShopDetailLookupResponseDto().shopId}}" method="post"
+            <form id="updateForm" th:action="@{/owner/shop/update}" method="post"
                   enctype="multipart/form-data">
                 <div class="content-div">
                     <div class="request-description-section">
