@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DongDto {
-    String DongName;
+    String dongName;
     Long dongId;
     Long districtsId;
 }

@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.security.config.auth;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nailshop.nailborhood.domain.member.Member;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,4 +59,8 @@ public class MemberDetails implements UserDetails {
     }
 
     public String getNickname() { return member.getNickname(); }
+
+
+
+
 }

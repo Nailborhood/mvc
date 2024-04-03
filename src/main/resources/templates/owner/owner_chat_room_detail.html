@@ -76,9 +76,9 @@
 
                         <!-- 채팅 메시지 입력 영역 -->
                         <div class="inputArea" th:unless="${shopErrorCode}">
-                            <!--  TODO:  session 연결되면 없어질것-->
-                            <input type="text" id="writer" placeholder="작성자">
-                            <input type="text" id="message" placeholder="메시지를 입력하세요...">
+
+                            <input type="hidden" id="writer" th:value="${memberNickname}"/>
+                            <input type="text" id="message" placeholder="메시지를 입력하세요..."/>
                             <button type="submit" >전송</button>
                         </div>
 
