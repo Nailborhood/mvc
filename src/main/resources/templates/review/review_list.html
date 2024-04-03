@@ -18,7 +18,9 @@
 </head>
 
 <body>
+
     <div layout:fragment="content">
+
         <div class="search-bar">
             <form id="searchForm" class="searchForm" th:action="@{/review/inquiry}" method="get">
                 <div class="search-container">
@@ -40,9 +42,10 @@
             </form>
 <!--            <div th:replace="fragments/components/search/check_category.html"></div>-->
         </div>
-        <!--검색 시 해당 매장 없을 때 오류 반환-->
-        <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
-        <div class="review-list" th:unless="${errorCode}">
+        <div th:if="${error}" class="empty-review-message">
+            등록된 리뷰가 없습니다.
+        </div>
+        <div class="review-list" th:unless="${error}">
             <div th:each="review, iterStat : ${result.getData().reviewResponseDtoList}" class="review-list-block" th:if="${iterStat.count <= 20}">
                 <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
                     <div class="review-img">
@@ -54,7 +57,7 @@
                 </a>
             </div>
         </div>
-        <div class="pagination">
+        <div class="pagination" th:unless="${error}">
             <div class="pagination-div">
                 <ul class="pagination-ul">
                     <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
