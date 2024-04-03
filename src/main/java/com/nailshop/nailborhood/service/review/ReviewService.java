@@ -20,11 +20,13 @@ import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -53,11 +55,10 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public CommonResponseDto<Object> reviewUpdate(Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+    public CommonResponseDto<Object> reviewUpdate(MemberDetails memberDetails, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
 
-//        Long memberId = tokenProvider.getUserId(accessToken);
-        Long memberId = 2L;
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Member member = memberDetails.getMember();
+        memberRepository.findByMemberIdAndIsDeleted(member.getMemberId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -108,11 +109,10 @@ public class ReviewService {
 
     // 리뷰 신고
     @Transactional
-    public CommonResponseDto<Object> reviewReport(/*String accessToken, */Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
+    public CommonResponseDto<Object> reviewReport(Member member, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
 
-//        Long memberId = tokenProvider.getUserId(accessToken);
-        Long memberId = 2L;
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Long memberId = member.getMemberId();
+        memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -144,11 +144,10 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public CommonResponseDto<Object> reviewDelete(/*String accessToken, */Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewDelete(Member member, Long reviewId, Long shopId) {
 
-//        Long memberId = tokenProvider.getUserId(accessToken);
-        Long memberId = 2L;
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Long memberId = member.getMemberId();
+        memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -160,8 +159,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
-        Long loginId = member.getMemberId();
-        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+        if (!review.getCustomer().getCustomerId().equals(memberId)) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 

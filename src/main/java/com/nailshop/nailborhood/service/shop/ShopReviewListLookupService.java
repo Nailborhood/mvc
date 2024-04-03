@@ -51,9 +51,7 @@ public class ShopReviewListLookupService {
         Page<Review> reviews = reviewRepository.findAllNotDeletedByShopId(pageable, shopId);
 
 
-        if (reviews.isEmpty()) {
-            return commonService.errorResponse(ErrorCode.REVIEW_NOT_REGISTRATION.getDescription(), HttpStatus.OK, null);
-        }
+        if (reviews.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_REGISTRATION);
 
         // review entity -> dto 변환
         Page<ShopAndReviewLookUpResponseDto> data = reviews.map(review -> {

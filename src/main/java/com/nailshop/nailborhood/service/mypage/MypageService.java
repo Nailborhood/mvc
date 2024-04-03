@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.dto.mypage.FavoriteShopDetailDto;
 import com.nailshop.nailborhood.dto.mypage.MyFavoriteListResponseDto;
 import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.FavoriteRepository;
@@ -17,6 +18,7 @@ import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,12 +41,15 @@ public class MypageService {
     private final MemberRepository memberRepository;
 
     // 내가 쓴 리뷰 조회 (마이페이지)
-    public CommonResponseDto<Object> myReview(Long memberId, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> myReview(Member member, int page, int size, String sortBy) {
 
 //        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
 //                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-//        Long memberId = tokenProvider.getUserId(accessToken);
-//        Long memberId = 2L;
+
+        if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
+        Long memberId = member.getMemberId();
+
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
 
@@ -95,10 +100,10 @@ public class MypageService {
     }
 
     // 찜한 매장 조회
-    public CommonResponseDto<Object> myFavorite(Long memberId,int page, int size) {
+    public CommonResponseDto<Object> myFavorite(Member member,int page, int size) {
 
-//        Long memberId = tokenProvider.getUserId(accessToken);
-//        Long memberId = 2L;
+        if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        Long memberId = member.getMemberId();
         PageRequest pageable = PageRequest.of(page - 1, size);
 
         Page<Shop> myFavoritePage = favoriteRepository.findFavoriteListByMemberId(memberId, pageable);

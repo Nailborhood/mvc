@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
@@ -42,7 +43,7 @@ public class OwnerService {
 
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                          .getOwnerId())
-                                     .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                                     .orElseThrow(() -> new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS));
 
         Long shopId = owner.getShop().getShopId();
 

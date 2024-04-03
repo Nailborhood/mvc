@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.mypage;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.MemberInfoDto;
@@ -53,10 +54,13 @@ public class MyPageController {
                            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                            @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
 
-        Long memberId = memberDetails.getMember().getMemberId();
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        Member member = memberDetails.getMember();
+
         boolean error = false;
         try {
-            CommonResponseDto<Object> myReview = mypageService.myReview(memberId, page, size, sortBy);
+            CommonResponseDto<Object> myReview = mypageService.myReview(member, page, size, sortBy);
             ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
@@ -78,13 +82,15 @@ public class MyPageController {
                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                              @RequestParam(value = "size", defaultValue = "10", required = false) int size){
 
-        Long memberId = memberDetails.getMember().getMemberId();
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        Member member = memberDetails.getMember();
         boolean error = false;
         try {
-            CommonResponseDto<Object> myFavorite = mypageService.myFavorite(memberId, page, size);
+            CommonResponseDto<Object> myFavorite = mypageService.myFavorite(member, page, size);
             ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
             resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 
+            model.addAttribute("memberNickname", nicknameSpace);
             model.addAttribute("result", resultDto);
         }catch (Exception e){
 
