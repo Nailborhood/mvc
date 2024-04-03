@@ -50,8 +50,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "FROM Review r " +
             "LEFT JOIN r.customer c " +
             "LEFT JOIN c.member m " +
-            "WHERE m.memberId = :memberId AND r.isDeleted = false ")
-    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+            "LEFT JOIN r.reviewReportList rr " +
+            "WHERE m.memberId = :memberId AND r.isDeleted = false OR (r.isDeleted = true AND rr.status = :status)")
+    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable, @Param("status") String status);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +
