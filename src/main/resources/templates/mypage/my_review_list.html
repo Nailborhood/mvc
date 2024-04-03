@@ -7,15 +7,19 @@
     <title>내가 쓴 리뷰</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
     <link rel="stylesheet" th:href="@{/css/mypage/my_review_list_style.css}" />
-    <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/review/review_list_star.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
+    <script th:src="@{/js/review/review_delete.js}"></script>
 </head>
 
 <div layout:fragment="content" style="flex-direction: row" class="mypage-content">
     <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
     <div class="content">
         <span class="mypage-title-span">내가 작성한 리뷰</span>
-        <div class="mypage-content_div">
+        <div th:if="${error}" class="empty-review-message">
+            작성한 리뷰가 없습니다.
+        </div>
+        <div class="mypage-content_div" th:unless="${error}">
             <div th:each="review : ${result.getData().reviewResponseDtoList}" class="review-list_div">
                 <div class="review-item">
                     <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-info" style="text-decoration: none; color: inherit">

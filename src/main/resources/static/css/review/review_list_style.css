@@ -1,3 +1,10 @@
+.empty-review-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .search-container {
     display: flex;
     justify-content: flex-end;
