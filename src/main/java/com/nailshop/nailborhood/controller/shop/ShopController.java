@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -82,10 +84,22 @@ public class ShopController {
     // 매장 상세 조회
     @GetMapping("/shopDetail/{shopId}")
     public String getShopDetail(Model model,
+                                @AuthenticationPrincipal MemberDetails memberDetails,
                                 @PathVariable Long shopId) {
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
 
-        model.addAttribute("shopDetail", shopDetail.getData());
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        boolean error = false;
+
+        try {
+            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+
+            model.addAttribute("shopDetail", shopDetail.getData());
+            model.addAttribute("error", error);
+        }catch (Exception e){
+            error = true;
+            model.addAttribute("error", error);
+        }
 
         return "shop/shop_detail";
     }
@@ -94,11 +108,16 @@ public class ShopController {
     //매장 리뷰 조회
     @GetMapping("/review/{shopId}")
     public String getShopReviewList(Model model,
+                                    @AuthenticationPrincipal MemberDetails memberDetails,
                                     @PathVariable Long shopId,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        boolean error = false;
 
         try {
             CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page,size,criteria,sort,shopId);
@@ -106,20 +125,19 @@ public class ShopController {
 //        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
 
             model.addAttribute("shopReview", shopReview.getData());
+            model.addAttribute("error", error);
 
-            return "shop/shop_review_list";
         } catch (NotFoundException e) {
-            model.addAttribute("errorCode", ErrorCode.REVIEW_NOT_REGISTRATION);
-
-            return "shop/shop_review_list";
+            error = true;
+            model.addAttribute("error", error);
         }
 
+        return "shop/shop_review_list";
     }
 
 
-    @Tag(name = "ShopArtBoard", description = "Shop API")
-    @Operation(summary = "매장 아트판 조회", description = "Shop API")
-    // 매장 상세 조회
+
+    // 매장 아트 조회
     @GetMapping("/art/{shopId}")
     public String getShopArtList(Model model,
                                  @PathVariable Long shopId,

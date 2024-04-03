@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.mypage;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.MemberInfoDto;
@@ -48,15 +49,27 @@ public class MyPageController {
     // 내가 쓴 리뷰
     @GetMapping("/review/inquiry")
     public String myReview(Model model,
-//                                                                       @RequestHeader(AUTH) String accessToken,
-                                                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                       @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> myReview = mypageService.myReview(page, size, sortBy);
-        ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
-        resultDto.setData((MyReviewListResponseDto) myReview.getData());
+                           @AuthenticationPrincipal MemberDetails memberDetails,
+                           @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                           @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                           @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
 
-        model.addAttribute("result", resultDto);
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        Member member = memberDetails.getMember();
+
+        boolean error = false;
+        try {
+            CommonResponseDto<Object> myReview = mypageService.myReview(member, page, size, sortBy);
+            ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
+            resultDto.setData((MyReviewListResponseDto) myReview.getData());
+
+            model.addAttribute("result", resultDto);
+        }catch (Exception e){
+
+            error = true;
+            model.addAttribute("error", error);
+        }
 
         return "mypage/my_review_list";
 
@@ -65,14 +78,26 @@ public class MyPageController {
     // 찜한 매장 조회
     @GetMapping("/shop/favorite/inquiry")
     public String myFavorite(Model model,
-//                             @RequestHeader(AUTH) String accessToken,
-                                                                           @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size){
-        CommonResponseDto<Object> myFavorite = mypageService.myFavorite( page, size);
-        ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
-        resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
+                             @AuthenticationPrincipal MemberDetails memberDetails,
+                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                             @RequestParam(value = "size", defaultValue = "10", required = false) int size){
 
-        model.addAttribute("result", resultDto);
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        Member member = memberDetails.getMember();
+        boolean error = false;
+        try {
+            CommonResponseDto<Object> myFavorite = mypageService.myFavorite(member, page, size);
+            ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
+            resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
+
+            model.addAttribute("memberNickname", nicknameSpace);
+            model.addAttribute("result", resultDto);
+        }catch (Exception e){
+
+            error = true;
+            model.addAttribute("error", error);
+        }
+
 
         return "mypage/my_fav_shop_list";
 

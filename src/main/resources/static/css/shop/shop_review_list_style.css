@@ -5,6 +5,13 @@
     align-items: center;
 }
 
+.empty-review-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .shop-info {
     width: 600px;
     height: 140px;

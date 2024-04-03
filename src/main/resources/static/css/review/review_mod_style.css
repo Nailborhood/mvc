@@ -66,12 +66,6 @@
     margin-right: 0;
 }
 
-/*.image-upload-box img {*/
-/*    width: 100%; !* 이미지 너비를 부모 요소에 맞춤 *!*/
-/*    height: auto; !* 이미지 높이를 비율에 맞게 조절 *!*/
-/*    border-radius: 5px; !* 이미지에도 둥근 모서리를 적용하고 싶다면 추가 *!*/
-/*}*/
-
 .hidden-text{
     display: none;
 }
@@ -91,7 +85,7 @@
     border-radius: 5px;
 }
 
-.submit-button, .upload-button {
+.submit-button, .upload-button, .delete-file-button {
     padding: 10px 20px;
     margin-left: auto;
     background-color: #1d438a;
@@ -119,7 +113,7 @@
         width: 100%;
     }
 
-    .upload-button, .submit-button {
+    .upload-button, .submit-button, .delete-file-button {
         margin: 10px 0;
     }
 }

@@ -1,20 +1,24 @@
 package com.nailshop.nailborhood.controller.review;
 
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.service.review.ReviewRegistrationService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,34 +35,37 @@ public class ReviewController {
     private final ReviewInquiryService reviewInquiryService;
     private final ReviewRegistrationService reviewRegistrationService;
     private final ShopDetailService shopDetailService;
+    private final CategoryRepository categoryRepository;
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "리뷰 등록", description = "user API")
+    // 리뷰 등록(GET)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_OWNER')")
     @GetMapping("/{shopId}/review/registration")
-    public String showRegisterReview(Model model,
-                                  @PathVariable Long shopId){
+    public String showRegisterReview(@AuthenticationPrincipal MemberDetails memberDetails,
+                                     Model model,
+                                     @PathVariable Long shopId){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("shopId", shopId);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("memberNickname", nicknameSpace);
 
         return "review/review_registration";
     }
 
-    // 리뷰 등록
-    @Tag(name = "review", description = "review API")
-    @Operation(summary = "리뷰 등록", description = "review API")
+    // 리뷰 등록(POST)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
     public String registerReview(@PathVariable Long shopId,
-                               /*@RequestHeader(AUTH) String accessToken,*/
-                               @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                               @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
-                               RedirectAttributes redirectAttributes) {
-
-        System.out.println(multipartFileList.getFirst());
-        System.out.println(reviewRegistrationRequestDto.getCategoryIdList());
-        System.out.println(reviewRegistrationRequestDto.getContents());
-        System.out.println(reviewRegistrationRequestDto.getRate());
+                                 @AuthenticationPrincipal MemberDetails memberDetails,
+                                 @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                                 @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
+                                 RedirectAttributes redirectAttributes) {
 
         try {
-            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, /*accessToken, */multipartFileList, reviewRegistrationRequestDto);
+            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -75,8 +80,7 @@ public class ReviewController {
 
     // 리뷰 수정
     @PostMapping(consumes = {"multipart/form-data"}, value = "/review/update/{reviewId}")
-    public String reviewUpdate(
-//                               @RequestHeader(AUTH) String accessToken,
+    public String reviewUpdate(@AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long reviewId,
                                @RequestParam(value = "shopId") Long shopId,
                                @RequestPart(value = "img") List<MultipartFile> multipartFileList,
@@ -84,7 +88,7 @@ public class ReviewController {
                                RedirectAttributes redirectAttributes){
 
         try {
-            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(reviewId, shopId, multipartFileList,reviewUpdateDto);
+            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(memberDetails, reviewId, shopId, multipartFileList,reviewUpdateDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -104,12 +108,13 @@ public class ReviewController {
 
     // 리뷰 수정 뷰
     @GetMapping("/review/update/{reviewId}")
-    public String getReviewUpdate(Model model,
+    public String getReviewUpdate(@AuthenticationPrincipal MemberDetails memberDetails,
+                                  Model model,
                                   @PathVariable Long reviewId,
-                                  @RequestParam(value = "shopId") Long shopId
-                                   /*,ReviewUpdateDto reviewUpdateDto
-                                  @RequestPart(value = "img") List<MultipartFile> multipartFileList,
-                                  @RequestPart(value = "data") ReviewUpdateDto reviewUpdateDto*/){
+                                  @RequestParam(value = "shopId") Long shopId){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
 
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
@@ -122,50 +127,31 @@ public class ReviewController {
 
     // 리뷰 신고
     @PostMapping("/review/report/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(/*@RequestHeader(AUTH) String accessToken,*/
+    public ResponseEntity<ResultDto<Void>> reviewReport(@AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestBody ReviewReportDto reviewReportDto){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(/*accessToken, */reviewId, shopId,reviewReportDto);
+
+        Member member = memberDetails.getMember();
+
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(member, reviewId, shopId,reviewReportDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
 
     }
 
-//    // 리뷰 신고
-//    @PostMapping("/review/report/{reviewId}")
-//    public String reviewReport(/*@RequestHeader(AUTH) String accessToken,*/
-//            @PathVariable Long reviewId,
-//            @RequestParam(value = "shopId") Long shopId,
-//            @ModelAttribute ReviewReportDto reviewReportDto,
-//            RedirectAttributes redirectAttributes){
-//        try {
-//            CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(/*accessToken, */reviewId, shopId,reviewReportDto);
-//            ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//
-//            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
-//
-//            redirectAttributes.addAttribute("reviewId", reviewId);
-//            redirectAttributes.addAttribute("shopId", shopId);
-//
-//            // TODO 리다이렉트 어쩌지
-//            return "redirect:owner/review_manage";
-//
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.REVIEW_REPORT_FAIL);
-//
-//            return "review/review_report";
-//        }
-//
-//    }
 
     // 리뷰 신고 뷰
     @GetMapping("/review/report/{reviewId}")
     public String reviewReportView (Model model,
-                                    /*@RequestHeader(AUTH) String accessToken,*/
+                                    @AuthenticationPrincipal MemberDetails memberDetails,
                                     @PathVariable Long reviewId,
                                     @RequestParam(value = "shopId") Long shopId){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
@@ -175,12 +161,16 @@ public class ReviewController {
         return "review/review_report";
     }
 
+
     // 리뷰 삭제
     @DeleteMapping("/mypage/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewDelete(/*@RequestHeader(AUTH) String accessToken,*/
+    public ResponseEntity<ResultDto<Void>> reviewDelete(@AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId){
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(/*accessToken, */ reviewId, shopId);
+
+        Member member = memberDetails.getMember();
+
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(member, reviewId, shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
