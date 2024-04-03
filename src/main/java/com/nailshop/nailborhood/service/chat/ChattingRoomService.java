@@ -3,8 +3,8 @@ package com.nailshop.nailborhood.service.chat;
 import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import com.nailshop.nailborhood.domain.chat.Message;
 import com.nailshop.nailborhood.domain.member.Admin;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.member.Owner;
-import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomDetailAndShopInfoDto;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomDetailDto;
@@ -13,12 +13,14 @@ import com.nailshop.nailborhood.dto.chat.response.MessageResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
+import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.chat.ChattingRoomRepository;
 import com.nailshop.nailborhood.repository.chat.MessageRepository;
 import com.nailshop.nailborhood.repository.member.AdminRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,13 +48,13 @@ public class ChattingRoomService {
     private final CommonService commonService;
 
     // 채탕방 개설
-    public ChattingRoom createChatRoom(Long ownerId) {
-        //TODO: ownerId -> session 으로 변경 필요
-        Shop shop = shopRepository.findAllShopListByOwnerId(ownerId);
+    public ChattingRoom createChatRoom(Member member) {
+
+        Shop shop = shopRepository.findAllShopListByOwnerId(member.getOwner().getOwnerId());
         String shopName = shop.getName();
 
         //owner 정보 가져오기
-        Owner owner = ownerRepository.findByOwnerId(ownerId)
+        Owner owner = ownerRepository.findByOwnerId(member.getOwner().getOwnerId())
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
 
@@ -59,6 +62,7 @@ public class ChattingRoomService {
         Long adminId = 1L;
         Admin admin = adminRepository.findById(adminId)
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+/*        Admin admin = (Admin) adminRepository.findAll();*/
         ChattingRoom chattingRoom = ChattingRoom.builder()
                                                 .roomName(shopName)
                                                 .admin(admin)
@@ -71,6 +75,7 @@ public class ChattingRoomService {
     // 채팅룸 id 에 해당되는 채팅룸 정보 조회
 
     public ChattingRoomDetailDto findChatRoomId(Long roomId) {
+
         ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId)
                                                           .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
@@ -85,16 +90,17 @@ public class ChattingRoomService {
     }
 
     // 채팅룸 전체 조회(관리자)
-    public List<ChattingRoomDetailAndShopInfoDto> getChatRoomList(Long adminId) {
+    public List<ChattingRoomDetailAndShopInfoDto> getChatRoomList(Long adminId, @AuthenticationPrincipal MemberDetails memberDetails) {
         List<ChattingRoom> chattingRoomList = chattingRoomRepository.findAllByAdminId(adminId);
 
+        Member member = memberDetails.getMember();
         List<ChattingRoomDetailAndShopInfoDto> chattingRoomDetailAndShopInfoDtoList = new ArrayList<>();
         for (ChattingRoom room : chattingRoomList) {
 
             // 채팅룸에 해당되는 매장 정보
             Shop shop = shopDetailService.findMyShopId(room.getOwner()
                                                            .getOwnerId());
-            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shop.getShopId());
+            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(member);
             MyShopDetailListResponseDto shopDetailData = (MyShopDetailListResponseDto) shopDetail.getData();
 
 
@@ -152,7 +158,7 @@ public class ChattingRoomService {
             // 채팅룸에 해당되는 매장 정보
             Shop shop = shopDetailService.findMyShopId(room.getOwner()
                                                            .getOwnerId());
-            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shop.getShopId());
+            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetailByAdmin(shop.getShopId());
             MyShopDetailListResponseDto shopDetailData = (MyShopDetailListResponseDto) shopDetail.getData();
 
 
@@ -196,5 +202,31 @@ public class ChattingRoomService {
                                                                                              .build();
 
         return commonService.successResponse(SuccessCode.SEARCH_BY_CHATROOM_SUCCESS.getDescription(), HttpStatus.OK, chattingRoomListResponseDto);
+    }
+
+    public void checkingChatRoom(Member member) {
+        Owner owner = ownerRepository.findByOwnerId(member.getOwner()
+                                                          .getOwnerId())
+                                     .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        ChattingRoom chattingRoom = chattingRoomRepository.findByOwnerId(owner.getOwnerId());
+        if(chattingRoom != null ){
+            throw new BadRequestException(ErrorCode.CHAT_ROOM_ALREADY_EXIST);
+        }
+    }
+
+    // member로 채팅 정보 조회
+
+    public ChattingRoomDetailDto getMyChatRoom(Member member) {
+        ChattingRoom chattingRoom = chattingRoomRepository.findByOwnerId(member.getOwner().getOwnerId());
+
+        return ChattingRoomDetailDto.builder()
+                                    .roomId(chattingRoom.getRoomId())
+                                    .roomName(chattingRoom.getRoomName())
+                                    .adminId(chattingRoom.getAdmin()
+                                                         .getAdminId())
+                                    .ownerId(chattingRoom.getOwner()
+                                                         .getOwnerId())
+                                    .build();
     }
 }

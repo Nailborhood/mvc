@@ -68,7 +68,8 @@ public enum ErrorCode {
     SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
 
     // 채팅
-    CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다");
+    CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다"),
+    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다");
 
     private final String description;
 }
