@@ -58,10 +58,10 @@ function updateArtList(artList) {
         });
     } else {
 
-        artListContainer.style.display = 'flex'; // 비어 있을 때도 flex 컨테이너로 만듭니다.
+        artListContainer.style.display = 'flex';
         artListContainer.style.justifyContent = 'center';
         artListContainer.style.alignItems = 'center';
-        artListContainer.style.height = '30vh'; // 컨테이너의 높이를 뷰포트의 100%로 설정
+        artListContainer.style.height = '30vh';
 
         var emptyMessageElement = document.createElement('div');
         emptyMessageElement.className = 'empty-art-message';
