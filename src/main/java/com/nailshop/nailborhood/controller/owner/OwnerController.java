@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.controller.owner;
 
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -10,6 +12,7 @@ import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
@@ -21,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +55,7 @@ public class OwnerController {
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
 
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
         try {
             CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(shopId, keyword, page, size, criteria, sort);
             model.addAttribute("reviewList", shopReview.getData());
@@ -98,33 +102,45 @@ public class OwnerController {
     }
 
 
-    // TODO: user 연결 필요
     // 매장 정보 수정
 
-    @GetMapping("/owner/shop/update/{shopId}")
+    @GetMapping("/owner/shop/update")
     public String updateShop(Model model,
-                             @PathVariable Long shopId) {
-        CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(shopId);
+                             @AuthenticationPrincipal MemberDetails memberDetails) {
+
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        Member member = memberDetails.getMember();
+        CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(member);
         ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
         resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
 
         StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
+
 
         model.addAttribute("shopDto", resultDto);
         model.addAttribute("addressDto", storeAddressSeparationListDtoList);
         return "owner/owner_shop_update";
     }
 
-    @PostMapping("/owner/shop/update/{shopId}")
+    @PostMapping("/owner/shop/update")
     public String updateShop(Model model,
-                             @PathVariable Long shopId,
                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                              @ModelAttribute ShopModifiactionRequestDto shopModifiactionRequestDto,
                              @ModelAttribute StoreAddressSeparationDto storeAddressSeparationDto,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             @AuthenticationPrincipal MemberDetails memberDetails) {
         try {
+
+            Member member = memberDetails.getMember();
+            Long shopId = member.getOwner()
+                                .getShop()
+                                .getShopId();
             shopModificationService.updateAddressInfo(shopModifiactionRequestDto, storeAddressSeparationDto);
-            CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(shopId, multipartFileList, shopModifiactionRequestDto);
+            CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(member, multipartFileList, shopModifiactionRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
             redirectAttributes.addAttribute("shopId", shopId);
@@ -139,9 +155,23 @@ public class OwnerController {
 
     }
 
+    // 내 매장 상세 조회
+    @GetMapping("/owner/shopDetail")
+    public String getShopDetail(Model model,
+                                @AuthenticationPrincipal MemberDetails memberDetails) {
+        Member member = memberDetails.getMember();
+        Long shopId = member.getOwner().getShop().getShopId();
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+
+        model.addAttribute("shopDetail", shopDetail.getData());
+
+        return "shop/shop_detail";
+    }
+
+
     // enum 타임리프로 리턴
     @ModelAttribute("shopStatus")
-    public ShopStatus[] shopStatuses(){
+    public ShopStatus[] shopStatuses() {
         return ShopStatus.values();
     }
 }

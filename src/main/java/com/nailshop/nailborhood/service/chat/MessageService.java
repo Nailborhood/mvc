@@ -2,8 +2,8 @@ package com.nailshop.nailborhood.service.chat;
 
 import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import com.nailshop.nailborhood.domain.chat.Message;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.chat.request.MessageRequestDto;
-import com.nailshop.nailborhood.dto.chat.response.MessageResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.chat.ChattingRoomRepository;
 import com.nailshop.nailborhood.repository.chat.MessageRepository;
@@ -24,21 +24,13 @@ public class MessageService {
     private final ChattingRoomRepository chattingRoomRepository;
 
     // 채팅 메세지 저장
-    public void saveMessage(Long roomId, MessageRequestDto messageRequestDto) {
-        //TODO: session 연결필요
-
-        // session 예시
-        // if (userSessionDto.getRole().equals("ADMIN")) {
-        //     // 관리자인 경우의 처리
-        // } else if (userSessionDto.getRole().equals("OWNER")) {
-        //     // 오너인 경우의 처리
-        // }
+    public void saveMessage(MessageRequestDto messageRequestDto) {
 
         ChattingRoom chattingRoom = chattingRoomRepository.findById(messageRequestDto.getRoomId())
                                                           .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
         Message message = Message.builder()
                                  .contents(messageRequestDto.getContents())
-                                 .writer(messageRequestDto.getWriter()) //TODO: session에서 role 로 구분해서 넣기
+                                 .writer(messageRequestDto.getWriter())
                                  .chattingRoom(chattingRoom)
                                  .build();
         messageRepository.save(message);
