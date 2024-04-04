@@ -8,6 +8,7 @@
     <title>관리자 페이지-채팅 목록</title>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_chat_list_style.css}">
 </head>
@@ -30,12 +31,14 @@
                 </form>
                 <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
                 <div class="all-chat-list" th:unless="${errorCode}">
-                    <div class="chat-list_div" th:if="${chatList != null }">
-                        <div class="chat-info" th:each="chat : ${chatList.chattingRoomDetailAndShopInfoDtoList}">
+                    <div class="chat-list_div" th:if="${resultDto != null }">
+                        <div class="chat-info" th:each="chat : ${resultDto.getData().getChattingRoomDetailAndShopInfoDtoList()}">
                             <a th:href="@{/admin/chatroom/{roomId}(roomId=${chat.roomId})}">
-                                <div th:if="${shopErrorCode}" class="error-code" th:text="${shopErrorCode.description}"></div>
+                                <div th:if="${shopErrorCode}" class="error-code"
+                                     th:text="${shopErrorCode.description}"></div>
                                 <div class="shop-info_img">
                                     <img th:src="@{${chat.getMyShopDetailListResponseDto().getShopImgListResponseDtoList().get(0).getImgPath()}}">
+
                                 </div>
                                 <div class="shop-info_text">
                                     <div class="shop-info_title_and_date">
@@ -59,6 +62,27 @@
                             </a>
                         </div>
 
+                    </div>
+                </div>
+                <div class="pagination" th:unless="${errorCode}">
+                    <div class="pagination-div">
+                        <ul class="pagination-ul">
+                            <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                            </li>
+                            <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                                class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}"
+                                   th:text="${pageNum}"></a>
+                            </li>
+                            <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                                class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} '&sortBy=' + ${sortBy}}">Next</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

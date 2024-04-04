@@ -6,7 +6,9 @@ import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
+import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.service.review.admin.ReviewReportStatusAdminService;
 import com.nailshop.nailborhood.service.search.AdminSearchService;
@@ -40,7 +42,9 @@ public class AdminSearchController {
                                       @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
         try {
             CommonResponseDto<Object> allReviewList = adminSearchService.searchReviewInquiry(keyword, page, size, sortBy);
-            model.addAttribute("reviewList", allReviewList.getData());
+            ResultDto<AdminReviewListResponseDto> resultDto = ResultDto.in(allReviewList.getStatus(), allReviewList.getMessage());
+            resultDto.setData((AdminReviewListResponseDto) allReviewList.getData());
+            model.addAttribute("resultDto" ,resultDto);
             return "admin/admin_review_list";
         } catch (NotFoundException e) {
             //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
@@ -51,25 +55,6 @@ public class AdminSearchController {
     }
 
 
-
-
-    // 아트판 검색
-
-    @Tag(name = "search", description = "search API")
-    @Operation(summary = "아트 검색", description = "search API")
-    @GetMapping("/admin/search/artRef")
-    public ResponseEntity<ResultDto<ArtListResponseDto>> searchArtRefInquiry(@RequestHeader(AUTH) String accessToken,
-                                                                             @RequestParam(value = "keyword") String keyword,
-                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                                                             @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchArtRefInquiry(accessToken, keyword, page, size, sortBy);
-        ResultDto<ArtListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        resultDto.setData((ArtListResponseDto) commonResponseDto.getData());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
-    }
 
     // 매장 검색
 
@@ -83,7 +68,9 @@ public class AdminSearchController {
 
         try {
             CommonResponseDto<Object> allShopList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);
-            model.addAttribute("shopList", allShopList.getData());
+            ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopList.getStatus(), allShopList.getMessage());
+            resultDto.setData((AllShopsListResponseDto) allShopList.getData());
+            model.addAttribute("resultDto" ,resultDto);
             return "admin/admin_shop_list";
         } catch (NotFoundException e) {
             //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민

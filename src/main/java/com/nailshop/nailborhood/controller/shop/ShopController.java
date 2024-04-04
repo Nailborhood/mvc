@@ -60,6 +60,7 @@ public class ShopController {
 
         }catch (NotFoundException e){
             model.addAttribute("errorCode",ErrorCode.SHOP_NOT_FOUND);
+            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
            return  "home/home";
         }
 

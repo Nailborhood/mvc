@@ -51,7 +51,7 @@ public class ReviewReportStatusAdminService {
 
 
     // 리뷰 신고 조회
-    public CommonResponseDto<Object> getReviewReports( String keyword, int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReports( String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
 //        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
@@ -59,7 +59,7 @@ public class ReviewReportStatusAdminService {
 //        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
                                                                .descending());
         Page<ReviewReport> reviewReportPage;
 
@@ -128,14 +128,14 @@ public class ReviewReportStatusAdminService {
 
 
     // 신고된 리뷰 처리된 상태 조회
-    public CommonResponseDto<Object> getReviewReportStatus(String keyword, int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReportStatus(String keyword, int page, int size, String sortBy) {
 
         // 관리자 확인
 //        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
 //                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 //        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
                                                                .descending());
         Page<ReviewReport> reviewReportPage;
 

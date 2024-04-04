@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.review.admin;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
@@ -39,13 +40,15 @@ public class ReviewReportController {
                                             @RequestParam(value = "keyword", required = false) String keyword,
                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                            @RequestParam(value = "sort", defaultValue = "date", required = false) String sort) {
+                                            @RequestParam(value = "sortBy", defaultValue = "date", required = false) String sortBy) {
         //TODO: auth 추가되면 변경
         //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
         try {
             Member member = memberDetails.getMember();
-            CommonResponseDto<Object> allReviewReportList = reviewReportStatusAdminService.getReviewReports(keyword, page, size, sort);
-            model.addAttribute("reviewReportList", allReviewReportList.getData());
+            CommonResponseDto<Object> allReviewReportList = reviewReportStatusAdminService.getReviewReports(keyword, page, size, sortBy);
+            ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(allReviewReportList.getStatus(), allReviewReportList.getMessage());
+            resultDto.setData((ReviewReportListLookupDto) allReviewReportList.getData());
+            model.addAttribute("resultDto" ,resultDto);
             return "admin/admin_reviewReport_list";
         } catch (NotFoundException e) {
             model.addAttribute("errorCode", ErrorCode.REVIEW_REPORT_NOT_FOUND);
@@ -60,11 +63,13 @@ public class ReviewReportController {
                                             @RequestParam(value = "keyword", required = false) String keyword,
                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                            @RequestParam(value = "sort", defaultValue = "date", required = false) String sort) {
+                                            @RequestParam(value = "sortBy", defaultValue = "date", required = false) String sortBy) {
 
         try {
-            CommonResponseDto<Object> allReportStatusList = reviewReportStatusAdminService.getReviewReportStatus(keyword, page, size, sort);
-            model.addAttribute("reportStatusList", allReportStatusList.getData());
+            CommonResponseDto<Object> allReportStatusList = reviewReportStatusAdminService.getReviewReportStatus(keyword, page, size, sortBy);
+            ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(allReportStatusList.getStatus(), allReportStatusList.getMessage());
+            resultDto.setData((ReviewReportListLookupDto) allReportStatusList.getData());
+            model.addAttribute("resultDto" ,resultDto);
             return "admin/admin_reviewReportStatus_list";
         } catch (NotFoundException e) {
             model.addAttribute("errorCode", ErrorCode.REVIEW_REPORT_NOT_FOUND);
