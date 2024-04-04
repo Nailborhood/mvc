@@ -40,7 +40,7 @@ public class ChattingRoomController {
 
     // 사장님 페이지
     // 채팅방 개설
-    @GetMapping("/roomForm")
+    @GetMapping("/owner/roomForm")
     public String roomForm(@AuthenticationPrincipal MemberDetails memberDetails) {
         try {
             Member member = memberDetails.getMember();
