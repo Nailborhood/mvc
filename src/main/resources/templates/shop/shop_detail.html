@@ -116,7 +116,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop-art">
+                <div th:if="${error}" class="empty-message">
+                    등록된 아트가 없습니다.
+                </div>
+                <div class="shop-art" th:unless="${error}">
                     <div class="art-row">
                         <span class="art">아트</span>
                         <a th:href="@{/art/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-art-link">
@@ -134,7 +137,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop-review">
+                <div th:if="${error}" class="empty-message">
+                    등록된 리뷰가 없습니다.
+                </div>
+                <div class="shop-review" th:unless="${error}">
                     <div class="review-row">
                         <span class="review">리뷰</span>
                         <a th:href="@{/review/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-review-link">
