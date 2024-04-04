@@ -64,7 +64,7 @@ public class ArtController {
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/user/artboard/inquiry";
+            return "redirect:/artboard/inquiry";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
 
@@ -129,7 +129,7 @@ public class ArtController {
 
     // 아트판 좋아요
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
-    @PostMapping("/user/artboard/like/{artRefId}")
+    @PostMapping("/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long artRefId){
         CommonResponseDto<Object> likeArt = artLikeService.likeArt(accessToken, artRefId);
@@ -140,7 +140,7 @@ public class ArtController {
     }
 
     // 아트판 전체 조회
-    @GetMapping("/user/artboard/inquiry")
+    @GetMapping("/artboard/inquiry")
     public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
@@ -169,7 +169,7 @@ public class ArtController {
     }
 
     // 아트판 전체 조회(카테고리 선택)
-    @GetMapping("/user/artboard/category/inquiry")
+    @GetMapping("/artboard/category/inquiry")
     public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                           @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
@@ -183,7 +183,7 @@ public class ArtController {
 
 
     // 아트판 상세 조회
-    @GetMapping("/user/artboard/inquiry/{artRefId}")
+    @GetMapping("/artboard/inquiry/{artRefId}")
     public String inquiryArtRef(@PathVariable Long artRefId,
                                 Model model){
         CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);

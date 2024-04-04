@@ -19,7 +19,7 @@ function filterArtByCategory() {
         return "category=" + encodeURIComponent(id);
     }).join('&');
 
-    fetch('/user/artboard/category/inquiry?' + queryString, {
+    fetch('/artboard/category/inquiry?' + queryString, {
         method: 'GET',
         headers: {}
     })
@@ -47,7 +47,7 @@ function updateArtList(artList) {
             var artElement = document.createElement('div');
             artElement.className = 'art-list-block';
             artElement.innerHTML = `
-            <a href="/user/artboard/inquiry/${art.id}" class="art-link" role="link">
+            <a href="/artboard/inquiry/${art.id}" class="art-link" role="link">
                 <div class="art-img">
                     <img src="${art.mainImgPath}" alt="Art Image">
                 </div>

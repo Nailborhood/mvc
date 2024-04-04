@@ -28,7 +28,7 @@
 
         <div class="art-list" id="art-list">
             <div th:each="art, iterStat : ${result.getData().artResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
-                <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                <a th:href="@{/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
                     <div class="art-img">
                         <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
                     </div>

@@ -35,7 +35,7 @@
 
                 <div class="art-list_div">
                     <div th:each="art : ${result.getData().artResponseDtoList}" class="art-container">
-                        <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                        <a th:href="@{/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
                             <div class="art-info_img">
                                 <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
                             </div>
