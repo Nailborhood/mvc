@@ -95,6 +95,7 @@ public class ShopDetailService {
         } else {
             // 리뷰가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             reviewListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+            if (reviewListData.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
         // 아트보드 데이터 처리
@@ -104,6 +105,7 @@ public class ShopDetailService {
         } else {
             // 아트가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             artBoardListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+            if (artBoardListData.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
         }
 
 

@@ -91,15 +91,15 @@ public class ShopController {
         model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
-        try {
+//        try {
             CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
 
             model.addAttribute("shopDetail", shopDetail.getData());
             model.addAttribute("error", error);
-        }catch (Exception e){
-            error = true;
-            model.addAttribute("error", error);
-        }
+//        }catch (Exception e){
+//            error = true;
+//            model.addAttribute("error", error);
+//        }
 
         return "shop/shop_detail";
     }
