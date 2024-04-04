@@ -1,9 +1,8 @@
 package com.nailshop.nailborhood.service.shop.owner;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.dto.common.PaginationDto;
-import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsLookupResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
@@ -15,15 +14,9 @@ import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +32,10 @@ public class ShopRequestLookupService {
     // 매장 신청 리스트 조회
 
     @Transactional
-    public CommonResponseDto<Object> getShopRequest() {
+    public CommonResponseDto<Object> getShopRequest(Member member) {
 
-        //TODO: accessToken or session 연결 필요
-        Long ownerId = 1L;
+
+        Long ownerId = member.getOwner().getOwnerId();
         Shop shopRequestList = shopRepository.findAllShopListByOwnerId(ownerId);
 
 

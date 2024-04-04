@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.review.admin;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
@@ -7,12 +8,14 @@ import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.review.admin.ReviewReportStatusAdminService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +35,7 @@ public class ReviewReportController {
 
     @GetMapping("/admin/search/review/report")
     public String searchReviewReportInquiry(Model model,
-                                            //@RequestHeader(AUTH) String accessToken,
+                                            @AuthenticationPrincipal MemberDetails memberDetails,
                                             @RequestParam(value = "keyword", required = false) String keyword,
                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
@@ -40,6 +43,7 @@ public class ReviewReportController {
         //TODO: auth 추가되면 변경
         //CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken, keyword, page, size, sortBy);
         try {
+            Member member = memberDetails.getMember();
             CommonResponseDto<Object> allReviewReportList = reviewReportStatusAdminService.getReviewReports(keyword, page, size, sort);
             model.addAttribute("reviewReportList", allReviewReportList.getData());
             return "admin/admin_reviewReport_list";

@@ -148,55 +148,50 @@ public class MyPageController {
 
     // 내 정보 수정 - 작업중
     @PostMapping("/modMyInfo")
-    public ResponseEntity<ResultDto<MemberInfoDto>> modMyInfo(@RequestHeader(AUTH) String accessToken,
-                                                              @RequestBody ModMemberInfoRequestDto modMemberInfoRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(accessToken, modMemberInfoRequestDto);
-        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((MemberInfoDto) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
+    public String modMyInfo(@AuthenticationPrincipal MemberDetails memberDetails,
+                            ModMemberInfoRequestDto modMemberInfoRequestDto) {
+        Long id = memberDetails.getMember().getMemberId();
+        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(id, modMemberInfoRequestDto);
+        System.out.println(commonResponseDto.getMessage());
+        return "redirect:/mypage/myInfo";
     }
 
-//    //  내 정보 확인
-//    @GetMapping("/myInfo")
-//    public ResponseEntity<ResultDto<MemberInfoDto>> getMyProfile(@RequestHeader(AUTH) String accessToken) {
-//        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(accessToken);
-//        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//        result.setData((MemberInfoDto) commonResponseDto.getData());
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-//                             .body(result);
-//    }
 
-    //TODO: accessToken or session 연결 필요
     // 매장 신청
     @GetMapping("/owner/shop/request")
     public String requestShop(Model model,
+                              @AuthenticationPrincipal MemberDetails memberDetails,
                               ShopRegistrationRequestDto shopRegistrationRequestDto) {
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
 
+        Member member = memberDetails.getMember();
         // 이미 신청한 기록이 존재
-/*        if(shopRegistrationService.checkExistingOwner()){
+        if(!shopRegistrationService.checkExistingOwner(member)){
             model.addAttribute("errorCode",ErrorCode.OWNER_ALREADY_EXIST);
 
-        }*/
+        }
+
         StoreAddressSeparationListDto storeAddressSeparationListDtoList =shopRegistrationService.findAddress();
         model.addAttribute("requestDto", shopRegistrationRequestDto);
         model.addAttribute("addressDto", storeAddressSeparationListDtoList);
         return "request/request_shop_registration";
     }
 
-    //TODO: accessToken or session 연결 필요
+
     @PostMapping("/owner/shop/request")
     public String requestShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
                               @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
                               @ModelAttribute StoreAddressSeparationDto storeAddressSeparationDto,
                               @ModelAttribute ShopRegistrationRequestDto shopRegistrationRequestDto,
+                              @AuthenticationPrincipal MemberDetails memberDetails,
                               RedirectAttributes redirectAttributes) {
 
 
         try {
-
+            Member member = memberDetails.getMember();
             shopRegistrationService.updateAddressInfo(shopRegistrationRequestDto, storeAddressSeparationDto);
-            CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList, fileList, shopRegistrationRequestDto);
+            CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(member,multipartFileList, fileList, shopRegistrationRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -210,14 +205,14 @@ public class MyPageController {
 
     }
 
-    //TODO: accessToken or session 연결 필요 (memberId 필요)
+
 
     // 매장 신청 조회
     @GetMapping("/owner/shop/request/list")
-    public String requestShopList(Model model) {
+    public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
         try {
-
-            CommonResponseDto<Object> myShop = shopRequestLookupService.getShopRequest();
+            Member member = memberDetails.getMember();
+            CommonResponseDto<Object> myShop = shopRequestLookupService.getShopRequest(member);
             model.addAttribute("myShop", myShop.getData());
             return "request/request_shop_registration_list";
         } catch (NotFoundException e) {

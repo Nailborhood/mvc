@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long> {
     // amdinId 가 포함된 모든 채팅룸 조회
@@ -34,6 +36,11 @@ public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long
             "LEFT JOIN cr.owner.shop s " +
             "WHERE s.shopId =:shopId ")
     List<ChattingRoom> findAllByShopId(@Param("shopId") Long shopId);
+    @Query("SELECT cr " +
+            "FROM ChattingRoom cr " +
+            "LEFT JOIN cr.owner o " +
+            "WHERE o.ownerId =:ownerId ")
+    ChattingRoom findByOwnerId(@Param("ownerId") Long ownerId);
 
 /*    @Query("UPDATE ChattingRoom  cr " +
             "SET cr.isDeleted = :status " +
