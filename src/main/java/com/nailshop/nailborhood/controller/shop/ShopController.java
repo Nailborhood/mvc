@@ -42,7 +42,7 @@ public class ShopController {
 
 
     // main
-    @GetMapping(value = "/home")
+    @GetMapping(value = "/")
     public String getAllShops(/*@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
