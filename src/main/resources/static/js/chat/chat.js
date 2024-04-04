@@ -16,14 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function sendMessage() {
 
         var messageContent = document.getElementById('message').value.trim();
-        // TODO: writer는 서버 측에서 세션 정보를 통해 가져오게 바꾸기
-        var writer = document.getElementById('writer').value;
+
+         var writer = document.getElementById('writer').value;
         if (messageContent && stompClient) {
             var chatMessage = {
                 roomId: roomId,
                 contents: messageContent,
-                // TODO: writer는 서버 측에서 세션 정보를 통해 가져오게 바꾸기
-                writer: writer,
+                 writer: writer,
             };
             stompClient.send("/pub/chatroom/" + roomId, {}, JSON.stringify(chatMessage));
 

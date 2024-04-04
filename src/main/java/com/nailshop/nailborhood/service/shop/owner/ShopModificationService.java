@@ -56,16 +56,20 @@ public class ShopModificationService {
     private final CityRepository cityRepository;
     private final DistrictsRepository districtsRepository;
 
-    //TODO: user 연결 필요
+
     @Transactional
-    public CommonResponseDto<Object> updateShop(Long shopId, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
-        Long memberId = 2L;
+    public CommonResponseDto<Object> updateShop(Member member, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+        Long memberId = member.getMemberId();
+
 
         // 매장 Owner 인지 확인
         Member owner = memberRepository.findByMemberIdAndIsDeleted(memberId)
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Owner shopOwner = ownerRepository.findByMemberId(owner.getMemberId());
+
+        Long shopId = shopOwner.getShop().getShopId();
+
         if (!owner.getRole()
                   .equals(Role.ROLE_OWNER) && shopOwner.getShop()
                                                   .getShopId()

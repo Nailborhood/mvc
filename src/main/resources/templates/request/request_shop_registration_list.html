@@ -6,6 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <title>마이 페이지-매장 신청 리스트</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/request/request_ownerPage.js}"></script>
    <!-- <script src="/src/layouts/get_layout.js"></script>-->
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}">
     <link rel="stylesheet" th:href="@{/css/request/request_shop_registration_list_style.css}">
@@ -53,7 +55,7 @@
                     <td>
 
                         <!--TODO: 사장님 페이지 링크 연결-->
-                        <button class="button" th:if="${#strings.toString(myShop.status) == 'OPEN'}"> 사장님페이지</button>
+                        <button id="ownerPageButton" class="button"  th:if="${#strings.toString(myShop.status) == 'OPEN'}"> 사장님페이지</button>
                     </td>
                 </tr>
 

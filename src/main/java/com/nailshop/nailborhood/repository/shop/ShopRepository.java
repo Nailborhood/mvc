@@ -130,8 +130,30 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     @Query("SELECT s " +
             "FROM Shop s " +
-            "left JOIN s.dong d " +
+            "LEFT JOIN s.dong d " +
             "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND d.dongId =:dongId")
     Page<Shop> findAllNotDeletedByDongIdAndKeyword(Pageable pageable, @Param("dongId") Long dongId,@Param("keyword") String keyword);
 
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts.city c " +
+            "WHERE s.isDeleted =false AND c.cityId =:cityId ")
+    Page<Shop> findAllNotDeletedByCityId(Pageable pageable, @Param("cityId") Long cityId);
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts dt " +
+            "WHERE s.isDeleted =false AND dt.districtsId =:districtsId ")
+    Page<Shop> findAllNotDeletedByDistrictsId(Pageable pageable, @Param("districtsId") Long districtsId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts.city c " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND c.cityId =:cityId")
+    Page<Shop> findAllNotDeletedByCityIdAndKeyword(Pageable pageable, @Param("cityId") Long cityId,@Param("keyword") String keyword);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts dt " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND dt.districtsId =:districtsId")
+    Page<Shop> findAllNotDeletedByDistrictsIdAndKeyword(Pageable pageable, @Param("districtsId") Long districtsId, @Param("keyword") String keyword);
 }

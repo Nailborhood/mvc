@@ -11,7 +11,7 @@ public class MessageRequestDto {
 
     private Long roomId;
     private String contents;
-    // TODO: session 연결 이후로는 삭제
+
     private String writer;
 
 }

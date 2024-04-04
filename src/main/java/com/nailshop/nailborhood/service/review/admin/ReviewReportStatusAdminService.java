@@ -23,7 +23,6 @@ import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ReviewReportStatus;
-import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,7 +51,7 @@ public class ReviewReportStatusAdminService {
 
 
     // 리뷰 신고 조회
-    public CommonResponseDto<Object> getReviewReports(String keyword, int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReports( String keyword, int page, int size, String sort) {
 
         // 관리자 확인
 //        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))

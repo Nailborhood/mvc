@@ -1,6 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     // 검색 - 주소와 키워드 검색
 
+
+    document.getElementById('cityId').addEventListener('change', function() {
+        submitFormWithSearchParams();
+    });
+
+
+    document.getElementById('districtsId').addEventListener('change', function() {
+        submitFormWithSearchParams();
+    });
+
     // dongId 변경 시 검색 실행
     document.getElementById('dongId').addEventListener('change', function() {
         submitFormWithSearchParams();
@@ -12,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function submitFormWithSearchParams() {
+        var cityId = document.getElementById('cityId').value;
+        var districtsId = document.getElementById('districtsId').value;
         var dongId = document.getElementById('dongId').value;
         var keyword = document.getElementById('keywordInput').value;
         var orderby = document.getElementById('orderby').value;
@@ -23,6 +35,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (keyword) {
             queryParams.push('keyword=' + encodeURIComponent(keyword));
+        }
+        if (cityId) {
+            queryParams.push('cityId=' + encodeURIComponent(cityId));
+        }
+        if (districtsId) {
+            queryParams.push('districtsId=' + encodeURIComponent(districtsId));
         }
         if (dongId) {
             queryParams.push('dongId=' + encodeURIComponent(dongId));
