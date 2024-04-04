@@ -138,7 +138,7 @@ public class ChattingRoomController {
             ResultDto<ChattingRoomListResponseDto> resultDto = ResultDto.in(allChatList.getStatus(), allChatList.getMessage());
             resultDto.setData((ChattingRoomListResponseDto) allChatList.getData());
 
-            model.addAttribute("chatList", allChatList.getData());
+            model.addAttribute("resultDto", resultDto);
 
 
             return "admin/admin_chat_search_list";

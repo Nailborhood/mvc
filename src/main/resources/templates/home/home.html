@@ -35,9 +35,9 @@
                     </a>
                 </div>
                 <div class="division-line"></div>
-                <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+                <div th:if="${errorCodeArt}" class="error-code" th:text="${errorCodeArt.description}"></div>
 
-                <div class="artRef-img-row">
+                <div class="artRef-img-row" th:unless="${errorCodeArt}">
                     <div class="artRef-list-block"
                          th:each="artResult: ${resultDto.getData().getArtListResponseDtoList()}">
                         <div th:each="art :${artResult.getData().getArtResponseDtoList()}">

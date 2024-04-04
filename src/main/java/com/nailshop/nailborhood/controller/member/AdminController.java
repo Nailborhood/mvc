@@ -1,6 +1,8 @@
 package com.nailshop.nailborhood.controller.member;
 
+import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.service.member.admin.AppliedShopInquiryService;
 import com.nailshop.nailborhood.service.member.admin.ShopRegistrationHandler;
 import org.springframework.stereotype.Controller;
@@ -39,8 +41,7 @@ public class AdminController {
                              .body(resultDto);
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "유저 전체 조회(탈퇴 회원 포함)", description = "admin API")
+    // 유저 전체 조회
     @GetMapping("/admin/search/member")
     public String inquiryAllMember(Model model,
                                    @RequestParam(value = "keyword",required = false) String keyword,
@@ -50,7 +51,9 @@ public class AdminController {
 
         try {
             CommonResponseDto<Object> AllMemberList = memberInquiryService.inquiryAllMember(keyword,page, size, sortBy);
-            model.addAttribute("memberList", AllMemberList.getData());
+            ResultDto<MemberListResponseDto> resultDto = ResultDto.in(AllMemberList.getStatus(), AllMemberList.getMessage());
+            resultDto.setData((MemberListResponseDto) AllMemberList.getData());
+            model.addAttribute("resultDto" ,resultDto);
             return "admin/admin_member_list";
         } catch (NotFoundException e) {
 

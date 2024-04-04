@@ -2,6 +2,8 @@ package com.nailshop.nailborhood.controller.shop.admin;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.member.admin.ShopRegistrationHandler;
@@ -36,7 +38,6 @@ public class AdminShopController {
     // 매장 신청 조회
     @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
-                              //@RequestHeader(AUTH) String accessToken,
                               @RequestParam(value = "keyword", required = false) String keyword,
                               @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
@@ -46,7 +47,10 @@ public class AdminShopController {
 
         try {
             CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
-            model.addAttribute("requestList", allShopRequestList.getData());
+            ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopRequestList.getStatus(), allShopRequestList.getMessage());
+            resultDto.setData((AllShopsListResponseDto) allShopRequestList.getData());
+            model.addAttribute("resultDto" ,resultDto);
+
             return "admin/admin_shop_registration_list";
         } catch (NotFoundException e) {
 
