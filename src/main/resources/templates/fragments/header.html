@@ -31,9 +31,16 @@
             </a>
         </div>
         <div class="profile-field">
-            <div id="profile-img-field">
-                <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
-            </div>
+            <a sec:authorize="isAuthenticated()" href="#">
+                <div id="profile-img-field">
+                    <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
+                </div>
+            </a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">
+                <div id="login-img-field">
+                     <img src="/assets/icons/IMG_2411.jpg" />
+                </div>
+            </a>
             <div sec:authorize="isAuthenticated()" id="profile-mypage-div">
                 <ul sec:authorize="hasRole('ROLE_USER')">
                     <li><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
