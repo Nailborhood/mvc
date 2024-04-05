@@ -98,7 +98,7 @@ public class AdminShopController {
     }
 
     // 매장등록신청 승인
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/admin/shop/approve/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopApprove(@AuthenticationPrincipal MemberDetails memberDetails,
                                                        @PathVariable Long shopId){
@@ -109,7 +109,7 @@ public class AdminShopController {
     }
 
     // 매장등록신청 거절
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/admin/shop/reject/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopReject(@AuthenticationPrincipal MemberDetails memberDetails,
                                                       @PathVariable Long shopId){
