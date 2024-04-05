@@ -10,6 +10,7 @@
     <script th:src="@{/js/admin/admin_review_report.js}"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
 </head>
@@ -46,8 +47,8 @@
 
                     </div>
                 </div>
-                <div class="tbody" th:if="${reviewReportList != null}">
-                    <div class="tr chart-item" th:each="reviewReport : ${reviewReportList.reviewReportLookupDtoList}"
+                <div class="tbody" th:if="${resultDto != null}">
+                    <div class="tr chart-item" th:each="reviewReport : ${resultDto.getData().getReviewReportLookupDtoList()}"
                          th:data-href="@{/admin/search/report/detail(reportId=${reviewReport.reportId})}">
                         <div class="td" th:text="${reviewReport.reviewId}"></div>
                         <div class="td"><img class="chart-profile" th:src="@{${reviewReport.mainImgPath}}" alt="Profile Image"></div>
@@ -58,22 +59,30 @@
                         <div class="td" th:text="${reviewReport.reporter}"></div>
                         <div class="td" th:text="${#temporals.format(reviewReport.date, 'yyyy-MM-dd HH:mm')}"></div>
                         <div class="td" th:text="${reviewReport.status}"></div>
-                       <!-- <div class="td">
-&lt;!&ndash;                            <button class="button accept-button" th:if="${reviewReport.status == '신고 대기중'}"
-                                    th:reportId="${reviewReport.reportId}" data-status="accept"
-                                    th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))">
-                                신고 승인
-                            </button>
-                            <button class="button reject-button" th:if="${reviewReport.status == '신고 대기중'}"
-                                    th:reportId="${reviewReport.reportId}" data-status="reject"
-                                    th:onclick="changeReportStatus(this.getAttribute('reportId'),this.getAttribute('data-status'))">
-                                신고 반려
-                            </button>&ndash;&gt;
-                        </div>-->
                     </div>
                 </div>
             </div>
-
+            <div class="pagination" th:unless="${errorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review/report?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review/report?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}"
+                               th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review/report?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} '&sortBy=' + ${sortBy}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>
