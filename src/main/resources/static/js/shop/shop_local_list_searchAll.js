@@ -97,9 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
         //dongSelect.style.display = 'block';
         dongSelect.value = localStorage.getItem('dongId');
     }
-
-    window.addEventListener('beforeunload', function() {
-        localStorage.clear();
-    });
+    //
+    // window.addEventListener('beforeunload', function() {
+    //     localStorage.clear();
+    // });
 });
 
