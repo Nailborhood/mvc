@@ -9,6 +9,7 @@
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
 </head>
@@ -47,9 +48,10 @@
                         <div class="th"></div>
                     </div>
                 </div>
-                <div class="tbody" th:if="${reviewList != null}">
-                    <div class="tr chart-item" th:each="adminReview : ${reviewList.adminReviewResponseDtoList}"
-                         th:data-href="@{/review/inquiry/{reviewId}(reviewId=${adminReview.reviewId}, shopId=${adminReview.shopId})}" >
+                <div class="tbody" th:if="${resultDto != null}">
+                    <div class="tr chart-item"
+                         th:each="adminReview : ${resultDto.getData().getAdminReviewResponseDtoList()}"
+                         th:data-href="@{/review/inquiry/{reviewId}(reviewId=${adminReview.reviewId}, shopId=${adminReview.shopId})}">
 
                         <div class="td" th:text="${adminReview.reviewId}"></div>
                         <div class="td"><img class="chart-profile" th:src="@{${adminReview.mainImgPath}}"
@@ -74,7 +76,27 @@
                     </div>
                 </div>
             </div>
-
+            <div class="pagination" th:unless="${errorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review?page=' + ${pageNum} + '&size=' + ${size} +'&sortBy=' + ${sortBy}}"
+                               th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/review?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>

@@ -108,7 +108,7 @@
 }
 
 .all-shop-list {
-    margin: auto;
+    margin: 30px auto;
 }
 
 .shop-info a{
@@ -155,18 +155,21 @@
 }
 
 .shop-info_title {
-    font-size: 23px;
-    margin: 3px;
+    font-size: 20px;
+    margin: 5px;
+    font-weight: bold;
 }
 
 .shop-info_address {
-    font-size: 18px;
-    margin: 3px;
+    font-size: 15px;
+    margin: 5px;
+    color: #767678;
 }
 
 .shop-info_under {
     display: flex;
     margin-top: 3px;
+    font-size: 15px;
 }
 
 .shop-info_under div {
@@ -181,3 +184,7 @@
 /* .shop-info_menu {
   border-right: none;
 } */
+
+.error-code {
+    margin: 50px auto;
+}

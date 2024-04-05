@@ -9,6 +9,7 @@
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
 </head>
@@ -49,8 +50,8 @@
                         <div class="th"></div>
                     </div>
                 </div>
-                <div class="tbody" th:if="${requestList != null}">
-                    <div class="tr chart-item" th:each="request : ${requestList.allShopsLookupResponseDtoList}"
+                <div class="tbody" th:if="${resultDto != null}">
+                    <div class="tr chart-item" th:each="request : ${resultDto.getData().getAllShopsLookupResponseDtoList()}"
                          th:data-href="@{/shopRegistrationDetail/{shopId}(shopId=${request.shopId})}" >
                         <div class="td" th:text="${request.shopId}"></div>
                         <div class="td"><img class="chart-profile" th:src="@{${request.shopMainImgPath}}"
@@ -65,7 +66,7 @@
                         <div class="td" th:text="${request.reviewCnt}"></div>
                         <div class="td" th:text="${request.rateAvg}"></div>
                         <div class="td" th:text="${request.menuCnt}"></div>
-                        <div class="td">
+
                 <span th:switch="${#strings.toString(request.status)}">
                     <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
                 </span>
@@ -87,7 +88,21 @@
                     </div>
                 </div>
             </div>
-
+            <div class="pagination" th:unless="${errorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby} + '&sort=' + ${sort}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}+ '&sort=' + ${sort}}" th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby} +'&sort=' + ${sort}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>
