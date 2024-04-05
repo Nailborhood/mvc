@@ -33,7 +33,7 @@ public class AdminSearchController {
 
 
     // 리뷰 검색
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/review")
     public String searchReviewInquiry(Model model,
                                       @RequestParam(value = "keyword", required = false) String keyword,
@@ -56,7 +56,7 @@ public class AdminSearchController {
 
 
     // 매장 검색
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/shop")
     public String searchShopInquiry(Model model,
                                     @RequestParam(value = "keyword", required = false) String keyword,

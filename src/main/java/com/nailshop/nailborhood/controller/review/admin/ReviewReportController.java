@@ -34,7 +34,7 @@ public class ReviewReportController {
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
 
     // 리뷰 신고 검색
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/review/report")
     public String searchReviewReportInquiry(Model model,
                                             @AuthenticationPrincipal MemberDetails memberDetails,
@@ -59,7 +59,7 @@ public class ReviewReportController {
     }
 
     // 처리된 리뷰 신고 리스트
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/review/report/status")
     public String searchReviewReportStatus(Model model,
                                             @RequestParam(value = "keyword", required = false) String keyword,
@@ -82,7 +82,7 @@ public class ReviewReportController {
 
 
     // 리뷰 신고 처리 변경
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/search/review/report")
     public String changeReviewReportStatus(@RequestParam Long reportId,
                                            @RequestParam(value = "status") String status) {
@@ -97,7 +97,7 @@ public class ReviewReportController {
 
 
     // 리뷰 신고 상세 조회
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/report/detail")
     public String getReviewReportDetail (@RequestParam Long reportId,Model model){
         try {
