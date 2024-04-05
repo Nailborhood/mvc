@@ -104,8 +104,8 @@ public class OwnerController {
     }
 
 
-    // 매장 정보 수정
-
+    // 매장 정보 수정 ( 매장 정보 불러오기 )
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shop/update")
     public String updateShop(Model model,
                              @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -128,6 +128,9 @@ public class OwnerController {
         return "owner/owner_shop_update";
     }
 
+
+    // 매장 정보 수정
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/owner/shop/update")
     public String updateShop(Model model,
                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
@@ -159,6 +162,7 @@ public class OwnerController {
 
     // 내 매장 상세 조회
     // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shopDetail")
     public String getShopDetail(Model model,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
