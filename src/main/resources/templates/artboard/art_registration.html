@@ -37,7 +37,15 @@
 
                     <div class="category">
                         <span class="category-text">카테고리 선택</span>
-                        <div th:replace="/fragments/components/search/check_category.html"></div>
+<!--                        <div th:replace="/fragments/components/search/check_category.html"></div>-->
+                        <div class="checkbox-button_row">
+                            <div th:each="category : ${categories}" class="checkbox-button" onclick="toggleCheckbox(this)">
+                                <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
+                                <div class="checked-div">
+                                    <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="img-mod-text">
