@@ -158,12 +158,13 @@ public class OwnerController {
     }
 
     // 내 매장 상세 조회
+    // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
     @GetMapping("/owner/shopDetail")
     public String getShopDetail(Model model,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
         Member member = memberDetails.getMember();
         Long shopId = member.getOwner().getShop().getShopId();
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
         model.addAttribute("shopDetail", shopDetail.getData());
 

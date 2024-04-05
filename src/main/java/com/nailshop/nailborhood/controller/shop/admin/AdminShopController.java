@@ -57,12 +57,13 @@ public class AdminShopController {
     }
 
     // 매장 신청 상세 조회
+    // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
     public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
                                 @PathVariable Long shopId){
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
