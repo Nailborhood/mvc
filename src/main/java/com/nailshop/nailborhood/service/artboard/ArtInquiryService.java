@@ -139,47 +139,29 @@ public class ArtInquiryService {
     }
 
     // shopId로 조회
-    public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy, String category) {
+    public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy) {
 
         // member, owner, shop get
-//        Member member = memberDetails.getMember();
-//        Owner owner = member.getOwner();
-//        Shop shop = owner.getShop();
-
-        // category 리스트화
-        List<Long> categoryIdList = null;
-        if (category != null && !category.isEmpty()){
-
-            categoryIdList = Arrays.stream(category.split(","))
-                    .map(Long::parseLong)
-                    .toList();
-        }
+        Member member = memberDetails.getMember();
+        Owner owner = member.getOwner();
+        Shop shop = owner.getShop();
 
         // Page 설정 및 ArtRefList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
-        Page<ArtRef> artRefPage;
-        if (categoryIdList == null || categoryIdList.isEmpty()){
-            // 카테고리 선택 x
-            artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
-        } else {
-            // 카테고리 선택 o
-            int categoryIdListSize = categoryIdList.size();
-            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
-        }
-
+        Page<ArtRef> artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
         if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
 
         List<ArtRef> artRefList = artRefPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
-//        List<ArtRef> filteredArtRefList = artRefList.stream()
-//                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
-//                .toList();
-//
-//        if (filteredArtRefList.isEmpty()) {
-//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-//        }
+        List<ArtRef> filteredArtRefList = artRefList.stream()
+                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
+                .toList();
+
+        if (filteredArtRefList.isEmpty()) {
+            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+        }
 
         // ArtResponseDto build
         for (ArtRef artRef : artRefList){
