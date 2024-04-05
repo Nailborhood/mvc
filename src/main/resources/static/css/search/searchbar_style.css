@@ -63,6 +63,7 @@
 .checkbox-button {
     flex: 0 0 calc(20% - 20px);
     height: 25px;
+    width: 40px;
 }
 
 .checked-div {
