@@ -43,7 +43,7 @@ public class AdminController {
     }
 
     // 유저 전체 조회
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/member")
     public String inquiryAllMember(Model model,
                                    @RequestParam(value = "keyword",required = false) String keyword,

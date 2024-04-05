@@ -41,7 +41,7 @@ public class ChattingRoomController {
 
     // 사장님 페이지
     // 채팅방 개설
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/roomForm")
     public String roomForm(@AuthenticationPrincipal MemberDetails memberDetails) {
         try {
@@ -57,7 +57,7 @@ public class ChattingRoomController {
 
     }
 
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/chatroom")
     public String createChatRoom(RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberDetails memberDetails) {
 
@@ -66,7 +66,7 @@ public class ChattingRoomController {
         redirectAttributes.addFlashAttribute("roomId", chattingRoom.getRoomId());
         return "redirect:/chatroom/" + chattingRoom.getRoomId(); // 채팅방 입장 페이지로 리다이렉트
     }
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/chatroom/{roomId}")
     public String joinRoom(@PathVariable("roomId") Long roomId,
                            Model model,
@@ -126,7 +126,7 @@ public class ChattingRoomController {
     }*/
 
     // 채팅룸 검색
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/chat")
     public String searchChatList(Model model,
                                  @RequestParam(value = "keyword", required = false) String keyword,
@@ -154,7 +154,7 @@ public class ChattingRoomController {
     }
 
     // 채팅룸 Id 상세 조회
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/chatroom/{roomId}")
     public String getChatRoom(@PathVariable("roomId") Long roomId,
                               Model model,
