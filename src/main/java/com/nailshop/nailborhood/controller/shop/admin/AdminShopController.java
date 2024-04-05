@@ -36,6 +36,7 @@ public class AdminShopController {
     private final ShopDetailService shopDetailService;
 
     // 매장 신청 조회
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
                               @RequestParam(value = "keyword", required = false) String keyword,
@@ -61,7 +62,7 @@ public class AdminShopController {
     }
 
     // 매장 신청 상세 조회
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
     public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
@@ -76,10 +77,11 @@ public class AdminShopController {
         return "admin/admin_shop_registration";
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 삭제", description = "admin API")
+
+
 
     // 매장 삭제
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/delete/shop")
     public String deleteShop(@RequestParam Long shopId) {
          shopDeleteService.deleteShop(shopId);
@@ -87,10 +89,9 @@ public class AdminShopController {
         return "redirect:/admin/search/shop";
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 상태 변경 ", description = "admin API")
+
     // 매장 상태 변경
-    @PutMapping("/admin/shopStatus/{shopId}")
+/*    @PutMapping("/admin/shopStatus/{shopId}")
     public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long shopId,
                                                                     @RequestParam(value = "status") String status) {
@@ -99,10 +100,10 @@ public class AdminShopController {
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
-    }
+    }*/
 
     // 매장등록신청 승인
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
     @PutMapping("/admin/shop/approve/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopApprove(@AuthenticationPrincipal MemberDetails memberDetails,
                                                        @PathVariable Long shopId){
@@ -113,7 +114,7 @@ public class AdminShopController {
     }
 
     // 매장등록신청 거절
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
     @DeleteMapping("/admin/shop/reject/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopReject(@AuthenticationPrincipal MemberDetails memberDetails,
                                                       @PathVariable Long shopId){

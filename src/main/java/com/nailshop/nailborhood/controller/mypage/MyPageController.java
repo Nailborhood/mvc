@@ -158,6 +158,7 @@ public class MyPageController {
 
 
     // 매장 신청
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping("/owner/shop/request")
     public String requestShop(Model model,
                               @AuthenticationPrincipal MemberDetails memberDetails,
@@ -178,7 +179,7 @@ public class MyPageController {
         return "request/request_shop_registration";
     }
 
-
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PostMapping("/owner/shop/request")
     public String requestShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
                               @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
@@ -208,6 +209,7 @@ public class MyPageController {
 
 
     // 매장 신청 조회
+    @PreAuthorize("isAuthenticated() and (hasRole('ROLE_USER') or hasRole('ROLE_OWNER'))")
     @GetMapping("/owner/shop/request/list")
     public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
         try {
