@@ -16,6 +16,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.address.CityRepository;
 import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.address.DongRepository;
+import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
@@ -51,10 +52,11 @@ public class ShopDetailService {
     private final DongRepository dongRepository;
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
+    private final FavoriteRepository favoriteRepository;
 
     // 매장 상세 조회
     @Transactional
-    public CommonResponseDto<Object> getShopDetail(Long shopId) {
+    public CommonResponseDto<Object> getShopDetail(Long shopId, MemberDetails memberDetails) {
 
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -80,6 +82,16 @@ public class ShopDetailService {
                                                                         )
                                                                         .findFirst()
                                                                         .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        if(memberDetails != null){
+            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberDetails.getMember().getMemberId(), shopId);
+            if(heartStatus == null){
+                heartStatus = false;
+            }
+            shopDetailLookupResponseDto.setHeartStatus(heartStatus);}
+//        }else {
+//            Boolean heartStatus = false;
+//        }
 
 
         List<MenuDetailResponseDto> menuDetailResponseDtoList = menuRepository.findAllByShopId(shopId);

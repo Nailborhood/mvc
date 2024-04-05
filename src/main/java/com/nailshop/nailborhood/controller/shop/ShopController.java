@@ -128,9 +128,10 @@ public class ShopController {
         boolean error = false;
 
 //        try {
-            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
             model.addAttribute("shopDetail", shopDetail.getData());
+            model.addAttribute("isLoggedIn", memberDetails != null);
             model.addAttribute("error", error);
 //        }catch (Exception e){
 //            error = true;
