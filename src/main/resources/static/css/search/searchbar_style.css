@@ -31,12 +31,17 @@
 }
 
 #search-input {
-    display: none;
+    display: inline-block;
     width: 280px;
     border: none;
     background-color: var(--shadow_1);
     border-bottom: 2px solid var(--shadow_3);
     margin: 0 5px;
+}
+
+#search-input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--shadow_3);
 }
 
 .search-icon {

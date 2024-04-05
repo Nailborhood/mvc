@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/artboard/art_category.js}"></script>
+    <script th:src="@{/js/artboard/art_search.js}"></script>
 </head>
 
 <body>
@@ -22,7 +23,7 @@
 
     <div th:unless="${error}" layout:fragment="content">
         <div class="search-bar">
-            <div th:replace="fragments/components/search/searchbar.html"></div>
+            <div th:replace="artboard/art_searchbar.html"></div>
             <div th:replace="fragments/components/search/check_category.html"></div>
         </div>
 

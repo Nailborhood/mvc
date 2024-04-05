@@ -69,8 +69,3 @@ function updateArtList(artList) {
         artListContainer.appendChild(emptyMessageElement);
     }
 }
-
-function clickSearchIcon() {
-    var searchInput = document.getElementById("search-input");
-    searchInput.style.display = "inline-block";
-}
