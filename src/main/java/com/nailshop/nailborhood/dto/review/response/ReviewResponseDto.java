@@ -12,9 +12,11 @@ import java.util.List;
 public class ReviewResponseDto {
 
     private Long reviewId;
+    private Long shopId;
     private String mainImgPath;
     private List<String> categoryTypeList;
     private String shopName;
+    private String shopAddress;
     private String contents;
     private Integer rate;
     private Long likeCnt;
@@ -22,11 +24,13 @@ public class ReviewResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public ReviewResponseDto(Long reviewId, String mainImgPath, List<String> categoryTypeList, String shopName, String contents, Integer rate, Long likeCnt, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ReviewResponseDto(Long reviewId, Long shopId, String mainImgPath, List<String> categoryTypeList, String shopName,String shopAddress, String contents, Integer rate, Long likeCnt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.reviewId = reviewId;
+        this.shopId = shopId;
         this.mainImgPath = mainImgPath;
         this.categoryTypeList = categoryTypeList;
         this.shopName = shopName;
+        this.shopAddress = shopAddress;
         this.contents = contents;
         this.rate = rate;
         this.likeCnt = likeCnt;

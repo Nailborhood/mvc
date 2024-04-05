@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>내가 쓴 리뷰</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/mypage/my_review_list_style.css}" />
+    <script th:src="@{/js/review/review_list_star.js}"></script>
+    <script th:src="@{/js/review/review_detail.js}"></script>
+    <script th:src="@{/js/review/review_delete.js}"></script>
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">내가 작성한 리뷰</span>
+        <div th:if="${error}" class="empty-review-message">
+            작성한 리뷰가 없습니다.
+        </div>
+        <div class="mypage-content_div" th:unless="${error}">
+            <div th:each="review : ${result.getData().reviewResponseDtoList}" class="review-list_div">
+                <div class="review-item">
+                    <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-info" style="text-decoration: none; color: inherit">
+                        <div class="review-info_img">
+                            <img th:src="@{${review.mainImgPath}}">
+                        </div>
+                        <div class="review-info_text">
+                            <div class="review-info_shopName" th:text="${review.shopName}"></div>
+                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            <div class="review-info_address" th:text="${review.shopAddress}"></div>
+                            <div class="division-line"></div>
+                            <div class="review-info_under">
+                                <span class="stars"></span>&nbsp;
+                                <span class="rating-number" th:text="${review.rate}">5</span>
+                            </div>
+                            <div class="review-info_content" th:text="${review.contents}"></div>
+                        </div>
+                    </a>
+                    <div class="review-btn">
+                        <a th:href="@{/review/update/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="update-button">리뷰 수정</a>
+                        <button type="button" class="delete-button" th:data-id="${review.reviewId}" th:data-shop-id="${review.shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

@@ -21,14 +21,14 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<Shop> findByShopIdAndIsDeleted(@Param("shopId") Long shopId);
 
     // 매장 리스트 page 처리
-    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false")
+    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false AND s.status = 'OPEN'")
     Page<Shop> findAllNotDeleted(Pageable pageable);
 
     // 주소(동) dongId에 해당되는 매장 리스트
     @Query("SELECT s " +
             "FROM Shop s " +
             "left JOIN s.dong d " +
-            "WHERE s.isDeleted = false AND d.dongId =:dongId")
+            "WHERE s.isDeleted = false AND d.dongId =:dongId AND s.status = 'OPEN'")
     Page<Shop> findAllNotDeletedByDongId(Pageable pageable, @Param("dongId") Long dongId);
 
     // 매장 별점 (리뷰 등록 시 rateAvg update)
@@ -76,6 +76,84 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     // 관리자 매장 검색
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE s.name Like %:keyword% " )
-    Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
+            "WHERE s.name Like %:keyword% AND s.status = 'OPEN' " )
+    Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    // 신청 매장 전체 조회
+    Page<Shop> findByIsDeletedFalseAndStatus(ShopStatus status, Pageable pageable);
+
+
+    // 리뷰 개수 증가
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt + 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntIncreaseByShopId(@Param("shopId") Long shopId);
+
+    // 리뷰 개수 감소
+    @Query("UPDATE Shop s " +
+            "SET s.reviewCnt = s.reviewCnt - 1 " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateReviewCntDecreaseByShopId(@Param("shopId") Long shopId);
+
+    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false and s.status = 'BEFORE_OPEN'")
+    Page<Shop> findAllNotDeletedAndBeforeOpen(Pageable pageable);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE (s.name Like %:keyword% ) and s.status = 'BEFORE_OPEN'" )
+    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.owner o " +
+            "WHERE o.ownerId = :ownerId")
+    Shop findAllShopListByOwnerId(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.owner o " +
+            "WHERE o.ownerId = :ownerId")
+    Optional<Shop> findAllShopByOwnerId(@Param("ownerId") Long ownerId);
+
+    @Query("UPDATE Shop s " +
+            "SET s.dong.dongId = :dongId " +
+            "WHERE s.shopId = :shopId")
+    @Modifying(clearAutomatically = true)
+    void updateDongIdByShopId(@Param("dongId") Long dongId, @Param("shopId") Long shopId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE s.shopId =:shopId ")
+    Optional<Shop> findByShopId(@Param("shopId") Long shopId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong d " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND d.dongId =:dongId AND s.status = 'OPEN'")
+    Page<Shop> findAllNotDeletedByDongIdAndKeyword(Pageable pageable, @Param("dongId") Long dongId,@Param("keyword") String keyword);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts.city c " +
+            "WHERE s.isDeleted =false AND c.cityId =:cityId AND s.status = 'OPEN' ")
+    Page<Shop> findAllNotDeletedByCityId(Pageable pageable, @Param("cityId") Long cityId);
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts dt " +
+            "WHERE s.isDeleted =false AND dt.districtsId =:districtsId AND s.status = 'OPEN'")
+    Page<Shop> findAllNotDeletedByDistrictsId(Pageable pageable, @Param("districtsId") Long districtsId);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts.city c " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND c.cityId =:cityId AND s.status = 'OPEN'")
+    Page<Shop> findAllNotDeletedByCityIdAndKeyword(Pageable pageable, @Param("cityId") Long cityId,@Param("keyword") String keyword);
+
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "LEFT JOIN s.dong.districts dt " +
+            "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND dt.districtsId =:districtsId AND s.status = 'OPEN'")
+    Page<Shop> findAllNotDeletedByDistrictsIdAndKeyword(Pageable pageable, @Param("districtsId") Long districtsId, @Param("keyword") String keyword);
 }

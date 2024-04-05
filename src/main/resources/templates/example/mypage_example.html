@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+        <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">마이페이지 제목</span>
+        <div class="mypage-content_div">
+        </div>
+    </div>
+</div>
+</html>

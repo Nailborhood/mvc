@@ -15,15 +15,13 @@ public class ModMemberInfoRequestDto {
     private LocalDate birthday;
     private String phoneNum;
     private String gender;
-    private String address;
     private String nickname;
 
     @Builder
-    public ModMemberInfoRequestDto(LocalDate birthday, String phoneNum, String gender, String address, String nickname) {
+    public ModMemberInfoRequestDto(LocalDate birthday, String phoneNum, String gender, String nickname) {
         this.birthday = birthday;
         this.phoneNum = phoneNum;
         this.gender = gender;
-        this.address = address;
         this.nickname = nickname;
     }
 }

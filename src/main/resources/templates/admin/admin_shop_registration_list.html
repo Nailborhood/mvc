@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지-매장 신청 리스트</title>
+    <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script th:src="@{/js/admin/admin_detail.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">매장 신청 목록</span>
+        <div class="admin-content-div">
+            <!-- 검색 기능 -->
+            <form th:action="@{/admin/search/shop/request}" method="get">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
+                    <button type="submit" class="search-button">
+                        <img src="/assets/icons/search_icon.png" alt="Search">
+                    </button>
+                </div>
+            </form>
+            <!--검색 시 해당 매장 없을 때 오류 반환-->
+            <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+            <!-- 매장 리스트 -->
+            <div class="chart-list" th:unless="${errorCode}">
+                <div class="thead">
+                    <div class="tr">
+                        <div class="th">매장번호</div>
+                        <div class="th">사진</div>
+                        <div class="th">이름</div>
+                        <div class="th">전화번호</div>
+                        <div class="th">운영시간</div>
+                        <div class="th">주소</div>
+                        <div class="th">웹사이트 주소</div>
+                        <div class="th">등록 일자</div>
+                        <div class="th">좋아요 개수</div>
+                        <div class="th">리뷰 개수</div>
+                        <div class="th">리뷰 별점</div>
+                        <div class="th">메뉴 개수</div>
+                        <div class="th">운영상태</div>
+                        <div class="th"></div>
+                    </div>
+                </div>
+                <div class="tbody" th:if="${resultDto != null}">
+                    <div class="tr chart-item" th:each="request : ${resultDto.getData().getAllShopsLookupResponseDtoList()}"
+                         th:data-href="@{/shopRegistrationDetail/{shopId}(shopId=${request.shopId})}" >
+                        <div class="td" th:text="${request.shopId}"></div>
+                        <div class="td"><img class="chart-profile" th:src="@{${request.shopMainImgPath}}"
+                                             alt="Profile Image"></div>
+                        <div class="td" th:text="${request.name}"></div>
+                        <div class="td" th:text="${request.phone}"></div>
+                        <div class="td" th:text="${request.opentime}"></div>
+                        <div class="td" th:text="${request.address}"></div>
+                        <div class="td" th:text="${request.website}"></div>
+                        <div class="td" th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="td" th:text="${request.favoriteCnt}"></div>
+                        <div class="td" th:text="${request.reviewCnt}"></div>
+                        <div class="td" th:text="${request.rateAvg}"></div>
+                        <div class="td" th:text="${request.menuCnt}"></div>
+
+                <span th:switch="${#strings.toString(request.status)}">
+                    <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
+                </span>
+                        </div>
+                        <!--
+                        <div class="td">
+                            <button class="button accept-button" th:if="${#strings.toString(request.status) == 'BEFORE_OPEN'}"
+                                    th:reportId="${request.shopId}" data-status="accept"
+                                    th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))">
+                                승인
+                            </button>
+                            <button class="button reject-button" th:if="${#strings.toString(request.status) == 'BEFORE_OPEN'}"
+                                    th:reportId="${request.shopId}" data-status="reject"
+                                    th:onclick="changeShopStatus(this.getAttribute('shopId'),this.getAttribute('data-status'))">
+                                반려
+                            </button>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
+            <div class="pagination" th:unless="${errorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby} + '&sort=' + ${sort}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}+ '&sort=' + ${sort}}" th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby} +'&sort=' + ${sort}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

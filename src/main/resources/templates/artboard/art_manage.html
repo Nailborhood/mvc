@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>매장 아트 관리</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}">
+    <link rel="stylesheet" th:href="@{/css/owner/owner_side_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <link rel="stylesheet" th:href="@{/css/artboard/art_manage_style.css}">
+    <script th:src="@{/js/artboard/art_delete.js}"></script>
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
+</head>
+
+<body>
+    <div layout:fragment="content" style="flex-direction: row" class="owner-content">
+        <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+        <div class="content">
+            <span class="owner-title-span">매장 아트 관리</span>
+
+            <div th:if="${error}" class="empty-art-message">
+                아트판이 없습니다.
+            </div>
+
+            <div th:unless="${error}" class="owner-content-div">
+                <div class="search-bar">
+                    <div th:replace="fragments/components/search/searchbar.html"></div>
+                </div>
+
+                <div class="art-list_div">
+                    <div th:each="art : ${result.getData().artResponseDtoList}" class="art-container">
+                        <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                            <div class="art-info_img">
+                                <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
+                            </div>
+                            <div class="art-info_text">
+                                <div class="art-info_title" th:text="${art.getName()}">
+                                    title
+                                </div>
+                                <div class="art-info_date" th:text="${#temporals.format(art.getCreatedAt(), 'yyyy-MM-dd, HH:mm')}">
+                                    Date
+                                </div>
+                                <div class="art-info_under">
+                                    <div class="art-info_category" th:text="${#strings.listJoin(art.getCategoryTypeList(), ', ')}">
+                                        category
+                                    </div>
+                                </div>
+                                <div class="art-info_content" th:text="${art.getContent()}">
+                                    Content
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="button-group">
+                            <a th:href="@{/owner/artboard/modify/{id}(id=${art.id})}" class="edit-button-link">수정</a>
+                            <button type="button" class="delete-button" th:data-id="${art.id}" onclick="artDelete(this)">삭제</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-div">
+                        <ul class="pagination-ul">
+                            <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                            </li>
+                            <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}" th:text="${pageNum}"></a>
+                            </li>
+                            <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
+                                <a class="page-link" th:href="@{'/owner/artboard/manage?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

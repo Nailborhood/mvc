@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 전체 조회</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/review/review_list_style.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">-->
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <script th:src="@{/js/review/review_list_search.js}"></script>
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/review/search.js}"></script>
+
+</head>
+
+<body>
+
+    <div layout:fragment="content">
+
+        <div class="search-bar">
+            <form id="searchForm" class="searchForm" th:action="@{/review/inquiry}" method="get">
+                <div class="search-container">
+                    <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
+                    <button type="submit" class="search-button">
+                        <img src="/assets/icons/search_icon.png" alt="Search">
+                    </button>
+                </div>
+                <div class="search-select-box">
+                    <div class="orderby-select">
+                        <select name="orderby" id="orderby">
+                            <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                                    th:text="${criteria.text}"
+                                    th:selected="${criteria.value == selectedOrderby}">Option
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+<!--            <div th:replace="fragments/components/search/check_category.html"></div>-->
+        </div>
+        <div th:if="${error}" class="empty-review-message">
+            등록된 리뷰가 없습니다.
+        </div>
+        <div class="review-list" th:unless="${error}">
+            <div th:each="review, iterStat : ${result.getData().reviewResponseDtoList}" class="review-list-block" th:if="${iterStat.count <= 20}">
+                <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
+                    <div class="review-img">
+                        <img th:src="@{${review.getMainImgPath()}}" alt="review Image">
+                    </div>
+                    <div class="review-icon">
+                        <img th:src="@{/assets/icons/slide.svg}">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="pagination" th:unless="${error}">
+            <div class="pagination-div">
+                <ul class="pagination-ul">
+                    <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
+                        <a class="page-link" th:href="@{'/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                        <a class="page-link" th:href="@{'/review/inquiry?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}}" th:text="${pageNum}"></a>
+                    </li>
+                    <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
+                        <a class="page-link" th:href="@{'/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

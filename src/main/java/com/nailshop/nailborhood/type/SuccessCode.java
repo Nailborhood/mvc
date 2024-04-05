@@ -16,8 +16,8 @@ public enum SuccessCode {
 
     SHOP_ART_LOOKUP_SUCCESS("매장 아트판 조회를 성공했습니다"),
     SHOP_REVIEW_LOOKUP_SUCCESS("매장 리뷰 조회를 성공했습니다"),
-    FAVORITE_SAVE_SUCCESS("매장 찜 등록에 성공했습니다"),
-    FAVORITE_CANCEL_SUCCESS("매장 찜을 취소 했습니다"),
+    FAVORITE_SAVE_SUCCESS("관심 매장에 추가 했습니다"),
+    FAVORITE_CANCEL_SUCCESS("관심 매장에서 삭제 했습니다"),
     SHOP_DELETE_SUCCESS("매장을 삭제했습니다"),
     SHOP_STATUS_BEFORE_OPEN("매장 상태:'영업전'으로 변경되었습니다"),
     SHOP_STATUS_OPEN("매장 상태:'영업중'으로 변경되었습니다"),
@@ -44,6 +44,7 @@ public enum SuccessCode {
     SEARCH_BY_REVIEW_SUCCESS("리뷰 검색에 성공했습니다."),
     SEARCH_BY_ART_SUCCESS("아트판 검색에 성공했습니다."),
     SEARCH_BY_SHOP_SUCCESS("매장 검색에 성공했습니다."),
+    SEARCH_BY_CHATROOM_SUCCESS("채팅 검색에 성공했습니다"),
 
 
 
@@ -76,7 +77,9 @@ public enum SuccessCode {
 
     //관리자
     CHANGE_ROLE_SUCCESS("유저 권한 변경에 성공하였습니다."),
-    MEMBER_ALL_INQUIRY_SUCCESS("유저 전체 조회에 성공하였습니다.")
+    MEMBER_ALL_INQUIRY_SUCCESS("유저 전체 조회에 성공하였습니다."),
+    APPROVE_SHOP_REGISTRATION("매장등록신청 승인에 성공하였습니다."),
+    REJECT_SHOP_REGISTRATION("매장등록신청 거절에 성공하였습니다.")
 
     ;
 

@@ -41,12 +41,13 @@ public class ArtDeleteService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public CommonResponseDto<Object> deleteArt(String accessToken, Long artRefId) {
+    public CommonResponseDto<Object> deleteArt(/*String accessToken, */Long artRefId) {
 
         // 멤버 확인
-        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
+//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // ArtRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)

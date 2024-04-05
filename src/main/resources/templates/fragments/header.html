@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+</head>
+<div th:fragment="header" class="header">
+
+    <nav class="header-upper">
+        <div id="info-field">
+            <span sec:authorize="isAuthenticated()">
+                <a sec:authorize="hasRole('ROLE_USER')" th:href="@{#}">
+                    <span th:text="${memberNickname}">닉네임 자리</span>님
+                </a>
+                <a sec:authorize="hasRole('ROLE_OWNER')" th:href="@{#}">
+                    <span th:text="${memberNickname}">닉네임 자리</span>님
+                </a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{#}">
+                    <span>관리자 계정</span>
+                </a>
+            </span>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">
+                로그인
+            </a>
+        </div>
+    </nav>
+    <header>
+        <div class="logo-field">
+            <a th:href="@{/example}">
+                <img src="/assets/icons/nailborhood_logo.png"/>
+            </a>
+        </div>
+        <div class="profile-field">
+            <a sec:authorize="isAuthenticated()" href="#">
+                <div id="profile-img-field">
+                    <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
+                </div>
+            </a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">
+                <div id="login-img-field">
+                     <img src="/assets/icons/IMG_2411.jpg" />
+                </div>
+            </a>
+            <div sec:authorize="isAuthenticated()" id="profile-mypage-div">
+                <ul sec:authorize="hasRole('ROLE_USER')">
+                    <li><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
+                    <li><a th:href="@{/mypage/password}">비밀번호 수정</a></li>
+                    <li><a th:href="@{/mypage/review/inquiry}">내가 작성한 리뷰</a></li>
+                    <li><a th:href="@{/mypage/shop/favorite/inquiry}">관심 매장</a></li>
+                    <li><a th:href="@{/logout}">로그아웃</a></li>
+                </ul>
+                <ul sec:authorize="hasRole('ROLE_ADMIN')">
+                    <li><a th:href="@{/admin/search/member}">회원 목록</a></li>
+                    <li><a th:href="@{/admin/search/shop}">매장 목록</a></li>
+                    <li><a th:href="@{/admin/search/review}">전체 리뷰</a></li>
+                    <li><a th:href="@{/admin/search/review/report}">신고된 리뷰</a></li>
+                    <li><a th:href="@{/admin/search/review/report/status}">신고 처리 상태</a></li>
+                    <li><a th:href="@{/admin/search/shop/request}">매장 신청 목록</a></li>
+                    <li><a th:href="@{/admin/search/chat}">채팅 목록</a></li>
+                    <li><a th:href="@{/logout}">로그아웃</a></li>
+                </ul>
+                <ul sec:authorize="hasRole('ROLE_OWNER')">
+                    <li><a th:href="@{/owner/shop/update}">매장 정보 수정</a></li>
+                    <li><a th:href="@{/owner/review}">매장 리뷰 관리</a></li>
+                    <li><a th:href="@{/owner/artboard/manage}">매장 아트 관리</a></li>
+                    <li><a th:href="@{/owner/artboard/register}">아트 등록</a></li>
+                    <li><a th:href="@{/owner/roomForm}">1:1 문의</a></li>
+                    <li><a th:href="@{/logout}">로그아웃</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="header-menu">
+            <ul>
+                <li><a th:href="@{/}">홈</a></li>
+                <li><a th:href="@{/review/inquiry}">리뷰</a></li>
+                <li><a th:href="@{/shop/list}">내 주변</a></li>
+                <li><a th:href="@{/user/artboard/inquiry}">아트판</a></li>
+            </ul>
+        </div>
+        </header>
+</div>

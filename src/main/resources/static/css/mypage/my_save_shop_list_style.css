@@ -1,0 +1,120 @@
+/*@import "/src/components/search/searchbar_style.css";*/
+/*@import "/src/components/pagination/pagination_style.css";*/
+/*@import "/src/templates/fragments/components.css";*/
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.empty-shop-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+.mypage-content_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 7px;
+}
+
+.shop-list_div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    border-bottom: 1px solid #595857;
+    margin-top: 20px;
+}
+
+.mypage-content_div > .shop-list_div:last-of-type {
+    border-bottom: none;
+}
+
+.shop-item {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.shop-info {
+    width: 600px;
+    height: 140px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.shop-info_img {
+    width: 120px;
+    height: 120px;
+    margin-right: 10px;
+}
+
+.shop-info_img img {
+    width: 100%;
+    height: 100%;
+}
+
+.shop-info_text {
+    display: flex;
+    flex-direction: column;
+    line-height: 27px;
+    margin-left: 5px;
+}
+
+.shop-info_shopName {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/*.shop-info_address {*/
+/*    font-size: 18px;*/
+/*}*/
+
+.shop-info_under {
+    display: flex;
+}
+
+.shop-btn {
+    height: 160px;
+    width: 120px;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-right: 40px;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.update-button {
+    padding: 8px 13px;
+    border: none;
+    background-color: #1d438a;
+    color: white;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.update-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}

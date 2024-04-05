@@ -50,8 +50,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "FROM Review r " +
             "LEFT JOIN r.customer c " +
             "LEFT JOIN c.member m " +
-            "WHERE m.memberId = :memberId AND r.isDeleted = false ")
-    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+            "LEFT JOIN r.reviewReportList rr " +
+            "WHERE m.memberId = :memberId AND r.isDeleted = false OR (r.isDeleted = true AND rr.status = :status)")
+    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable, @Param("status") String status);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +
@@ -87,8 +88,8 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT join r.shop s " +
-            "WHERE s.shopId = :shopId AND s.isDeleted = false ")
-    Page<Review> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
+            "WHERE s.shopId = :shopId AND r.isDeleted = false ")
+    Page<Review> findAllNotDeletedByShopId(Pageable pageable, @Param("shopId") Long shopId);
 
     @Query("UPDATE Review r " +
             "SET r.isDeleted = true, " +
@@ -97,18 +98,42 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Modifying(clearAutomatically = true)
     void reviewDeleteByReviewId(@Param("reviewId") Long reviewId);
 
-    // 리뷰 검색 ( 매장이름, 내용 )
+    // 리뷰 검색 ( 매장이름, 내용 ) 검색어 있음
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.shop s " +
             "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
     Page<Review> findReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
 
+    // 사업자 리뷰 검색 (리뷰 내용, 작성자) 검색어 있을 때
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "LEFT JOIN r.reviewReportList rr " +
+            "WHERE (s.shopId = :shopId AND (r.contents Like %:keyword% OR m.nickname LIKE  %:keyword% ) AND r.isDeleted = false) " )
+    Page<Review> findAllReviewListBySearchOwner(Pageable pageable, @Param("shopId") Long shopId, @Param("keyword")String keyword);
+
+    // 사업자 리뷰 검색 (리뷰 내용, 작성자) 검색어 없을 때
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "LEFT JOIN r.customer c " +
+            "LEFT JOIN c.member m " +
+            "LEFT JOIN r.reviewReportList rr " +
+            "WHERE s.shopId = :shopId AND r.isDeleted = false " )
+    Page<Review> findAllReviewListByOwner(Pageable pageable, @Param("shopId") Long shopId);
+
     // 관리자 리뷰 검색 ( 매장이름, 내용 )
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.shop s " +
-            "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) " )
+            "WHERE (r.contents Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% )" )
     Page<Review> findAllReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
 
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
+    Review findByReviewId(Long reviewId);
 }

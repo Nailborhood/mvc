@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>내가 저장한 매장</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/mypage/my_save_shop_list_style.css}" />
+    <script th:src="@{/js/mypage/my_fav_list_delete.js}"></script>
+
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">내가 저장한 매장</span>
+        <div th:if="${error}" class="empty-shop-message">
+            저장한 매장이 없습니다.
+        </div>
+        <div class="mypage-content_div" th:unless="${error}">
+            <div th:each="shop : ${result.getData().favoriteShopDetailDtoList}" class="shop-list_div">
+                <div class="shop-item">
+                    <a class="shop-info" th:href="@{/shopDetail/{shopId}(shopId=${shop.shopId})}" style="text-decoration: none; color: inherit">
+                        <div class="shop-info_img">
+                            <img th:src="@{${shop.mainImgPath}}">
+                        </div>
+                        <div class="shop-info_text">
+                            <div class="shop-info_shopName" th:text="${shop.shopName}"></div>
+                            <div class="shop-info_under">
+                                저장고객수&nbsp;
+                                <div class="shop-info_rate" th:text="${shop.favoriteCnt}"></div>&nbsp;|&nbsp;
+                                ⭐️&nbsp;
+                                <div class="shop-info_rate" th:text="${shop.rateAvg}"></div>
+                            </div>
+                            <div class="shop-info_address" th:text="${shop.address}"></div>
+                        </div>
+                    </a>
+                    <div class="shop-btn">
+                        <button type="button" class="update-button" th:data-id="${shop.shopId}" onclick="favCancel(this)">제거</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

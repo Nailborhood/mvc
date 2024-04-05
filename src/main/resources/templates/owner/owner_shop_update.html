@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/owner/owner_shop_update_img.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_addMenuList.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_vaildate.js}"></script>
+    <script th:src="@{/js/owner/owner_shop_update_address.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/owner/owner_shop_update_style.css}"/>
+
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="owner-content">
+    <div th:insert="~{fragments/components/owner_side::owner_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="owner-title-span">매장 수정</span>
+
+        <div th:if="${errorCode}">
+            <p th:text="${errorCode.description}"></p>
+        </div>
+        <div th:unless="${errorCode}">
+            <form id="updateForm" th:action="@{/owner/shop/update}" method="post"
+                  enctype="multipart/form-data">
+                <div class="content-div">
+                    <div class="request-description-section">
+                        <span class="precautions"> 💅🏻 매장 수정 주의 사항 </span>
+                        <span class="description"> - 모든 항목을 다 작성해주셔야 매장 수정이 됩니다  </span>
+                        <span class="description"> - 매장 정보가 올바르지 않을 경우 매장이 삭제될 수 있습니다  </span>
+                    </div>
+                    <div class="shop-image">
+                        <div class="img-mod-text">
+                            <span class="img-text">매장 사진 수정 &nbsp; </span>
+                            <label class="input-file-button" for="input-file">등록</label>
+                            <label class="delete-file-button">삭제</label>
+                            <span class="description"> 💡 사진은 총 3장 모두 등록해주셔야 합니다 사진 개수가 충족되지 않으면 매장 수정이 어렵습니다 &nbsp; </span>
+                            <input type="file" id="input-file" name="file" accept="image/*" multiple
+                                   style="display: none;">
+                        </div>
+
+                        <div class="image-gallery">
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().getShopImgListResponseDtoList().get(0).getImgPath()} + '); background-size: cover; background-position: center;'"
+                                 th:if="${shopDto.getData().getShopImgListResponseDtoList().get(0).getImgPath()}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().getShopImgListResponseDtoList().get(0).getImgPath()} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().getShopImgListResponseDtoList().get(1).getImgPath()} + '); background-size: cover; background-position: center;'"
+                                 th:if="${shopDto.getData().getShopImgListResponseDtoList().get(1).getImgPath()}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().getShopImgListResponseDtoList().get(1).getImgPath()} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${shopDto.getData().getShopImgListResponseDtoList().get(2).getImgPath()} + '); background-size: cover; background-position: center;'"
+                                 th:if="${shopDto.getData().getShopImgListResponseDtoList().get(2).getImgPath()}">
+                                <div class="upload-text" th:classappend="${shopDto.getData().getShopImgListResponseDtoList().get(2).getImgPath()} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="shopInformation">
+                        <div>
+                            <div class="shopName">
+                                <div>
+                                    <label for="name">매장 이름</label>
+                                </div>
+                            </div>
+                            <div class="shopName-input">
+                                <div>
+                                    <input type="text" id="name" name="name" th:value="${shopDto.getData().getShopDetailLookupResponseDto().getName()}" required>
+                                </div>
+                            </div>
+                            <div class="opentime">
+                                <div>
+                                    <label for="opentime">운영시간</label>
+                                </div>
+                            </div>
+                            <div class="opentime-input">
+                                <div>
+                                    <input type="text" id="opentime" name="opentime"
+                                           th:value="${shopDto.getData().getShopDetailLookupResponseDto().getOpentime()}" required>
+                                </div>
+                            </div>
+                            <div class="status-select">
+                                <div>
+                                    <label for="status">운영상태</label>
+                                </div>
+                                <select name="status" id="status"  required>
+                                    <option value="">운영상태 선택</option>
+                                    <option th:each="status : ${shopStatus}" th:value="${status}"
+                                            th:text="${status.description}"
+                                            th:selected="${shopDto.getData().getShopDetailLookupResponseDto().getStatus().name() == status.name()}"></option>
+                                </select>
+                            </div>
+
+                            <div class="phonenumber">
+                                <div>
+                                    <label for="phone">전화번호</label>
+                                </div>
+                            </div>
+                            <div class="phonenumber-input">
+                                <div>
+                                    <input type="text" id="phone" name="phone" th:value="${shopDto.getData().getShopDetailLookupResponseDto().getPhone()}" required>
+
+                                </div>
+                            </div>
+                            <div class="address">
+                                <div>
+                                    <label for="address">매장 주소</label>
+                                </div>
+                            </div>
+
+                            <div class="address-select">
+                                <select name="cityId" id="cityId" required>
+                                    <option value="">도시 선택</option>
+                                    <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                            th:text="${city.cityName}" th:data-city-id="${city.cityId}"
+                                    th:selected="${shopDto.getData().getCityDto().getCityId() == city.cityId}"></option>
+                                </select>
+
+                                <select name="districtsId" id="districtsId" required>
+                                    <option value="">구 선택</option>
+                                    <option th:each="districts : ${addressDto.districtsDtoList}" th:value="${districts.districtsId}"
+                                            th:text="${districts.districtsName}" th:data-city-id="${districts.cityId}"
+                                            th:selected="${shopDto.getData().getDistrictsDto().getDistrictsId()== districts.districtsId}"></option>
+                                </select>
+
+                                <select name="dongId" id="dongId" required>
+                                    <option value="">동 선택</option>
+                                    <option th:each="dong : ${addressDto.dongDtoList}" th:value="${dong.dongId}"
+                                            th:text="${dong.dongName}" th:data-districts-id="${dong.districtsId}"
+                                            th:selected="${shopDto.getData().getDongDto().getDongId() == dong.dongId}"></option>
+                                </select>
+                            </div>
+
+                            <div class="address">
+                                <div>
+                                    <label for="address">상세 주소</label>
+                                </div>
+                            </div>
+
+
+                            <div class="address-input">
+                                <div>
+                                    <input type="text" id="address" name="address" th:value="${shopDto.getData().getShopDetailLookupResponseDto().getAddress()}"  required>
+                                </div>
+                            </div>
+                            <div class="shop-info">
+                                <div>
+                                    <label for="content">매장 정보</label>
+                                </div>
+                            </div>
+                            <div class="shop-info-input">
+                                <div>
+                                    <input type="text" id="content" name="content" class="large-input"
+                                           th:value="${shopDto.getData().getShopDetailLookupResponseDto().getContent()}" required>
+                                </div>
+                            </div>
+                            <div class="website">
+                                <div>
+                                    <label for="website">홈페이지 주소</label>
+                                </div>
+                            </div>
+                            <div class="website-input">
+                                <div>
+                                    <input type="text" id="website" name="website" th:value="${shopDto.getData().getShopDetailLookupResponseDto().getWebsite()}" required>
+                                </div>
+                            </div>
+                            <div class="shop-menu">
+                                <div class="shop-menu-title">
+                                    <div>
+                                        <div class="menu-registration">메뉴 등록</div>
+                                    </div>
+                                    <div class="buttonContainer">
+                                        <label class="add-menu-button" id="addMenuButton">추가</label>
+                                        <label class="delete-menu-button" id="deleteMenuButton">삭제</label>
+                                    </div>
+                                </div>
+                                <div class="menuInputsContainer" id="menuInputsContainer">
+                                    <div th:each="menu, iterStat : ${shopDto.getData().getMenuDetailResponseDtoList()}" class="menu-item" th:id="'menuItem' + ${iterStat.index}">
+                                        <div class="shopMenu">
+                                            <label th:for="'menuName' + ${iterStat.index}">메뉴 이름</label>
+                                        </div>
+                                        <div class="shopMenu-input">
+                                            <input type="text" th:id="'menuName' + ${iterStat.index}" th:name="'shopMenuDtoList[' + ${iterStat.index} + '].name'" th:value="${menu.name}" required>
+                                        </div>
+                                        <div class="shopMenu">
+                                            <label th:for="'menuPrice' + ${iterStat.index}">메뉴 가격</label>
+                                        </div>
+                                        <div class="shopMenu-input">
+                                            <input type="text" th:id="'menuPrice' + ${iterStat.index}" th:name="'shopMenuDtoList[' + ${iterStat.index} + '].price'" th:value="${menu.price}" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <br>
+
+                            <input type="submit" id="submit-button" class="submit-button" value="매장수정">
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+</html>

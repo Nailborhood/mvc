@@ -1,0 +1,16 @@
+@import "request_side_style.css";
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.request-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}

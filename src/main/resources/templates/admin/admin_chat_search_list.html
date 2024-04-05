@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지-채팅 목록</title>
+    <!-- <script src="/src/layouts/get_layout.js"></script>-->
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_chat_list_style.css}">
+</head>
+
+<div layout:fragment="content" style="flex-direction: row" class="admin-content">
+    <div th:insert="~{fragments/components/admin_side::admin_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="admin-title-span">채팅 목록</span>
+        <div class="admin-content-div">
+            <div class="chat-list-content">
+                <!--검색 기능-->
+                <form id="searchForm" class="searchForm" method="get">
+                    <div class="search-container">
+                        <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요"
+                               name="keyword"/>
+                        <button type="submit" class="search-button">
+                            <img src="/assets/icons/search_icon.png" alt="Search">
+                        </button>
+                    </div>
+                </form>
+                <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
+                <div class="all-chat-list" th:unless="${errorCode}">
+                    <div class="chat-list_div" th:if="${resultDto != null }">
+                        <div class="chat-info" th:each="chat : ${resultDto.getData().getChattingRoomDetailAndShopInfoDtoList()}">
+                            <a th:href="@{/admin/chatroom/{roomId}(roomId=${chat.roomId})}">
+                                <div th:if="${shopErrorCode}" class="error-code"
+                                     th:text="${shopErrorCode.description}"></div>
+                                <div class="shop-info_img">
+                                    <img th:src="@{${chat.getMyShopDetailListResponseDto().getShopImgListResponseDtoList().get(0).getImgPath()}}">
+
+                                </div>
+                                <div class="shop-info_text">
+                                    <div class="shop-info_title_and_date">
+                                        <div class="shop-info_title"
+                                             th:text="${chat.getMyShopDetailListResponseDto().getShopDetailLookupResponseDto().getName()}">
+                                            title
+                                        </div>
+                                        <div class="chat-info_date"
+                                             th:if="${chat.getMessageResponseDtoList().size() > 0}"
+                                             th:text="${#temporals.format(chat.getMessageResponseDtoList().get(chat.getMessageResponseDtoList().size()-1).getCreatedAt(),'yyyy-MM-dd HH:mm')}">
+                                        </div>
+                                    </div>
+
+                                    <div class="chat-info_under">
+                                        <div class="chat-info_contents"
+                                             th:text="${chat.getMessageResponseDtoList().size() > 0 ? chat.getMessageResponseDtoList().get(chat.getMessageResponseDtoList().size() - 1).getContents() : '전송된 메세지가 없습니다'}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="pagination" th:unless="${errorCode}">
+                    <div class="pagination-div">
+                        <ul class="pagination-ul">
+                            <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                            </li>
+                            <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                                class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}"
+                                   th:text="${pageNum}"></a>
+                            </li>
+                            <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                                class="page-item">
+                                <a class="page-link"
+                                   th:href="@{'/admin/search/chat?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} '&sortBy=' + ${sortBy}}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</html>

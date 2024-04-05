@@ -1,0 +1,49 @@
+@import "owner_side_style.css";
+
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.owner-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+.owner-content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 40px;
+    margin-top: 30px;
+}
+
+.search-input {
+    width: 800px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}

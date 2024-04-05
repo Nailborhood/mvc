@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    // 멤버
+    // customer,owner
     CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
+    OWNER_ALREADY_EXIST("이미 매장 신청을 하여, 더이상 매장 신청을 할 수 없습니다"),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),
@@ -17,9 +18,16 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
     // 아트판
     ART_NOT_FOUND("아트판 정보를 찾을 수 없습니다."),
+    ART_REGISTRATION_FAIL("아트판 등록에 실패하였습니다."),
+    ART_UPDATE_FAIL("아트판 수정에 실패하였습니다."),
+    ART_DELETE_FAIL("아트판 삭제에 실패하였습니다."),
     // 매장
     SHOP_NOT_FOUND("매장 정보를 찾을 수 없습니다"),
     SHOPSTATUS_NOT_FOUND("매장 상태 정보를 찾을 수 없습니다"),
+    SHOP_REQUEST_NOT_FOUND("매장 신청 정보를 찾을 수 없습니다"),
+    SHOP_REGISTRATION_FAIL("매장 등록 신청에 실패 했습니다"),
+    SHOP_UPDATE_FAIL("매장 수정에 실패 했습니다"),
+    DELETED_SHOP("삭제된 매장입니다"),
 
     // Member
     MEMBER_NOT_FOUND("유저 정보 조회에 실패하였습니다."),
@@ -47,14 +55,21 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND("리뷰를 찾을 수 없습니다."),
     REVIEW_REPORT_NOT_FOUND("신고된 리뷰를 찾을 수 없습니다"),
     REVIEW_REPORT_INCORRECT("리뷰 신고 상태가 올바르지 않습니다"),
+    REVIEW_MODIFY_FAIL("리뷰 수정에 실패했습니다."),
+    REVIEW_REPORT_FAIL("리뷰 신고에 실패했습니다."),
+    REVIEW_REGISTER_FAIL("리뷰 작성에 실패하였습니다."),
 
     //주소(동)
     DONG_NOT_FOUND("서비스 지역이 아닙니다. 다른 지역을 선택해주세요"),
 
-    //리뷰
+    // 리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
     ART_NOT_REGISTRATION("등록된 아트판이 없습니다"),
-    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다.");
+    SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
+
+    // 채팅
+    CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다"),
+    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다");
 
     private final String description;
 }

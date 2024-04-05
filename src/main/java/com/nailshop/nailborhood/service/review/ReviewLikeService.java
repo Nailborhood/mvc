@@ -11,6 +11,7 @@ import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -33,9 +34,10 @@ public class ReviewLikeService {
 
 
     @Transactional
-    public CommonResponseDto<Object> reviewLike(String accessToken, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewLike(MemberDetails memberDetails, Long reviewId, Long shopId) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
+
+        Long memberId = memberDetails.getMember().getMemberId();
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 

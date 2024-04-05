@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{default}">
+<head>
+  <meta charset="UTF-8">
+  <title>로그아웃</title>
+  <link rel="stylesheet" th:href="@{/css/mypage/mypage_dropout_style.css}" />
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+  <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+  <div class="content">
+    <span class="mypage-title-span">로그아웃</span>
+    <div class="mypage-content-div">
+      <p>로그아웃 하시겠습니까?</p><br>
+      <button id="dropout-button" onclick="location.href='/logout'">로그아웃</button>
+    </div>
+  </div>
+</div>
+</html>

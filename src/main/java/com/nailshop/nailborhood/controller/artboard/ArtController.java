@@ -1,24 +1,29 @@
 package com.nailshop.nailborhood.controller.artboard;
 
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/nailborhood")
 public class ArtController {
 
     private final ArtRegistrationService artRegistrationService;
@@ -26,45 +31,104 @@ public class ArtController {
     private final ArtDeleteService artDeleteService;
     private final ArtLikeService artLikeService;
     private final ArtInquiryService artInquiryService;
+    private final CategoryRepository categoryRepository;
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 등록", description = "owner API")
+    // 아트판 등록(GET)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @GetMapping("/owner/artboard/register")
+    public String showRegisterArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                                  Model model,
+                                  ArtRegistrationRequestDto artRegistrationRequestDto){
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+
+        List<Category> categoryList = categoryRepository.findAll();
+
+        model.addAttribute("artDto", artRegistrationRequestDto);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        return "artboard/art_registration";
+    }
+
+    // 아트판 등록(POST)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
-    public ResponseEntity<ResultDto<Void>> registerArt(@RequestHeader(AUTH) String accessToken,
-                                                       @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                       @RequestPart(value = "data") ArtRegistrationRequestDto artRegistrationRequestDto){
-        CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(accessToken, multipartFileList, artRegistrationRequestDto);
-        ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
+    public String registerArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                              @ModelAttribute ArtRegistrationRequestDto artRegistrationRequestDto,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(memberDetails, multipartFileList, artRegistrationRequestDto);
+            ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
 
-        return ResponseEntity.status(registerArt.getHttpStatus()).body(resultDto);
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+
+            return "redirect:/user/artboard/inquiry";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
+
+            return "artboard/art_registration";
+        }
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 수정", description = "owner API")
-    @PutMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
-    public ResponseEntity<ResultDto<Void>> updateArtRef(@RequestHeader(AUTH) String accessToken,
-                                                        @PathVariable Long artRefId,
-                                                        @RequestPart(value = "file") List<MultipartFile> multipartFileList,
-                                                        @RequestPart(value = "data") ArtUpdateRequestDto artUpdateRequestDto){
-        CommonResponseDto<Object> updateArt = artUpdateService.updateArt(accessToken, multipartFileList, artUpdateRequestDto, artRefId);
-        ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
+    // 아트판 수정(GET)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @GetMapping("/owner/artboard/modify/{artRefId}")
+    public String showUpdateArt(@AuthenticationPrincipal MemberDetails memberDetails,
+                                Model model,
+                                @PathVariable Long artRefId){
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
-        return ResponseEntity.status(updateArt.getHttpStatus()).body(resultDto);
+        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId);
+        ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
+        resultDto.setData((ArtDetailResponseDto) artDetail.getData());
+
+        List<Category> categoryList = categoryRepository.findAll();
+
+        model.addAttribute("result", resultDto);
+        model.addAttribute("memberNickname", nicknameSpace);
+        model.addAttribute("categories", categoryList);
+
+        return "artboard/art_update";
     }
 
-    @Tag(name = "owner", description = "owner API")
-    @Operation(summary = "아트판 삭제", description = "owner API")
+    // 아트판 수정(POST)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
+    public String updateArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
+                               @PathVariable Long artRefId,
+                               @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                               @ModelAttribute ArtUpdateRequestDto artUpdateRequestDto,
+                               RedirectAttributes redirectAttributes){
+
+        try{
+            CommonResponseDto<Object> updateArt = artUpdateService.updateArt(memberDetails, multipartFileList, artUpdateRequestDto, artRefId);
+            ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
+
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+
+            return "redirect:/owner/artboard/manage";
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
+
+            return "artboard/art_update";
+        }
+    }
+
+    // 아트판 삭제
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
-    public ResponseEntity<ResultDto<Void>> deleteArtRef(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> deleteArtRef(/*@RequestHeader(AUTH) String accessToken,*/
                                                         @PathVariable Long artRefId){
-        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(accessToken, artRefId);
+        CommonResponseDto<Object> deleteArt = artDeleteService.deleteArt(/*accessToken, */artRefId);
         ResultDto<Void> resultDto = ResultDto.in(deleteArt.getStatus(), deleteArt.getMessage());
 
         return ResponseEntity.status(deleteArt.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 좋아요", description = "user API")
+    // 아트판 좋아요
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/user/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long artRefId){
@@ -75,9 +139,37 @@ public class ArtController {
         return ResponseEntity.status(likeArt.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 전체 조회", description = "user API")
+    // 아트판 전체 조회
     @GetMapping("/user/artboard/inquiry")
+    public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                   @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                   Model model){
+        boolean error = false;
+
+        try {
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+            ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+            resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
+            List<Category> categoryList = categoryRepository.findAll();
+
+            model.addAttribute("result", resultDto);
+            model.addAttribute("error", error);
+            model.addAttribute("categories", categoryList);
+        } catch (Exception e) {
+
+            error = true;
+            model.addAttribute(error);
+        }
+
+
+        return "artboard/art_list";
+    }
+
+    // 아트판 전체 조회(카테고리 선택)
+    @GetMapping("/user/artboard/category/inquiry")
     public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                           @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                           @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
@@ -89,14 +181,17 @@ public class ArtController {
         return ResponseEntity.status(inquiryAllArt.getHttpStatus()).body(resultDto);
     }
 
-    @Tag(name = "user", description = "user API")
-    @Operation(summary = "아트판 상세 조회", description = "user API")
+
+    // 아트판 상세 조회
     @GetMapping("/user/artboard/inquiry/{artRefId}")
-    public ResponseEntity<ResultDto<ArtDetailResponseDto>> inquiryArtRef(@PathVariable Long artRefId){
+    public String inquiryArtRef(@PathVariable Long artRefId,
+                                Model model){
         CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
         resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
 
-        return ResponseEntity.status(inquiryArt.getHttpStatus()).body(resultDto);
+        model.addAttribute("result", resultDto);
+
+        return "artboard/art_detail";
     }
 }
