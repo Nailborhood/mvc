@@ -128,15 +128,16 @@ public class ShopController {
         model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
-        try {
-            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+//        try {
+            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
             model.addAttribute("shopDetail", shopDetail.getData());
+            model.addAttribute("isLoggedIn", memberDetails != null);
             model.addAttribute("error", error);
-        }catch (Exception e){
-            error = true;
-            model.addAttribute("error", error);
-        }
+//        }catch (Exception e){
+//            error = true;
+//            model.addAttribute("error", error);
+//        }
 
         return "shop/shop_detail";
     }

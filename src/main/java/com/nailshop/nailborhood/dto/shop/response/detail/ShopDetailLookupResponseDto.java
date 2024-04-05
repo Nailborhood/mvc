@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
@@ -25,6 +26,10 @@ public class ShopDetailLookupResponseDto {
     private int reviewCnt;
     private int favoriteCnt;
     private boolean isDeleted;
+
+    @Setter
+    @Getter
+    private Boolean heartStatus = false;
 
 
     @Builder
