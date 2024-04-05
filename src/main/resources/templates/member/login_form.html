@@ -6,15 +6,34 @@
     <meta charset="UTF-8">
     <title>로그인</title>
     <link rel="stylesheet" th:href="@{/css/member/login_style.css}" />
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script th:src="@{/js/member/viewPassword.js}"></script>
 </head>
 <div layout:fragment="content">
     <div class="logo-img">
         <img src="/assets/icons/nailborhood_logo_korean.png">
     </div>
     <form method="post" action="/loginProc" class="login-form">
-        <input type="text" class="login-input" name="email" id="email" placeholder="email"><br>
-        <input type="password" class="login-input" name="password" id="password" placeholder="password"><br>
-        <input type="submit" id="submit-button" value="로그인">
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <input type="text" class="login-input" name="email" id="email" placeholder="email">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="password" class="login-input" name="password" id="password" placeholder="password">
+                    <i class="bi bi-eye"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id="submit-button" value="로그인">
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </form>
     <div class="link-field">
         <span class="signup_link" onclick="location.href='/signup'">회원가입</span> |
