@@ -4,6 +4,7 @@ import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
@@ -22,10 +23,17 @@ public class ShopDetailLookupResponseDto {
     private ShopStatus status;
     private LocalDateTime createdAt;
     private double rateAvg;
+    private int reviewCnt;
+    private int favoriteCnt;
+    private boolean isDeleted;
+
+    @Setter
+    @Getter
+    private Boolean heartStatus = false;
 
 
     @Builder
-    public ShopDetailLookupResponseDto(Long shopId, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, LocalDateTime createdAt, double rateAvg) {
+    public ShopDetailLookupResponseDto(Long shopId, String name, String phone, String address, String opentime, String website, String content, ShopStatus status, LocalDateTime createdAt, double rateAvg, int reviewCnt, int favoriteCnt, boolean isDeleted) {
         this.shopId = shopId;
         this.name = name;
         this.phone = phone;
@@ -36,6 +44,8 @@ public class ShopDetailLookupResponseDto {
         this.status = status;
         this.createdAt = createdAt;
         this.rateAvg = rateAvg;
-
+        this.reviewCnt = reviewCnt;
+        this.favoriteCnt = favoriteCnt;
+        this.isDeleted = isDeleted;
     }
 }

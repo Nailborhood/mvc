@@ -65,9 +65,10 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
     @Query("SELECT a " +
             "FROM ArtRef a " +
             "JOIN a.categoryArtList ca " +
-            "WHERE a.isDeleted = false " +
-            "AND ca.category.categoryId IN :categoryIdList")
-    Page<ArtRef> findByIsDeletedFalseAndCategoryIdListIn(List<Long> categoryIdList, Pageable pageable);
+            "WHERE a.isDeleted = false AND ca.category.categoryId " +
+            "IN :categoryIdList GROUP BY a " +
+            "HAVING COUNT(DISTINCT ca.category) = :numberOfSelectedCategories")
+    Page<ArtRef> findByIsDeletedFalseAndCategoryIdListIn(List<Long> categoryIdList, int numberOfSelectedCategories, Pageable pageable);
 
     // 매장 Id에 해당하는 아트판
     @Query("SELECT a " +

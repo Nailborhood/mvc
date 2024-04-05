@@ -1,7 +1,9 @@
 package com.nailshop.nailborhood.repository.member;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.review.Review;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,14 +21,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 내 정보 수정
     @Modifying
-    @Query("UPDATE Member m SET m.address = :address, " +
+    @Query("UPDATE Member m SET " +
             "m.phoneNum = :phoneNum, " +
             "m.nickname = :nickname, " +
             "m.birthday = :birthday, " +
             "m.gender = :gender "+
             "WHERE m.memberId = :id")
     void updateMemberByMemberId(
-            @Param("id") Long id, @Param("address") String address, @Param("nickname") String nickname,
+            @Param("id") Long id, @Param("nickname") String nickname,
             @Param("phoneNum") String phoneNum, @Param("gender") String gender,@Param("birthday") LocalDate birthday);
 
     // 비밀번호 수정
@@ -61,6 +63,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 관리자 회원 검색
     @Query("SELECT m " +
             "FROM Member m " +
-            "where m.name LIKE %:keyword")
+            "WHERE m.name LIKE %:keyword" )
     Page<Member> findAllMemberListByKeyword(@Param("keyword")String keyword, Pageable pageable);
+
+
 }

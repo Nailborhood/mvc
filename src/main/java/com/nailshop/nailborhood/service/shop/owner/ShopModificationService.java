@@ -1,17 +1,25 @@
 package com.nailshop.nailborhood.service.shop.owner;
 
+import com.nailshop.nailborhood.domain.address.City;
+import com.nailshop.nailborhood.domain.address.Districts;
 import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.shop.Menu;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
+import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.address.CityRepository;
+import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
+import com.nailshop.nailborhood.repository.address.DongRepository;
+import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -44,27 +52,69 @@ public class ShopModificationService {
     private final ShopImgRepository shopImgRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final OwnerRepository ownerRepository;
+    private final CityRepository cityRepository;
+    private final DistrictsRepository districtsRepository;
+
 
     @Transactional
-    public CommonResponseDto<Object> updateShop(String accessToken, Long shopId, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+    public CommonResponseDto<Object> updateShop(Member member, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+        Long memberId = member.getMemberId();
 
-        // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+
+        // 매장 Owner 인지 확인
+        Member owner = memberRepository.findByMemberIdAndIsDeleted(memberId)
                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
+        Owner shopOwner = ownerRepository.findByMemberId(owner.getMemberId());
+
+        Long shopId = shopOwner.getShop().getShopId();
+
+        if (!owner.getRole()
+                  .equals(Role.ROLE_OWNER) && shopOwner.getShop()
+                                                  .getShopId()
+                                                  .equals(shopId))
+            throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
 
         // 매장 아이디 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         // 주소(동) 수정
-        String dongName = shopModifiactionRequestDto.getStoreAddressSeparation()
-                                                    .getDongName();
+        Long cityId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                .getCityId();
+        Long districtsId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                     .getDistrictsId();
+        Long dongId = shopModifiactionRequestDto.getStoreAddressSeparationDto()
+                                                .getDongId();
+
+        City city = cityRepository.findByCityId(cityId);
+        Districts districts = districtsRepository.findByDistrictsId(districtsId);
+        Dong dong = dongRepository.findAllByDongId(dongId);
+
+/*
         Optional<Dong> optionalDong = dongRepository.findByName(dongName);
-        if(optionalDong.isEmpty()){
+        if (optionalDong.isEmpty()) {
             return commonService.errorResponse(ErrorCode.DONG_NOT_FOUND.getDescription(), HttpStatus.OK, null);
         }
 
-        Dong dong =  optionalDong.get();
+        Dong dong = optionalDong.get();*/
+
+
+        // 매장 정보 저장
+        shop.shopUpdate(
+                shopModifiactionRequestDto.getName(),
+                String.join(" ", city.getName(), districts.getName(), dong.getName(), shopModifiactionRequestDto.getAddress()),
+                shopModifiactionRequestDto.getOpentime(),
+                shopModifiactionRequestDto.getWebsite(),
+                shopModifiactionRequestDto.getContent(),
+                shopModifiactionRequestDto.getPhone(),
+                shopModifiactionRequestDto.getStatus());
+
+
+      /*  shop = shopRepository.save(shop);*/
+        shopRepository.updateDongIdByShopId(dongId,shop.getShopId());
+
 
 
         // 기존 메뉴 삭제
@@ -78,18 +128,6 @@ public class ShopModificationService {
 
         // 새로운 이미지 저장
         saveShopImg(multipartFileList, shop);
-
-        // 매장 정보 저장
-        shop.shopUpdate(shopModifiactionRequestDto.getName(),
-                shopModifiactionRequestDto.getAddress(),
-                shopModifiactionRequestDto.getOpentime(),
-                shopModifiactionRequestDto.getWebsite(),
-                shopModifiactionRequestDto.getContent(),
-                ShopStatus.valueOf(String.valueOf(shopModifiactionRequestDto.getStatus())),
-                dong,
-                shopModifiactionRequestDto.getPhone());
-
-        shopRepository.save(shop);
 
 
         return commonService.successResponse(SuccessCode.SHOP_MODIFICATION_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -132,14 +170,14 @@ public class ShopModificationService {
     }
 
     // 이미지 저장
-    private void saveShopImg(List<MultipartFile> multipartFileList, Shop shop){
+    private void saveShopImg(List<MultipartFile> multipartFileList, Shop shop) {
         // s3에 이미지 업로드
         List<String> shopImgUrlList = s3UploadService.shopImgUpload(multipartFileList);
 
         // 이미지 번호 1번 부터 시작
         Integer imgNum = 1;
 
-        for(String imgPath : shopImgUrlList){
+        for (String imgPath : shopImgUrlList) {
             ShopImg shopImg = ShopImg.builder()
                                      .imgPath(imgPath)
                                      .imgNum(imgNum)
@@ -151,4 +189,11 @@ public class ShopModificationService {
             imgNum++;
         }
     }
+
+
+    public void updateAddressInfo(ShopModifiactionRequestDto shopModifiactionRequestDto, StoreAddressSeparationDto storeAddressSeparationDto) {
+
+        shopModifiactionRequestDto.setStoreAddressSeparationDto(storeAddressSeparationDto);
+    }
+
 }

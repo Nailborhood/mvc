@@ -2,7 +2,12 @@ package com.nailshop.nailborhood.service.shop.admin;
 
 import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.chat.ChattingRoom;
+import com.nailshop.nailborhood.domain.chat.Message;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
+import com.nailshop.nailborhood.domain.review.ReviewReport;
+import com.nailshop.nailborhood.domain.shop.CertificateImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
@@ -12,7 +17,12 @@ import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
+import com.nailshop.nailborhood.repository.chat.ChattingRoomRepository;
+import com.nailshop.nailborhood.repository.chat.MessageRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.OwnerRepository;
+import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
+import com.nailshop.nailborhood.repository.shop.CertificateImgRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -44,17 +54,24 @@ public class ShopDeleteService {
     private final CategoryArtRepository categoryArtRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ReviewReportRepository reviewReportRepository;
+    private final ChattingRoomRepository chattingRoomRepository;
+    private final MessageRepository messageRepository;
+    private final OwnerRepository ownerRepository;
+    private final CertificateImgRepository certificateImgRepository;
 
-   @Transactional
-    public CommonResponseDto<Object> deleteShop(String accessToken, Long shopId) {
+    @Transactional
+    public CommonResponseDto<Object> deleteShop(Long shopId) {
 
-       // 관리자 확인
-       Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+        // 관리자 확인
+/*       Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-       if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+
+       if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
+
 
         // 매장 존재 여부
-       Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // menu 삭제
@@ -71,7 +88,7 @@ public class ShopDeleteService {
                 for (ArtImg artImg : artImgList) {
                     String artImgImgPath = artImg.getImgPath();
                     s3UploadService.deleteArtImg(artImgImgPath);
-                    artImgRepository.deleteByArtImgId(artImg.getArtImgId(),true);
+                    artImgRepository.deleteByArtImgId(artImg.getArtImgId(), true);
                 }
                 // 좋아요 수 0 및 ArtLike 삭제
                 artRefRepository.makeLikeCountZero(artRef.getArtRefId());
@@ -85,8 +102,24 @@ public class ShopDeleteService {
             }
         }
 
+        // 리뷰 신고 삭제
+/*        List<ReviewReport> reportList = reviewReportRepository.findAllByShopId(shop.getShopId());
 
+        if (!reportList.isEmpty()) {
+            for (ReviewReport report : reportList) {
+                reviewReportRepository.deleteById(report.getReportId());
+            }
+        }*/
 
+        // 채팅 삭제
+/*        List<ChattingRoom> chattingRoomList = chattingRoomRepository.findAllByShopId(shop.getShopId());
+
+        if (!chattingRoomList.isEmpty()) {
+            for (ChattingRoom chattingRoom : chattingRoomList) {
+
+                chattingRoomRepository.deleteByChattingRoomId(chattingRoom.getRoomId(),true);
+            }
+        }*/
 
         // 매장
         // 매장 이미지 삭제
@@ -94,13 +127,31 @@ public class ShopDeleteService {
         for (ShopImg shopImg : shopImgList) {
             String shopImgImgPath = shopImg.getImgPath();
             s3UploadService.deleteShopImg(shopImgImgPath);
-            shopImgRepository.deleteByShopImgId(shopImg.getShopImgId(),true);
+            shopImgRepository.deleteByShopImgId(shopImg.getShopImgId(), true);
         }
+
+        // 매장 사업자 등록증 삭제
+        CertificateImg certificateImg = certificateImgRepository.findByShopId(shop.getShopId());
+        s3UploadService.deleteCertificateImg(certificateImg.getImgPath());
+        certificateImgRepository.deleteByCertificateImgId(certificateImg.getCertificateImgId(),true);
+
+        // role 변경
+        // owner -> user 로 변경
+        Owner owner = ownerRepository.findByShopId(shop.getShopId());
+        Member member = memberRepository.findById(owner.getMember().getMemberId())
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.changeRole(Role.ROLE_USER);
+        // Owner isApproved ->false 로 변경
+        ownerRepository.deleteByOwnerId(owner.getOwnerId(),false);
 
         // 매장 삭제
         //  shop -> isDeleted = true, shopStatus = closed
         ShopStatus shopStatus = ShopStatus.CLOSED;
-        shopRepository.shopDeleteByShopId(shop.getShopId() ,shopStatus);
+        shopRepository.shopDeleteByShopId(shop.getShopId(), shopStatus);
+
+
+
 
         return commonService.successResponse(SuccessCode.SHOP_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }

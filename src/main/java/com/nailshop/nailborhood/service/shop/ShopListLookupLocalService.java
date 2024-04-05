@@ -1,15 +1,19 @@
 package com.nailshop.nailborhood.service.shop;
 
 import com.nailshop.nailborhood.domain.shop.Shop;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
+import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.*;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
-import com.nailshop.nailborhood.repository.shop.DongRepository;
+import com.nailshop.nailborhood.repository.address.DongRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -22,7 +26,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +40,7 @@ public class ShopListLookupLocalService {
     private final MenuRepository menuRepository;
     private final ShopImgRepository shopImgRepository;
     private final ReviewRepository reviewRepository;
+    private final ArtInquiryService artInquiryService;
 
     // 전체 매장 조회 (주소(동) 상관없이)
     @Transactional
@@ -63,17 +71,116 @@ public class ShopListLookupLocalService {
         return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopListResponseDto);
     }
 
+    // 메인 매장 조회
+
+    public CommonResponseDto<Object> getHome() {
+
+        // 좋아요 많이 받은 아트판
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "");
+        if (inquiryAllArt == null) {
+            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+        }
+
+        ResultDto<ArtListResponseDto> artListResponseDtoResultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+        artListResponseDtoResultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+        List<ResultDto<ArtListResponseDto>> artListResponseDtoList = new ArrayList<>();
+        artListResponseDtoList.add(artListResponseDtoResultDto);
+
+
+        // 리뷰 많은 매장
+        CommonResponseDto<Object> allReviewShopsList = getShopList(1, 4, "DESC", "reviewCnt");
+        if (allReviewShopsList == null) {
+            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+        }
+        ResultDto<ShopListResponseDto> shopListByReviewResponseDtoResultDto = ResultDto.in(allReviewShopsList.getStatus(), allReviewShopsList.getMessage());
+        shopListByReviewResponseDtoResultDto.setData((ShopListResponseDto) allReviewShopsList.getData());
+
+        List<ResultDto<ShopListResponseDto>> shopListByReviewResponseDtoList = new ArrayList<>();
+        shopListByReviewResponseDtoList.add(shopListByReviewResponseDtoResultDto);
+
+        // 별점 높은 매장
+        CommonResponseDto<Object> allRateShopsList = getShopList(1, 4, "DESC", "rateAvg");
+        if (allRateShopsList == null) {
+            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+        }
+        ResultDto<ShopListResponseDto> shopListByRateResponseDtoResultDto = ResultDto.in(allRateShopsList.getStatus(), allRateShopsList.getMessage());
+        shopListByRateResponseDtoResultDto.setData((ShopListResponseDto) allRateShopsList.getData());
+
+        List<ResultDto<ShopListResponseDto>> shopListByRateResponseDtoList = new ArrayList<>();
+        shopListByRateResponseDtoList.add(shopListByRateResponseDtoResultDto);
+
+        HomeDetailResponseDto homeDetailResponseDto = HomeDetailResponseDto.builder()
+                                                                           .artListResponseDtoList(artListResponseDtoList)
+                                                                           .shopListByReviewResponseDtoList(shopListByReviewResponseDtoList)
+                                                                           .shopListByRateResponseDtoList(shopListByRateResponseDtoList)
+                                                                           .build();
+
+        return commonService.successResponse(SuccessCode.ALL_SHOP_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, homeDetailResponseDto);
+    }
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListByDong(int page, int size, String sort, String criteria, Long dongId) {
+    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId, Long districtsId, Long cityId) {
 
 
         // 정렬기준 설정
         Pageable pageable = (sort.equals("ASC")) ?
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
-        // 페이지로 값 가져오기
-        Page<Shop> shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
+
+        // dongId 유무
+        Page<Shop> shops;
+/*        if(keyword == null || keyword.trim()
+                                     .isEmpty()) {
+            if(cityId != null){
+                shops = shopRepository.findAllNotDeletedByCityId(pageable,cityId);
+
+            }else if(districtsId != null){
+
+            }else if(dongId != null){
+                shops = shopRepository.findAllNotDeletedByDongId(pageable,dongId);
+            }else {
+                shops = shopRepository.findAllNotDeleted(pageable);
+            }
+        }else {
+            if (cityId != null ) {
+                shops = shopRepository.findAllNotDeletedByCityIdAndKeyword(pageable, cityId, keyword);
+            } else if(districtsId != null) {
+                shops = shopRepository.findAllNotDeletedByDistrictsIdAndKeyword(pageable, districtsId, keyword);
+            } else if(dongId != null){
+                shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId,keyword);
+            }else {
+                shops = shopRepository.findALlShopListByKeyword(keyword,pageable);
+            }
+        }*/
+
+
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
+            if (cityId != null) {
+                shops = shopRepository.findAllNotDeletedByCityId(pageable, cityId);
+                if (districtsId != null) {
+                    shops = shopRepository.findAllNotDeletedByDistrictsId(pageable, districtsId);
+                    if (dongId != null) {
+                        shops = shopRepository.findAllNotDeletedByDongId(pageable, dongId);
+                    }
+                }
+
+            } else {
+                shops = shopRepository.findAllNotDeleted(pageable);
+            }
+        } else {
+            if (cityId != null) {
+                shops = shopRepository.findAllNotDeletedByCityIdAndKeyword(pageable, cityId, keyword);
+                if (districtsId != null) {
+                    shops = shopRepository.findAllNotDeletedByDistrictsIdAndKeyword(pageable, districtsId, keyword);
+                    if (dongId != null) {
+                        shops = shopRepository.findAllNotDeletedByDongIdAndKeyword(pageable, dongId, keyword);
+                    }
+                }
+            } else {
+                shops = shopRepository.findALlShopListByKeyword(keyword, pageable);
+            }
+        }
 
         if (shops.isEmpty()) {
             throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
@@ -145,6 +252,28 @@ public class ShopListLookupLocalService {
                                   .build();
     }
 
+
+    // 조회 정렬 기준 orderby 설정
+    public List<Map<String, String>> createCriteriaOptions() {
+        List<Map<String, String>> sortOptions = new ArrayList<>();
+
+        Map<String, String> option1 = new HashMap<>();
+        option1.put("value", "createdAt");
+        option1.put("text", "최신순");
+        sortOptions.add(option1);
+
+        Map<String, String> option2 = new HashMap<>();
+        option2.put("value", "favoriteCnt");
+        option2.put("text", "인기순");
+        sortOptions.add(option2);
+
+        Map<String, String> option3 = new HashMap<>();
+        option3.put("value", "rateAvg");
+        option3.put("text", "평점순");
+        sortOptions.add(option3);
+
+        return sortOptions;
+    }
 
 
 }

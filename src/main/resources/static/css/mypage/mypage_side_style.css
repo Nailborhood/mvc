@@ -1,0 +1,61 @@
+:root {
+  --main-color_begie: #f7f5f0;
+  --shadow_1: #dad2cd;
+  --shadow_2: #aba9a6;
+  --shadow_3: #82817e;
+  --shadow_4: #595857;
+  --main-color_navy: #1d438a;
+  --mypage_sidebar: #fffcf6;
+}
+
+.mypage-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.sidebar-div {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  /* background-color: var(--main-color_begie); */
+  width: 130px;
+  position: fixed;
+  top: 220px;
+  left: 10px;
+  border: solid 1px var(--shadow_2);
+  border-radius: 10px;
+}
+
+.content{
+  padding: 15px 200px;
+}
+
+.sidebar-ul {
+  padding-bottom: 20px;
+}
+
+.sidebar-ul li {
+  padding: 8px 0;
+}
+
+.sidebar-li a {
+  color: var(--main-color_navy);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+
+.sidebar-li a:hover,
+.sidebar-link:hover {
+  font-weight: 700;
+}
+
+.sidebar-link {
+  color: var(--shadow_2);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 15px;
+  padding-bottom: 10px;
+}

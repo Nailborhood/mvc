@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 작성</title>
+    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
+    <link rel="stylesheet" th:href="@{/css/review/review_registration_style.css}">
+    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/review/review_registration.js}"></script>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <span class="owner-title-span">리뷰 등록</span>
+        <form th:action="@{'/' + ${shopId} + '/review/registration'}" method="post" enctype="multipart/form-data">
+            <div class="body-content">
+                <div class="review-write-section">
+                    <div class="rating-section">
+                        <label for="star-rating" class="rating-label">네일은 어떠셨어요?</label>
+                        <select id="star-rating" name="rate" class="star-rating-input">
+                            <option th:each="i : ${#numbers.sequence(5,1)}"
+                                    th:value="${i}"
+                                    th:text="${#strings.repeat('★',i)} + ${#strings.repeat('☆', 5-i)}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="category">
+                        <span class="category-text">카테고리 선택</span>
+                        <div th:replace="/fragments/components/search/check_category.html"></div>
+                    </div>
+
+                    <div class="img-mod-text">
+                        <span class="img-text">아트 사진 등록 &nbsp; </span>
+                        <label class="input-file-button" for="input-file">사진 등록</label>
+                        <input type="file" id="input-file" name="file" accept="image/*" multiple style="display: none;" >
+                    </div>
+
+                    <div class="image-gallery">
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                        <div class="image-upload-box">
+                            <div class="upload-text">사진을 업로드 해주세요.</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="review-content">리뷰 내용</label>
+                        <textarea id="review-content" name="contents" class="review-textarea" placeholder="리뷰 내용을 입력하세요." required></textarea>
+                    </div>
+
+                    <input type="submit" id="submit-button" class="submit-button" value="리뷰 등록">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

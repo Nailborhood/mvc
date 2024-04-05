@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 수정 페이지</title>
+    <link rel="stylesheet" href="/css/layout/layout_style.css">
+    <link rel="stylesheet" href="/css/review/review_mod_style.css">
+    <script th:src="@{/js/review/review_mod.js}"></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/header::header"></div>
+        <div layout:fragment="content" class="content">
+            <form th:action="@{'/review/update/' + ${result.getData().reviewId}}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="shopId" th:value="${result.getData().shopId}" />
+                <div class="body-content">
+                    <div class="review-write-section">
+                        <div class="rating-section">
+                            <label for="star-rating" class="rating-label">네일은 어떠셨어요?</label>
+                            <select id="star-rating" name="rate" class="star-rating-input">
+                                <option th:each="i : ${#numbers.sequence(5,1)}"
+                                        th:value="${i}"
+                                        th:text="${#strings.repeat('★',i)} + ${#strings.repeat('☆', 5-i)}"
+                                        th:selected="${i == result.getData().rate}">별점</option>
+                            </select>
+                        </div>
+
+                        <div class="image-gallery">
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[1]} + '); background-size: cover; background-position: center;'"
+                                 th:if="${result.getData().imgPathMap[1]}">
+                                <div class="upload-text" th:classappend="${result.getData().imgPathMap[1]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[2]} + '); background-size: cover; background-position: center;'"
+                                 th:if="${result.getData().imgPathMap[2]}">
+                                <div class="upload-text" th:classappend="${result.getData().imgPathMap[2]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                            <div class="image-upload-box" th:style="'background-image:url(' + ${result.getData().imgPathMap[3]} + '); background-size: cover; background-position: center;'"
+                                       th:if="${result.getData().imgPathMap[3]}">
+                                <div class="upload-text" th:classappend="${result.getData().imgPathMap[3]} ? 'hidden-text' : ''">사진을 업로드 해주세요.</div>
+                            </div>
+                        </div>
+
+                        <div class="image-upload-button-container">
+                            <label class="upload-button" for="input-file">사진 등록</label>
+                            <label class="delete-file-button">삭제</label>
+                            <input type="file" id="input-file" name="img" accept="image/*" multiple style="display: none;" >
+                        </div>
+
+                        <div class="input-group">
+                            <label for="review-content">리뷰 내용</label>
+                            <textarea id="review-content" name="contents" class="review-textarea" th:text="${result.getData().contents}"></textarea>
+                        </div>
+
+                        <div class="submit-button-container">
+                            <button class="submit-button">수정</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div th:replace="fragments/footer::footer"></div>
+    </div>
+</body>
+</html>

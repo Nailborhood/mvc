@@ -20,11 +20,13 @@ import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.ReviewReportStatus;
+import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +55,10 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public CommonResponseDto<Object> reviewUpdate(String accessToken, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+    public CommonResponseDto<Object> reviewUpdate(MemberDetails memberDetails, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Member member = memberDetails.getMember();
+        memberRepository.findByMemberIdAndIsDeleted(member.getMemberId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -74,7 +76,7 @@ public class ReviewService {
         }
 
         // 리뷰 정보 저장
-        review.reviewUpdate(reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
+        review.reviewUpdate(reviewUpdateDto.getReviewId() ,reviewUpdateDto.getContents(), reviewUpdateDto.getRate());
         reviewRepository.save(review);
 
 
@@ -88,18 +90,18 @@ public class ReviewService {
         updateShopRateAvg(shop);
 
         // 리뷰 카테고리 수정
-        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+//        categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
-        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
-
-            CategoryReview categoryReview = CategoryReview.builder()
-                    .review(review)
-                    .category(category)
-                    .build();
-            categoryReviewRepository.save(categoryReview);
-        }
+//        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
+//            Category category = categoryRepository.findById(categoryId)
+//                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+//
+//            CategoryReview categoryReview = CategoryReview.builder()
+//                    .review(review)
+//                    .category(category)
+//                    .build();
+//            categoryReviewRepository.save(categoryReview);
+//        }
 
 
         return commonService.successResponse(SuccessCode.REVIEW_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -107,10 +109,10 @@ public class ReviewService {
 
     // 리뷰 신고
     @Transactional
-    public CommonResponseDto<Object> reviewReport(String accessToken, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
+    public CommonResponseDto<Object> reviewReport(Member member, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Long memberId = member.getMemberId();
+        memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -142,10 +144,10 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public CommonResponseDto<Object> reviewDelete(String accessToken, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewDelete(Member member, Long reviewId, Long shopId) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Long memberId = member.getMemberId();
+        memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -157,8 +159,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
-        Long loginId = member.getMemberId();
-        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+        if (!review.getCustomer().getCustomerId().equals(memberId)) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 
@@ -175,22 +176,23 @@ public class ReviewService {
             reviewImgRepository.deleteByReviewImgId(reviewImgPath.getReviewImgId(),true);
         }
 
-        // 좋아요 수 0, reviewLike 삭제
+        // 좋아요 수 0, reviewLike status false로 변경
         reviewRepository.likeCntZero(reviewId);
-        reviewLikeRepository.deleteByReviewId(reviewId);
+        reviewLikeRepository.deleteByReviewId(reviewId, false);
+
+        // 매장 리뷰 cnt 감소 처리
+        shopRepository.updateReviewCntDecreaseByShopId(shopId);
 
         // reviewID 해당 카테고리 삭제
         categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
         // 리뷰 신고 테이블 reviewId 해당 컬럼 삭제
-        reviewReportRepository.deleteReviewReportByReviewId(reviewId);
+/*        reviewReportRepository.deleteReviewReportByReviewId(reviewId);*/
 
         // 리뷰 isdeleted 값 true로
         reviewRepository.deleteReviewId(reviewId, true);
 
-        // 평균 별졈 수정
         updateShopRateAvg(shop);
-
 
         return commonService.successResponse(SuccessCode.REVIEW_DELETE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
@@ -202,13 +204,16 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
 
         double totalRate = reviews.stream()
-                .mapToInt(Review::getRate)
-                .sum();
+                                  .mapToInt(Review::getRate)
+                                  .sum();
+        if(totalRate != 0 ) {
+            String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+            double rateAvg = Double.parseDouble(rateAvgStr);
+            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        }else {
+            shopRepository.updateRateAvgByShopId(0,shopId);
+        }
 
-        String rateAvgStr = String.format("%.1f",totalRate / reviews.size());
-        double rateAvg =Double.parseDouble(rateAvgStr);
-
-        shopRepository.updateRateAvgByShopId(rateAvg,shopId);
     }
 
 

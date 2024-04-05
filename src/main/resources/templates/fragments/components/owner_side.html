@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="owner_side" style="display: contents">
+    <ul class="sidebar-ul ul-left">
+        <li class="sidebar-li"><a th:href="@{/owner/shopDetail}">내 매장</a></li>
+        <li class="sidebar-li"><a th:href="@{/owner/shop/update}">매장 정보 수정</a></li>
+        <li class="sidebar-li"><a th:href="@{/owner/review}">매장 리뷰 관리</a></li>
+        <li class="sidebar-li"><a th:href="@{/owner/artboard/manage}">매장 아트 관리</a></li>
+        <li class="sidebar-li"><a th:href="@{/owner/artboard/register}">아트 등록</a></li>
+        <li class="sidebar-li"><a th:href="@{/owner/roomForm}">1:1 문의</a></li>
+        <li class="sidebar-li"><a href="#">로그아웃</a></li>
+    </ul>
+    <a class="sidebar-link" href="#">회원 탈퇴</a>
+</div>
+</html>

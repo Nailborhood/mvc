@@ -6,7 +6,6 @@ import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
-import com.nailshop.nailborhood.domain.shop.ShopImg;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
@@ -16,6 +15,7 @@ import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
@@ -45,10 +45,10 @@ public class ReviewRegistrationService {
 
     @Transactional
     // 리뷰 등록
-    public CommonResponseDto<Object> registerReview(Long shopId, String accessToken, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerReview(Long shopId, MemberDetails memberDetails, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
 
         // token 에서 memberId 가져오기
-        Long memberId = tokenProvider.getUserId(accessToken);
+        Long memberId = memberDetails.getMember().getMemberId();
         Customer customer = customerRepository.findByMemberId(memberId);
 
         // 매장 존재 여부
@@ -71,7 +71,7 @@ public class ReviewRegistrationService {
         saveReviewImg(multipartFileList, review);
 
         // CategoryReview 저장
-        for (Long categoryId : reviewRegistrationRequestDto.getCategoryListId()) {
+        for (Long categoryId : reviewRegistrationRequestDto.getCategoryIdList()) {
 
             Category category = categoryRepository.findById(categoryId)
                                                   .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -86,6 +86,9 @@ public class ReviewRegistrationService {
 
         // 리뷰 등록 시 매장 별점 평균 변경
         updateShopRateAvg(shop);
+
+        // 리뷰 등록 시 리뷰 개수 변경
+        shopRepository.updateReviewCntIncreaseByShopId(shopId);
 
         return commonService.successResponse(SuccessCode.REVIEW_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
@@ -118,14 +121,15 @@ public class ReviewRegistrationService {
         double totalRate = reviews.stream()
                                   .mapToInt(Review::getRate)
                                   .sum();
+        if(totalRate != 0 ) {
+            String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
+            double rateAvg = Double.parseDouble(rateAvgStr);
+            shopRepository.updateRateAvgByShopId(rateAvg,shopId);
+        }else {
+            shopRepository.updateRateAvgByShopId(0,shopId);
+        }
 
-
-        String rateAvgStr = String.format("%.1f", totalRate / reviews.size());
-        double rateAvg = Double.parseDouble(rateAvgStr);
-//        shop.setRateAvg(totalRate / reviews.size());
-//
-//        shopRepository.save(shop);
-
-        shopRepository.updateRateAvgByShopId(rateAvg, shopId);
     }
+
+
 }

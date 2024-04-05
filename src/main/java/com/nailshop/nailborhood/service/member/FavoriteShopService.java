@@ -7,9 +7,10 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.response.FavoriteResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.FavoriteRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.MemeberFavoriteRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -21,20 +22,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FavoriteShopService {
-    private final TokenProvider tokenProvider;
     private final FavoriteRepository favoriteRepository;
     private final CommonService commonService;
     private final ShopRepository shopRepository;
-    private final MemeberFavoriteRepository memeberFavoriteRepository;
-
+    private final MemberRepository memberRepository;
 
 
     @Transactional
-    public CommonResponseDto<Object> favoriteShop(Long shopId, String accessToken) {
+    public CommonResponseDto<Object> favoriteShop(Long shopId, MemberDetails memberDetails) {
 
-        Long memberId = tokenProvider.getUserId(accessToken);
-
-        Member member = memeberFavoriteRepository.findByMemberId(memberId);
+        Long memberId = memberDetails.getMember().getMemberId();
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
