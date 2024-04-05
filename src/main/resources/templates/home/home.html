@@ -42,7 +42,7 @@
                          th:each="artResult: ${resultDto.getData().getArtListResponseDtoList()}">
                         <div th:each="art :${artResult.getData().getArtResponseDtoList()}">
                             <a class="artRef-link"
-                               th:href="@{/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
+                               th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
                                 <div class="artRef-img">
                                     <img th:src="@{${art.getMainImgPath()}}">
                                 </div>
