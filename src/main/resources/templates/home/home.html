@@ -61,7 +61,7 @@
                 <div class="division-line"></div>
                 <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
 
-                <div class="review-img-row">
+                <div class="review-img-row" th:unless="errorCode">
                     <div class="review-list-block"
                          th:each="reviewResult : ${resultDto.getData().getShopListByReviewResponseDtoList()}">
                         <div th:each="review : ${reviewResult.getData().getShopLookupResponseDtoList()}">
@@ -87,7 +87,7 @@
                 <div class="division-line"></div>
                 <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
 
-                <div class="rate-img-row">
+                <div class="rate-img-row" th:unless="errorCode">
                     <div class="rate-list-block"
                          th:each="rateResult : ${resultDto.getData().getShopListByRateResponseDtoList()}">
                         <div th:each="rate : ${rateResult.getData().getShopLookupResponseDtoList()}">
