@@ -49,22 +49,28 @@ public class ShopController {
                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                                                       @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*/
             Model model) {
-        try {
+//        try {
+//
+//
+//            CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
+//            ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
+//            resultDto.setData((HomeDetailResponseDto) allResultList.getData());
+//            model.addAttribute("resultDto", resultDto);
+//            //TODO: main view 만들기
+//            return "home/home";
+//
+//        } catch (NotFoundException e) {
+//            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+//            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
+//            return "home/home";
+//        }
 
-
-            CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
-            ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
-            resultDto.setData((HomeDetailResponseDto) allResultList.getData());
-            model.addAttribute("resultDto", resultDto);
-            //TODO: main view 만들기
-            return "home/home";
-
-        } catch (NotFoundException e) {
-            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
-            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
-            return "home/home";
-        }
-
+        CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
+        ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
+        resultDto.setData((HomeDetailResponseDto) allResultList.getData());
+        model.addAttribute("resultDto", resultDto);
+        //TODO: main view 만들기
+        return "home/home";
 
     }
 
