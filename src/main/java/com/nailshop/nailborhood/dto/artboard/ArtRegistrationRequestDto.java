@@ -13,6 +13,5 @@ public class ArtRegistrationRequestDto {
 
     private String name;
     private String content;
-    private Long shopId;
     private List<Long> categoryIdList;
 }

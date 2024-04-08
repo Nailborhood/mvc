@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/artboard/art_search.js}"></script>
     <script th:src="@{/js/artboard/art_category.js}"></script>
 </head>
 
@@ -22,13 +23,13 @@
 
     <div th:unless="${error}" layout:fragment="content">
         <div class="search-bar">
-            <div th:replace="fragments/components/search/searchbar.html"></div>
-            <div th:replace="fragments/components/search/check_category.html"></div>
+            <div th:replace="artboard/art_searchbar.html"></div>
+            <div th:replace="artboard/art_category.html"></div>
         </div>
 
         <div class="art-list" id="art-list">
             <div th:each="art, iterStat : ${result.getData().artResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
-                <a th:href="@{/user/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                <a th:href="@{/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
                     <div class="art-img">
                         <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
                     </div>
@@ -39,7 +40,21 @@
             </div>
         </div>
 
-        <div th:replace="fragments/components/pagination/pagination.html"></div>
+        <div class="pagination">
+            <div class="pagination-div">
+                <ul class="pagination-ul">
+                    <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == 1}">
+                        <a class="page-link" th:href="@{'/artboard/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                        <a class="page-link" th:href="@{'/artboard/inquiry?page=' + ${pageNum}}" th:text="${pageNum}">pageNo</a>
+                    </li>
+                    <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == result.getData().paginationDto.totalPages}">
+                        <a class="page-link" th:href="@{'/artboard/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </body>
 
