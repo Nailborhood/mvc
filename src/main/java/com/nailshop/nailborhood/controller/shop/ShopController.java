@@ -7,6 +7,7 @@ import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
@@ -47,23 +48,29 @@ public class ShopController {
                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                                                       @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*/
-                                Model model) {
-        try {
+            Model model) {
+//        try {
+//
+//
+//            CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
+//            ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
+//            resultDto.setData((HomeDetailResponseDto) allResultList.getData());
+//            model.addAttribute("resultDto", resultDto);
+//            //TODO: main view 만들기
+//            return "home/home";
+//
+//        } catch (NotFoundException e) {
+//            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+//            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
+//            return "home/home";
+//        }
 
-
-            CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
-            ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
-            resultDto.setData((HomeDetailResponseDto) allResultList.getData());
-            model.addAttribute("resultDto" ,resultDto);
-            //TODO: main view 만들기
-            return "home/home";
-
-        }catch (NotFoundException e){
-            model.addAttribute("errorCode",ErrorCode.SHOP_NOT_FOUND);
-            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
-           return  "home/home";
-        }
-
+        CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
+        ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
+        resultDto.setData((HomeDetailResponseDto) allResultList.getData());
+        model.addAttribute("resultDto", resultDto);
+        //TODO: main view 만들기
+        return "home/home";
 
     }
 
@@ -124,22 +131,37 @@ public class ShopController {
                                 @AuthenticationPrincipal MemberDetails memberDetails,
                                 @PathVariable Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
-        boolean error = false;
 
-//        try {
-            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
+        // 로그인 여부를 확인
+        boolean isLoggedIn = memberDetails != null;
 
-            model.addAttribute("shopDetail", shopDetail.getData());
-            model.addAttribute("isLoggedIn", memberDetails != null);
-            model.addAttribute("error", error);
-//        }catch (Exception e){
-//            error = true;
-//            model.addAttribute("error", error);
-//        }
 
-        return "shop/shop_detail";
+        CommonResponseDto<Object> shopDetail;
+
+        if (isLoggedIn) {
+            // 로그인한 경우
+            shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
+        } else {
+            shopDetail = shopDetailService.getShopDetailForGuest(shopId);
+
+        }
+        // 결과 데이터 처리
+        try {
+            ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+            resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
+            model.addAttribute("memberNickname", nicknameSpace);
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("resultDto", resultDto);
+            return "shop/shop_detail";
+        } catch (NotFoundException e) {
+
+            model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+            model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_REGISTRATION);
+            model.addAttribute("ArtErrorCode", ErrorCode.ART_NOT_REGISTRATION);
+            return "shop/shop_detail";
+        }
     }
 
 
@@ -153,7 +175,8 @@ public class ShopController {
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
@@ -172,7 +195,6 @@ public class ShopController {
 
         return "shop/shop_review_list";
     }
-
 
 
     // 매장 아트 조회

@@ -209,7 +209,7 @@ public class MyPageController {
 
 
     // 매장 신청 조회
-    @PreAuthorize("hasRole('ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
     @GetMapping("/owner/shop/request/list")
     public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
         try {

@@ -17,14 +17,12 @@ import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,35 +49,41 @@ public class ShopReviewListLookupService {
         Page<Review> reviews = reviewRepository.findAllNotDeletedByShopId(pageable, shopId);
 
 
-        if (reviews.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_REGISTRATION);
+       if (reviews.isEmpty()) {
+           return commonService.errorResponse(ErrorCode.REVIEW_NOT_REGISTRATION.getDescription(), HttpStatus.OK, null);
+       }
 
-        // review entity -> dto 변환
+
+
+            // review entity -> dto 변환
         Page<ShopAndReviewLookUpResponseDto> data = reviews.map(review -> {
-            Long reviewId = review.getReviewId();
-            // 리뷰 이미지 가져오기
-            String reviewImgPath = reviewImgRepository.findReviewImgByShopIdAndReviewId(shopId, reviewId);
-            String shopMainImgPath = shopImgRepository.findShopImgByShopId(shopId);
+                Long reviewId = review.getReviewId();
+                // 리뷰 이미지 가져오기
+                String reviewImgPath = reviewImgRepository.findReviewImgByShopIdAndReviewId(shopId, reviewId);
+                String shopMainImgPath = shopImgRepository.findShopImgByShopId(shopId);
 
-            // dto에 shop entity 값을 변환하는 과정
-            ShopAndReviewLookUpResponseDto dto = new ShopAndReviewLookUpResponseDto(
-                    reviewId,
-                    review.getContents(),
-                    review.getRate(),
-                    reviewImgPath,
-                    review.getCreatedAt(),
-                    review.getCustomer().getMember().getNickname(),
-                    shop.getName(),
-                    shop.getAddress(),
-                    shop.getOpentime(),
-                    shop.getRateAvg(),
-                    shop.getReviewCnt(),
-                    shop.getFavoriteCnt(),
-                    shopMainImgPath,
-                    shopId
-            );
-            // data 에 dto 반환
-            return dto;
-        });
+                // dto에 shop entity 값을 변환하는 과정
+                ShopAndReviewLookUpResponseDto dto = new ShopAndReviewLookUpResponseDto(
+                        reviewId,
+                        review.getContents(),
+                        review.getRate(),
+                        reviewImgPath,
+                        review.getCreatedAt(),
+                        review.getCustomer()
+                              .getMember()
+                              .getNickname(),
+                        shop.getName(),
+                        shop.getAddress(),
+                        shop.getOpentime(),
+                        shop.getRateAvg(),
+                        shop.getReviewCnt(),
+                        shop.getFavoriteCnt(),
+                        shopMainImgPath,
+                        shopId
+                );
+                // data 에 dto 반환
+                return dto;
+            });
 
 
         // 리뷰 리스트 가져오기
