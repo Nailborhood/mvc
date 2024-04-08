@@ -154,7 +154,7 @@ public class ArtInquiryService {
     }
 
     // shopId로 조회
-    public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> inquiryAllArtByShopId(MemberDetails memberDetails, int page, int size, String sortBy, String keyword) {
 
         // member, owner, shop get
         Member member = memberDetails.getMember();
@@ -164,19 +164,16 @@ public class ArtInquiryService {
         // Page 설정 및 ArtRefList get
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
-        Page<ArtRef> artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
-        if (artRefPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+        Page<ArtRef> artRefPage;
+
+        if (keyword == null){
+            artRefPage = artRefRepository.findAllNotDeletedBYShopId(pageable, shop.getShopId());
+        } else {
+            artRefPage = artRefRepository.findArtRefByKeywordAndShopId(pageable, keyword, shop.getShopId());
+        }
 
         List<ArtRef> artRefList = artRefPage.getContent();
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
-
-        List<ArtRef> filteredArtRefList = artRefList.stream()
-                .filter(artRef -> artRef.getShop() != null && artRef.getShop().getShopId().equals(shop.getShopId()))
-                .toList();
-
-        if (filteredArtRefList.isEmpty()) {
-            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-        }
 
         // ArtResponseDto build
         for (ArtRef artRef : artRefList){

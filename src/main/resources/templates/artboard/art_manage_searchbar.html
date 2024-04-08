@@ -1,0 +1,13 @@
+<div th:fragment="search-bar">
+    <form id="search-form" th:action="@{/owner/artboard/manage}" method="get">
+        <div class="search-field">
+            <div>검색</div>
+            <div class="search-div">
+                <input id="search-input" type="text" name="keyword" />
+                <div class="search-icon" onclick="document.getElementById('search-form').submit();">
+                    <img src="/assets/icons/shop/search.svg" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

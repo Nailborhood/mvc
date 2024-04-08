@@ -101,6 +101,18 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
                                             @Param("numberOfSelectedCategories") int numberOfSelectedCategories,
                                             Pageable pageable);
 
+    // 아트 검색 (keyword + shopId)
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "WHERE a.name LIKE %:keyword% " +
+            "AND a.isDeleted = false " +
+            "AND s.shopId = :shopId " +
+            "AND s.isDeleted = false")
+    Page<ArtRef> findArtRefByKeywordAndShopId(Pageable pageable,
+                                              @Param("keyword") String keyword,
+                                              @Param("shopId") Long shopId);
+
     // 관리자 아트 검색 (네일이름, 매장이름)
     @Query("SELECT a " +
             "FROM ArtRef a " +

@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.owner;
 
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
@@ -10,6 +11,7 @@ import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
@@ -39,6 +41,7 @@ public class OwnerController {
     private final ShopModificationService shopModificationService;
     private final ShopDetailService shopDetailService;
     private final ShopRegistrationService shopRegistrationService;
+    private final CategoryRepository categoryRepository;
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
@@ -80,18 +83,18 @@ public class OwnerController {
                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                    @RequestParam(value = "size", defaultValue = "5", required = false) int size,
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "keyword", required = false) String keyword,
                                    Model model) {
-
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(memberDetails, page, size, sortBy);
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(memberDetails, page, size, sortBy, keyword);
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
             model.addAttribute("result", resultDto);
-            model.addAttribute("sortBy", sortBy);
-            model.addAttribute("size", size);
+            model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("keyword", keyword);
             model.addAttribute("error", error);
         } catch (Exception e) {
 

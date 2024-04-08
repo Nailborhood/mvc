@@ -1,6 +1,6 @@
 <div th:fragment="check-category">
     <div class="checkbox-button_row">
-        <div th:each="category : ${categories}" class="checkbox-button">
+        <div th:each="category : ${categories}" class="checkbox-button" onclick="toggleCheckbox(this)">
             <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
             <div class="checked-div">
                 <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
