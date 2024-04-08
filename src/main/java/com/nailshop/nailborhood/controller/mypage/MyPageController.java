@@ -3,8 +3,6 @@ package com.nailshop.nailborhood.controller.mypage;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.member.MemberInfoDto;
-import com.nailshop.nailborhood.dto.member.request.BeforeModPasswordCheckRequestDto;
 import com.nailshop.nailborhood.dto.member.request.ModMemberInfoRequestDto;
 import com.nailshop.nailborhood.dto.member.request.ModPasswordRequestDto;
 import com.nailshop.nailborhood.dto.mypage.MyFavoriteListResponseDto;
@@ -19,8 +17,6 @@ import com.nailshop.nailborhood.service.mypage.MypageService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRequestLookupService;
 import com.nailshop.nailborhood.type.ErrorCode;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -103,14 +99,27 @@ public class MyPageController {
 
     }
 
+    // 비밀번호 수정 페이지
+    @GetMapping("/password")
+    public String modPasswordPage(@AuthenticationPrincipal MemberDetails memberDetails,
+                                  Model model,
+                                  ModPasswordRequestDto modPasswordRequestDto) {
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        model.addAttribute("modPasswordRequestDto",modPasswordRequestDto);
+        return "mypage/modify_password_form";
+    }
+
     // 비밀번호 수정
+    // TODO 수정 에러처리 필요
     @PostMapping("/modifyPassword")
-    public ResponseEntity<ResultDto<Void>> modifyPassword(@RequestHeader(AUTH) String accessToken,
-                                                          @RequestBody ModPasswordRequestDto modPasswordRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(accessToken, modPasswordRequestDto);
-        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
+    @ResponseBody
+    public String modifyPassword(@AuthenticationPrincipal MemberDetails memberDetails,
+                                 @ModelAttribute ModPasswordRequestDto modPasswordRequestDto) {
+        Long id = memberDetails.getMember().getMemberId();
+        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(id, modPasswordRequestDto);
+        if(commonResponseDto.getHttpStatus().is2xxSuccessful()) return "redirect:/mypage/myInfo";
+        else return ""; // 에러처리
     }
 
     // 프로필 수정
@@ -123,18 +132,9 @@ public class MyPageController {
                              .body(result);
     }
 
-    // 비밀번호 수정 전 확인
-    @PostMapping("/passwordCheck")
-    public ResponseEntity<ResultDto<Object>> passwordCheck(@RequestHeader(AUTH) String accessToken,
-                                                           @RequestBody BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.beforeUpdatePassword(accessToken, beforeModPasswordCheckRequestDto);
-        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((boolean) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                .body(result);
-    }
 
     //  내 정보 확인
+//    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
     public String modifyInfoPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model) {
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";

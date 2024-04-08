@@ -241,29 +241,19 @@ public class MemberService {
         }
     }
 
-    // 비밀번호 수정 전 비밀번호 확인 (마이페이지로 이동 핋요)
-    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
-        Long id = tokenProvider.getUserId(accessToken);
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-        boolean match = passwordCheck(member.getEmail(), beforeModPasswordCheckRequestDto.getPasswordCheck());
-        return commonService.successResponse(SuccessCode.PASSWORD_CHECK_SUCCESS.getDescription(), HttpStatus.OK, match);
-    }
-
     // 비밀번호 수정 (마이페이지로 이동 필요)
     @Transactional
-    public CommonResponseDto<Object> updatePassword(String accessToken, ModPasswordRequestDto modPasswordRequestDto) {
-        boolean match = modPasswordRequestDto.getPassword().equals(modPasswordRequestDto.getPasswordCheck());
-        if (!match)
+    public CommonResponseDto<Object> updatePassword(Long id, ModPasswordRequestDto modPasswordRequestDto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        boolean check = passwordCheck(member.getEmail(), modPasswordRequestDto.getOldPassword());
+        boolean match = modPasswordRequestDto.getNewPassword().equals(modPasswordRequestDto.getNewPasswordCheck());
+        if (!match || !check)
             return commonService.errorResponse(ErrorCode.PASSWORD_CHECK_FAIL.getDescription(), HttpStatus.BAD_REQUEST, modPasswordRequestDto);
         else {
-            Long id = tokenProvider.getUserId(accessToken);
-            Member member = memberRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
 
-            String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getPassword());
+            String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getNewPassword());
             memberRepository.updateMemberPasswordByMemberId(id, encodedPassword);
-
             return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         }
     }
