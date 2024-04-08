@@ -118,8 +118,9 @@
                         </div>
                     </div>
                 </div>
-                <div th:if="${ArtErrorCode}" class="error-code" th:text="${errorCode.description}"></div>
-                <div class="shop-art" th:unless="${ArtErrorCode}">
+<!--                <div th:if="${ArtErrorCode}" class="error-code" th:text="${errorCode.description}"></div>-->
+<!--                <div class="shop-art" th:unless="${ArtErrorCode}">-->
+                <div class="shop-art">
                     <div class="art-row">
                         <span class="art">아트</span>
                         <a th:href="@{/art/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}" class="shop-art-link">
@@ -128,6 +129,7 @@
                     </div>
                     <div class="division-line"></div>
                     <div class="art-img-row">
+                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0 }">
                         <div class="art-list-block" th:each="shopArt : ${resultDto.getData().getShopArtBoardLookupResponseDtoList()}">
                             <a class="art-link" th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
                                 <div class="art-img">
@@ -135,10 +137,15 @@
                                 </div>
                             </a>
                         </div>
+                        </div>
+                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() == 0}">
+                            <p>등록된 아트판이 없습니다</p>
+                        </div>
                     </div>
                 </div>
-                <div th:if="${ReviewErrorCode}" class="error-code" th:text="${errorCode.description}"></div>
-                <div class="shop-review" th:unless="${ReviewErrorCode}">
+<!--                <div th:if="${ReviewErrorCode}" class="error-code" th:text="${errorCode.description}"></div>-->
+<!--                <div class="shop-review" th:unless="${ReviewErrorCode}">-->
+                <div class="shop-review">
                     <div class="review-row">
                         <span class="review">리뷰</span>
                         <a th:href="@{/review/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}" class="shop-review-link">
@@ -147,12 +154,17 @@
                     </div>
                     <div class="division-line"></div>
                     <div class="review-img-row">
+                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() != 0 }">
                         <div class="review-list-block" th:each="shopReview : ${resultDto.getData().getShopReviewLookupResponseDtoList()}">
                             <a class="review-link" th:href="@{/review/inquiry/{reviewId}(reviewId=${shopReview.reviewId}, shopId=${shopReview.shopId})}"  role="link">
                                 <div class="review-img">
                                     <img th:src="@{${shopReview.reviewImgPath}}">
                                 </div>
                             </a>
+                        </div>
+                        </div>
+                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() == 0}">
+                            <p>등록된 리뷰가 없습니다</p>
                         </div>
                     </div>
                 </div>
