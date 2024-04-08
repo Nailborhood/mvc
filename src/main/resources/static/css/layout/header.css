@@ -56,7 +56,7 @@ header {
 .profile-field {
     margin: 5px;
     position: absolute;
-    right: 35px;
+    right: 38px;
     top: 38px;
     cursor: pointer;
     display: flex;
@@ -88,22 +88,26 @@ header {
 
 #profile-mypage-div {
     position: absolute;
-    width: 110px;
-    height: 140px;
+    width: 115px;
+    /*height: 140px;*/
     top: 52px;
-    right: -30px;
+    right: -35px;
     border: 1px solid var(--shadow_1);
     border-radius: 4px;
     background-color: white;
 }
 
 #profile-mypage-div ul {
-    height: 140px;
+    /*height: 140px;*/
     display: flex;
     flex-direction: column;
     font-size: 15px;
     justify-content: space-evenly;
     margin: 0 13px;
+}
+
+#profile-mypage-div ul > li {
+    padding: 3px 0;
 }
 
 #profile-mypage-div > ul > li > a {
