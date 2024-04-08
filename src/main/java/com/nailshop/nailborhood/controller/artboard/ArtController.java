@@ -37,14 +37,12 @@ public class ArtController {
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/register")
     public String showRegisterArt(@AuthenticationPrincipal MemberDetails memberDetails,
-                                  Model model,
-                                  ArtRegistrationRequestDto artRegistrationRequestDto){
+                                  Model model){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
         List<Category> categoryList = categoryRepository.findAll();
 
-        model.addAttribute("artDto", artRegistrationRequestDto);
         model.addAttribute("categories", categoryList);
         model.addAttribute("memberNickname", nicknameSpace);
 
