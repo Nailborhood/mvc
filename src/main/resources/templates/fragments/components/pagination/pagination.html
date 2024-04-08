@@ -1,12 +1,15 @@
 <div class="pagination">
     <div class="pagination-div">
         <ul class="pagination-ul">
-            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == 1}">
+                <a class="page-link" th:href="@{'/artboard/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+            </li>
+            <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                <a class="page-link" th:href="@{'/artboard/inquiry?page=' + ${pageNum}}" th:text="${pageNum}">pageNo</a>
+            </li>
+            <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == result.getData().paginationDto.totalPages}">
+                <a class="page-link" th:href="@{'/artboard/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+            </li>
         </ul>
     </div>
 </div>
-
