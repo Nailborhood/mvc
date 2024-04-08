@@ -17,7 +17,7 @@
     <div th:insert="~{fragments/components/request_side::request_side}" class="sidebar-div"></div>
     <div class="content">
         <span class="mypage-title-span">매장 신청 목록</span>
-        <div class="mypage-content-div">
+        <div class="request-content-div">
 
             <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
             <!-- 매장 리스트 -->
