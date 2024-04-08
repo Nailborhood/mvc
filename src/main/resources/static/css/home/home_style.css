@@ -7,78 +7,23 @@
     --main-color_navy: #1d438a;
 }
 
-/*.empty-message {*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-
-/*}*/
-
-.shop-detail {
+.home {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 50px auto;
     position: relative;
 }
 
-.shop-title {
-    padding: 10px 0px;
-    margin: 10px 0px;
+.event-image {
+    margin: 50px auto;
 }
 
-.title-star {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 7px 0px;
+.event-image .main img{
+    width: 100%;
 }
 
-.review-post-link-container {
-    margin-left: 20px;
-}
-
-.title {
-    font-size: 40px;
-    font-weight: bold;
-}
-
-.heart {
-    flex-direction: column;
-    margin-left: 10px;
-    width: 38px;
-    /*height: 38px;*/
-}
-
-.heart img {
-    width: 32px;
-    height: 27px;
-}
-
-.heart-cnt {
-    font-size: 14px;
-    margin-left: 12px;
-    color: #82817e;
-}
-
-.review-post-link {
-    text-decoration: none;
-    padding: 3px 10px;
-    border: none;
-    background-color: #1d438a; /* 빨간색 배경 */
-    color: white; /* 텍스트는 흰색 */
-    cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
-    border-radius: 5px;
-}
-
-.review-post-link:hover {
-    background-color: rgba(43, 107, 225, 0.287);
-}
-
-#review {
-    color: var(--shadow_3);
-}
 
 .image-slider-wrapper {
     width: 100%;
@@ -97,7 +42,7 @@
 .image-slide.active {
     display: block;
 }
-
+/*
 .prev, .next {
     cursor: pointer;
     position: absolute;
@@ -184,8 +129,8 @@ td {
 
 .map-img {
     margin-top: 10px;
-    width: 700px;  /* 가로 크기 조정 */
-    height: 300px; /* 세로 크기 조정 */
+    width: 700px;  !* 가로 크기 조정 *!
+    height: 300px; !* 세로 크기 조정 *!
 }
 
 .shop-menu {
@@ -203,10 +148,12 @@ td {
 .price-row {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* 세로 중앙 정렬을 위해 추가 */
-    padding: 10px 0; /* 경계선과 텍스트 사이의 간격을 주기 위해 추가 */
+    align-items: center; !* 세로 중앙 정렬을 위해 추가 *!
+    padding: 10px 0; !* 경계선과 텍스트 사이의 간격을 주기 위해 추가 *!
     width: 400%;
-}
+}*/
+
+
 .separator {
     display: inline-block;
     height: 1px;
@@ -216,18 +163,19 @@ td {
     vertical-align: middle;
 }
 
-.shop-art , .shop-review {
+.best-artRef ,  .best-shop-review , .best-shop-rate {
     display: flex;
     flex-direction: column;
     padding-bottom: 0px;
     padding-top: 0px;
     position: relative;
     /*margin-left: 7px;*/
-    margin-bottom: 13px;
-    align-items: flex-start;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    align-items: center;
 }
 
-.art-row , .review-row {
+.artRef-row , .review-row , .rate-row {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -236,50 +184,49 @@ td {
     margin-bottom: 1px;
 }
 
-.art , .review {
-    font-size: 27px;
+.artRef , .review , .rate {
+    font-size: 20px;
 }
 
-.shop-art-link , .shop-review-link , .art-link , .review-link {
+.artRef-link ,  .review-link , .rate-link {
     text-decoration: none;
 }
 
-.shop-art-link img , .shop-review-link img {
+.shop-artRef-best-link img , .shop-review-best-link img , .shop-rate-best-link img {
     width: 50px; /* 너비 설정 */
-    height: 50px; /* 높이는 자동으로 설정 */
+    height: 40px; /* 높이는 자동으로 설정 */
 }
 
-.art-img-row , .review-img-row {
-    align-items: flex-start;
+.artRef-img-row , .review-img-row , .rate-img-row {
+    align-items: stretch;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
     position: relative;
     margin-bottom: 4px;
-    justify-content: flex-start; /* 변경된 부분 */
 }
 
-.art-list-block , .review-list-block {
+.artRef-list-block , .review-list-block , .rate-list-block{
     display: block;
     position: relative;
-    /*width: 100%;*/
+    width: 100%;
     margin-right: 7px;
-    /*max-*/width: 230px;
-    height: 230px;
+    max-width: 250px;
+    height: 250px;
 }
 
-.art-img , .review-img  {
+.artRef-img , .review-img .rate-img {
     display: block;
     overflow: hidden;
     position: relative;
 }
 
-.art-img img, .review-img img {
+.artRef-img img, .review-img img ,.rate-img img{
     object-fit: cover;
-    /*width: 100%;*/
-    /*max-*/width: 230px;
-    height: 230px;
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
 }
 
 .division-line {
@@ -289,33 +236,33 @@ td {
 }
 
 /* 승인, 반려 버튼 */
-.button-group .approve-button {
-    height: 31px;
-    width: 150px;
-    font-size: 15px;
-    border: none;
-    background-color: #4de548;
-    border-radius: 5px;
-    cursor: pointer;
-    color: var(--main-color_begie);
-    margin-right: 20px;
-}
+/*.button-group .approve-button {*/
+/*    height: 31px;*/
+/*    width: 150px;*/
+/*    font-size: 15px;*/
+/*    border: none;*/
+/*    background-color: #4de548;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    color: var(--main-color_begie);*/
+/*    margin-right: 20px;*/
+/*}*/
 
-.button-group .reject-button {
-    height: 31px;
-    width: 150px;
-    font-size: 15px;
-    border: none;
-    background-color: #c92424;
-    border-radius: 5px;
-    cursor: pointer;
-    color: var(--main-color_begie);
-}
+/*.button-group .reject-button {*/
+/*    height: 31px;*/
+/*    width: 150px;*/
+/*    font-size: 15px;*/
+/*    border: none;*/
+/*    background-color: #c92424;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    color: var(--main-color_begie);*/
+/*}*/
 
-.approve-button:hover {
-    background-color: #daf193;
-}
+/*.approve-button:hover {*/
+/*    background-color: #daf193;*/
+/*}*/
 
-.reject-button:hover{
-    background-color: rgba(229, 97, 97, 0.29);
-}
+/*.reject-button:hover{*/
+/*    background-color: rgba(229, 97, 97, 0.29);*/
+/*}*/

@@ -16,6 +16,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.address.CityRepository;
 import com.nailshop.nailborhood.repository.address.DistrictsRepository;
 import com.nailshop.nailborhood.repository.address.DongRepository;
+import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
@@ -51,10 +52,11 @@ public class ShopDetailService {
     private final DongRepository dongRepository;
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
+    private final FavoriteRepository favoriteRepository;
 
     // 매장 상세 조회
     @Transactional
-    public CommonResponseDto<Object> getShopDetail(Long shopId) {
+    public CommonResponseDto<Object> getShopDetail(Long shopId, MemberDetails memberDetails) {
 
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -81,6 +83,16 @@ public class ShopDetailService {
                                                                         .findFirst()
                                                                         .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
+        if(memberDetails != null){
+            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberDetails.getMember().getMemberId(), shopId);
+            if(heartStatus == null){
+                heartStatus = false;
+            }
+            shopDetailLookupResponseDto.setHeartStatus(heartStatus);}
+//        }else {
+//            Boolean heartStatus = false;
+//        }
+
 
         List<MenuDetailResponseDto> menuDetailResponseDtoList = menuRepository.findAllByShopId(shopId);
         List<ShopImgListResponseDto> shopImgListResponseDtoList = shopImgRepository.findAllByShopImgListByShopId(shopId);
@@ -103,6 +115,7 @@ public class ShopDetailService {
         } else {
             // 리뷰가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             reviewListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+            if (reviewListData.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
         // 아트보드 데이터 처리
@@ -114,6 +127,7 @@ public class ShopDetailService {
         } else {
             // 아트가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             artBoardListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+            if (artBoardListData.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
         }
 
 

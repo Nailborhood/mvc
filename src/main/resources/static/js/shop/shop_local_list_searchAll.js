@@ -67,10 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var districtsOptions = districtsSelect.getElementsByTagName('option');
 
 
-        for (var i = 1; i < districtsOptions.length; i++) {
-            if (districtsOptions[i].getAttribute('data-city-id') === cityId /*|| districtsOptions[i].value === ""*/) {
+        for (var i = 0; i < districtsOptions.length; i++) {
+            if (districtsOptions[i].getAttribute('data-city-id') === cityId || districtsOptions[i].value === "") {
                 districtsOptions[i].style.display = 'block';
-            } else if (districtsOptions[i].value === ""){
+            } else {
                 districtsOptions[i].style.display = 'none';
             }
         }
@@ -97,4 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
         //dongSelect.style.display = 'block';
         dongSelect.value = localStorage.getItem('dongId');
     }
+
+/*    window.addEventListener('beforeunload', function() {
+        localStorage.clear();
+    });*/
 });
+

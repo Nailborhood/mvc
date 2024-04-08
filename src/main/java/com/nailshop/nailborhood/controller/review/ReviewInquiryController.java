@@ -70,8 +70,8 @@ public class ReviewInquiryController {
             List<Map<String, String>> criteriaOptions = reviewInquiryService.createCriteriaOptions();
 
             model.addAttribute("result", resultDto);
-//            model.addAttribute("orderby", criteria);
-//            model.addAttribute("size", size);
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
             model.addAttribute("criteriaOptions", criteriaOptions);
             model.addAttribute("error", error);
 

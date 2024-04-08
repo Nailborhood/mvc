@@ -64,7 +64,7 @@ header {
     align-items: center;
 }
 
-#profile-img-field {
+#profile-img-field, #login-img-field {
     position: relative;
     background-color: #82817e;
     width: 50px;
@@ -73,7 +73,7 @@ header {
     overflow: hidden;
 }
 
-#profile-img-field img {
+#profile-img-field img, #login-img-field img {
     width: 100%;
     height: 100%;
     object-fit: cover;

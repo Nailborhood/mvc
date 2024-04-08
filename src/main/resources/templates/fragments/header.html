@@ -31,9 +31,16 @@
             </a>
         </div>
         <div class="profile-field">
-            <div id="profile-img-field">
-                <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
-            </div>
+            <a sec:authorize="isAuthenticated()" href="#">
+                <div id="profile-img-field">
+                    <!-- <img src="/src/asset/icons/IMG_2411.jpg" /> -->
+                </div>
+            </a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">
+                <div id="login-img-field">
+                     <img src="/assets/icons/IMG_2411.jpg" />
+                </div>
+            </a>
             <div sec:authorize="isAuthenticated()" id="profile-mypage-div">
                 <ul sec:authorize="hasRole('ROLE_USER')">
                     <li><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
@@ -67,7 +74,7 @@
                 <li><a th:href="@{/}">홈</a></li>
                 <li><a th:href="@{/review/inquiry}">리뷰</a></li>
                 <li><a th:href="@{/shop/list}">내 주변</a></li>
-                <li><a th:href="@{/artboard/inquiry}">아트판</a></li>
+                <li><a th:href="@{/user/artboard/inquiry}">아트판</a></li>
             </ul>
         </div>
         </header>

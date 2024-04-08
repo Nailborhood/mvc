@@ -10,6 +10,7 @@
     <script th:src="@{/js/shop/favorite.js}"></script>
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/shop/shop_detail.js}"></script>
+    <script th:src="@{/js/shop/shop_favoriteLoad.js}"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_detail_style.css}">
 </head>
@@ -24,15 +25,16 @@
                         <div class="title-container">
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
-                        <!--TODO : 좋아요 상태에따른 버튼 변경, 로그인하지않고 좋아요 -> alert창-->
                         <div class="heart">
-                            <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}">
-                                <img src="/assets/icons/shop/heart.svg" />
+                            <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}" th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+
+                                <img th:id="heartImg" src="/assets/icons/shop/emptyHeart.svg" />
                             </a>
+                            <span class="heart-cnt" th:text="${shop.favoriteCnt}"></span>
                         </div>
-                        <span class="heart-cnt" th:text="${shop.favoriteCnt}"></span>
+
                         <div class="review-post-link-container">
-                            <a class="review-post-link" th:href="@{{shopId}/review/registration (shopId=${shop.shopId})}" >
+                            <a class="review-post-link" th:href="@{/{shopId}/review/registration (shopId=${shop.shopId})}" >
                                 리뷰쓰기
                             </a>
                         </div>
@@ -116,7 +118,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop-art">
+                <div th:if="${error}" class="empty-message">
+                    등록된 아트가 없습니다.
+                </div>
+                <div class="shop-art" th:unless="${error}">
                     <div class="art-row">
                         <span class="art">아트</span>
                         <a th:href="@{/art/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-art-link">
@@ -126,7 +131,7 @@
                     <div class="division-line"></div>
                     <div class="art-img-row">
                         <div class="art-list-block" th:each="shopArt : ${shopDetail.shopArtBoardLookupResponseDtoList}">
-                            <a class="art-link" href="#" role="link">
+                            <a class="art-link" th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
                                 <div class="art-img">
                                     <img th:src="@{${shopArt.artImgPath}}">
                                 </div>
@@ -134,7 +139,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop-review">
+                <div th:if="${error}" class="empty-message">
+                    등록된 리뷰가 없습니다.
+                </div>
+                <div class="shop-review" th:unless="${error}">
                     <div class="review-row">
                         <span class="review">리뷰</span>
                         <a th:href="@{/review/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-review-link">

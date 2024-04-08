@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.shop;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
@@ -41,20 +42,30 @@ public class ShopController {
 
 
     // main
-/*    @GetMapping(value = "/home")
-    public String getAllShops(*//*@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+    @GetMapping(value = "/")
+    public String getAllShops(/*@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                       @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                       @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                      @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*//*
+                                                                      @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*/
                                 Model model) {
+        try {
 
-        CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getHome();
-        ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
-        resultDto.setData((ShopListResponseDto) allShopsList.getData());
 
-        //TODO: main view 만들기
-        return null;
-    }*/
+            CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
+            ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
+            resultDto.setData((HomeDetailResponseDto) allResultList.getData());
+            model.addAttribute("resultDto" ,resultDto);
+            //TODO: main view 만들기
+            return "home/home";
+
+        }catch (NotFoundException e){
+            model.addAttribute("errorCode",ErrorCode.SHOP_NOT_FOUND);
+            model.addAttribute("errorCodeArt", ErrorCode.ART_NOT_FOUND);
+           return  "home/home";
+        }
+
+
+    }
 
     // 전체 매장 조회
     @GetMapping(value = "/shopList")
@@ -117,15 +128,16 @@ public class ShopController {
         model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
-        try {
-            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+//        try {
+            CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
             model.addAttribute("shopDetail", shopDetail.getData());
+            model.addAttribute("isLoggedIn", memberDetails != null);
             model.addAttribute("error", error);
-        }catch (Exception e){
-            error = true;
-            model.addAttribute("error", error);
-        }
+//        }catch (Exception e){
+//            error = true;
+//            model.addAttribute("error", error);
+//        }
 
         return "shop/shop_detail";
     }

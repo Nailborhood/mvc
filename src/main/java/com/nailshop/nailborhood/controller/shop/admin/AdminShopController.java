@@ -2,6 +2,8 @@ package com.nailshop.nailborhood.controller.shop.admin;
 
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.member.admin.ShopRegistrationHandler;
@@ -34,9 +36,9 @@ public class AdminShopController {
     private final ShopDetailService shopDetailService;
 
     // 매장 신청 조회
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/admin/search/shop/request")
     public String getAllShops(Model model,
-                              //@RequestHeader(AUTH) String accessToken,
                               @RequestParam(value = "keyword", required = false) String keyword,
                               @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
@@ -46,7 +48,10 @@ public class AdminShopController {
 
         try {
             CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
-            model.addAttribute("requestList", allShopRequestList.getData());
+            ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopRequestList.getStatus(), allShopRequestList.getMessage());
+            resultDto.setData((AllShopsListResponseDto) allShopRequestList.getData());
+            model.addAttribute("resultDto" ,resultDto);
+
             return "admin/admin_shop_registration_list";
         } catch (NotFoundException e) {
 
@@ -57,12 +62,13 @@ public class AdminShopController {
     }
 
     // 매장 신청 상세 조회
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
     public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
                                 @PathVariable Long shopId){
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
@@ -72,10 +78,11 @@ public class AdminShopController {
         return "admin/admin_shop_registration";
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 삭제", description = "admin API")
+
+
 
     // 매장 삭제
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/delete/shop")
     public String deleteShop(@RequestParam Long shopId) {
          shopDeleteService.deleteShop(shopId);
@@ -83,10 +90,9 @@ public class AdminShopController {
         return "redirect:/admin/search/shop";
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 상태 변경 ", description = "admin API")
+
     // 매장 상태 변경
-    @PutMapping("/admin/shopStatus/{shopId}")
+/*    @PutMapping("/admin/shopStatus/{shopId}")
     public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
                                                                     @PathVariable Long shopId,
                                                                     @RequestParam(value = "status") String status) {
@@ -95,10 +101,10 @@ public class AdminShopController {
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
-    }
+    }*/
 
     // 매장등록신청 승인
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin/shop/approve/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopApprove(@AuthenticationPrincipal MemberDetails memberDetails,
                                                        @PathVariable Long shopId){
@@ -109,7 +115,7 @@ public class AdminShopController {
     }
 
     // 매장등록신청 거절
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/admin/shop/reject/{shopId}")
     public ResponseEntity<ResultDto<Void>> shopReject(@AuthenticationPrincipal MemberDetails memberDetails,
                                                       @PathVariable Long shopId){
