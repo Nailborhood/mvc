@@ -1,7 +1,7 @@
 <div th:fragment="search-bar">
-    <form id="search-form" th:action="@{/search/artRef}" method="get">
+    <form id="search-form" th:action="@{/artboard/inquiry}" method="get">
         <div class="search-field">
-            <div>제목</div>
+            <div>검색</div>
             <div class="search-div">
                 <input id="search-input" type="text" name="keyword" />
                 <div class="search-icon" onclick="submitSearch()">

@@ -145,11 +145,12 @@ public class ArtController {
                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                   @RequestParam(value = "keyword", required = false) String keyword,
                                    Model model){
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category, keyword);
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
@@ -158,6 +159,7 @@ public class ArtController {
             model.addAttribute("result", resultDto);
             model.addAttribute("error", error);
             model.addAttribute("categories", categoryList);
+            model.addAttribute("keyword", keyword);
         } catch (Exception e) {
 
             error = true;
@@ -170,11 +172,12 @@ public class ArtController {
 
     // 아트판 전체 조회(카테고리 선택)
     @GetMapping("/artboard/category/inquiry")
-    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
-                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRefByCategory(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                                                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                                                                    @RequestParam(value = "keyword", required = false) String keyword){
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category, keyword);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
         resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 

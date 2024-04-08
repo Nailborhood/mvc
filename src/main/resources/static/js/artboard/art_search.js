@@ -1,10 +1,17 @@
 function submitSearch() {
-    document.getElementById('search-form').submit();
+    filterArtByCategory();
 }
 
-document.getElementById('search-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        submitSearch();
+window.onload = function() {
+    var searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                filterArtByCategory();
+            }
+        });
+    } else {
+        console.log('search-input element not found');
     }
-});
+};

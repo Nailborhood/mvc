@@ -37,7 +37,7 @@ public class ArtInquiryService {
     private final CategoryArtRepository categoryArtRepository;
 
     // 전체 조회
-    public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category) {
+    public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category, String keyword) {
 
         // category 리스트화
         List<Long> categoryIdList = null;
@@ -52,16 +52,31 @@ public class ArtInquiryService {
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
         Page<ArtRef> artRefPage;
-        if (categoryIdList == null || categoryIdList.isEmpty()){
-            // 카테고리 선택 x
-            artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
-        } else {
-            // 카테고리 선택 o
-            int categoryIdListSize = categoryIdList.size();
-            artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
-        }
+        List<ArtRef> artRefList;
 
-        List<ArtRef> artRefList = artRefPage.getContent();
+        // keyword 가 null
+        if (keyword == null){
+            if (categoryIdList == null || categoryIdList.isEmpty()){
+                // 카테고리 선택 x
+                artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
+            } else {
+                // 카테고리 선택 o
+                int categoryIdListSize = categoryIdList.size();
+                artRefPage = artRefRepository.findByIsDeletedFalseAndCategoryIdListIn(categoryIdList, categoryIdListSize, pageable);
+            }
+        } else {
+            if (categoryIdList == null || categoryIdList.isEmpty()) {
+                // 카테고리 선택 x
+                artRefPage = artRefRepository.findArtRefListBySearch(keyword, pageable);
+            } else {
+                // 카테고리 선택 o
+                int categoryIdListSize = categoryIdList.size();
+                artRefPage = artRefRepository.findByKeywordAndCategories(keyword, categoryIdList, categoryIdListSize, pageable);
+            }
+
+        }
+        artRefList = artRefPage.getContent();
+
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
         // ArtResponseDto build

@@ -7,7 +7,9 @@ function toggleCheckbox(checkboxButton) {
 
 function filterArtByCategory() {
     var checkboxes = document.querySelectorAll(".category-checkbox");
+    var keywordInput = document.getElementById("search-input"); // 검색바에서 키워드 입력 필드 ID
     var selectedCategories = [];
+    var keyword = keywordInput.value; // 사용자가 입력한 키워드
 
     checkboxes.forEach(function(checkbox) {
         if (checkbox.checked) {
@@ -18,6 +20,15 @@ function filterArtByCategory() {
     var queryString = selectedCategories.map(function(id) {
         return "category=" + encodeURIComponent(id);
     }).join('&');
+
+    if (keyword) {
+        queryString += "&keyword=" + encodeURIComponent(keyword);
+    }
+
+    console.log("Keyword:", keyword);
+
+    // 쿼리스트링이 올바르게 구성되었는지 확인
+    console.log("Query String before fetch:", queryString);
 
     fetch('/artboard/category/inquiry?' + queryString, {
         method: 'GET',
