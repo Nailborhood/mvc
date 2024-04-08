@@ -7,9 +7,9 @@ function toggleCheckbox(checkboxButton) {
 
 function filterArtByCategory() {
     var checkboxes = document.querySelectorAll(".category-checkbox");
-    var keywordInput = document.getElementById("search-input"); // 검색바에서 키워드 입력 필드 ID
+    var keywordInput = document.getElementById("search-input");
     var selectedCategories = [];
-    var keyword = keywordInput.value; // 사용자가 입력한 키워드
+    var keyword = keywordInput.value;
 
     checkboxes.forEach(function(checkbox) {
         if (checkbox.checked) {
@@ -26,9 +26,11 @@ function filterArtByCategory() {
     }
 
     console.log("Keyword:", keyword);
-
-    // 쿼리스트링이 올바르게 구성되었는지 확인
     console.log("Query String before fetch:", queryString);
+
+    const currentQueryString = selectedCategories.map(function(id) {
+        return "category=" + encodeURIComponent(id);
+    }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "");
 
     fetch('/artboard/category/inquiry?' + queryString, {
         method: 'GET',
@@ -36,14 +38,14 @@ function filterArtByCategory() {
     })
         .then(response => response.json())
         .then(data => {
-            updateArtList(data.data.artResponseDtoList);
+            updateArtList(data.data.artResponseDtoList, data.data.paginationDto, currentQueryString);
         })
         .catch(error => {
             console.error('Error:', error);
         });
 }
 
-function updateArtList(artList) {
+function updateArtList(artList, paginationDto, currentQueryString) {
     var artListContainer = document.getElementById('art-list');
     artListContainer.innerHTML = '';
 
@@ -79,4 +81,33 @@ function updateArtList(artList) {
         emptyMessageElement.textContent = '아트판이 없습니다.';
         artListContainer.appendChild(emptyMessageElement);
     }
+
+    updatePagination(paginationDto, currentQueryString);
+}
+
+function updatePagination(paginationDto, currentQueryString){
+    const paginationContainer = document.querySelector('.pagination-ul');
+    paginationContainer.innerHTML = '';
+
+    if (paginationDto.pageNo > 1) {
+        paginationContainer.innerHTML += createPageItem('Prev', paginationDto.pageNo - 1, currentQueryString);
+    }
+
+    for (let i = 1; i <= paginationDto.totalPages; i++) {
+        paginationContainer.innerHTML += createPageItem(i, i, currentQueryString);
+    }
+
+    if (paginationDto.pageNo < paginationDto.totalPages) {
+        paginationContainer.innerHTML += createPageItem('Next', paginationDto.pageNo + 1, currentQueryString);
+    }
+}
+
+function createPageItem(text, pageNo, currentQueryString) {
+    let href = `/artboard/inquiry?page=${pageNo}`;
+    if (currentQueryString) {
+        href += '&' + currentQueryString;
+    }
+    return `<li class="page-item">
+                <a class="page-link" href="${href}">${text}</a>
+            </li>`;
 }
