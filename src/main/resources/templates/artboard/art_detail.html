@@ -6,10 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <title>아트 상세 조회</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_detail_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
+    <script th:src="@{/js/artboard/art_like.js}"></script>
 </head>
 
 <body>
@@ -22,7 +24,10 @@
                 </div>
 
                 <div class="like-section">
-                    <span class="like-icon">❤️</span>
+                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+
+                        <img class="like-img" src="/assets/icons/art/emptyLike.svg" />
+                    </a>
                     <span class="like-count" th:text="${result.getData().likeCount}">likeCount</span>
                 </div>
 

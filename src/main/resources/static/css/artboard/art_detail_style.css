@@ -48,8 +48,12 @@
     margin-top: 20px;
 }
 
-.like-icon {
-    color: red;
+.like-img{
+    width: 20px;
+}
+
+.artLike {
+    text-decoration: none;
 }
 
 .art-info-wrapper {

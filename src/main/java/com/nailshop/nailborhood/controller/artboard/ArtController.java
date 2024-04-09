@@ -78,7 +78,7 @@ public class ArtController {
                                 @PathVariable Long artRefId){
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
-        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId);
+        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId, memberDetails);
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
         resultDto.setData((ArtDetailResponseDto) artDetail.getData());
 
@@ -128,9 +128,9 @@ public class ArtController {
     // 아트판 좋아요
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/artboard/like/{artRefId}")
-    public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                     @PathVariable Long artRefId){
-        CommonResponseDto<Object> likeArt = artLikeService.likeArt(accessToken, artRefId);
+        CommonResponseDto<Object> likeArt = artLikeService.likeArt(memberDetails, artRefId);
         ResultDto<ArtLikeResponseDto> resultDto = ResultDto.in(likeArt.getStatus(), likeArt.getMessage());
         resultDto.setData((ArtLikeResponseDto) likeArt.getData());
 
@@ -185,9 +185,24 @@ public class ArtController {
 
     // 아트판 상세 조회
     @GetMapping("/artboard/inquiry/{artRefId}")
-    public String inquiryArtRef(@PathVariable Long artRefId,
+    public String inquiryArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
+                                @PathVariable Long artRefId,
                                 Model model){
-        CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        boolean isLoggedIn = memberDetails != null;
+
+        CommonResponseDto<Object> inquiryArt;
+
+        if (isLoggedIn) {
+            // 로그인한 경우
+            inquiryArt = artInquiryService.inquiryArt(artRefId, memberDetails);
+        } else {
+            inquiryArt = artInquiryService.inquiryArtForGuest(artRefId);
+        }
+
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
         resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
 
