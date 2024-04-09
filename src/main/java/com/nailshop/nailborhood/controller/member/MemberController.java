@@ -18,8 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
-
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -77,6 +75,15 @@ public class MemberController {
         ResultDto<DuplicationCheckDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         result.setData((DuplicationCheckDto) commonResponseDto.getData());
         return result.getData().isExist();
+    }
+
+
+    // 마이페이지 겸 유저 조회 페이지로...?
+    @GetMapping("/user")
+    public String userPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model)     {
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        return "mypage/user";
     }
 
 }

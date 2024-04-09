@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+        <link rel="stylesheet" th:href="@{/css/mypage/user.css}" />
+</head>
+<div layout:fragment="content" class="mypage-content">
+    <div class="content">
+        <span class="mypage-title-span">마이페이지(링크 추후 연결)</span>
+        <div class="mypage-content_div">
+            <div class="profile_div">
+                <div class="profile-img_div">
+                    <img src="/assets/icons/IMG_2411.jpg">
+                </div>
+                <div class="profile-info_div">
+                    <div id="profile-nickname">
+
+                    </div>
+                    <div id="info">
+                        리뷰 갯수 | 저장한 장소 갯수 | 예약
+                    </div>
+                </div>
+            </div>
+            <div class="mypage-menu_div">
+                <div class="mypage-menu_row">
+                    <div class="mypage-menu_block">
+                        <div class="menu-title">
+                            개인정보
+                        </div>
+                        <div class="menu-detail">
+                            메뉴 설정
+                        </div>
+                    </div>
+                    <div class="mypage-menu_block">
+                        <div class="menu-title">
+                            리뷰
+                        </div>
+                        <div class="menu-detail">
+                            메뉴 설정
+                        </div>
+                    </div>
+                </div>
+                <div class="mypage-menu_row">
+                    <div class="mypage-menu_block">
+                        <div class="menu-title">
+                            매장
+                        </div>
+                        <div class="menu-detail">
+                            메뉴 설정
+                        </div>
+                    </div>
+                    <div class="mypage-menu_block">
+                        <div class="menu-title">
+                            예약관리
+                        </div>
+                        <div class="menu-detail">
+                            메뉴 설정
+                        </div>
+                    </div>
+                </div>
+                <div>
+                     사업자 전환 신청 | 고객 센터
+                </div>
+            </div>
+<!--            <div class="mypage-menu_div">-->
+
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+</html>
