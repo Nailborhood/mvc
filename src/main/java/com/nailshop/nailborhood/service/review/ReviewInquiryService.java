@@ -14,9 +14,11 @@ import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
+import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -41,23 +43,34 @@ public class ReviewInquiryService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final ReviewReportRepository reviewReportRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final CategoryReviewRepository categoryReviewRepository;
 
 
     // 리뷰 상세조회
-    public CommonResponseDto<Object> detailReview(Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> detailReview(Long reviewId, Long shopId, MemberDetails memberDetails) {
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // 리뷰 가져오기
-        Review review = reviewRepository.findReviewByFalse(reviewId)
+        Review review = reviewRepository.findDetailReview(reviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 고객 닉네임, 프로필 이미지 가져오기
         String nickName = review.getCustomer().getMember().getNickname();
         String profileImg = review.getCustomer().getMember().getProfileImg();
+
+        if (memberDetails != null){
+            Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember().getMemberId(), reviewId);
+            if(reviewLikeStatus == null){
+                reviewLikeStatus = false;
+            }
+        } else {
+            Boolean reviewLikeStatus = false;
+        }
+
 
         // 영업상태, 신고상태, 카테고리
         ShopStatus shopStatus = shop.getStatus();
@@ -92,6 +105,8 @@ public class ReviewInquiryService {
                 .reviewAuthorProfileImg(profileImg)
                 .reviewCreatedAt(review.getCreatedAt())
                 .reviewUpdatedAt(review.getUpdatedAt())
+//                .reviewLikeStatus(reviewLikeStatus)
+                .isDeleted(review.isDeleted())
                 .build();
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewDetailResponseDto);
