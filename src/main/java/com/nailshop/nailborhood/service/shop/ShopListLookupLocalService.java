@@ -73,7 +73,7 @@ public class ShopListLookupLocalService {
     public CommonResponseDto<Object> getHome() {
 
         // 좋아요 많이 받은 아트판
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "");
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "","");
 //        if (inquiryAllArt == null) {
 //            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
 //        }
