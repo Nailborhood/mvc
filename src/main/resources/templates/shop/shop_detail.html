@@ -10,7 +10,6 @@
     <script th:src="@{/js/shop/favorite.js}"></script>
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/shop/shop_detail.js}"></script>
-    <script th:src="@{/js/shop/shop_favoriteLoad.js}"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_detail_style.css}">
 </head>
@@ -26,7 +25,7 @@
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
                         <div class="heart">
-                            <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}" th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+                            <a class="heart-btn" th:data-shop-id="${shop.shopId}" th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
 
                                 <img th:id="heartImg" src="/assets/icons/shop/emptyHeart.svg" />
                             </a>
