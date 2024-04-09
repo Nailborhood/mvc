@@ -62,14 +62,66 @@ public class ReviewInquiryService {
         String nickName = review.getCustomer().getMember().getNickname();
         String profileImg = review.getCustomer().getMember().getProfileImg();
 
-        if (memberDetails != null){
-            Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember().getMemberId(), reviewId);
-            if(reviewLikeStatus == null){
-                reviewLikeStatus = false;
-            }
-        } else {
-            Boolean reviewLikeStatus = false;
+        Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember().getMemberId(), reviewId);
+        if(reviewLikeStatus == null){
+            reviewLikeStatus = false;
         }
+
+
+
+        // 영업상태, 신고상태, 카테고리
+        ShopStatus shopStatus = shop.getStatus();
+
+        ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
+        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
+
+        List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
+
+
+
+        //리뷰 이미지
+        List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
+        Map<Integer, String> reviewImgPathMap = new HashMap<>();
+        for (ReviewImg reviewImg : reviewImgList) {
+            reviewImgPathMap.put(reviewImg.getImgNum(), reviewImg.getImgPath());
+        }
+
+        ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.builder()
+                .reviewId(reviewId)
+                .shopId(shopId)
+                .shopName(shop.getName())
+                .shopStatus(shopStatus)
+                .shopAddress(shop.getAddress())
+                .reviewReportStatus(reviewReportStatus)
+                .categoryTypeList(categoryList)
+                .imgPathMap(reviewImgPathMap)
+                .contents(review.getContents())
+                .rate(review.getRate())
+                .likeCnt(review.getLikeCnt())
+                .reviewAuthor(nickName)
+                .reviewAuthorProfileImg(profileImg)
+                .reviewCreatedAt(review.getCreatedAt())
+                .reviewUpdatedAt(review.getUpdatedAt())
+                .reviewLikeStatus(reviewLikeStatus)
+                .isDeleted(review.isDeleted())
+                .build();
+
+        return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewDetailResponseDto);
+    }
+
+    public CommonResponseDto<Object> detailReviewForGuest(Long reviewId, Long shopId) {
+
+        // 매장 존재 여부
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        // 리뷰 가져오기
+        Review review = reviewRepository.findDetailReview(reviewId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+
+        // 고객 닉네임, 프로필 이미지 가져오기
+        String nickName = review.getCustomer().getMember().getNickname();
+        String profileImg = review.getCustomer().getMember().getProfileImg();
 
 
         // 영업상태, 신고상태, 카테고리
