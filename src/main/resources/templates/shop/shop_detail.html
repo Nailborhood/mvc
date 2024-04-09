@@ -21,7 +21,7 @@
         <div layout:fragment="content" class="content">
             <div class="shop-detail">
                 <div class="shop-title">
-                    <div class="title-star"  th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                    <div class="title-star"  th:each="shop : ${resultDto.getData().getShopDetailLookupResponseDto()}">
                         <div class="title-container">
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
@@ -39,14 +39,14 @@
                             </a>
                         </div>
                     </div>
-                    <div id="review" th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                    <div id="review" th:each="shop : ${resultDto.getData().getShopDetailLookupResponseDto()}">
                         <span class="review-cnt">⭐️&nbsp;</span>
                         <span class="score" th:text="${shop.rateAvg}"></span>&nbsp;(
                         <span class="review-cnt" th:text="${shop.reviewCnt}"></span>&nbsp;)
                     </div>
                 </div>
                 <div class="image-slider-wrapper">
-                    <div th:each="shopImg : ${shopDetail.shopImgListResponseDtoList}"
+                    <div th:each="shopImg : ${resultDto.getData().getShopImgListResponseDtoList()}"
                          th:class="${shopImg.imgNum == 1} ? 'image-slide active' : 'image-slide'"
                          th:style="|background-image:url(@{${shopImg.imgPath}})|">
                     </div>
@@ -58,7 +58,7 @@
                     </a>
                 </div>
                 <table>
-                    <tbody th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
+                    <tbody th:each="shop : ${resultDto.getData().getShopDetailLookupResponseDto()}">
                     <tr>
                         <td>
                             <img class="time-img" src="/assets/icons/shop/time.svg" />
@@ -109,7 +109,7 @@
                 </div>
                 <div class="shop-menu">
                     <div class="menu-list">
-                        <div class="price-row" th:each="menu : ${shopDetail.menuDetailResponseDtoList}">
+                        <div class="price-row" th:each="menu : ${resultDto.getData().getMenuDetailResponseDtoList()}">
                             <span class="menu-txt" th:text="${menu.name}">젤네일</span>
                             <div class="separator"></div>
                             <span class="menu-price">
@@ -118,45 +118,53 @@
                         </div>
                     </div>
                 </div>
-                <div th:if="${error}" class="empty-message">
-                    등록된 아트가 없습니다.
-                </div>
-                <div class="shop-art" th:unless="${error}">
+<!--                <div th:if="${ArtErrorCode}" class="error-code" th:text="${errorCode.description}"></div>-->
+<!--                <div class="shop-art" th:unless="${ArtErrorCode}">-->
+                <div class="shop-art">
                     <div class="art-row">
                         <span class="art">아트</span>
-                        <a th:href="@{/art/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-art-link">
+                        <a th:href="@{/art/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}" class="shop-art-link">
                             <img src="/assets/icons/shop/arrow.svg">
                         </a>
                     </div>
                     <div class="division-line"></div>
                     <div class="art-img-row">
-                        <div class="art-list-block" th:each="shopArt : ${shopDetail.shopArtBoardLookupResponseDtoList}">
+                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0 }">
+                        <div class="art-list-block" th:each="shopArt : ${resultDto.getData().getShopArtBoardLookupResponseDtoList()}">
                             <a class="art-link" th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
                                 <div class="art-img">
                                     <img th:src="@{${shopArt.artImgPath}}">
                                 </div>
                             </a>
                         </div>
+                        </div>
+                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() == 0}">
+                            <p>등록된 아트판이 없습니다</p>
+                        </div>
                     </div>
                 </div>
-                <div th:if="${error}" class="empty-message">
-                    등록된 리뷰가 없습니다.
-                </div>
-                <div class="shop-review" th:unless="${error}">
+<!--                <div th:if="${ReviewErrorCode}" class="error-code" th:text="${errorCode.description}"></div>-->
+<!--                <div class="shop-review" th:unless="${ReviewErrorCode}">-->
+                <div class="shop-review">
                     <div class="review-row">
                         <span class="review">리뷰</span>
-                        <a th:href="@{/review/{shopId}(shopId=${shopDetail.shopDetailLookupResponseDto.shopId})}" class="shop-review-link">
+                        <a th:href="@{/review/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}" class="shop-review-link">
                             <img src="/assets/icons/shop/arrow.svg">
                         </a>
                     </div>
                     <div class="division-line"></div>
                     <div class="review-img-row">
-                        <div class="review-list-block" th:each="shopReview : ${shopDetail.shopReviewLookupResponseDtoList}">
+                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() != 0 }">
+                        <div class="review-list-block" th:each="shopReview : ${resultDto.getData().getShopReviewLookupResponseDtoList()}">
                             <a class="review-link" th:href="@{/review/inquiry/{reviewId}(reviewId=${shopReview.reviewId}, shopId=${shopReview.shopId})}"  role="link">
                                 <div class="review-img">
                                     <img th:src="@{${shopReview.reviewImgPath}}">
                                 </div>
                             </a>
+                        </div>
+                        </div>
+                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() == 0}">
+                            <p>등록된 리뷰가 없습니다</p>
                         </div>
                     </div>
                 </div>

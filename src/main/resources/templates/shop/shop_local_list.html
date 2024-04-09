@@ -31,10 +31,10 @@
                 <div class="search-select-box">
                     <div class="address-select">
                         <select name="cityId" id="cityId">
-                            <option value="">도시 선택</option>
-                            <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
-                                    th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
-                        </select>
+                        <option value="">도시 선택</option>
+                        <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
+                    </select>
 
                         <select name="districtsId" id="districtsId">
                             <option value="">구 선택</option>

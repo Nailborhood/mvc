@@ -38,7 +38,7 @@ public class ReviewController {
     private final CategoryRepository categoryRepository;
 
     // 리뷰 등록(GET)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_OWNER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_OWNER')")
     @GetMapping("/{shopId}/review/registration")
     public String showRegisterReview(@AuthenticationPrincipal MemberDetails memberDetails,
                                      Model model,
@@ -56,7 +56,7 @@ public class ReviewController {
     }
 
     // 리뷰 등록(POST)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
     public String registerReview(@PathVariable Long shopId,
                                  @AuthenticationPrincipal MemberDetails memberDetails,

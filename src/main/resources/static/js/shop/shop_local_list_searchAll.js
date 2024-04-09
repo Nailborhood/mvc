@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", function () {
         dongSelect.value = localStorage.getItem('dongId');
     }
 
-    window.addEventListener('beforeunload', function() {
+/*    window.addEventListener('beforeunload', function() {
         localStorage.clear();
-    });
+    });*/
 });
 
