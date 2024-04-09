@@ -25,7 +25,7 @@
                             <span class="title" th:text="${shop.name}"></span>
                         </div>
                         <div class="heart">
-                            <a class="heart-btn" th:data-shop-id="${shop.shopId}" th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+                            <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}" th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
 
                                 <img th:id="heartImg" src="/assets/icons/shop/emptyHeart.svg" />
                             </a>
@@ -129,7 +129,7 @@
                     <div class="division-line"></div>
                     <div class="art-img-row">
                         <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0 }" class="art-list-block" th:each="shopArt : ${resultDto.getData().getShopArtBoardLookupResponseDtoList()}">
-                            <a class="art-link" th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
+                            <a class="art-link" th:href="@{/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
                                 <div class="art-img">
                                     <img th:src="@{${shopArt.artImgPath}}">
                                 </div>
