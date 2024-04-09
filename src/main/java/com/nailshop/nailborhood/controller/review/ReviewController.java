@@ -116,7 +116,7 @@ public class ReviewController {
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
@@ -152,7 +152,7 @@ public class ReviewController {
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
