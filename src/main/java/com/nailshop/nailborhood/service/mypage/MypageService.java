@@ -46,7 +46,7 @@ public class MypageService {
 //        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
 //                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         Long memberId = member.getMemberId();
 
@@ -54,7 +54,7 @@ public class MypageService {
 
 
         Page<Review> myReviewPage = reviewRepository.findMyReviewListByMemberId(memberId, pageable, "신고 처리됨");
-        if (myReviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+        if (myReviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_REGISTRATION);
 
         List<Review> myReviewList = myReviewPage.getContent();
         List<ReviewResponseDto> myReviewResponseDtoList = new ArrayList<>();
@@ -102,12 +102,12 @@ public class MypageService {
     // 찜한 매장 조회
     public CommonResponseDto<Object> myFavorite(Member member,int page, int size) {
 
-        if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
         Long memberId = member.getMemberId();
         PageRequest pageable = PageRequest.of(page - 1, size);
 
         Page<Shop> myFavoritePage = favoriteRepository.findFavoriteListByMemberId(memberId, pageable);
-        if (myFavoritePage.isEmpty()) throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+        if (myFavoritePage.isEmpty()) throw new NotFoundException(ErrorCode.SHOP_FAVORITE_EMPTY);
 
         List<Shop> favoriteShopList = myFavoritePage.getContent();
         List<FavoriteShopDetailDto> myFavoriteResponseDtoList = new ArrayList<>();

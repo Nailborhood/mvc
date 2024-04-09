@@ -48,6 +48,7 @@ public enum ErrorCode {
     PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
     PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
     PROFILE_UPDATE_FAIL("프로필 업로드에 실패하였습니다."),
+    SHOP_FAVORITE_EMPTY("저장한 매장이 없습니다."),
 
     UNAUTHORIZED_ACCESS("접근 권한이 없습니다."),
 
@@ -64,7 +65,7 @@ public enum ErrorCode {
 
     // 리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
-    ART_NOT_REGISTRATION("등록된 아트판이 없습니다"),
+    ART_NOT_REGISTRATION("등록된 아트가 없습니다"),
     SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
 
     // 채팅
