@@ -129,14 +129,12 @@
                     </div>
                     <div class="division-line"></div>
                     <div class="art-img-row">
-                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0 }">
-                        <div class="art-list-block" th:each="shopArt : ${resultDto.getData().getShopArtBoardLookupResponseDtoList()}">
+                        <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0 }" class="art-list-block" th:each="shopArt : ${resultDto.getData().getShopArtBoardLookupResponseDtoList()}">
                             <a class="art-link" th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${shopArt.artRefId})}" role="link">
                                 <div class="art-img">
                                     <img th:src="@{${shopArt.artImgPath}}">
                                 </div>
                             </a>
-                        </div>
                         </div>
                         <div th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() == 0}">
                             <p>등록된 아트판이 없습니다</p>
@@ -154,14 +152,12 @@
                     </div>
                     <div class="division-line"></div>
                     <div class="review-img-row">
-                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() != 0 }">
-                        <div class="review-list-block" th:each="shopReview : ${resultDto.getData().getShopReviewLookupResponseDtoList()}">
+                        <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() != 0 }" class="review-list-block" th:each="shopReview : ${resultDto.getData().getShopReviewLookupResponseDtoList()}">
                             <a class="review-link" th:href="@{/review/inquiry/{reviewId}(reviewId=${shopReview.reviewId}, shopId=${shopReview.shopId})}"  role="link">
                                 <div class="review-img">
                                     <img th:src="@{${shopReview.reviewImgPath}}">
                                 </div>
                             </a>
-                        </div>
                         </div>
                         <div th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() == 0}">
                             <p>등록된 리뷰가 없습니다</p>

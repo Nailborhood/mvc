@@ -265,8 +265,8 @@ td {
     position: relative;
     /*width: 100%;*/
     margin-right: 7px;
-    /*max-*/width: 230px;
-    height: 230px;
+    /*max-*/width: 202px;
+    height: 202px;
 }
 
 .art-img , .review-img  {
@@ -278,8 +278,8 @@ td {
 .art-img img, .review-img img {
     object-fit: cover;
     /*width: 100%;*/
-    /*max-*/width: 230px;
-    height: 230px;
+    /*max-*/width: 202px;
+    height: 202px;
 }
 
 .division-line {
