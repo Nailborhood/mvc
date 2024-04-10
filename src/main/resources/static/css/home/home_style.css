@@ -169,10 +169,9 @@ td {
     padding-bottom: 0px;
     padding-top: 0px;
     position: relative;
-    /*margin-left: 7px;*/
     margin-top: 50px;
     margin-bottom: 50px;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .artRef-row , .review-row , .rate-row {
@@ -194,7 +193,7 @@ td {
 
 .shop-artRef-best-link img , .shop-review-best-link img , .shop-rate-best-link img {
     width: 50px; /* 너비 설정 */
-    height: 40px; /* 높이는 자동으로 설정 */
+    height: 50px; /* 높이는 자동으로 설정 */
 }
 
 .artRef-img-row , .review-img-row , .rate-img-row {
@@ -205,15 +204,15 @@ td {
     flex-shrink: 0;
     position: relative;
     margin-bottom: 4px;
+    justify-content: flex-start;
 }
 
 .artRef-list-block , .review-list-block , .rate-list-block{
     display: block;
     position: relative;
-    width: 100%;
     margin-right: 7px;
-    max-width: 250px;
-    height: 250px;
+    width: 202px;
+    height: 202px;
 }
 
 .artRef-img , .review-img .rate-img {
@@ -224,9 +223,8 @@ td {
 
 .artRef-img img, .review-img img ,.rate-img img{
     object-fit: cover;
-    width: 100%;
-    max-width: 250px;
-    height: 250px;
+    width: 202px;
+    height: 202px;
 }
 
 .division-line {
