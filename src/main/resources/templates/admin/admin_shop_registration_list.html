@@ -69,7 +69,7 @@
                         <div class="td" th:text="${request.menuCnt}"></div>
                         <div class="td">
                             <span th:switch="${#strings.toString(request.status)}">
-                                <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
+                                <span th:case="'READY'" th:text="'준비중'"></span>
                             </span>
                         </div>
                         <!--

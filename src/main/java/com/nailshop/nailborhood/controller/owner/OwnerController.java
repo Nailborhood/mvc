@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -181,6 +182,9 @@ public class OwnerController {
     // enum 타임리프로 리턴
     @ModelAttribute("shopStatus")
     public ShopStatus[] shopStatuses() {
-        return ShopStatus.values();
+        return Stream.of(ShopStatus.values())
+                     .filter(status -> status == ShopStatus.BEFORE_OPEN || status == ShopStatus.OPEN)
+                     .toArray(ShopStatus[]::new);
     }
+
 }

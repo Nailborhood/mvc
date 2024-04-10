@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ShopStatus {
+    READY("준비중"),
     BEFORE_OPEN("영업전"),
     OPEN("운영중"),
     CLOSED("영업종료");

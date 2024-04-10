@@ -97,13 +97,13 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Modifying(clearAutomatically = true)
     void updateReviewCntDecreaseByShopId(@Param("shopId") Long shopId);
 
-    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false and s.status = 'BEFORE_OPEN'")
-    Page<Shop> findAllNotDeletedAndBeforeOpen(Pageable pageable);
+    @Query("SELECT s FROM Shop s WHERE s.isDeleted = false and s.status = 'READY'")
+    Page<Shop> findAllNotDeletedAndReady(Pageable pageable);
 
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE (s.name Like %:keyword% ) and s.status = 'BEFORE_OPEN'" )
-    Page<Shop> findAllNotDeletedAndBeforeOpenBySearch(@Param("keyword") String keyword, Pageable pageable);
+            "WHERE (s.name Like %:keyword% ) and s.status = 'READY'" )
+    Page<Shop> findAllNotDeletedAndReadyBySearch(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT s " +
             "FROM Shop s " +
