@@ -11,10 +11,10 @@ window.onload = function() {
         window.location.href = '/mypage/review/inquiry';
 
     } else if (reviewReportStatus === '신고 처리됨') {
-        alert('리뷰가 신고되었습니다.');
+        alert('리뷰가 신고되어 삭제되었습니다.');
         window.location.href = '/mypage/review/inquiry';
 
-    } else if (shopStatus === 'BEFORE_OPEN') {
+    } else if (shopStatus === 'CLOSED') {
         alert('매장영업이 중지되었습니다.');
         window.location.href = '/mypage/review/inquiry';
     }
