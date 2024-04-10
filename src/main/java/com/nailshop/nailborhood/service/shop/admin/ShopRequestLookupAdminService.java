@@ -62,9 +62,9 @@ public class ShopRequestLookupAdminService {
         Page<Shop> shopRequestList;
         if (keyword == null || keyword.trim()
                                       .isEmpty()) {
-            shopRequestList =  shopRepository.findAllNotDeletedAndBeforeOpen(pageable);
+            shopRequestList =  shopRepository.findAllNotDeletedAndReady(pageable);
         } else {
-            shopRequestList = shopRepository.findAllNotDeletedAndBeforeOpenBySearch(keyword,pageable);
+            shopRequestList = shopRepository.findAllNotDeletedAndReadyBySearch(keyword,pageable);
         }
 
         if (shopRequestList.isEmpty()) {
