@@ -48,13 +48,12 @@
                     <td th:text="${#temporals.format(myShop.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${myShop.menuCnt}"></td>
                     <td th:switch="${#strings.toString(myShop.status)}">
-                        <span th:case="'BEFORE_OPEN'" th:text="'심사중'"></span>
+                        <span th:case="'READY'" th:text="'심사중'"></span>
                         <span th:case="'OPEN'" th:text="'승인'"></span>
                        <!-- <span th:case="'CLOSED'" th:text="'반려'"></span>-->
                     </td>
                     <td>
 
-                        <!--TODO: 사장님 페이지 링크 연결-->
                         <button id="ownerPageButton" class="button"  th:if="${#strings.toString(myShop.status) == 'OPEN'}"> 사장님페이지</button>
                     </td>
                 </tr>
