@@ -70,8 +70,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 수정하려는 유저 동일 검증
-        Long loginId = member.getMemberId();
-        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+        if (!review.getCustomer().getMember().getNickname().equals(member.getNickname())) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 
@@ -159,7 +158,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
-        if (!review.getCustomer().getCustomerId().equals(memberId)) {
+        if (!review.getCustomer().getMember().getNickname().equals(member.getNickname())) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 

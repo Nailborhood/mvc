@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
       layout:decorate="~{default}">
 
 <head>
@@ -9,13 +9,14 @@
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/review/review_detail_style.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/review/review_detail_status.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
     <script th:src="@{/js/review/review_like.js}"></script>
     <script th:src="@{/js/review/review_delete.js}"></script>
 </head>
 
-<body>
+<body th:data-review-status="${result.getData().reviewReportStatus}" th:data-review-isDeleted="${result.getData().isDeleted}" th:data-shop-status="${result.getData().shopStatus}">
 <div id="wrapper">
     <div th:replace="fragments/header::header"></div>
     <div layout:fragment="content" class="content">
@@ -37,10 +38,10 @@
                 <div class="review-meta">
                     <img th:src="${result.getData().reviewAuthorProfileImg}" alt="프로필 이미지" class="profile-pic" />
                     <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span>
-<!--                    TODO : 좋아요 상태에따른 버튼 변경, 로그인하지않고 좋아요 -> alert창-->
                     <div class="review-count">
-                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}">
-                            <img class="like-img" src="/assets/icons/review/thumbsUp.svg" />
+                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+
+                            <img class="like-img" src="/assets/icons/review/emptyThumbsUp.svg" />
                         </a>
                         <span class="like-number" th:text="${result.getData().likeCnt}">25</span>
                         <a th:href="@{/review/report/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="review-report">신고</a>
@@ -62,8 +63,8 @@
                 <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span>
                 <p class="review-content" th:text="${result.getData().contents}">리뷰 내용</p>
                 <div class="review-btn">
-                    <a th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>
-                    <button type="button" class="delete-button" th:data-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
+                    <a th:if="${memberNickname == result.getData().reviewAuthor}" th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>
+                    <button type="button" th:if="${memberNickname == result.getData().reviewAuthor}" class="delete-button" th:data-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
                 </div>
             </div>
         </div>

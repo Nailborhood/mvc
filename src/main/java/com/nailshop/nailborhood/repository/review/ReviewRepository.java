@@ -26,6 +26,13 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "WHERE r.reviewId = :reviewId AND r.isDeleted = false ")
     Optional<Review> findReviewByFalse(@Param("reviewId") Long reviewId);
 
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "WHERE r.reviewId = :reviewId ")
+    Optional<Review> findDetailReview(@Param("reviewId") Long reviewId);
+
+
+
     // 리뷰 수정
     @Query("UPDATE Review r " +
             "SET r.contents = :contents, " +
@@ -46,13 +53,16 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     Page<Review> findByCategoryIdListAndIsDeletedFalse(List<Long> categoryIdList, Pageable pageable);
 
     // 내가 쓴 리뷰 조회
+    // TODO 리뷰 true, false 다 불러옴
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.customer c " +
             "LEFT JOIN c.member m " +
             "LEFT JOIN r.reviewReportList rr " +
-            "WHERE m.memberId = :memberId AND r.isDeleted = false OR (r.isDeleted = true AND rr.status = :status)")
-    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable, @Param("status") String status);
+            "WHERE m.memberId = :memberId ")
+//            "WHERE m.memberId = :memberId AND r.isDeleted = false OR (r.isDeleted = true AND rr.status = :status)")
+//    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable, @Param("status") String status);
+    Page<Review> findMyReviewListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     // 리뷰 isdeleted 값 true로
     @Query("UPDATE Review r " +

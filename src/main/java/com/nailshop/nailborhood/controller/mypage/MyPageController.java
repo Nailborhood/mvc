@@ -58,17 +58,15 @@ public class MyPageController {
         model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
 
-        boolean error = false;
         try {
             CommonResponseDto<Object> myReview = mypageService.myReview(member, page, size, sortBy);
             ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
             model.addAttribute("result", resultDto);
-        }catch (Exception e){
+        }catch (NotFoundException e){
+            model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_FOUND);
 
-            error = true;
-            model.addAttribute("error", error);
         }
 
         return "mypage/my_review_list";
@@ -83,19 +81,21 @@ public class MyPageController {
                              @RequestParam(value = "size", defaultValue = "10", required = false) int size){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
-        boolean error = false;
+
         try {
             CommonResponseDto<Object> myFavorite = mypageService.myFavorite(member, page, size);
             ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
             resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 
-            model.addAttribute("memberNickname", nicknameSpace);
-            model.addAttribute("result", resultDto);
-        }catch (Exception e){
 
-            error = true;
-            model.addAttribute("error", error);
+            model.addAttribute("result", resultDto);
+
+        }catch (NotFoundException e){
+
+            model.addAttribute("ErrorCode", ErrorCode.SHOP_FAVORITE_EMPTY);
+
         }
 
 

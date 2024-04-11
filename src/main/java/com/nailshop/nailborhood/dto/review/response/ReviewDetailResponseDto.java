@@ -31,9 +31,11 @@ public class ReviewDetailResponseDto {
     private String reviewAuthorProfileImg;
     private LocalDateTime reviewCreatedAt;
     private LocalDateTime reviewUpdatedAt;
+    private Boolean reviewLikeStatus;
+    private boolean isDeleted;
 
     @Builder
-    public ReviewDetailResponseDto(Long reviewId, Long shopId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+    public ReviewDetailResponseDto(Long reviewId, Long shopId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt, Boolean reviewLikeStatus, boolean isDeleted) {
         this.shopId = shopId;
         this.reviewId = reviewId;
         this.shopName = shopName;
@@ -49,5 +51,7 @@ public class ReviewDetailResponseDto {
         this.reviewAuthorProfileImg = reviewAuthorProfileImg;
         this.reviewCreatedAt = reviewCreatedAt;
         this.reviewUpdatedAt = reviewUpdatedAt;
+        this.reviewLikeStatus = reviewLikeStatus;
+        this.isDeleted = isDeleted;
     }
 }

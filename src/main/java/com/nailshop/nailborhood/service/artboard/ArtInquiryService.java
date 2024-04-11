@@ -12,6 +12,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
+import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
@@ -34,6 +35,7 @@ public class ArtInquiryService {
     private final CommonService commonService;
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
+    private final ArtLikeRepository artLikeRepository;
     private final CategoryArtRepository categoryArtRepository;
 
     // 전체 조회
@@ -121,7 +123,45 @@ public class ArtInquiryService {
     }
 
     // 상세 조회
-    public CommonResponseDto<Object> inquiryArt(Long artRefId) {
+    public CommonResponseDto<Object> inquiryArt(Long artRefId, MemberDetails memberDetails) {
+
+        // ArtRef get
+        ArtRef artRef = artRefRepository.findById(artRefId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+
+        // ArtImg get
+        List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
+        Map<Integer, String> artImgPathMap = new HashMap<>();
+        for (ArtImg artImg : artImgList){
+            artImgPathMap.put(artImg.getImgNum(), artImg.getImgPath());
+        }
+
+        Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberDetails.getMember().getMemberId(), artRefId);
+        if (artLikeStatus == null){
+            artLikeStatus = false;
+        }
+
+        // ArtDetailResponseDto build
+        String shopName = artRef.getShop().getName();
+        List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRefId);
+
+        ArtDetailResponseDto artDetailResponseDto = ArtDetailResponseDto.builder()
+                .artRefId(artRef.getArtRefId())
+                .name(artRef.getName())
+                .content(artRef.getContent())
+                .likeCount(artRef.getLikeCount())
+                .shopName(shopName)
+                .categoryTypeList(categoryTypeList)
+                .imgPathMap(artImgPathMap)
+                .createdAt(artRef.getCreatedAt())
+                .updatedAt(artRef.getUpdatedAt())
+                .artLikeStatus(artLikeStatus)
+                .build();
+
+        return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
+    }
+
+    public CommonResponseDto<Object> inquiryArtForGuest(Long artRefId) {
 
         // ArtRef get
         ArtRef artRef = artRefRepository.findById(artRefId)

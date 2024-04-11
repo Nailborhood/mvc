@@ -38,7 +38,18 @@ public class ReviewInquiryController {
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
+        boolean isLoggedIn = memberDetails != null;
+
+//        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
+
+        CommonResponseDto<Object> detailReview;
+
+        if (isLoggedIn) {
+            // 로그인한 경우
+            detailReview = reviewInquiryService.detailReview(reviewId,shopId, memberDetails);
+        } else {
+            detailReview = reviewInquiryService.detailReviewForGuest(reviewId, shopId);
+        }
 
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
