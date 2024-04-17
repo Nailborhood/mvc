@@ -5,6 +5,16 @@
     height: 100%;
 }
 
+.sortBy-select{
+    margin-right: 10px;
+}
+
+.sortBy-select select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 70px;
+}
 
 .art-list {
     display: flex;

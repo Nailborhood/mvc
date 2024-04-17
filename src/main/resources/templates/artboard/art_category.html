@@ -7,4 +7,12 @@
             </div>
         </div>
     </div>
+    <div class="sortBy-select">
+        <select name="sortBy" id="sortBy">
+            <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                    th:text="${criteria.text}"
+                    th:selected="${criteria.value == selectedOrderby}">Option
+            </option>
+        </select>
+    </div>
 </div>

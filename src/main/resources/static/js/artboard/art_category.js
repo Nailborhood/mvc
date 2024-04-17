@@ -1,3 +1,11 @@
+// 페이지 로드 시 이전 검색 상태 복원
+// document.addEventListener("DOMContentLoaded", () => {
+//     restoreSearchState();
+//     filterArtByCategory();
+// });
+
+
+
 function toggleCheckbox(checkboxButton) {
     var checkbox = checkboxButton.querySelector(".category-checkbox");
     checkbox.checked = !checkbox.checked;
@@ -8,6 +16,7 @@ function toggleCheckbox(checkboxButton) {
 function filterArtByCategory() {
     var checkboxes = document.querySelectorAll(".category-checkbox");
     var keywordInput = document.getElementById("search-input");
+    var sortBy = document.getElementById('sortBy').value;
     var selectedCategories = [];
     var keyword = keywordInput.value;
 
@@ -24,13 +33,17 @@ function filterArtByCategory() {
     if (keyword) {
         queryString += "&keyword=" + encodeURIComponent(keyword);
     }
+    if(sortBy) {
+        queryString += "&sortBy=" + encodeURIComponent(sortBy);
+    }
 
     console.log("Keyword:", keyword);
+    console.log("sortBy:", sortBy);
     console.log("Query String before fetch:", queryString);
 
     const currentQueryString = selectedCategories.map(function(id) {
         return "category=" + encodeURIComponent(id);
-    }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "");
+    }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "") + (sortBy ? "&sortBy=" + encodeURIComponent(sortBy) : "");
 
     fetch('/artboard/category/inquiry?' + queryString, {
         method: 'GET',
