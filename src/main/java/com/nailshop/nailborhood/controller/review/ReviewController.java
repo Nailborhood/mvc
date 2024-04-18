@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.controller.review;
 
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
@@ -15,6 +16,7 @@ import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
 import com.nailshop.nailborhood.service.review.ReviewRegistrationService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import com.nailshop.nailborhood.type.AlarmType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,11 +45,13 @@ public class ReviewController {
     @GetMapping("/{shopId}/review/registration")
     public String showRegisterReview(@AuthenticationPrincipal MemberDetails memberDetails,
                                      Model model,
-                                     @PathVariable Long shopId){
+                                     @PathVariable Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
 
         List<Category> categoryList = categoryRepository.findAll();
+
 
         model.addAttribute("shopId", shopId);
         model.addAttribute("categories", categoryList);
@@ -65,12 +70,15 @@ public class ReviewController {
                                  RedirectAttributes redirectAttributes) {
 
         try {
-            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
+/*            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());*/
 
-            return "redirect:/review/inquiry";
+            Long reviewId = reviewRegistrationService.saveReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
+
+//            return "redirect:/review/inquiry/" + reviewId+"?shopId="+shopId;
+            return String.format("redirect:/review/inquiry/%d?shopId=%d&alarmSent=true", reviewId, shopId);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.REVIEW_REGISTER_FAIL);
 
@@ -85,10 +93,10 @@ public class ReviewController {
                                @RequestParam(value = "shopId") Long shopId,
                                @RequestPart(value = "img") List<MultipartFile> multipartFileList,
                                @ModelAttribute ReviewUpdateDto reviewUpdateDto,
-                               RedirectAttributes redirectAttributes){
+                               RedirectAttributes redirectAttributes) {
 
         try {
-            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(memberDetails, reviewId, shopId, multipartFileList,reviewUpdateDto);
+            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(memberDetails, reviewId, shopId, multipartFileList, reviewUpdateDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -111,9 +119,10 @@ public class ReviewController {
     public String getReviewUpdate(@AuthenticationPrincipal MemberDetails memberDetails,
                                   Model model,
                                   @PathVariable Long reviewId,
-                                  @RequestParam(value = "shopId") Long shopId){
+                                  @RequestParam(value = "shopId") Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
@@ -130,26 +139,28 @@ public class ReviewController {
     public ResponseEntity<ResultDto<Void>> reviewReport(@AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
-                                                        @RequestBody ReviewReportDto reviewReportDto){
+                                                        @RequestBody ReviewReportDto reviewReportDto) {
 
         Member member = memberDetails.getMember();
 
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(member, reviewId, shopId,reviewReportDto);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(member, reviewId, shopId, reviewReportDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
 
     }
 
 
     // 리뷰 신고 뷰
     @GetMapping("/review/report/{reviewId}")
-    public String reviewReportView (Model model,
-                                    @AuthenticationPrincipal MemberDetails memberDetails,
-                                    @PathVariable Long reviewId,
-                                    @RequestParam(value = "shopId") Long shopId){
+    public String reviewReportView(Model model,
+                                   @AuthenticationPrincipal MemberDetails memberDetails,
+                                   @PathVariable Long reviewId,
+                                   @RequestParam(value = "shopId") Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
         CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
@@ -166,15 +177,21 @@ public class ReviewController {
     @DeleteMapping("/mypage/review/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewDelete(@AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
-                                                        @RequestParam(value = "shopId") Long shopId){
+                                                        @RequestParam(value = "shopId") Long shopId) {
 
         Member member = memberDetails.getMember();
 
         CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(member, reviewId, shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
-        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
     }
 
+//    // enum 타임리프로 리턴
+//    @ModelAttribute("alarmType")
+//    public AlarmType[] alarmType() {
+//        return AlarmType.values();
+//    }
 
 }

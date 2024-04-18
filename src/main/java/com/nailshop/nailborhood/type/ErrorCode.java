@@ -10,6 +10,7 @@ public enum ErrorCode {
     // customer,owner
     CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
     OWNER_ALREADY_EXIST("이미 매장 신청을 하여, 더이상 매장 신청을 할 수 없습니다"),
+    OWNER_NOT_FOUND("OWNER 정보를 찾을 수 없습니다"),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),
@@ -70,7 +71,10 @@ public enum ErrorCode {
 
     // 채팅
     CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다"),
-    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다");
+    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다"),
+
+    // 알람
+    ALARM_NOT_FOUND("알람을 찾을 수 없습니다.");
 
     private final String description;
 }

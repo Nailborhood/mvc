@@ -1,0 +1,82 @@
+:root {
+    --main-color_begie: #f7f5f0;
+    --shadow_1: #dad2cd;
+    --shadow_2: #aba9a6;
+    --shadow_3: #82817e;
+    --shadow_4: #595857;
+    --main-color_navy: #1d438a;
+}
+
+.alarm-local-list-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+
+
+.all-alarm-list {
+    margin: 30px auto;
+}
+
+.alarm-description-section{
+    /* background-color: #ccc;*/
+    margin: 30px auto;
+}
+
+
+.alarm-info a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    text-decoration: none;
+}
+
+.alarm-list_div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+}
+
+.alarm-info {
+    width: 500px;
+    height: 100px;
+    background-color: antiquewhite;
+    border-radius: 5px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+
+
+.alarm-info_text {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 100px 0px 50px;
+}
+
+.alarm-info_title {
+    font-size: 20px;
+    margin: 5px 50px;
+    font-weight: bold;
+}
+
+.alarm-info_time {
+    font-size: 15px;
+   /*margin: 5px;*/
+    color: #767678;
+}
+
+
+
+.error-code {
+    margin: 50px auto;
+}

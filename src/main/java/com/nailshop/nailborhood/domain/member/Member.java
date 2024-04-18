@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.alarm.Alarm;
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.review.ReviewLike;
@@ -60,7 +61,12 @@ public class Member extends BaseTime {
     private Admin admin;
     @OneToOne(mappedBy = "member")
     private Login login;
+    //TODO: alarm 맵핑
+    @OneToMany(mappedBy = "receiver")
+    private List<Alarm> receivedAlarms;  // 받은 알람 목록
 
+    @OneToMany(mappedBy = "sender")
+    private List<Alarm> sentAlarms;  // 보낸 알람 목록
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Favorite> FavoriteList;

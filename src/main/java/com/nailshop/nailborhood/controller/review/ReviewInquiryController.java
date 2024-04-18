@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.review;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
@@ -33,7 +34,8 @@ public class ReviewInquiryController {
     public String detailReview(Model model,
                                @AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long reviewId,
-                               @RequestParam(value = "shopId") Long shopId){
+                               @RequestParam(value = "shopId") Long shopId,
+                               @RequestParam(required = false) Boolean alarmSent){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
@@ -51,10 +53,20 @@ public class ReviewInquiryController {
             detailReview = reviewInquiryService.detailReviewForGuest(reviewId, shopId);
         }
 
+
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
+        // 알람
+        Member receiver = reviewInquiryService.getOwnerInfo(shopId);
+        if (Boolean.TRUE.equals(alarmSent)) {
+            model.addAttribute("alarmSent", true);
+
+        }
+
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("receiver", receiver);
 
         return "review/review_detail";
     }

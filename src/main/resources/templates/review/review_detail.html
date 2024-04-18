@@ -14,12 +14,18 @@
     <script th:src="@{/js/review/review_detail.js}"></script>
     <script th:src="@{/js/review/review_like.js}"></script>
     <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/alarm/alarm_form.js}"></script>
 </head>
 
 <body th:data-review-status="${result.getData().reviewReportStatus}" th:data-review-isDeleted="${result.getData().isDeleted}" th:data-shop-status="${result.getData().shopStatus}">
 <div id="wrapper">
     <div th:replace="fragments/header::header"></div>
     <div layout:fragment="content" class="content">
+        <!--알람에 필요한 변수 js data -->
+        <input type="hidden" id="reviewId" th:value="${result.getData().reviewId}" />
+        <input type="hidden" id="shopId" th:value="${result.getData().shopId}" />
+        <input type="hidden" id="receiver" th:value="${receiver.getEmail()}" />
+<!--        <div id="receiver" data-receiver-email="${receiver.email}" hidden></div>-->
         <div class="review-section">
             <div class="image-slider-wrapper">
                 <div th:each="imgEntry : ${result.getData().imgPathMap}"

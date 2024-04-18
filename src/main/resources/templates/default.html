@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="/css/layout/layout_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!--    <script src="/resources/static/bootstrap/js/bootstrap.bundle.js"></script>-->
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.js}"></script>
+    <script th:src="@{/js/alarm/alarm4.js}"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -12,5 +19,6 @@
         <div layout:fragment="content" class="content"></div>
         <div th:replace="fragments/footer::footer"></div>
     </div>
+
 </body>
 </html>

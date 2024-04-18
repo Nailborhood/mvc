@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.service.review;
 
 import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
@@ -13,6 +14,8 @@ import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewLikeRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
@@ -45,6 +48,8 @@ public class ReviewInquiryService {
     private final ReviewReportRepository reviewReportRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final CategoryReviewRepository categoryReviewRepository;
+    private final OwnerRepository ownerRepository;
+    private final MemberRepository memberRepository;
 
 
     // 리뷰 상세조회
@@ -258,6 +263,12 @@ public class ReviewInquiryService {
         sortOptions.add(option2);
 
         return sortOptions;
+    }
+
+
+    public Member getOwnerInfo(Long shopId) {
+        Owner owner = ownerRepository.findByShopId(shopId);
+        return memberRepository.findByOwnerId(owner.getOwnerId());
     }
 
 }
