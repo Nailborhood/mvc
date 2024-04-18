@@ -79,6 +79,39 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE s.shopId = :shopId AND s.isDeleted = false")
     List<ArtRef> findAllByShopIdAndIsDeleted(Long shopId);
 
+    // 매장 아트조회 검색어 X, 카테고리 O
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.categoryArtList ca " +
+            "LEFT JOIN a.shop s " +
+            "WHERE s.shopId = :shopId AND a.isDeleted = false AND ca.category.categoryId " +
+            "IN :categoryIdList GROUP BY a " +
+            "HAVING COUNT(DISTINCT ca.category) = :numberOfSelectedCategories")
+    Page<ArtRef> findByIsDeletedFalseAndCategory(List<Long> categoryIdList,
+                                                         int numberOfSelectedCategories,
+                                                         Pageable pageable, @Param("shopId") Long shopId);
+
+    // 매장 아트조회 검색어 O, 카테고리 X
+    @Query("SELECT a " +
+            "FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) AND a.isDeleted = false AND s.shopId = :shopId ")
+    Page<ArtRef> findShopArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable, @Param("shopId") Long shopId);
+
+    // 매장 아트조회 검색어 O, 카테고리 O
+    @Query("SELECT a FROM ArtRef a " +
+            "LEFT JOIN a.shop s " +
+            "JOIN a.categoryArtList ca " +
+            "WHERE (a.name LIKE %:keyword% OR s.name LIKE %:keyword%) " +
+            "AND s.shopId = :shopId " +
+            "AND a.isDeleted = false " +
+            "AND ca.category.categoryId IN :categoryIdList " +
+            "GROUP BY a " +
+            "HAVING COUNT(DISTINCT ca.category) = :numberOfSelectedCategories")
+    Page<ArtRef> findShopArtByKeywordAndCategories(@Param("keyword") String keyword,
+                                            @Param("categoryIdList") List<Long> categoryIdList,
+                                            @Param("numberOfSelectedCategories") int numberOfSelectedCategories,
+                                            Pageable pageable, @Param("shopId") Long shopId);
 
     // 아트 검색 (네일이름, 매장이름)
     @Query("SELECT a " +

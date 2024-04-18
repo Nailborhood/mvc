@@ -12,32 +12,49 @@
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
-    <script th:src="@{/js/search.js}"></script>
+    <script th:src="@{/js/artboard/shop_art_search.js}"></script>
+    <script th:src="@{/js/artboard/shop_art_category.js}"></script>
 </head>
 
-<body>
-<div layout:fragment="content">
-    <div class="search-bar">
-        <div th:replace="fragments/components/search/searchbar.html"></div>
-        <div th:replace="fragments/components/search/check_category.html"></div>
+<body th:data-shop-id="${result.getData().shopArtBoardLookupResponseDtoList[0].shopId}">
+    <div th:if="${error}" class="empty-art-message">
+        아트판이 없습니다.
     </div>
-    <!-- TODO 정렬을 어디에 두어야하는지 결정 필요 -->
-    <div class="art-list">
-        <!-- 페이지의 각 아트 아이템을 순회합니다 -->
-        <div th:each="art, iterStat : ${result.shopArtBoardLookupResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
-            <a th:href="@{/artboard/inquiry/{id}(id=${art.artRefId})}" class="art-link" role="link">
-                <div class="art-img">
-                    <img th:src="@{${art.artImgPath}}" alt="Art Image">
-                </div>
-                <div class="art-icon">
-                    <img th:src="@{/assets/icons/slide.svg}">
-                </div>
-            </a>
+    <div th:unless="${error}" layout:fragment="content">
+        <div class="search-bar">
+            <div th:replace="artboard/art_searchbar.html"></div>
+            <div th:replace="artboard/art_category.html"></div>
+        </div>
+        <div class="art-list" id="art-list">
+            <!-- 페이지의 각 아트 아이템을 순회합니다 -->
+            <div th:each="art, iterStat : ${result.getData().shopArtBoardLookupResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
+                <a th:href="@{/artboard/inquiry/{id}(id=${art.artRefId})}" class="art-link" role="link">
+                    <div class="art-img">
+                        <img th:src="@{${art.artImgPath}}" alt="Art Image">
+                    </div>
+                    <div class="art-icon">
+                        <img th:src="@{/assets/icons/slide.svg}">
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <div class="pagination-div">
+                <ul class="pagination-ul">
+                    <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == 1}">
+                        <a class="page-link" th:href="@{/artboard/{shopId}(shopId=${shopId}, page=${result.getData().paginationDto.pageNo} - 1, sortBy=${sortBy})}">Prev</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                        <a class="page-link" th:href="@{/artboard/{shopId}(shopId=${shopId}, page=${pageNum}, size=${size}, sortBy=${sortBy})}" th:text="${pageNum}">pageNo</a>
+                    </li>
+                    <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == result.getData().paginationDto.totalPages}">
+                        <a class="page-link" th:href="@{/artboard/{shopId}(shopId=${shopId}, page=${result.getData().paginationDto.pageNo} + 1, sortBy=${sortBy})}">Next</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-
-    <div th:replace="fragments/components/pagination/pagination.html"></div>
-</div>
 </body>
 
 </html>
