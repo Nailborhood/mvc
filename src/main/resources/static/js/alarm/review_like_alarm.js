@@ -1,32 +1,36 @@
 document.addEventListener("DOMContentLoaded", function() {
+
     var socket = new SockJS("/echo");
 
     socket.onopen = function (){
-        console.log("아트판 소켓 연결 완료");
+        console.log("매장 찜 소켓 연결 완료");
     }
-    const clickLikeUrl = "/assets/icons/art/clickLike.svg";
-    const emptyLikeUrl = "/assets/icons/art/emptyLike.svg";
 
-    $('.artLike').each(function() {
+    const clickLikeUrl = "/assets/icons/review/clickThunbsUp.svg";
+    const emptyLikeUrl = "/assets/icons/review/emptyThumbsUp.svg";
+
+    $('.like').each(function() {
         var btn = $(this);
-        var isFavorite = btn.attr('data-like-status') === 'true';
-        var imgSrc = isFavorite ? '/assets/icons/art/clickLike.svg' : '/assets/icons/art/emptyLike.svg';
-        btn.find('img').attr('src', imgSrc);
+        var isFavorite = btn.attr('data-like-status') === 'true'; // 현재 좋아요 상태를 가져옵니다.
+        var imgSrc = isFavorite ? '/assets/icons/review/clickThunbsUp.svg' : '/assets/icons/review/emptyThumbsUp.svg'; // 상태에 따라 이미지 경로를 결정합니다.
+        btn.find('img').attr('src', imgSrc); // 이미지의 src 속성을 업데이트합니다.
 
         btn.click(function(e) {
-            e.preventDefault();
+            e.preventDefault(); // 기본 동작 방지
 
             var isLoggedIn = btn.attr('data-is-logged-in') === 'true';
             if (!isLoggedIn) {
                 alert("로그인 후 이용할 수 있습니다.");
-                return;
+                return; // 로그인하지 않았으면 여기서 함수 종료
             }
 
-            var artRefId = btn.attr('data-art-id');
-            var receiver = btn.attr('data-receiver');
+            var shopId = btn.attr('data-shop-id');
+            var reviewId = btn.attr('data-review-id');
+            var receiver = btn.attr('data-writer');
+            console.log(receiver);
 
             if (btn.attr('data-like-status') === 'true') {
-                fetch( `/artboard/like/${artRefId}`, {
+                fetch( `/like/review/${reviewId}?shopId=${shopId}`, {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -42,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     })
                     .catch(error => console.error('Error:', error));
             } else if (btn.attr('data-like-status') === 'false'){
-                fetch( `/artboard/like/${artRefId}`, {
+                fetch( `/like/review/${reviewId}?shopId=${shopId}`, {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -53,20 +57,22 @@ document.addEventListener("DOMContentLoaded", function() {
                         // 요청이 성공하면 찜 버튼의 상태와 아이콘을 업데이트합니다.
                         if(data.status) {
                             btn.find('img').attr('src', clickLikeUrl);
-                            sendFavoriteAlarm(artRefId,receiver);
+                            sendFavoriteAlarm(reviewId,receiver);
                             location.reload();
                         }
                     })
                     .catch(error => console.error('Error:', error));
             }
+
+
         });
     });
 
-    function sendFavoriteAlarm(artRefId,receiver){
-        var alarmType = 'LIKE_ART';
-        var url = `/artboard/inquiry/${artRefId}`;
+    function sendFavoriteAlarm(reviewId,receiver){
+        var alarmType = 'LIKE_REVIEW';
+        var url = `/review/inquiry/${reviewId}`;
 
-
+        console.log(reviewId);
         console.log(receiver);
         console.log(alarmType);
         console.log(url);
@@ -97,4 +103,5 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("알람 발송에 실패했습니다.");
             });
     }
+
 });

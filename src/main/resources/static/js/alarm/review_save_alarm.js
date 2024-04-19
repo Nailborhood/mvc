@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function sendReviewAlarm(reviewId, shopId, receiverEmail) {
-        var alarmType = '리뷰';
+        var alarmType = 'REVIEW';
         var url = `/review/inquiry/${reviewId}?shopId=${shopId}`;
 
         console.log(receiverEmail);

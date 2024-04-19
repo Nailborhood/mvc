@@ -49,16 +49,26 @@ public class AlarmController {
             model.addAttribute("size", size);
 
             return "alarm/admin_alarm_list";
+        }else if(member.getRole().equals(Role.ROLE_OWNER)){
+            CommonResponseDto<Object> alarmList = alarmService.getAllListByOwner(member,page,size,criteria);
+            ResultDto<AlarmListDto> resultDto = ResultDto.in(alarmList.getStatus(), alarmList.getMessage());
+            resultDto.setData((AlarmListDto) alarmList.getData());
+            model.addAttribute("resultDto", resultDto);
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
+
+            return "alarm/owner_alarm_list";
+        }else {
+            CommonResponseDto<Object> alarmList = alarmService.getAllListByUser(member,page,size,criteria);
+            ResultDto<AlarmListDto> resultDto = ResultDto.in(alarmList.getStatus(), alarmList.getMessage());
+            resultDto.setData((AlarmListDto) alarmList.getData());
+            model.addAttribute("resultDto", resultDto);
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
+
+            return "alarm/my_alarm_list";
         }
 
-        CommonResponseDto<Object> alarmList = alarmService.getAllListByOwner(member,page,size,criteria);
-        ResultDto<AlarmListDto> resultDto = ResultDto.in(alarmList.getStatus(), alarmList.getMessage());
-        resultDto.setData((AlarmListDto) alarmList.getData());
-        model.addAttribute("resultDto", resultDto);
-        model.addAttribute("orderby", criteria);
-        model.addAttribute("size", size);
-
-        return "alarm/my_alarm_list";
 
     }
 

@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AlarmType {
-    REVIEW("리뷰"),
-    FAVORITE("찜"),
-    LIKE_ART("좋아요"),
-    CHAT("채팅");
+    REVIEW("리뷰"), // 리뷰등록
+    FAVORITE("찜"), // 매장 찜
+    LIKE_ART("좋아요"), // 아트 좋아요
+    CHAT("채팅"),
+    LIKE_REVIEW("리뷰 좋아요");
 
     //TODO: 다른 부분 추가 예정
     private final String description;

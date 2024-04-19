@@ -32,12 +32,9 @@
                                sender
                             </div>
                             <div class="alarm-info_text">
-                                <div th:switch="${alarm.alarmType}">
-                                    <p th:case="'리뷰'" th:text="${alarm.getShopName() + ' 매장에 리뷰가 등록 되었습니다'}"></p>
-                                    <p th:case="'찜'" th:text="${alarm.getShopName() + ' 매장을 찜목록에 추가하였습니다'}"></p>
-                                    <p th:case="'좋아요'" th:text="${alarm.getArtRefName() + ' 아트판을 좋아합니다'}"></p>
-                                    <p th:case="'채팅'" th:text="${alarm.getShopName()+'에서 보낸 새로운 메세지가 있습니다'}"></p>
-                                    <p th:case="*" th:text="${alarm.alarmType + ' 가 처리되었습니다.'}"></p>
+                                <div th:switch="${alarm.alarmType.name()}">
+                                    <p th:case="'CHAT'" th:text="${alarm.getShopName()+'에서 보낸 새로운 메세지가 있습니다'}"></p>
+                                    <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>
                             <div class="alarm-info_time" th:text="${alarm.getCreatedAt()}">

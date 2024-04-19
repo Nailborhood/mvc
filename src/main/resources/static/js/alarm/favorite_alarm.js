@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     function sendFavoriteAlarm(shopId,receiver){
-        var alarmType = '찜';
+        var alarmType = 'FAVORITE';
         var url = `/shopDetail/${shopId}`;
 
         console.log(shopId);

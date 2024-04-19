@@ -57,21 +57,25 @@ public class ReviewInquiryService {
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+                                  .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // 리뷰 가져오기
         Review review = reviewRepository.findDetailReview(reviewId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 고객 닉네임, 프로필 이미지 가져오기
-        String nickName = review.getCustomer().getMember().getNickname();
-        String profileImg = review.getCustomer().getMember().getProfileImg();
+        String nickName = review.getCustomer()
+                                .getMember()
+                                .getNickname();
+        String profileImg = review.getCustomer()
+                                  .getMember()
+                                  .getProfileImg();
 
-        Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember().getMemberId(), reviewId);
-        if(reviewLikeStatus == null){
+        Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember()
+                                                                                                     .getMemberId(), reviewId);
+        if (reviewLikeStatus == null) {
             reviewLikeStatus = false;
         }
-
 
 
         // 영업상태, 신고상태, 카테고리
@@ -83,7 +87,6 @@ public class ReviewInquiryService {
         List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
 
-
         //리뷰 이미지
         List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
         Map<Integer, String> reviewImgPathMap = new HashMap<>();
@@ -92,24 +95,27 @@ public class ReviewInquiryService {
         }
 
         ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.builder()
-                .reviewId(reviewId)
-                .shopId(shopId)
-                .shopName(shop.getName())
-                .shopStatus(shopStatus)
-                .shopAddress(shop.getAddress())
-                .reviewReportStatus(reviewReportStatus)
-                .categoryTypeList(categoryList)
-                .imgPathMap(reviewImgPathMap)
-                .contents(review.getContents())
-                .rate(review.getRate())
-                .likeCnt(review.getLikeCnt())
-                .reviewAuthor(nickName)
-                .reviewAuthorProfileImg(profileImg)
-                .reviewCreatedAt(review.getCreatedAt())
-                .reviewUpdatedAt(review.getUpdatedAt())
-                .reviewLikeStatus(reviewLikeStatus)
-                .isDeleted(review.isDeleted())
-                .build();
+                                                                                 .reviewId(reviewId)
+                                                                                 .shopId(shopId)
+                                                                                 .shopName(shop.getName())
+                                                                                 .shopStatus(shopStatus)
+                                                                                 .shopAddress(shop.getAddress())
+                                                                                 .reviewReportStatus(reviewReportStatus)
+                                                                                 .categoryTypeList(categoryList)
+                                                                                 .imgPathMap(reviewImgPathMap)
+                                                                                 .contents(review.getContents())
+                                                                                 .rate(review.getRate())
+                                                                                 .likeCnt(review.getLikeCnt())
+                                                                                 .reviewAuthor(nickName)
+                                                                                 .reviewAuthorProfileImg(profileImg)
+                                                                                 .reviewCreatedAt(review.getCreatedAt())
+                                                                                 .reviewUpdatedAt(review.getUpdatedAt())
+                                                                                 .reviewLikeStatus(reviewLikeStatus)
+                                                                                 .isDeleted(review.isDeleted())
+                                                                                 .writer(review.getCustomer()
+                                                                                               .getMember()
+                                                                                               .getEmail())
+                                                                                 .build();
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewDetailResponseDto);
     }
@@ -118,15 +124,19 @@ public class ReviewInquiryService {
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+                                  .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         // 리뷰 가져오기
         Review review = reviewRepository.findDetailReview(reviewId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 고객 닉네임, 프로필 이미지 가져오기
-        String nickName = review.getCustomer().getMember().getNickname();
-        String profileImg = review.getCustomer().getMember().getProfileImg();
+        String nickName = review.getCustomer()
+                                .getMember()
+                                .getNickname();
+        String profileImg = review.getCustomer()
+                                  .getMember()
+                                  .getProfileImg();
 
 
         // 영업상태, 신고상태, 카테고리
@@ -138,7 +148,6 @@ public class ReviewInquiryService {
         List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
 
-
         //리뷰 이미지
         List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
         Map<Integer, String> reviewImgPathMap = new HashMap<>();
@@ -147,24 +156,27 @@ public class ReviewInquiryService {
         }
 
         ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.builder()
-                .reviewId(reviewId)
-                .shopId(shopId)
-                .shopName(shop.getName())
-                .shopStatus(shopStatus)
-                .shopAddress(shop.getAddress())
-                .reviewReportStatus(reviewReportStatus)
-                .categoryTypeList(categoryList)
-                .imgPathMap(reviewImgPathMap)
-                .contents(review.getContents())
-                .rate(review.getRate())
-                .likeCnt(review.getLikeCnt())
-                .reviewAuthor(nickName)
-                .reviewAuthorProfileImg(profileImg)
-                .reviewCreatedAt(review.getCreatedAt())
-                .reviewUpdatedAt(review.getUpdatedAt())
+                                                                                 .reviewId(reviewId)
+                                                                                 .shopId(shopId)
+                                                                                 .shopName(shop.getName())
+                                                                                 .shopStatus(shopStatus)
+                                                                                 .shopAddress(shop.getAddress())
+                                                                                 .reviewReportStatus(reviewReportStatus)
+                                                                                 .categoryTypeList(categoryList)
+                                                                                 .imgPathMap(reviewImgPathMap)
+                                                                                 .contents(review.getContents())
+                                                                                 .rate(review.getRate())
+                                                                                 .likeCnt(review.getLikeCnt())
+                                                                                 .reviewAuthor(nickName)
+                                                                                 .reviewAuthorProfileImg(profileImg)
+                                                                                 .reviewCreatedAt(review.getCreatedAt())
+                                                                                 .reviewUpdatedAt(review.getUpdatedAt())
 //                .reviewLikeStatus(reviewLikeStatus)
-                .isDeleted(review.isDeleted())
-                .build();
+                                                                                 .isDeleted(review.isDeleted())
+                                                                                 .writer(review.getCustomer()
+                                                                                               .getMember()
+                                                                                               .getEmail())
+                                                                                 .build();
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewDetailResponseDto);
     }
@@ -175,18 +187,19 @@ public class ReviewInquiryService {
         // TODO 카테고리랑, 검색 통합?
         // category 리스트화
         List<Long> categoryIdList = null;
-        if (category != null && !category.isEmpty()){
+        if (category != null && !category.isEmpty()) {
 
             categoryIdList = Arrays.stream(category.split(","))
-                    .map(Long::parseLong)
-                    .toList();
+                                   .map(Long::parseLong)
+                                   .toList();
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria)
+                                                                  .descending());
         Page<Review> reviewPage;
 
-        if(keyword == null || keyword.trim()
-                                     .isEmpty()) {
+        if (keyword == null || keyword.trim()
+                                      .isEmpty()) {
             reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
         } else {
             reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
@@ -210,38 +223,41 @@ public class ReviewInquiryService {
         List<Review> reviewList = reviewPage.getContent();
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
-        for(Review review : reviewList ){
+        for (Review review : reviewList) {
 
-            String mainImgPath = review.getReviewImgList().getFirst().getImgPath();
+            String mainImgPath = review.getReviewImgList()
+                                       .getFirst()
+                                       .getImgPath();
 
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
-                    .reviewId(review.getReviewId())
-                    .shopId(review.getShop().getShopId())
-                    .mainImgPath(mainImgPath)
+                                                                   .reviewId(review.getReviewId())
+                                                                   .shopId(review.getShop()
+                                                                                 .getShopId())
+                                                                   .mainImgPath(mainImgPath)
 //                    .categoryTypeList(categoryTypeList)
-                    .contents(review.getContents())
-                    .rate(review.getRate())
-                    .likeCnt(review.getLikeCnt())
-                    .createdAt(review.getCreatedAt())
-                    .updatedAt(review.getUpdatedAt())
-                    .build();
+                                                                   .contents(review.getContents())
+                                                                   .rate(review.getRate())
+                                                                   .likeCnt(review.getLikeCnt())
+                                                                   .createdAt(review.getCreatedAt())
+                                                                   .updatedAt(review.getUpdatedAt())
+                                                                   .build();
 
             reviewResponseDtoList.add(reviewResponseDto);
         }
 
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(reviewPage.getTotalPages())
-                .totalElements(reviewPage.getTotalElements())
-                .pageNo(reviewPage.getNumber())
-                .isLastPage(reviewPage.isLast())
-                .build();
+                                                   .totalPages(reviewPage.getTotalPages())
+                                                   .totalElements(reviewPage.getTotalElements())
+                                                   .pageNo(reviewPage.getNumber())
+                                                   .isLastPage(reviewPage.isLast())
+                                                   .build();
 
         ReviewListResponseDto reviewListResponseDto = ReviewListResponseDto.builder()
-                .reviewResponseDtoList(reviewResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
+                                                                           .reviewResponseDtoList(reviewResponseDtoList)
+                                                                           .paginationDto(paginationDto)
+                                                                           .build();
 
 
         return commonService.successResponse(SuccessCode.REVIEW_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, reviewListResponseDto);
@@ -264,8 +280,6 @@ public class ReviewInquiryService {
 
         return sortOptions;
     }
-
-
 
 
 }

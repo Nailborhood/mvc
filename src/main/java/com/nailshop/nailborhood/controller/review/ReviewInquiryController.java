@@ -66,9 +66,14 @@ public class ReviewInquiryController {
 
         }
 
+        // 리뷰 작성자
+        //Member reviewReceiver = alarmService.getUserInfo(reviewId);
+
+
 
         model.addAttribute("result", resultDto);
         model.addAttribute("receiver", receiver);
+        //model.addAttribute("reviewReceiver",reviewReceiver);
 
         return "review/review_detail";
     }

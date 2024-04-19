@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function sendChattingAlarm(receiver,roomId){
-        var alarmType = '채팅';
+        var alarmType = 'CHAT';
         var url = `/chatroom/${roomId}`;
 
         console.log(roomId);

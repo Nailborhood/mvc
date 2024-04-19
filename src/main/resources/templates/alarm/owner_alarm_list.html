@@ -30,12 +30,14 @@
                         <a th:href="@{${alarm.getUrl()}}" th:data-alarm-id="${alarm.getAlarmId()}" class="alarm-link">
                             <div class="alarm-info_title" th:switch="${alarm.getSenderName()}">
                                 <p th:case="'ADMIN'" th:text="'관리자'"></p>
-                                <p th:case="'OWNER'" th:text="'사장님'"></p>
                                 <p th:case="*" th:text="${alarm.getSenderName()}"></p>
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
-                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 남긴 리뷰에 좋아요가 등록되었습니다'}"></p>
+                                    <p th:case="'REVIEW'" th:text="${alarm.getShopName() + ' 매장에 리뷰가 등록 되었습니다'}"></p>
+                                    <p th:case="'FAVORITE'" th:text="${alarm.getShopName() + ' 매장을 찜목록에 추가하였습니다'}"></p>
+                                    <p th:case="'LIKE_ART'" th:text="${alarm.getArtRefName() + ' 아트판을 좋아합니다'}"></p>
+                                    <p th:case="'CHAT'" th:text="${'관리자가 보낸 새로운 메세지가 있습니다'}"></p>
                                     <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>

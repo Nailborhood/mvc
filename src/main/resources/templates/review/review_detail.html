@@ -12,9 +12,10 @@
     <script th:src="@{/js/review/review_detail_status.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
-    <script th:src="@{/js/review/review_like.js}"></script>
+<!--    <script th:src="@{/js/review/review_like.js}"></script>-->
     <script th:src="@{/js/review/review_delete.js}"></script>
-    <script th:src="@{/js/alarm/alarm_form.js}"></script>
+    <script th:src="@{/js/alarm/review_save_alarm.js}"></script>
+    <script th:src="@{/js/alarm/review_like_alarm.js}"></script>
 </head>
 
 <body th:data-review-status="${result.getData().reviewReportStatus}" th:data-review-isDeleted="${result.getData().isDeleted}" th:data-shop-status="${result.getData().shopStatus}">
@@ -45,7 +46,8 @@
                     <img th:src="${result.getData().reviewAuthorProfileImg}" alt="프로필 이미지" class="profile-pic" />
                     <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span>
                     <div class="review-count">
-                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                        th:data-writer="${result.getData().getWriter()}">
 
                             <img class="like-img" src="/assets/icons/review/emptyThumbsUp.svg" />
                         </a>

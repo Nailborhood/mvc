@@ -71,14 +71,16 @@ document.addEventListener('DOMContentLoaded', function () {
         let toastHeader = `<div class='toast-header'><i class='fas fa-bell mr-2'></i><strong class='mr-auto'>💌 알람</strong><!--<button type='button' class='ml-2 mb-1 close' data-bs-dismiss='toast' aria-label='Close'>--><span aria-hidden='true'>&times;</span><!--</button>--></div>`;
         let toastBody = `<div class='toast-body'><a href='${message.url}' data-alarm-id='${message.alarmId}' style='color: black; text-decoration: none;'>`;
 
-        if (message.alarmType === '리뷰') {
-            toastBody += `${message.alarmType}가 등록되었습니다.</a></div>`;
-        } else if (message.alarmType === '찜') {
-            toastBody += `매장 ${message.alarmType}이 등록되었습니다.</a></div>`;
-        }else if(message.alarmType === '좋아요') {
-            toastBody += `아트판에 ${message.alarmType}가 등록되었습니다.</a></div>`;
-        }else if(message.alarmType === '채팅'){
-            toastBody += `새로운 ${message.alarmType}메세지가 있습니다.</a></div>`;
+        if (message.alarmType === 'REVIEW') {
+            toastBody += `매장에 리뷰가 등록되었습니다.</a></div>`;
+        } else if (message.alarmType === 'FAVORITE') {
+            toastBody += `매장 찜이 등록되었습니다.</a></div>`;
+        }else if(message.alarmType === 'LIKE_ART') {
+            toastBody += `아트판에 좋아요가 등록되었습니다.</a></div>`;
+        }else if(message.alarmType === 'CHAT'){
+            toastBody += `새로운 채팅 메세지가 있습니다.</a></div>`;
+        }else if(message.alarmType === 'LIKE_REVIEW'){
+            toastBody += `리뷰에 좋아요가 등록되었습니다.</a></div>`;
         }else{
             toastBody += `새로운 알람이 있습니다.</a></div>`;
         }
