@@ -12,7 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
-    <script th:src="@{/js/artboard/shop_art_search.js}"></script>
+<!--    <script th:src="@{/js/artboard/shop_art_search.js}"></script>-->
     <script th:src="@{/js/artboard/shop_art_category.js}"></script>
 </head>
 
@@ -20,7 +20,28 @@
     <div th:if="${error}" class="empty-art-message">
         아트판이 없습니다.
     </div>
-    <div th:unless="${error}" layout:fragment="content">
+    <div  th:unless="${error}" layout:fragment="content">
+        <div class="shop-info" >
+            <div class="shop-info_img">
+                <img th:src="@{${result.getData().shopArtBoardLookupResponseDtoList[0].shopMainImgPath}}" />
+            </div>
+            <div class="shop-info_text">
+                <!-- 가게 정보 수정 필요 -->
+                <div class="shop-info_title" th:text="${result.getData().shopArtBoardLookupResponseDtoList[0].shopName}">
+                    title
+                </div>
+                <div class="shop-info_address" th:text="${result.getData().shopArtBoardLookupResponseDtoList[0].shopAddress}">
+                    address
+                </div>
+                <div class="shop-info_under">
+                    <div class="shop-info_rate">
+                        <span class="review-cnt">⭐️&nbsp;</span>
+                        <span class="score" th:text="${result.getData().shopArtBoardLookupResponseDtoList[0].reviewAvg}"></span>&nbsp;(
+                        <span class="review-cnt" th:text="${result.getData().shopArtBoardLookupResponseDtoList[0].reviewCnt}"></span>&nbsp;)
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="search-bar">
             <div th:replace="artboard/art_searchbar.html"></div>
             <div th:replace="artboard/art_category.html"></div>
