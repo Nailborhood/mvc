@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatArea.appendChild(dateElement);
     }
 
-// ownwer -mychat
+// owner -mychat
     function showMessageOutput(messageOutput) {
         var chatArea = document.querySelector('.chatArea');
 

@@ -8,7 +8,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.alarm.AlarmService;
-import com.nailshop.nailborhood.service.common.TimeFormatter;
+import com.nailshop.nailborhood.type.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,21 +40,18 @@ public class AlarmController {
         model.addAttribute("memberNickname", nicknameSpace);
 
         Member member = memberDetails.getMember();
+        if(member.getRole().equals(Role.ROLE_ADMIN)) {
+            CommonResponseDto<Object> alarmList = alarmService.getAllListByAdmin(member,page,size,criteria);
+            ResultDto<AlarmListDto> resultDto = ResultDto.in(alarmList.getStatus(), alarmList.getMessage());
+            resultDto.setData((AlarmListDto) alarmList.getData());
+            model.addAttribute("resultDto", resultDto);
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
 
+            return "alarm/admin_alarm_list";
+        }
 
-//        try {
-//            CommonResponseDto<Object> alarmList = alarmService.getAllList(member);
-//
-//            model.addAttribute("alarmList", alarmList.getData());
-//
-//
-//        } catch (NotFoundException e) {
-//
-//
-//        }
-
-
-        CommonResponseDto<Object> alarmList = alarmService.getAllList(member,page,size,criteria);
+        CommonResponseDto<Object> alarmList = alarmService.getAllListByOwner(member,page,size,criteria);
         ResultDto<AlarmListDto> resultDto = ResultDto.in(alarmList.getStatus(), alarmList.getMessage());
         resultDto.setData((AlarmListDto) alarmList.getData());
         model.addAttribute("resultDto", resultDto);

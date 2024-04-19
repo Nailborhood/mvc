@@ -28,16 +28,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 토스트 메시지를 화면에 표시
-    function displayToast(message) {
+/*    function displayToast(message) {
         let toastHTML = "<div class='toast' role='alert' aria-live='assertive' aria-atomic='true'>";
-        toastHTML += "<div class='toast-header'><i class='fas fa-bell mr-2'></i><strong class='mr-auto'>" + message.alarmType + "</strong>";
-        toastHTML += "<small class='text-muted'></small><button type='button' class='ml-2 mb-1 close' data-bs-dismiss='toast' aria-label='Close'>";
+        toastHTML += "<div class='toast-header'><i class='fas fa-bell mr-2'></i><strong class='mr-auto'>" + "💌 알람" + "</strong>";
+        // toastHTML += "<small class='text-muted'></small><button type='button' class='ml-2 mb-1 close' data-bs-dismiss='toast' aria-label='Close'>";
         toastHTML += "<span aria-hidden='true'>&times;</span></button></div>";
         toastHTML += "<div class='toast-body'>";
-        toastHTML += "<a href='" + message.url + "' data-alarm-id='" + message.alarmId + "' style='color: black; text-decoration: none;'>" + message.alarmType + "가 등록되었습니다.</a>";
+        if(message.alarmType === '리뷰') {
+
+            toastHTML += "<a href='" + message.url + "' data-alarm-id='" + message.alarmId + "' style='color: black; text-decoration: none;'>" + message.alarmType + "가 등록되었습니다.</a>";
+
+        }else if(message.alarmType === '찜'){
+            toastHTML += "<a href='" + message.url + "' data-alarm-id='" + message.alarmId + "' style='color: black; text-decoration: none;'>" + "매장 "+message.alarmType + "이 등록되었습니다.</a>";
+        }
+
         toastHTML += "</div></div>";
         document.getElementById("msgStack").innerHTML += toastHTML;
-
 
         // 새로운 Toast를 화면에 보여줌
         var toastElList = [].slice.call(document.querySelectorAll('.toast'));
@@ -52,7 +58,42 @@ document.addEventListener('DOMContentLoaded', function () {
         // 알림 카운트 추가
         var currentCount = parseInt(document.getElementById("newNoticeCnt").innerText);
         document.getElementById("newNoticeCnt").innerText = currentCount + 1;
+    }*/
+
+    function displayToast(message) {
+        const msgStack = document.getElementById("msgStack");
+        const toastDiv = document.createElement('div');
+        toastDiv.className = 'toast';
+        toastDiv.setAttribute('role', 'alert');
+        toastDiv.setAttribute('aria-live', 'assertive');
+        toastDiv.setAttribute('aria-atomic', 'true');
+
+        let toastHeader = `<div class='toast-header'><i class='fas fa-bell mr-2'></i><strong class='mr-auto'>💌 알람</strong><!--<button type='button' class='ml-2 mb-1 close' data-bs-dismiss='toast' aria-label='Close'>--><span aria-hidden='true'>&times;</span><!--</button>--></div>`;
+        let toastBody = `<div class='toast-body'><a href='${message.url}' data-alarm-id='${message.alarmId}' style='color: black; text-decoration: none;'>`;
+
+        if (message.alarmType === '리뷰') {
+            toastBody += `${message.alarmType}가 등록되었습니다.</a></div>`;
+        } else if (message.alarmType === '찜') {
+            toastBody += `매장 ${message.alarmType}이 등록되었습니다.</a></div>`;
+        }else if(message.alarmType === '좋아요') {
+            toastBody += `아트판에 ${message.alarmType}가 등록되었습니다.</a></div>`;
+        }else if(message.alarmType === '채팅'){
+            toastBody += `새로운 ${message.alarmType}메세지가 있습니다.</a></div>`;
+        }else{
+            toastBody += `새로운 알람이 있습니다.</a></div>`;
+        }
+
+        toastDiv.innerHTML = toastHeader + toastBody;
+        msgStack.appendChild(toastDiv);
+
+        new bootstrap.Toast(toastDiv, { animation: true }).show();
+
+        console.log(message.url, message.alarmId);
+
+        let currentCount = parseInt(document.getElementById("newNoticeCnt").innerText);
+        document.getElementById("newNoticeCnt").innerText = currentCount + 1;
     }
+
 
     // 클릭 이벤트 리스너 추가
     document.addEventListener('click', function(e) {

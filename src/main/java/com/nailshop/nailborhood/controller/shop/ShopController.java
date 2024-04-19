@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.shop;
 
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -11,6 +12,7 @@ import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseD
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
@@ -40,22 +42,22 @@ public class ShopController {
     private final ShopReviewListLookupService shopReviewListLookupService;
     private final ShopArtBoardListService shopArtBoardListService;
     private final ShopRegistrationService shopRegistrationService;
+    private final AlarmService alarmService;
 
 
     // main
     @GetMapping(value = "/")
-    public String getAllShops(/*@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                      @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                      @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                      @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort*/
-            Model model) {
+    public String getAllShops(@AuthenticationPrincipal MemberDetails memberDetails,
+                              Model model) {
 
-
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
         ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
         resultDto.setData((HomeDetailResponseDto) allResultList.getData());
         model.addAttribute("resultDto", resultDto);
-        //TODO: main view 만들기
+        model.addAttribute("memberNickname", nicknameSpace);
+
         return "home/home";
 
     }
@@ -84,9 +86,12 @@ public class ShopController {
                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                        @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
-                                       Model model) {
+                                       Model model,
+                                       @AuthenticationPrincipal MemberDetails memberDetails) {
 //        dongId = 1L;
         try {
+            String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                          .getNickname() : "";
             CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId, cityId);
             ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
             resultDto.setData((ShopListResponseDto) allShopsList.getData());
@@ -94,9 +99,11 @@ public class ShopController {
             StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
             List<Map<String, String>> criteriaOptions = shopListLookupLocalService.createCriteriaOptions();
 
+
             model.addAttribute("resultDto", resultDto);
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("memberNickname", nicknameSpace);
             return "shop/shop_local_list";
         } catch (NotFoundException e) {
             StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
@@ -137,6 +144,9 @@ public class ShopController {
         try {
             ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
             resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
+            // 알람
+            Member receiver = alarmService.getOwnerInfo(shopId);
+            model.addAttribute("receiver", receiver);
             model.addAttribute("memberNickname", nicknameSpace);
             model.addAttribute("isLoggedIn", isLoggedIn);
             model.addAttribute("resultDto", resultDto);

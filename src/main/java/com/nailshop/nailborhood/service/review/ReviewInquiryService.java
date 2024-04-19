@@ -266,9 +266,6 @@ public class ReviewInquiryService {
     }
 
 
-    public Member getOwnerInfo(Long shopId) {
-        Owner owner = ownerRepository.findByShopId(shopId);
-        return memberRepository.findByOwnerId(owner.getOwnerId());
-    }
+
 
 }

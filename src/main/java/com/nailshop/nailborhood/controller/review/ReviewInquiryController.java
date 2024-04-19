@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,7 @@ import java.util.Map;
 public class ReviewInquiryController {
 
     private final ReviewInquiryService reviewInquiryService;
+    private final AlarmService alarmService;
 
 
     // 리뷰 상세 조회
@@ -58,7 +60,7 @@ public class ReviewInquiryController {
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
         // 알람
-        Member receiver = reviewInquiryService.getOwnerInfo(shopId);
+        Member receiver = alarmService.getOwnerInfo(shopId);
         if (Boolean.TRUE.equals(alarmSent)) {
             model.addAttribute("alarmSent", true);
 

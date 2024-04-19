@@ -15,4 +15,6 @@ public class AlarmResponseDto {
     private String senderName; // 알람 발신자 이름
     private String url; // 알람 출처 url
     private String createdAt;
+    private String shopName;
+    private String artRefName;
 }
