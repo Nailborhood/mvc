@@ -2,13 +2,17 @@ package com.nailshop.nailborhood.service.shop;
 
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
+import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
+import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
+import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -29,6 +33,8 @@ public class ShopArtBoardListService {
     private final CommonService commonService;
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
+    private final ShopRepository shopRepository;
+    private final ShopImgRepository shopImgRepository;
     private final CategoryArtRepository categoryArtRepository;
 
 
@@ -100,6 +106,8 @@ public class ShopArtBoardListService {
         } else {
             categoryIdList = null;
         }
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria).descending());
         // 페이지로 값 가져오기
@@ -135,10 +143,19 @@ public class ShopArtBoardListService {
             Long artRefId = artRef.getArtRefId();
             // 아트판 이미지 가져오기
             String artImgPath = artImgRepository.findArtImgByShopIdAndArtRefId(shopId, artRefId);
+            String shopMainImgPath = shopImgRepository.findShopImgByShopId(shopId);
+
             List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
             // dto에 shop entity 값을 변환하는 과정
             ShopArtBoardLookupResponseDto dto = new ShopArtBoardLookupResponseDto(
                     artRefId,
+                    shop.getName(),
+                    shop.getAddress(),
+                    shop.getOpentime(),
+                    shop.getRateAvg(),
+                    shop.getReviewCnt(),
+                    shop.getFavoriteCnt(),
+                    shopMainImgPath,
                     shopId,
                     artRef.getName(),
                     artRef.getContent(),
