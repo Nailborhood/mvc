@@ -9,9 +9,12 @@
     <script th:src="@{/js/get_layouts.js}"></script>
     <link rel="stylesheet" href="/css/layout/layout_style.css">
     <link rel="stylesheet" href="/css/shop/shop_review_list_style.css">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <script th:src="@{/js/shop/shop_review_list_search.js}"></script>
+<!--    <script th:src="@{/js/review/search.js}" ></script>-->
 </head>
 
-<body>
+<body th:data-shop-id="${shopReview.ShopAndReviewLookUpResponseDto[0].shopId}">
     <div id="wrapper">
         <div th:replace="fragments/header::header"></div>
         <div layout:fragment="content">
@@ -20,7 +23,6 @@
             </div>
             <div class="content" th:unless="${error}">
                 <div class="shop-info" >
-    <!--                <div class="shop-info" th:each="review : ${shopReview.shopAndReviewLookUpResponseDto}">-->
                     <div class="shop-info_img">
                         <img th:src="@{${shopReview.ShopAndReviewLookUpResponseDto[0].shopMainImgPath}}" />
                     </div>
@@ -41,8 +43,33 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="shop-review_list">
+                <form id="searchForm" class="searchForm" method="get">
+                    <div class="search-container">
+                        <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+                        <div class="search-button" onclick="submitSearch()">
+                            <img src="/assets/icons/search_icon.png" alt="Search">
+                        </div>
+                    </div>
+                    <div class="search-select-box">
+                        <div class="checkbox-button_row">
+                            <div th:each="category : ${categories}" class="checkbox-button">
+                                <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
+                                <div class="checked-div">
+                                    <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="orderby-select">
+                            <select name="orderby" id="orderby">
+                                <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                                        th:text="${criteria.text}"
+                                        th:selected="${criteria.value == selectedOrderby}">Option
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="shop-review_list" id="shop-review_list">
                     <div class="review-list-block" th:each="review, iterStat : ${shopReview.shopAndReviewLookUpResponseDto}" th:if="${iterStat.count <= 20}" >
                         <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
                             <div class="review-img">
@@ -52,6 +79,21 @@
                                 <img th:src="@{/assets/icons/slide.svg}">
                             </div>
                         </a>
+                    </div>
+                </div>
+                <div class="pagination" th:unless="${error}">
+                    <div class="pagination-div">
+                        <ul class="pagination-ul">
+                            <li th:if="${shopReview.paginationDto.pageNo > 1}" class="page-item">
+                                <a class="page-link" th:href="@{/review/{shopId}(shopId=${shopId}, page=${shopReview.paginationDto.pageNo} - 1, size=${size}, orderby=${orderby})}">Prev</a>
+                            </li>
+                            <li th:each="pageNum : ${#numbers.sequence(1, shopReview.paginationDto.totalPages)}" class="page-item">
+                                <a class="page-link" th:href="@{/review/{shopId}(shopId=${shopId}, page=${pageNum}, size=${size}, orderby=${orderby})}" th:text="${pageNum}"></a>
+                            </li>
+                            <li th:if="${shopReview.paginationDto.pageNo < shopReview.paginationDto.totalPages}" class="page-item">
+                                <a class="page-link" th:href="@{/review/{shopId}(shopId=${shopId}, page=${shopReview.paginationDto.pageNo} + 1, size=${size}, orderby=${orderby})}">Next</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
