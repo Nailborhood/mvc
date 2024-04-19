@@ -167,7 +167,7 @@ public class ReviewInquiryService {
 
     // 리뷰 전체 조회
     public CommonResponseDto<Object> allReview(String keyword, int page, int size, String criteria, String category) {
-        // TODO 카테고리랑, 검색 통합?
+
         // category 리스트화
         List<Long> categoryIdList = null;
         if (category != null && !category.isEmpty()){
@@ -179,43 +179,41 @@ public class ReviewInquiryService {
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria).descending());
         Page<Review> reviewPage;
+        List<Review> reviewList;
 
         if(keyword == null || keyword.trim()
                                      .isEmpty()) {
-            reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
+            if (categoryIdList == null || categoryIdList.isEmpty()){
+                reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
+            } else {
+                int categoryIdListSize = categoryIdList.size();
+                reviewPage = reviewRepository.findByCategoryIdListAndIsDeletedFalse(categoryIdList, categoryIdListSize, pageable);
+            }
         } else {
-            reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
+            if (categoryIdList == null || categoryIdList.isEmpty()){
+                reviewPage = reviewRepository.findReviewListBySearch(keyword, pageable);
+            } else {
+                int categoryIdListSize = categoryIdList.size();
+                reviewPage = reviewRepository.findReviewByKeywordAndCategories(keyword, categoryIdList, categoryIdListSize, pageable);
+            }
         }
 
-        if (reviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//        if (reviewPage.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
 
-
-//        if(categoryIdList == null || categoryIdList.isEmpty()){
-//            // 카테고리 x
-//            reviewPage = reviewRepository.findAllIsDeletedFalse(pageable);
-//        }
-//        else {
-//            reviewPage = reviewRepository.findByCategoryIdListAndIsDeletedFalse(categoryIdList, pageable);
-//        }
-//
-//        if(reviewPage.isEmpty()){
-//            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
-//        }
-
-        List<Review> reviewList = reviewPage.getContent();
+        reviewList = reviewPage.getContent();
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
         for(Review review : reviewList ){
 
             String mainImgPath = review.getReviewImgList().getFirst().getImgPath();
-
             List<String> categoryTypeList = categoryReviewRepository.findCategoryTypeByReviewId(review.getReviewId());
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
                     .shopId(review.getShop().getShopId())
                     .mainImgPath(mainImgPath)
-//                    .categoryTypeList(categoryTypeList)
+                    .categoryIdList(categoryIdList)
+                    .categoryTypeList(categoryTypeList)
                     .contents(review.getContents())
                     .rate(review.getRate())
                     .likeCnt(review.getLikeCnt())
