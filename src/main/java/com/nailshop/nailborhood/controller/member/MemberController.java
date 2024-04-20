@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
-//
-//    @Hidden
-//    @GetMapping("/")
-//    public ResponseEntity<?> logoutTest() {
-//        return ResponseEntity.status(200).body("로그아웃 완료");
-//    }
 
     // 로그인 페이지
     @PreAuthorize("isAnonymous()")
@@ -80,9 +74,10 @@ public class MemberController {
 
     // 마이페이지 겸 유저 조회 페이지로...?
     @GetMapping("/user")
-    public String userPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model)     {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+    public String userPage(Authentication authentication,
+                           @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         return "mypage/user";
     }
 

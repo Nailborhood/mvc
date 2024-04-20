@@ -24,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -133,6 +135,7 @@ public class MemberService {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         return memberOptional.isPresent();
     }
+
     private boolean findByNickname(String nickname) {
         Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
         return memberOptional.isPresent();
@@ -279,14 +282,12 @@ public class MemberService {
     }
 
     // 프로필 수정
-    public CommonResponseDto<Object> updateProfileImg(String accessToken, MultipartFile multipartFile) {
+    public CommonResponseDto<Object> updateProfileImg(Long id, MultipartFile multipartFile) {
         // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
-        Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         try {
             String imgPath = s3UploadService.profileImgUpload(multipartFile);
-
             memberRepository.updateMemberProfileImg(id, imgPath);
 
             return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -295,4 +296,20 @@ public class MemberService {
         }
     }
 
+    public Member findMemberForOAuth2Login(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+    }
+
+    public SessionDto getSessionDto(Authentication authentication, MemberDetails memberDetails) {
+        Member member;
+        if (authentication.getPrincipal() != null) {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            member = findMemberForOAuth2Login((String) attributes.get("email"));
+        } else {
+            member = memberDetails.getMember();
+        }
+        return SessionDto.of(member);
+    }
 }

@@ -98,13 +98,14 @@ td i {
 }
 
 #google-logo {
-    width: 70px;
+    width: 208px;
     height: 30.7px;
     display: flex;
     justify-content: center;
     align-items: center;
     background: rgb(255, 255, 255);
     border-radius: 3px;
+    border: 1px solid var(--shadow_2);
 }
 
 #google-logo img {

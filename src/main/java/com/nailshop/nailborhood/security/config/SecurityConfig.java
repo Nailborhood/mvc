@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.security.config;
 
+import com.nailshop.nailborhood.security.config.auth.OAuthMemberDetailsService;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAccessDeniedHandler;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAuthenticationEntryPoint;
 import jakarta.servlet.DispatcherType;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final OAuthMemberDetailsService oAuthMemberDetailsService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -73,7 +75,7 @@ public class SecurityConfig {
                                 .loginProcessingUrl("/loginProc")
                                 .usernameParameter("email")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/example")
+                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
                                 .successHandler(
                                         new AuthenticationSuccessHandler() {
@@ -93,6 +95,17 @@ public class SecurityConfig {
                                             }
                                         })
                 )
+                .oauth2Login((oauth) ->
+                        oauth
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/")
+                                .failureUrl("/login?error=true")
+                                .userInfoEndpoint(
+                                        userInfoEndpointConfig ->
+                                                userInfoEndpointConfig
+                                                        .userService(oAuthMemberDetailsService)
+                                )
+                )
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
@@ -100,7 +113,6 @@ public class SecurityConfig {
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )
-//                .oauth2Login()
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement)->
                                 sessionManagement

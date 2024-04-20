@@ -67,4 +67,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findAllMemberListByKeyword(@Param("keyword")String keyword, Pageable pageable);
 
 
+    @Modifying
+    @Query("UPDATE Member m SET " +
+            "m.name = :name, " +
+            "m.profileImg =:picture " +
+            "where m.email = :email")
+    void updateOAuth2Member(@Param("email") String email, @Param("name") String name, @Param("picture") String picture);
 }
