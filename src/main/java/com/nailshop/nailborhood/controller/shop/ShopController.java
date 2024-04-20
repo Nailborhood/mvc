@@ -1,5 +1,8 @@
 package com.nailshop.nailborhood.controller.shop;
 
+import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
@@ -10,6 +13,7 @@ import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
@@ -40,6 +44,7 @@ public class ShopController {
     private final ShopReviewListLookupService shopReviewListLookupService;
     private final ShopArtBoardListService shopArtBoardListService;
     private final ShopRegistrationService shopRegistrationService;
+    private final CategoryRepository categoryRepository;
 
 
     // main
@@ -157,9 +162,10 @@ public class ShopController {
                                     @AuthenticationPrincipal MemberDetails memberDetails,
                                     @PathVariable Long shopId,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                    @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
+                                    @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                    @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
+                                    @RequestParam(value = "keyword", required = false) String keyword) {
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
                                                                       .getNickname() : "";
@@ -167,11 +173,16 @@ public class ShopController {
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> shopReview = shopReviewListLookupService.getAllReviewListByShopId(page, size, criteria, sort, shopId);
-//        ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
-//        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
+            CommonResponseDto<Object> shopReview = shopReviewListLookupService.getSearchReviewListByShopId(page, size, category, criteria, keyword , shopId);
+
+            List<Map<String, String>> criteriaOptions = shopReviewListLookupService.createCriteriaOptions();
+            List<Category> categoryList = categoryRepository.findAll();
 
             model.addAttribute("shopReview", shopReview.getData());
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
+            model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("categories", categoryList);
             model.addAttribute("error", error);
 
         } catch (NotFoundException e) {
@@ -184,20 +195,70 @@ public class ShopController {
 
 
     // 매장 아트 조회
-
     @GetMapping("/art/{shopId}")
     public String getShopArtList(Model model,
+                                 @AuthenticationPrincipal MemberDetails memberDetails,
                                  @PathVariable Long shopId,
                                  @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                 @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                 @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                 @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> shopArt = shopArtBoardListService.getAllArtBoardListByShopId(page, size, criteria, sort, shopId);
+                                 @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                 @RequestParam(value = "sortBy", defaultValue = "likeCount", required = false) String criteria,
+                                 @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                 @RequestParam(value = "keyword", required = false) String keyword) {
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+        boolean error = false;
+
+        try {
+            CommonResponseDto<Object> shopArt = shopArtBoardListService.getAllArtBoardListByShopIdByCategory(page, size, criteria, category, keyword, shopId);
+            ResultDto<ShopArtBoardListLookupResponseDto> resultDto = ResultDto.in(shopArt.getStatus(), shopArt.getMessage());
+            resultDto.setData((ShopArtBoardListLookupResponseDto) shopArt.getData());
+
+            List<Map<String, String>> criteriaOptions = shopArtBoardListService.createCriteriaOptions();
+            List<Category> categoryList = categoryRepository.findAll();
+
+            model.addAttribute("result", resultDto);
+            model.addAttribute("error", error);
+            model.addAttribute("sortBy", criteria);
+            model.addAttribute("size", size);
+            model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("categories", categoryList);
+            model.addAttribute("keyword", keyword);
+        } catch (Exception e) {
+
+            error = true;
+            model.addAttribute(error);
+        }
+
+        return "shop/shop_art_list";
+    }
+
+    // 매장 아트 조회 카테고리
+    @GetMapping("/art/category/{shopId}")
+    public ResponseEntity<ResultDto<ShopArtBoardListLookupResponseDto>> getShopArtListByCategory(@PathVariable Long shopId,
+                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                        @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                                                        @RequestParam(value = "sortBy", defaultValue = "likeCount", required = false) String criteria,
+                                                                        @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                                                        @RequestParam(value = "keyword", required = false) String keyword) {
+        CommonResponseDto<Object> shopArt = shopArtBoardListService.getAllArtBoardListByShopIdByCategory(page, size, criteria, category, keyword, shopId);
         ResultDto<ShopArtBoardListLookupResponseDto> resultDto = ResultDto.in(shopArt.getStatus(), shopArt.getMessage());
         resultDto.setData((ShopArtBoardListLookupResponseDto) shopArt.getData());
 
-        model.addAttribute("result", resultDto.getData());
+        return ResponseEntity.status(shopArt.getHttpStatus()).body(resultDto);
+    }
 
-        return "shop/shop_art_list";
+
+    // 매장 리뷰 조회 카테고리
+    @GetMapping("/review/category/{shopId}")
+    public ResponseEntity<ResultDto<ShopReviewListResponseDto>> getShopReviewListByCategory(@PathVariable Long shopId,
+                                                                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                                        @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                                                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria, @RequestParam(value = "category", defaultValue = "", required = false) String category, @RequestParam(value = "keyword", required = false) String keyword){
+        CommonResponseDto<Object> shopReview = shopReviewListLookupService.getSearchReviewListByShopId(page, size, category, criteria, keyword , shopId);
+        ResultDto<ShopReviewListResponseDto> resultDto = ResultDto.in(shopReview.getStatus(), shopReview.getMessage());
+        resultDto.setData((ShopReviewListResponseDto) shopReview.getData());
+
+        return ResponseEntity.status(shopReview.getHttpStatus()).body(resultDto);
     }
 }

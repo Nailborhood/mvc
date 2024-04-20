@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
@@ -140,11 +141,14 @@ public class ArtController {
     // 아트판 전체 조회
     @GetMapping("/artboard/inquiry")
     public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                   @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                   @RequestParam(value = "sortBy", defaultValue = "likeCount", required = false) String sortBy,
                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
                                    @RequestParam(value = "keyword", required = false) String keyword,
-                                   Model model){
+                                   Model model,
+                                   @AuthenticationPrincipal MemberDetails memberDetails){
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
         try {
@@ -152,10 +156,14 @@ public class ArtController {
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
+            List<Map<String, String>> criteriaOptions = artInquiryService.createCriteriaOptions();
             List<Category> categoryList = categoryRepository.findAll();
 
             model.addAttribute("result", resultDto);
             model.addAttribute("error", error);
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("size", size);
+            model.addAttribute("criteriaOptions", criteriaOptions);
             model.addAttribute("categories", categoryList);
             model.addAttribute("keyword", keyword);
         } catch (Exception e) {
@@ -171,7 +179,7 @@ public class ArtController {
     // 아트판 전체 조회(카테고리 선택)
     @GetMapping("/artboard/category/inquiry")
     public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRefByCategory(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                    @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                                    @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                                                                     @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
                                                                                     @RequestParam(value = "category", defaultValue = "", required = false) String category,
                                                                                     @RequestParam(value = "keyword", required = false) String keyword){

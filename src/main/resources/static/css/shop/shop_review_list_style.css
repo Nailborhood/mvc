@@ -1,5 +1,97 @@
 /*@import "/src/components/pagination/pagination_style.css";*/
 
+.empty-review-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    margin-top: 30px;
+}
+
+.search-input {
+    width: 450px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+    padding-top: 8px;
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.search-select-box {
+    display: flex;
+    justify-content: center;
+    /*gap: 10px*/
+}
+
+.address-select {
+    margin-bottom: 10px;
+    margin-left: 10px;
+
+}
+
+.search-select-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.search-select-box button {
+    padding: 3px 10px;
+    border: none;
+    /*background-color:var(--main-color_navy);*/
+    background: none;
+    color: gray;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    align-items: normal;
+    display: flex;
+    gap: 3px;
+    justify-content: space-evenly;
+}
+
+.clearButton {
+    margin-top: 5px;
+}
+
+.search-select-box button:hover {
+    background-color: var(--hover);
+}
+
+.search-select-box .clearButton img {
+    width: 15px;
+    height: 15px;
+}
+
+.orderby-select{
+    margin-right: 10px;
+}
+
+.orderby-select select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 70px;
+}
+
 .content {
     display: flex;
     align-items: center;
@@ -11,6 +103,38 @@
     align-items: center;
     height: 100%;
 }
+.checkbox-button_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.checkbox-button {
+    flex: 0 0 calc(20% - 20px);
+    height: 25px;
+    width: 40px;
+}
+
+.checked-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--shadow_1);
+    background-color: var(--main-color_begie);
+}
+
+.category-checkbox:checked + .checked-div {
+    background-color: #82817e;
+}
+.category-checkbox {
+    display: none;
+}
 
 .shop-info {
     width: 600px;
@@ -20,7 +144,6 @@
     padding: 0 10px;
     display: flex;
     align-items: center;
-    cursor: pointer;
     margin-bottom: 20px;
 }
 

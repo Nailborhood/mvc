@@ -7,13 +7,13 @@
 
 .search-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin-bottom: 40px;
     margin-top: 30px;
 }
 
 .search-input {
-    width: 800px;
+    width: 450px;
     padding: 10px 25px;
     border: 1px solid #ddd;
     border-radius: 15px;
@@ -25,6 +25,7 @@
     border: none;
     cursor: pointer;
     margin-left: -40px;
+    padding-top: 8px;
 }
 
 .search-button img {
@@ -34,7 +35,8 @@
 
 .search-select-box {
     display: flex;
-    gap: 10px
+    justify-content: center;
+    /*gap: 10px*/
 }
 
 .address-select {
@@ -78,7 +80,7 @@
 }
 
 .orderby-select{
-    margin-left: 225px;
+    margin-right: 10px;
 }
 
 .orderby-select select {
@@ -86,6 +88,39 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     width: 70px;
+}
+
+.checkbox-button_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.checkbox-button {
+    flex: 0 0 calc(20% - 20px);
+    height: 25px;
+    width: 40px;
+}
+
+.checked-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--shadow_1);
+    background-color: var(--main-color_begie);
+}
+
+.category-checkbox:checked + .checked-div {
+    background-color: #82817e;
+}
+.category-checkbox {
+    display: none;
 }
 
 .review-list {
