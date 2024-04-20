@@ -35,10 +35,10 @@
                 <div class="artRef-img-row">
                     <div class="artRef-list-block"
                          th:each="artResult: ${resultDto.getData().getArtListResponseDtoList()}">
-                        <div th:if="${artResult.getData().getArtResponseDtoList().size() != 0 }">
-                            <div th:each="art : ${artResult.getData().getArtResponseDtoList()}">
+                        <div th:if="${artResult.getData().getArtResponseDtoList().size() != 0 }" class="art-container">
+                            <div th:each="art : ${artResult.getData().getArtResponseDtoList()}" class="art-item">
                                 <a class="artRef-link"
-                                   th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
+                                   th:href="@{/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
                                     <div class="artRef-img">
                                         <img th:src="@{${art.getMainImgPath()}}">
                                     </div>
@@ -66,8 +66,8 @@
                 <div class="review-img-row">
                     <div class="review-list-block"
                          th:each="reviewResult : ${resultDto.getData().getShopListByReviewResponseDtoList()}">
-                        <div th:if="${reviewResult.getData().getShopLookupResponseDtoList().size() != 0 }">
-                            <div th:each="review : ${reviewResult.getData().getShopLookupResponseDtoList()}">
+                        <div th:if="${reviewResult.getData().getShopLookupResponseDtoList().size() != 0 }" class="review-container">
+                            <div th:each="review : ${reviewResult.getData().getShopLookupResponseDtoList()}" class="review-item">
                                 <a class="review-link"
                                    th:href="@{/shopDetail/{shopId}(shopId=${review.getShopId()})}"
                                    role="link">
@@ -96,8 +96,8 @@
                 <div class="rate-img-row">
                     <div class="rate-list-block"
                          th:each="rateResult : ${resultDto.getData().getShopListByRateResponseDtoList()}">
-                        <div th:if="${rateResult.getData().getShopLookupResponseDtoList().size() != 0 }">
-                            <div th:each="rate : ${rateResult.getData().getShopLookupResponseDtoList()}">
+                        <div th:if="${rateResult.getData().getShopLookupResponseDtoList().size() != 0 }" class="rate-container">
+                            <div th:each="rate : ${rateResult.getData().getShopLookupResponseDtoList()}" class="rate-item">
                                 <a class="rate-link"
                                    th:href="@{/shopDetail/{shopId}(shopId=${rate.getShopId()})}" role="link">
                                     <div class="rate-img">

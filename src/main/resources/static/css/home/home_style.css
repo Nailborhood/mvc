@@ -163,6 +163,17 @@ td {
     vertical-align: middle;
 }
 
+.art-container, .review-container, .rate-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-left: 2px;
+}
+
+.art-item , .review-item , .rate-item{
+    margin-right: 7px; /* 아이템 간 간격 조정 */
+}
+
 .best-artRef ,  .best-shop-review , .best-shop-rate {
     display: flex;
     flex-direction: column;
@@ -197,18 +208,20 @@ td {
 }
 
 .artRef-img-row , .review-img-row , .rate-img-row {
-    align-items: stretch;
+    align-items: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     flex-shrink: 0;
     position: relative;
     margin-bottom: 4px;
     justify-content: flex-start;
+    width: 98%;
 }
 
 .artRef-list-block , .review-list-block , .rate-list-block{
-    display: block;
+    display: inline-block;
     position: relative;
     margin-right: 7px;
     width: 202px;
