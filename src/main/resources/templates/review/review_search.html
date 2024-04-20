@@ -1,0 +1,28 @@
+<div th:fragment="search-bar">
+    <form id="searchForm" class="searchForm" th:action="@{/review/inquiry}" method="get">
+        <div class="search-container">
+            <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
+            <div class="search-button" onclick="submitSearch()">
+                <img src="/assets/icons/search_icon.png" alt="Search">
+            </div>
+        </div>
+        <div class="search-select-box">
+            <div class="checkbox-button_row">
+                <div th:each="category : ${categories}" class="checkbox-button">
+                    <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
+                    <div class="checked-div">
+                        <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
+                    </div>
+                </div>
+            </div>
+            <div class="orderby-select">
+                <select name="orderby" id="orderby">
+                    <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                            th:text="${criteria.text}"
+                            th:selected="${criteria.value == selectedOrderby}">Option
+                    </option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>

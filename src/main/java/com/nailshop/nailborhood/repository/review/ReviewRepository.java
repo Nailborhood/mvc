@@ -45,15 +45,16 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r FROM Review r WHERE r.isDeleted = false ")
     Page<Review> findAllIsDeletedFalse(Pageable pageable);
 
-    // 카테고리 선택 조회
+    // 카테고리 선택 조회 , 검색어 X
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.categoryReviewList cr " +
-            "WHERE r.isDeleted = false AND cr.category.categoryId IN :categoryIdList ")
-    Page<Review> findByCategoryIdListAndIsDeletedFalse(List<Long> categoryIdList, Pageable pageable);
+            "WHERE r.isDeleted = false AND cr.category.categoryId IN :categoryIdList GROUP BY r " +
+            "HAVING COUNT(DISTINCT cr.category) = :numberOfSelectedCategories ")
+    Page<Review> findByCategoryIdListAndIsDeletedFalse(List<Long> categoryIdList, int numberOfSelectedCategories ,Pageable pageable);
 
     // 내가 쓴 리뷰 조회
-    // TODO 리뷰 true, false 다 불러옴
+    // 리뷰 true, false 다 불러옴
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.customer c " +
@@ -95,11 +96,41 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     void likeCntZero(@Param("reviewId") Long reviewId);
 
     // 매장에 해당 하는 리뷰 리스트 불러오기
+    // 카테고리X, 검색어 X
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT join r.shop s " +
             "WHERE s.shopId = :shopId AND r.isDeleted = false ")
     Page<Review> findAllNotDeletedByShopId(Pageable pageable, @Param("shopId") Long shopId);
+
+    // 매장에 해당 하는 리뷰 리스트 불러오기
+    // 카테고리 O, 검색어 X
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "LEFT JOIN r.categoryReviewList cr " +
+            "WHERE s.shopId = :shopId AND r.isDeleted = false AND cr.category.categoryId IN :categoryIdList GROUP BY r " +
+            "HAVING COUNT(DISTINCT cr.category) = :numberOfSelectedCategories ")
+    Page<Review> findAllByCategoryIdListNotDeletedByShopId(List<Long> categoryIdList, int numberOfSelectedCategories, Pageable pageable, @Param("shopId") Long shopId);
+
+    // 매장 리뷰 검색 ( 매장이름, 내용 ) 검색어 O, 카테고리 X
+    @Query("SELECT r " +
+            "FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE (r.contents LIKE %:keyword% OR s.name LIKE %:keyword%) AND r.isDeleted = false AND s.shopId = :shopId " )
+    Page<Review> findShopReviewListBySearch(@Param("keyword")String keyword, Pageable pageable, @Param("shopId") Long shopId);
+
+    // 매장 리뷰 검색 (매장이름, 내용) 검색어 O, 카테고리 O )
+    @Query("SELECT r FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "JOIN r.categoryReviewList cr " +
+            "WHERE (r.contents LIKE %:keyword% OR s.name LIKE %:keyword%) " +
+            "AND r.isDeleted = false " +
+            "AND s.shopId = :shopId " +
+            "AND cr.category.categoryId IN :categoryIdList " +
+            "GROUP BY r " +
+            "HAVING COUNT(DISTINCT cr.category) = :numberOfSelectedCategories")
+    Page<Review> findShopReviewByKeywordAndCategories(@Param("keyword")String keyword, @Param("categoryIdList") List<Long> categoryIdList, @Param("numberOfSelectedCategories") int numberOfSelectedCategories, Pageable pageable, @Param("shopId") Long shopId);
 
     @Query("UPDATE Review r " +
             "SET r.isDeleted = true, " +
@@ -108,12 +139,25 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Modifying(clearAutomatically = true)
     void reviewDeleteByReviewId(@Param("reviewId") Long reviewId);
 
-    // 리뷰 검색 ( 매장이름, 내용 ) 검색어 있음
+    // 리뷰 검색 ( 매장이름, 내용 ) 검색어, 카테고리 O
+    @Query("SELECT r FROM Review r " +
+            "LEFT JOIN r.shop s " +
+            "JOIN r.categoryReviewList cr " +
+            "WHERE (r.contents LIKE %:keyword% OR s.name LIKE %:keyword%) " +
+            "AND r.isDeleted = false " +
+            "AND cr.category.categoryId IN :categoryIdList " +
+            "GROUP BY r " +
+            "HAVING COUNT(DISTINCT cr.category) = :numberOfSelectedCategories")
+    Page<Review> findReviewByKeywordAndCategories(@Param("keyword")String keyword, @Param("categoryIdList") List<Long> categoryIdList, @Param("numberOfSelectedCategories") int numberOfSelectedCategories, Pageable pageable);
+
+    // 리뷰 검색 ( 매장이름, 내용 ) 검색어O, 카테고리 X
     @Query("SELECT r " +
             "FROM Review r " +
             "LEFT JOIN r.shop s " +
-            "WHERE (r.contents Like %:keyword% OR s.name Like %:keyword% ) AND r.isDeleted = false " )
+            "WHERE (r.contents LIKE %:keyword% OR s.name LIKE %:keyword%) AND r.isDeleted = false " )
     Page<Review> findReviewListBySearch(@Param("keyword")String keyword, Pageable pageable);
+
+
 
     // 사업자 리뷰 검색 (리뷰 내용, 작성자) 검색어 있을 때
     @Query("SELECT r " +

@@ -1,13 +1,15 @@
+
 document.addEventListener("DOMContentLoaded", function() {
     restoreSearchState();
-    filterArtByCategory();  // 페이지 로드 시 자동으로 검색 실행
+    filterShopArtByCategory();  // 페이지 로드 시 자동으로 검색 실행
+
 
     var searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                filterArtByCategory();
+                filterShopArtByCategory();
             }
         });
     } else {
@@ -22,14 +24,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var sortBySelect = document.getElementById('sortBy');
     if (sortBySelect) {
         sortBySelect.addEventListener('change', function() {
-            filterArtByCategory();
+            filterShopArtByCategory();
         });
     }
 
     function submitSearch() {
-        filterArtByCategory();
+        filterShopArtByCategory();
     }
 
+    // 검색 상태 복원
     function restoreSearchState() {
         const keyword = localStorage.getItem('keywordInput');
         const sortBy = localStorage.getItem('sortBy');
@@ -51,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var checkbox = event.currentTarget.querySelector(".category-checkbox");
         checkbox.checked = !checkbox.checked;
 
-        filterArtByCategory();
+        filterShopArtByCategory();
     }
 
     const checkboxButtons = document.querySelectorAll(".checkbox-button");
@@ -59,13 +62,14 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener('click', toggleCheckbox);
     });
 
-
-    function filterArtByCategory() {
+    function filterShopArtByCategory() {
         var checkboxes = document.querySelectorAll(".category-checkbox");
-        var keywordInput = document.getElementById("search-input");
+        var keyword = document.getElementById("search-input").value;
         var sortBy = document.getElementById('sortBy').value;
         var selectedCategories = [];
-        var keyword = keywordInput.value;
+        // var keyword = keywordInput.value;
+        const bodyElement = document.querySelector('body');
+        const shopId = bodyElement.dataset.shopId;
 
         checkboxes.forEach(function(checkbox) {
             if (checkbox.checked) {
@@ -92,20 +96,20 @@ document.addEventListener("DOMContentLoaded", function() {
             return "category=" + encodeURIComponent(id);
         }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "") + (sortBy ? "&sortBy=" + encodeURIComponent(sortBy) : "");
 
-        fetch('/artboard/category/inquiry?' + queryString, {
+        fetch(`/art/category/${shopId}?` + queryString, {
             method: 'GET',
             headers: {}
         })
             .then(response => response.json())
             .then(data => {
-                updateArtList(data.data.artResponseDtoList, data.data.paginationDto, currentQueryString);
+                updateShopArtList(data.data.shopArtBoardLookupResponseDtoList, data.data.paginationDto, currentQueryString);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
 
-    function updateArtList(artList, paginationDto, currentQueryString) {
+    function updateShopArtList(artList, paginationDto, currentQueryString) {
         var artListContainer = document.getElementById('art-list');
         artListContainer.innerHTML = '';
 
@@ -120,9 +124,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 var artElement = document.createElement('div');
                 artElement.className = 'art-list-block';
                 artElement.innerHTML = `
-                <a href="/artboard/inquiry/${art.id}" class="art-link" role="link">
+                <a href="/artboard/inquiry/${art.artRefId}" class="art-link" role="link">
                     <div class="art-img">
-                        <img src="${art.mainImgPath}" alt="Art Image">
+                        <img src="${art.artImgPath}" alt="Art Image">
                     </div>
                 </a>
                 `;
@@ -163,7 +167,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function createPageItem(text, pageNo, currentQueryString) {
-        let href = `/artboard/inquiry?page=${pageNo}`;
+        const bodyElement = document.querySelector('body');
+        const shopId = bodyElement.dataset.shopId;
+        let href = `/art/${shopId}?page=${pageNo}`;
         if (currentQueryString) {
             href += '&' + currentQueryString;
         }

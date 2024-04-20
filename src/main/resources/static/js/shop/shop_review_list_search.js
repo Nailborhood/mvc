@@ -1,49 +1,51 @@
-document.addEventListener("DOMContentLoaded", function() {
-    restoreSearchState();
-    filterArtByCategory();  // 페이지 로드 시 자동으로 검색 실행
 
-    var searchInput = document.getElementById('search-input');
+// 페이지 로드 시 이전 검색 상태 복원
+document.addEventListener("DOMContentLoaded", function()  {
+    restoreSearchState();
+    filterReviewByCategory();
+
+    var searchInput = document.getElementById('keywordInput');
     if (searchInput) {
         searchInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                filterArtByCategory();
+                filterReviewByCategory();
             }
         });
     } else {
         console.log('search-input element not found');
     }
 
-    var searchIcon = document.querySelector('.search-icon');
+    var searchIcon = document.querySelector('.search-button');
     if (searchIcon) {
         searchIcon.addEventListener('click', submitSearch);
     }
 
-    var sortBySelect = document.getElementById('sortBy');
+    var sortBySelect = document.getElementById('orderby');
     if (sortBySelect) {
         sortBySelect.addEventListener('change', function() {
-            filterArtByCategory();
+            filterReviewByCategory();
         });
     }
 
     function submitSearch() {
-        filterArtByCategory();
+        filterReviewByCategory();
     }
 
+    // 검색 상태 복원 함수
     function restoreSearchState() {
         const keyword = localStorage.getItem('keywordInput');
-        const sortBy = localStorage.getItem('sortBy');
+        const orderby = localStorage.getItem('orderby');
         const selectedCategories = JSON.parse(localStorage.getItem('selectedCategories') || '[]');
 
-        if (keyword) {
-            document.getElementById('keywordInput').value = keyword;
-        }
-        if (sortBy) {
-            document.getElementById('sortBy').value = sortBy;
-        }
+        if (keyword) document.getElementById('keywordInput').value = keyword;
+        if (orderby) document.getElementById('orderby').value = orderby;
+
         const checkboxes = document.querySelectorAll(".category-checkbox");
         checkboxes.forEach(checkbox => {
-            checkbox.checked = selectedCategories.includes(checkbox.value);
+            if (selectedCategories.includes(checkbox.value)) {
+                checkbox.checked = true;
+            }
         });
     }
 
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var checkbox = event.currentTarget.querySelector(".category-checkbox");
         checkbox.checked = !checkbox.checked;
 
-        filterArtByCategory();
+        filterReviewByCategory();
     }
 
     const checkboxButtons = document.querySelectorAll(".checkbox-button");
@@ -59,13 +61,14 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener('click', toggleCheckbox);
     });
 
-
-    function filterArtByCategory() {
+    function filterReviewByCategory() {
         var checkboxes = document.querySelectorAll(".category-checkbox");
-        var keywordInput = document.getElementById("search-input");
-        var sortBy = document.getElementById('sortBy').value;
+        var keywordInput = document.getElementById("keywordInput");
+        var orderby = document.getElementById('orderby').value;
         var selectedCategories = [];
         var keyword = keywordInput.value;
+        const bodyElement = document.querySelector('body');
+        const shopId = bodyElement.dataset.shopId;
 
         checkboxes.forEach(function(checkbox) {
             if (checkbox.checked) {
@@ -80,66 +83,66 @@ document.addEventListener("DOMContentLoaded", function() {
         if (keyword) {
             queryString += "&keyword=" + encodeURIComponent(keyword);
         }
-        if(sortBy) {
-            queryString += "&sortBy=" + encodeURIComponent(sortBy);
+        if(orderby) {
+            queryString += "&orderby=" + encodeURIComponent(orderby);
         }
 
         console.log("Keyword:", keyword);
-        console.log("sortBy:", sortBy);
+        console.log("orderby:", orderby);
         console.log("Query String before fetch:", queryString);
 
         const currentQueryString = selectedCategories.map(function(id) {
             return "category=" + encodeURIComponent(id);
-        }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "") + (sortBy ? "&sortBy=" + encodeURIComponent(sortBy) : "");
+        }).join('&') + (keyword ? "&keyword=" + encodeURIComponent(keyword) : "") + (orderby ? "&orderby=" + encodeURIComponent(orderby) : "");
 
-        fetch('/artboard/category/inquiry?' + queryString, {
+        fetch(`/review/category/${shopId}?` + queryString, {
             method: 'GET',
             headers: {}
         })
             .then(response => response.json())
             .then(data => {
-                updateArtList(data.data.artResponseDtoList, data.data.paginationDto, currentQueryString);
+                updateReviewList(data.data.shopAndReviewLookUpResponseDto, data.data.paginationDto, currentQueryString);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
 
-    function updateArtList(artList, paginationDto, currentQueryString) {
-        var artListContainer = document.getElementById('art-list');
-        artListContainer.innerHTML = '';
+    function updateReviewList(reviewList, paginationDto, currentQueryString) {
+        var reviewListContainer = document.getElementById('shop-review_list');
+        reviewListContainer.innerHTML = '';
 
-        if (artList.length > 0) {
+        if (reviewList.length > 0) {
 
-            artListContainer.style.display = '';
-            artListContainer.style.justifyContent = '';
-            artListContainer.style.alignItems = '';
-            artListContainer.style.height = '';
+            reviewListContainer.style.display = '';
+            reviewListContainer.style.justifyContent = '';
+            reviewListContainer.style.alignItems = '';
+            reviewListContainer.style.height = '';
 
-            artList.forEach(function(art) {
-                var artElement = document.createElement('div');
-                artElement.className = 'art-list-block';
-                artElement.innerHTML = `
-                <a href="/artboard/inquiry/${art.id}" class="art-link" role="link">
-                    <div class="art-img">
-                        <img src="${art.mainImgPath}" alt="Art Image">
-                    </div>
-                </a>
-                `;
+            reviewList.forEach(function(review) {
+                var reviewElement = document.createElement('div');
+                reviewElement.className = 'review-list-block';
+                reviewElement.innerHTML = `
+                    <a href="/review/inquiry/${review.reviewId}?shopId=${review.shopId}" class="review-link" role="link">
+                        <div class="review-img">
+                            <img src="${review.reviewImgPath}" alt="review Image">
+                        </div>
+                    </a>
+                    `;
 
-                artListContainer.appendChild(artElement);
+                reviewListContainer.appendChild(reviewElement);
             });
         } else {
 
-            artListContainer.style.display = 'flex';
-            artListContainer.style.justifyContent = 'center';
-            artListContainer.style.alignItems = 'center';
-            artListContainer.style.height = '30vh';
+            reviewListContainer.style.display = 'flex';
+            reviewListContainer.style.justifyContent = 'center';
+            reviewListContainer.style.alignItems = 'center';
+            reviewListContainer.style.height = '30vh';
 
             var emptyMessageElement = document.createElement('div');
-            emptyMessageElement.className = 'empty-art-message';
-            emptyMessageElement.textContent = '아트판이 없습니다.';
-            artListContainer.appendChild(emptyMessageElement);
+            emptyMessageElement.className = 'empty-review-message';
+            emptyMessageElement.textContent = '해당 리뷰가 없습니다.';
+            reviewListContainer.appendChild(emptyMessageElement);
         }
 
         updatePagination(paginationDto, currentQueryString);
@@ -163,12 +166,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function createPageItem(text, pageNo, currentQueryString) {
-        let href = `/artboard/inquiry?page=${pageNo}`;
+        const bodyElement = document.querySelector('body');
+        const shopId = bodyElement.dataset.shopId;
+        let href = `/review/${shopId}?page=${pageNo}`;
         if (currentQueryString) {
             href += '&' + currentQueryString;
         }
         return `<li class="page-item">
-                    <a class="page-link" href="${href}">${text}</a>
-                </li>`;
+                        <a class="page-link" href="${href}">${text}</a>
+                    </li>`;
     }
 });

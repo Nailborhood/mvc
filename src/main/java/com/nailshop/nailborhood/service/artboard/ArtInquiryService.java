@@ -269,4 +269,21 @@ public class ArtInquiryService {
 
         return commonService.successResponse(SuccessCode.ART_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
+
+    public List<Map<String, String>> createCriteriaOptions() {
+        List<Map<String, String>> sortOptions = new ArrayList<>();
+
+        Map<String, String> option1 = new HashMap<>();
+        option1.put("value", "likeCount");
+        option1.put("text", "인기순");
+
+        sortOptions.add(option1);
+
+        Map<String, String> option2 = new HashMap<>();
+        option2.put("value", "updatedAt");
+        option2.put("text", "최신순");
+        sortOptions.add(option2);
+
+        return sortOptions;
+    }
 }

@@ -14,6 +14,7 @@ public class ReviewResponseDto {
     private Long reviewId;
     private Long shopId;
     private String mainImgPath;
+    private List<Long> categoryIdList;
     private List<String> categoryTypeList;
     private String shopName;
     private String shopAddress;
@@ -24,10 +25,11 @@ public class ReviewResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public ReviewResponseDto(Long reviewId, Long shopId, String mainImgPath, List<String> categoryTypeList, String shopName,String shopAddress, String contents, Integer rate, Long likeCnt, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ReviewResponseDto(Long reviewId, Long shopId, String mainImgPath, List<Long> categoryIdList, List<String> categoryTypeList, String shopName,String shopAddress, String contents, Integer rate, Long likeCnt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.reviewId = reviewId;
         this.shopId = shopId;
         this.mainImgPath = mainImgPath;
+        this.categoryIdList = categoryIdList;
         this.categoryTypeList = categoryTypeList;
         this.shopName = shopName;
         this.shopAddress = shopAddress;

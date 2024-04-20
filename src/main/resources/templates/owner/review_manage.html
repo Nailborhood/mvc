@@ -22,7 +22,7 @@
             </div>
 
             <div class="owner-content-div" th:unless="${error}">
-                <form th:action="@{/owner/review/{shopId}(shopId=${shopId})}" method="get">
+                <form th:action="@{/owner/review}" method="get">
                     <div class="search-container">
                         <input type="text" class="search-input" placeholder="검색어를 입력해주세요" name="keyword" />
                         <button type="submit" class="search-button">
