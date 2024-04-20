@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         // 요청이 성공하면 찜 버튼의 상태와 아이콘을 업데이트합니다.
                         if(data.status) {
                             btn.find('img').attr('src', clickLikeUrl);
-                            sendFavoriteAlarm(reviewId,receiver);
+                            sendFavoriteAlarm(reviewId,receiver,shopId);
                             location.reload();
                         }
                     })
@@ -68,9 +68,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    function sendFavoriteAlarm(reviewId,receiver){
+    function sendFavoriteAlarm(reviewId,receiver,shopId){
         var alarmType = 'LIKE_REVIEW';
-        var url = `/review/inquiry/${reviewId}`;
+        var url = `/review/inquiry/${reviewId}?shopId=${shopId}`;
 
         console.log(reviewId);
         console.log(receiver);

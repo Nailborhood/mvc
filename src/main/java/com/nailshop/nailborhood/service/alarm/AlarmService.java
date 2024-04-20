@@ -197,9 +197,11 @@ public class AlarmService {
 
 
             // 리뷰 정보
-            if (alarm.getAlarmType() == AlarmType.LIKE_REVIEW) {
+/*            if (alarm.getAlarmType() == AlarmType.LIKE_REVIEW) {
                 String[] parts = alarm.getUrl()
                                       .split("/");
+                // /review/inquiry/${reviewId}?shopId=${shopId}
+
                 Long reviewId = parts.length > 3 ? Long.valueOf(parts[parts.length - 1]) : null;
                 if (reviewId != null) {
                     Review review = reviewRepository.findById(reviewId)
@@ -208,6 +210,29 @@ public class AlarmService {
                     builder.shopName(review.getShop().getName());
                 }
 
+            }*/
+
+            if (alarm.getAlarmType() == AlarmType.LIKE_REVIEW) {
+                String url = alarm.getUrl();
+                String[] parts = url.split("/");
+
+                // 마지막 경로 세그먼트 추출
+                String lastSegment = parts[parts.length - 1];
+                // 쿼리 스트링 제거 (경로 세그먼트에서 첫 번째 '?' 전까지 추출)
+                String reviewIdString = lastSegment.contains("?") ? lastSegment.substring(0, lastSegment.indexOf('?')) : lastSegment;
+
+                Long reviewId = null;
+
+                reviewId = Long.parseLong(reviewIdString);
+
+
+                if (reviewId != null) {
+                    Review review = reviewRepository.findById(reviewId)
+                                                    .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+
+                    builder.shopName(review.getShop()
+                                           .getName());
+                }
             }
             alarmResponseDtoList.add(builder.build());
 
