@@ -142,7 +142,7 @@ public class EcoHandler extends TextWebSocketHandler {
             loginUsername = null;
         } else {
             Authentication authentication = (Authentication) session.getPrincipal();
-            loginUsername = authentication.getName(); // nickname으로 반환
+            loginUsername = authentication.getName(); // 이메일
         }
         return loginUsername;
     }
