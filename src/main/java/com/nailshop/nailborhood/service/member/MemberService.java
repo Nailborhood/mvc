@@ -112,7 +112,7 @@ public class MemberService {
                     .phoneNum(signUpRequestDto.getPhoneNum())
                     .gender(signUpRequestDto.getGender())
                     .birthday(signUpRequestDto.getBirthday())
-                    .profileImg("defaultImage")
+                    .profileImg("/assets/icons/user.svg")
                     .role(Role.ROLE_USER)
                     .provider("Nail")
                     .isDeleted(false)
@@ -150,47 +150,6 @@ public class MemberService {
     private boolean matchWithPasswordPattern(String password) {
         String passwordPattern = "^[A-Za-z0-9]{8,20}$";
         return Pattern.matches(passwordPattern, password);
-    }
-
-
-    @Transactional
-    public CommonResponseDto<Object> renewToken(String refreshToken) {
-
-        // 유저 get
-        Login login = loginRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-
-        Member member = login.getMember();
-
-        GeneratedToken generatedToken = tokenProvider.generateToken(member);
-
-        login.updateToken(generatedToken.getRefreshToken());
-
-        Long id = member.getMemberId();
-
-        // 헤더에 넣을 access token
-        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                .memberId(id)
-                .accessToken(generatedToken.getAccessToken())
-                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-                .build();
-
-        // 쿠키에 넣을 refresh token
-        ResponseCookie responseCookie = ResponseCookie
-                .from("refreshToken", generatedToken.getRefreshToken())
-                .maxAge(Duration.ofDays(7))
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(false)
-//                .domain("https://nailborhood.shop")
-                .build();
-
-        Map<String, Object> loginMap = new HashMap<>();
-        loginMap.put("accessToken", tokenResponseDto);
-        loginMap.put("refreshToken", responseCookie);
-
-        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, loginMap);
     }
 
     // 비밀번호 확인
@@ -303,7 +262,7 @@ public class MemberService {
 
     public SessionDto getSessionDto(Authentication authentication, MemberDetails memberDetails) {
         Member member;
-        if (authentication.getPrincipal() != null) {
+        if (memberDetails == null) {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = oAuth2User.getAttributes();
             member = findMemberForOAuth2Login((String) attributes.get("email"));

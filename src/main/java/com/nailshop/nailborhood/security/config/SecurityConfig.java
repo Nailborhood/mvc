@@ -83,7 +83,7 @@ public class SecurityConfig {
                                             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                                                 System.out.println("authentication : " + authentication.getName());
                                                 System.out.println("authentication : " + authentication.getPrincipal());
-                                                response.sendRedirect("/example");
+                                                response.sendRedirect("/");
                                             }
                                         })
                                 .failureHandler(
@@ -109,7 +109,7 @@ public class SecurityConfig {
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
-                                .logoutSuccessUrl("/example")
+                                .logoutSuccessUrl("/")
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )

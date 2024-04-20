@@ -14,16 +14,14 @@ public class SessionDto {
     private String nickname;
     private String profileImg;
     private String email;
-    private Role role;
     private String provider;
 
     @Builder
-    public SessionDto(Long id, String nickname, String profileImg, String email, Role role, String provider) {
+    public SessionDto(Long id, String nickname, String profileImg, String email, String provider) {
         this.id = id;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.email = email;
-        this.role = role;
         this.provider = provider;
     }
 
@@ -53,7 +51,6 @@ public class SessionDto {
         return SessionDto.builder()
                 .id(member.getMemberId())
                 .email(member.getEmail())
-                .role(member.getRole())
                 .nickname(member.getNickname())
                 .profileImg(member.getProfileImg())
                 .provider(member.getProvider())

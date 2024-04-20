@@ -76,8 +76,10 @@ public class MemberController {
     @GetMapping("/user")
     public String userPage(Authentication authentication,
                            @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
-        model.addAttribute("sessionDto", sessionDto);
+        if(authentication != null) {
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
+        }
         return "mypage/user";
     }
 
