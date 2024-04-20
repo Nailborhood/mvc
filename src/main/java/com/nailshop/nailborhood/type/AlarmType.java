@@ -12,7 +12,6 @@ public enum AlarmType {
     CHAT("채팅"),
     LIKE_REVIEW("리뷰 좋아요");
 
-    //TODO: 다른 부분 추가 예정
     private final String description;
 
     // 문자열로부터 AlarmType 을 반환하는 메소드
