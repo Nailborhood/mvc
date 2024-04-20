@@ -12,14 +12,21 @@
     <script th:src="@{/js/review/review_detail_status.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
-    <script th:src="@{/js/review/review_like.js}"></script>
+<!--    <script th:src="@{/js/review/review_like.js}"></script>-->
     <script th:src="@{/js/review/review_delete.js}"></script>
+    <script th:src="@{/js/alarm/review_save_alarm.js}"></script>
+    <script th:src="@{/js/alarm/review_like_alarm.js}"></script>
 </head>
 
 <body th:data-review-status="${result.getData().reviewReportStatus}" th:data-review-isDeleted="${result.getData().isDeleted}" th:data-shop-status="${result.getData().shopStatus}">
 <div id="wrapper">
     <div th:replace="fragments/header::header"></div>
     <div layout:fragment="content" class="content">
+        <!--알람에 필요한 변수 js data -->
+        <input type="hidden" id="reviewId" th:value="${result.getData().reviewId}" />
+        <input type="hidden" id="shopId" th:value="${result.getData().shopId}" />
+        <input type="hidden" id="receiver" th:value="${receiver.getEmail()}" />
+<!--        <div id="receiver" data-receiver-email="${receiver.email}" hidden></div>-->
         <div class="review-section">
             <div class="image-slider-wrapper">
                 <div th:each="imgEntry : ${result.getData().imgPathMap}"
@@ -39,7 +46,8 @@
                     <img th:src="${result.getData().reviewAuthorProfileImg}" alt="프로필 이미지" class="profile-pic" />
                     <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span>
                     <div class="review-count">
-                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                        th:data-writer="${result.getData().getWriter()}">
 
                             <img class="like-img" src="/assets/icons/review/emptyThumbsUp.svg" />
                         </a>

@@ -1,17 +1,20 @@
 package com.nailshop.nailborhood.controller.artboard;
 
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.artboard.*;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +36,7 @@ public class ArtController {
     private final ArtLikeService artLikeService;
     private final ArtInquiryService artInquiryService;
     private final CategoryRepository categoryRepository;
+    private final AlarmService alarmService;
 
     // 아트판 등록(GET)
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
@@ -214,7 +218,12 @@ public class ArtController {
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
         resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
 
+        // 알람
+        Member receiver = alarmService.getOwnerInfo(resultDto.getData()
+                                                             .getShopId());
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("receiver",receiver);
 
         return "artboard/art_detail";
     }

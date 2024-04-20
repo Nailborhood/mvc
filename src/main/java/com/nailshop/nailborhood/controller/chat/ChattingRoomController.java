@@ -13,6 +13,7 @@ import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListRespons
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.chat.ChattingRoomService;
 import com.nailshop.nailborhood.service.chat.MessageService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
@@ -38,6 +39,7 @@ public class ChattingRoomController {
     private final ShopDetailService shopDetailService;
     private final MessageService messageService;
     private final ObjectMapper objectMapper;
+    private final AlarmService alarmService;
 
     // 사장님 페이지
     // 채팅방 개설
@@ -92,9 +94,14 @@ public class ChattingRoomController {
             // 채팅 메세지
             List<Map<String, Object>> messageListDto = messageService.getMessageList(roomId);
             String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
+
+            // 알람
+            Member receiver = alarmService.getAdminInfo(roomId);
+
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson", messageResponseDtoListJson);
+            model.addAttribute("receiver",receiver);
 
 
             return "owner/owner_chat_room_detail";
@@ -179,9 +186,13 @@ public class ChattingRoomController {
             List<Map<String, Object>> messageListDto = messageService.getMessageList(roomId);
             String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
 
+            // 알람
+            Member receiver = alarmService.getOwnerInfoByChat(roomId);
+
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson", messageResponseDtoListJson);
+            model.addAttribute("receiver", receiver);
 
 
             return "admin/admin_chat_room_detail";

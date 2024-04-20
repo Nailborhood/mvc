@@ -43,22 +43,23 @@ public class ArtInquiryService {
 
         // category 리스트화
         List<Long> categoryIdList = null;
-        if (category != null && !category.isEmpty()){
+        if (category != null && !category.isEmpty()) {
 
             categoryIdList = Arrays.stream(category.split(","))
-                    .map(Long::parseLong)
-                    .toList();
+                                   .map(Long::parseLong)
+                                   .toList();
         }
 
         // Page 설정 및 ArtRefList get
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
+                                                                  .descending());
 
         Page<ArtRef> artRefPage;
         List<ArtRef> artRefList;
 
         // keyword 가 null
-        if (keyword == null){
-            if (categoryIdList == null || categoryIdList.isEmpty()){
+        if (keyword == null) {
+            if (categoryIdList == null || categoryIdList.isEmpty()) {
                 // 카테고리 선택 x
                 artRefPage = artRefRepository.findByIsDeletedFalse(pageable);
             } else {
@@ -82,42 +83,45 @@ public class ArtInquiryService {
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
         // ArtResponseDto build
-        for (ArtRef artRef : artRefList){
+        for (ArtRef artRef : artRefList) {
 
-            String mainImgPath = artRef.getArtImgList().getFirst().getImgPath();
-            String shopName = artRef.getShop().getName();
+            String mainImgPath = artRef.getArtImgList()
+                                       .getFirst()
+                                       .getImgPath();
+            String shopName = artRef.getShop()
+                                    .getName();
 
             List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
 
             ArtResponseDto artResponseDto = ArtResponseDto.builder()
-                    .id(artRef.getArtRefId())
-                    .name(artRef.getName())
-                    .content(artRef.getContent())
-                    .likeCount(artRef.getLikeCount())
-                    .mainImgPath(mainImgPath)
-                    .shopName(shopName)
-                    .categoryIdList(categoryIdList)
-                    .categoryTypeList(categoryTypeList)
-                    .createdAt(artRef.getCreatedAt())
-                    .updatedAt(artRef.getUpdatedAt())
-                    .build();
+                                                          .id(artRef.getArtRefId())
+                                                          .name(artRef.getName())
+                                                          .content(artRef.getContent())
+                                                          .likeCount(artRef.getLikeCount())
+                                                          .mainImgPath(mainImgPath)
+                                                          .shopName(shopName)
+                                                          .categoryIdList(categoryIdList)
+                                                          .categoryTypeList(categoryTypeList)
+                                                          .createdAt(artRef.getCreatedAt())
+                                                          .updatedAt(artRef.getUpdatedAt())
+                                                          .build();
 
             artResponseDtoList.add(artResponseDto);
         }
 
         // PaginationDto build
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(artRefPage.getTotalPages())
-                .totalElements(artRefPage.getTotalElements())
-                .pageNo(artRefPage.getNumber())
-                .isLastPage(artRefPage.isLast())
-                .build();
+                                                   .totalPages(artRefPage.getTotalPages())
+                                                   .totalElements(artRefPage.getTotalElements())
+                                                   .pageNo(artRefPage.getNumber())
+                                                   .isLastPage(artRefPage.isLast())
+                                                   .build();
 
         // ArtListResponseDto build
         ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
-                .artResponseDtoList(artResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
+                                                                  .artResponseDtoList(artResponseDtoList)
+                                                                  .paginationDto(paginationDto)
+                                                                  .build();
 
         return commonService.successResponse(SuccessCode.ART_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
@@ -127,36 +131,40 @@ public class ArtInquiryService {
 
         // ArtRef get
         ArtRef artRef = artRefRepository.findById(artRefId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
 
         // ArtImg get
         List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
         Map<Integer, String> artImgPathMap = new HashMap<>();
-        for (ArtImg artImg : artImgList){
+        for (ArtImg artImg : artImgList) {
             artImgPathMap.put(artImg.getImgNum(), artImg.getImgPath());
         }
 
-        Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberDetails.getMember().getMemberId(), artRefId);
-        if (artLikeStatus == null){
+        Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberDetails.getMember()
+                                                                                                 .getMemberId(), artRefId);
+        if (artLikeStatus == null) {
             artLikeStatus = false;
         }
 
         // ArtDetailResponseDto build
-        String shopName = artRef.getShop().getName();
+        String shopName = artRef.getShop()
+                                .getName();
         List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRefId);
 
         ArtDetailResponseDto artDetailResponseDto = ArtDetailResponseDto.builder()
-                .artRefId(artRef.getArtRefId())
-                .name(artRef.getName())
-                .content(artRef.getContent())
-                .likeCount(artRef.getLikeCount())
-                .shopName(shopName)
-                .categoryTypeList(categoryTypeList)
-                .imgPathMap(artImgPathMap)
-                .createdAt(artRef.getCreatedAt())
-                .updatedAt(artRef.getUpdatedAt())
-                .artLikeStatus(artLikeStatus)
-                .build();
+                                                                        .shopId(artRef.getShop()
+                                                                                      .getShopId())
+                                                                        .artRefId(artRef.getArtRefId())
+                                                                        .name(artRef.getName())
+                                                                        .content(artRef.getContent())
+                                                                        .likeCount(artRef.getLikeCount())
+                                                                        .shopName(shopName)
+                                                                        .categoryTypeList(categoryTypeList)
+                                                                        .imgPathMap(artImgPathMap)
+                                                                        .createdAt(artRef.getCreatedAt())
+                                                                        .updatedAt(artRef.getUpdatedAt())
+                                                                        .artLikeStatus(artLikeStatus)
+                                                                        .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
     }
@@ -165,30 +173,33 @@ public class ArtInquiryService {
 
         // ArtRef get
         ArtRef artRef = artRefRepository.findById(artRefId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
 
         // ArtImg get
         List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
         Map<Integer, String> artImgPathMap = new HashMap<>();
-        for (ArtImg artImg : artImgList){
+        for (ArtImg artImg : artImgList) {
             artImgPathMap.put(artImg.getImgNum(), artImg.getImgPath());
         }
 
         // ArtDetailResponseDto build
-        String shopName = artRef.getShop().getName();
+        String shopName = artRef.getShop()
+                                .getName();
         List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRefId);
 
         ArtDetailResponseDto artDetailResponseDto = ArtDetailResponseDto.builder()
-                .artRefId(artRef.getArtRefId())
-                .name(artRef.getName())
-                .content(artRef.getContent())
-                .likeCount(artRef.getLikeCount())
-                .shopName(shopName)
-                .categoryTypeList(categoryTypeList)
-                .imgPathMap(artImgPathMap)
-                .createdAt(artRef.getCreatedAt())
-                .updatedAt(artRef.getUpdatedAt())
-                .build();
+                                                                        .shopId(artRef.getShop()
+                                                                                      .getShopId())
+                                                                        .artRefId(artRef.getArtRefId())
+                                                                        .name(artRef.getName())
+                                                                        .content(artRef.getContent())
+                                                                        .likeCount(artRef.getLikeCount())
+                                                                        .shopName(shopName)
+                                                                        .categoryTypeList(categoryTypeList)
+                                                                        .imgPathMap(artImgPathMap)
+                                                                        .createdAt(artRef.getCreatedAt())
+                                                                        .updatedAt(artRef.getUpdatedAt())
+                                                                        .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
     }
@@ -202,11 +213,12 @@ public class ArtInquiryService {
         Shop shop = owner.getShop();
 
         // Page 설정 및 ArtRefList get
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy)
+                                                                  .descending());
 
         Page<ArtRef> artRefPage;
 
-        if (keyword == null){
+        if (keyword == null) {
             artRefPage = artRefRepository.findAllNotDeletedBYShopId(pageable, shop.getShopId());
         } else {
             artRefPage = artRefRepository.findArtRefByKeywordAndShopId(pageable, keyword, shop.getShopId());
@@ -216,41 +228,44 @@ public class ArtInquiryService {
         List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
 
         // ArtResponseDto build
-        for (ArtRef artRef : artRefList){
+        for (ArtRef artRef : artRefList) {
 
-            String mainImgPath = artRef.getArtImgList().getFirst().getImgPath();
-            String shopName = artRef.getShop().getName();
+            String mainImgPath = artRef.getArtImgList()
+                                       .getFirst()
+                                       .getImgPath();
+            String shopName = artRef.getShop()
+                                    .getName();
 
             List<String> categoryTypeList = categoryArtRepository.findCategoryTypesByArtRefId(artRef.getArtRefId());
 
             ArtResponseDto artResponseDto = ArtResponseDto.builder()
-                    .id(artRef.getArtRefId())
-                    .name(artRef.getName())
-                    .content(artRef.getContent())
-                    .likeCount(artRef.getLikeCount())
-                    .mainImgPath(mainImgPath)
-                    .shopName(shopName)
-                    .categoryTypeList(categoryTypeList)
-                    .createdAt(artRef.getCreatedAt())
-                    .updatedAt(artRef.getUpdatedAt())
-                    .build();
+                                                          .id(artRef.getArtRefId())
+                                                          .name(artRef.getName())
+                                                          .content(artRef.getContent())
+                                                          .likeCount(artRef.getLikeCount())
+                                                          .mainImgPath(mainImgPath)
+                                                          .shopName(shopName)
+                                                          .categoryTypeList(categoryTypeList)
+                                                          .createdAt(artRef.getCreatedAt())
+                                                          .updatedAt(artRef.getUpdatedAt())
+                                                          .build();
 
             artResponseDtoList.add(artResponseDto);
         }
 
         // PaginationDto build
         PaginationDto paginationDto = PaginationDto.builder()
-                .totalPages(artRefPage.getTotalPages())
-                .totalElements(artRefPage.getTotalElements())
-                .pageNo(artRefPage.getNumber())
-                .isLastPage(artRefPage.isLast())
-                .build();
+                                                   .totalPages(artRefPage.getTotalPages())
+                                                   .totalElements(artRefPage.getTotalElements())
+                                                   .pageNo(artRefPage.getNumber())
+                                                   .isLastPage(artRefPage.isLast())
+                                                   .build();
 
         // ArtListResponseDto build
         ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
-                .artResponseDtoList(artResponseDtoList)
-                .paginationDto(paginationDto)
-                .build();
+                                                                  .artResponseDtoList(artResponseDtoList)
+                                                                  .paginationDto(paginationDto)
+                                                                  .build();
 
         return commonService.successResponse(SuccessCode.ART_ALL_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }

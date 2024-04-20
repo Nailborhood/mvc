@@ -1,10 +1,13 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +28,9 @@ public class Owner {
     @OneToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
+
+    @OneToMany(mappedBy = "owner")
+    private List<ChattingRoom> chattingRoomList;
 
     @Builder
     public Owner(boolean isApproved, Member member, Shop shop) {

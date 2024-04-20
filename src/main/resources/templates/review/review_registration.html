@@ -10,6 +10,9 @@
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/review/review_registration_style.css}">
     <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+<!--    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/review/review_registration.js}"></script>
 </head>
@@ -17,7 +20,8 @@
 <body>
     <div layout:fragment="content">
         <span class="owner-title-span">리뷰 등록</span>
-        <form th:action="@{'/' + ${shopId} + '/review/registration'}" method="post" enctype="multipart/form-data">
+        <form id="review-form" th:action="@{'/' + ${shopId} + '/review/registration'}" method="post" enctype="multipart/form-data">
+<!--            <input type="hidden" id="shopId" th:value="${shopId}" />-->
             <div class="body-content">
                 <div class="review-write-section">
                     <div class="rating-section">
@@ -36,7 +40,7 @@
                     </div>
 
                     <div class="img-mod-text">
-                        <span class="img-text">아트 사진 등록 &nbsp; </span>
+                        <span class="img-text">리뷰 사진 등록 &nbsp; </span>
                         <label class="input-file-button" for="input-file">사진 등록</label>
                         <input type="file" id="input-file" name="file" accept="image/*" multiple style="display: none;" >
                     </div>
@@ -57,7 +61,7 @@
                         <label for="review-content">리뷰 내용</label>
                         <textarea id="review-content" name="contents" class="review-textarea" placeholder="리뷰 내용을 입력하세요." required></textarea>
                     </div>
-
+<!--                    <input type="hidden" id="receiverName" th:value="${receiver.getNickname()}" >-->
                     <input type="submit" id="submit-button" class="submit-button" value="리뷰 등록">
                 </div>
             </div>

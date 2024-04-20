@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/artboard/art_detail_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
-    <script th:src="@{/js/artboard/art_like.js}"></script>
+    <script th:src="@{/js/alarm/art_like_alarm.js}"></script>
 </head>
 
 <body>
@@ -24,7 +24,8 @@
                 </div>
 
                 <div class="like-section">
-                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}">
+                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                    th:data-receiver="${receiver.getEmail()}">
 
                         <img class="like-img" src="/assets/icons/art/emptyLike.svg" />
                     </a>

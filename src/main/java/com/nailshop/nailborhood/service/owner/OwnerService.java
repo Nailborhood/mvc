@@ -10,6 +10,7 @@ import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponse
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
@@ -36,6 +37,7 @@ public class OwnerService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final OwnerRepository ownerRepository;
+
 
     // 매장 리뷰 조회
     @Transactional
@@ -103,6 +105,7 @@ public class OwnerService {
 
         return commonService.successResponse(SuccessCode.SHOP_REVIEW_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopReviewListLookupResponseDto);
     }
+
 
 }
 

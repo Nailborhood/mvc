@@ -1,5 +1,7 @@
 package com.nailshop.nailborhood.controller.review;
 
+
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
@@ -10,6 +12,7 @@ import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +32,9 @@ import java.util.Map;
 public class ReviewInquiryController {
 
     private final ReviewInquiryService reviewInquiryService;
+    private final AlarmService alarmService;
     private final CategoryRepository categoryRepository;
+
 
 
     // 리뷰 상세 조회
@@ -37,7 +42,8 @@ public class ReviewInquiryController {
     public String detailReview(Model model,
                                @AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long reviewId,
-                               @RequestParam(value = "shopId") Long shopId) {
+                               @RequestParam(value = "shopId") Long shopId,
+                               @RequestParam(required = false) Boolean alarmSent){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
@@ -55,10 +61,25 @@ public class ReviewInquiryController {
             detailReview = reviewInquiryService.detailReviewForGuest(reviewId, shopId);
         }
 
+
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
+        // 알람
+        Member receiver = alarmService.getOwnerInfo(shopId);
+        if (Boolean.TRUE.equals(alarmSent)) {
+            model.addAttribute("alarmSent", true);
+
+        }
+
+        // 리뷰 작성자
+        //Member reviewReceiver = alarmService.getUserInfo(reviewId);
+
+
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("receiver", receiver);
+        //model.addAttribute("reviewReceiver",reviewReceiver);
 
         return "review/review_detail";
     }

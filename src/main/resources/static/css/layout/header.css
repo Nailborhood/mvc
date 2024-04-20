@@ -140,3 +140,37 @@ header {
     text-decoration: none;
     color: var(--shadow_4);
 }
+
+/*.badge{*/
+/*    font-size: 10px;*/
+/*    height: 15px;*/
+/*    margin-left: -24px;*/
+/*}*/
+.alarm-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.alarm-field a{
+    color: black;
+}
+
+
+#alarm-img-field {
+    position: relative;
+    display: inline-block;
+}
+
+#newNoticeCnt {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    /* 추가 스타일링 */
+    background-color: #007bff; /* 부트스트랩 primary 색상 */
+    color: white;
+    font-size: 0.75em;
+    padding: 0.25em 0.6em;
+    border-radius: 100%;
+}
