@@ -25,6 +25,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,17 +65,15 @@ public class MyPageController {
         model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
 
-        boolean error = false;
         try {
             CommonResponseDto<Object> myReview = mypageService.myReview(member, page, size, sortBy);
             ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
             model.addAttribute("result", resultDto);
-        }catch (Exception e){
+        }catch (NotFoundException e){
+            model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_FOUND);
 
-            error = true;
-            model.addAttribute("error", error);
         }
 
         return "mypage/my_review_list";
@@ -84,19 +88,21 @@ public class MyPageController {
                              @RequestParam(value = "size", defaultValue = "10", required = false) int size){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
-        boolean error = false;
+
         try {
             CommonResponseDto<Object> myFavorite = mypageService.myFavorite(member, page, size);
             ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
             resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 
-            model.addAttribute("memberNickname", nicknameSpace);
-            model.addAttribute("result", resultDto);
-        }catch (Exception e){
 
-            error = true;
-            model.addAttribute("error", error);
+            model.addAttribute("result", resultDto);
+
+        }catch (NotFoundException e){
+
+            model.addAttribute("ErrorCode", ErrorCode.SHOP_FAVORITE_EMPTY);
+
         }
 
 
@@ -173,7 +179,9 @@ public class MyPageController {
         return "redirect:/mypage/myInfo";
     }
 
+
     // 매장 신청
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/owner/shop/request")
     public String requestShop(Model model,
                               @AuthenticationPrincipal MemberDetails memberDetails,
@@ -194,7 +202,7 @@ public class MyPageController {
         return "request/request_shop_registration";
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/owner/shop/request")
     public String requestShop(@RequestPart(value = "file") List<MultipartFile> multipartFileList,
                               @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
@@ -224,6 +232,7 @@ public class MyPageController {
 
 
     // 매장 신청 조회
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
     @GetMapping("/owner/shop/request/list")
     public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
         try {

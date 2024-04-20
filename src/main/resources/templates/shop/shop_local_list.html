@@ -10,7 +10,6 @@
 <!--   <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>-->
 <!--    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>-->
     <script th:src="@{/js/shop/shop_local_list_searchAll.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_local_list_style.css}">
 </head>
 
@@ -31,10 +30,10 @@
                 <div class="search-select-box">
                     <div class="address-select">
                         <select name="cityId" id="cityId">
-                            <option value="">도시 선택</option>
-                            <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
-                                    th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
-                        </select>
+                        <option value="">도시 선택</option>
+                        <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
+                    </select>
 
                         <select name="districtsId" id="districtsId">
                             <option value="">구 선택</option>

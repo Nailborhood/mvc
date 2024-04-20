@@ -1,17 +1,20 @@
 package com.nailshop.nailborhood.controller.artboard;
 
 import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.artboard.*;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.artboard.*;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
@@ -32,19 +36,18 @@ public class ArtController {
     private final ArtLikeService artLikeService;
     private final ArtInquiryService artInquiryService;
     private final CategoryRepository categoryRepository;
+    private final AlarmService alarmService;
 
     // 아트판 등록(GET)
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/register")
     public String showRegisterArt(@AuthenticationPrincipal MemberDetails memberDetails,
-                                  Model model,
-                                  ArtRegistrationRequestDto artRegistrationRequestDto){
+                                  Model model){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
         List<Category> categoryList = categoryRepository.findAll();
 
-        model.addAttribute("artDto", artRegistrationRequestDto);
         model.addAttribute("categories", categoryList);
         model.addAttribute("memberNickname", nicknameSpace);
 
@@ -64,7 +67,7 @@ public class ArtController {
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/user/artboard/inquiry";
+            return "redirect:/artboard/inquiry";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
 
@@ -80,7 +83,7 @@ public class ArtController {
                                 @PathVariable Long artRefId){
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 
-        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId);
+        CommonResponseDto<Object> artDetail = artInquiryService.inquiryArt(artRefId, memberDetails);
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(artDetail.getStatus(), artDetail.getMessage());
         resultDto.setData((ArtDetailResponseDto) artDetail.getData());
 
@@ -129,10 +132,10 @@ public class ArtController {
 
     // 아트판 좋아요
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
-    @PostMapping("/user/artboard/like/{artRefId}")
-    public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@RequestHeader(AUTH) String accessToken,
+    @PostMapping("/artboard/like/{artRefId}")
+    public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                     @PathVariable Long artRefId){
-        CommonResponseDto<Object> likeArt = artLikeService.likeArt(accessToken, artRefId);
+        CommonResponseDto<Object> likeArt = artLikeService.likeArt(memberDetails, artRefId);
         ResultDto<ArtLikeResponseDto> resultDto = ResultDto.in(likeArt.getStatus(), likeArt.getMessage());
         resultDto.setData((ArtLikeResponseDto) likeArt.getData());
 
@@ -140,24 +143,33 @@ public class ArtController {
     }
 
     // 아트판 전체 조회
-    @GetMapping("/user/artboard/inquiry")
+    @GetMapping("/artboard/inquiry")
     public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                   @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                   @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                   @RequestParam(value = "sortBy", defaultValue = "likeCount", required = false) String sortBy,
                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
-                                   Model model){
+                                   @RequestParam(value = "keyword", required = false) String keyword,
+                                   Model model,
+                                   @AuthenticationPrincipal MemberDetails memberDetails){
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category, keyword);
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
+            List<Map<String, String>> criteriaOptions = artInquiryService.createCriteriaOptions();
             List<Category> categoryList = categoryRepository.findAll();
 
             model.addAttribute("result", resultDto);
             model.addAttribute("error", error);
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("size", size);
+            model.addAttribute("criteriaOptions", criteriaOptions);
             model.addAttribute("categories", categoryList);
+            model.addAttribute("keyword", keyword);
         } catch (Exception e) {
 
             error = true;
@@ -169,12 +181,13 @@ public class ArtController {
     }
 
     // 아트판 전체 조회(카테고리 선택)
-    @GetMapping("/user/artboard/category/inquiry")
-    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                          @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
-                                                                          @RequestParam(value = "category", defaultValue = "", required = false) String category){
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category);
+    @GetMapping("/artboard/category/inquiry")
+    public ResponseEntity<ResultDto<ArtListResponseDto>> inquiryAllArtRefByCategory(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                                    @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                                                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                                                                    @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                                                                    @RequestParam(value = "keyword", required = false) String keyword){
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(page, size, sortBy, category, keyword);
         ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
         resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
@@ -183,14 +196,34 @@ public class ArtController {
 
 
     // 아트판 상세 조회
-    @GetMapping("/user/artboard/inquiry/{artRefId}")
-    public String inquiryArtRef(@PathVariable Long artRefId,
+    @GetMapping("/artboard/inquiry/{artRefId}")
+    public String inquiryArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
+                                @PathVariable Long artRefId,
                                 Model model){
-        CommonResponseDto<Object> inquiryArt = artInquiryService.inquiryArt(artRefId);
+
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        model.addAttribute("memberNickname", nicknameSpace);
+
+        boolean isLoggedIn = memberDetails != null;
+
+        CommonResponseDto<Object> inquiryArt;
+
+        if (isLoggedIn) {
+            // 로그인한 경우
+            inquiryArt = artInquiryService.inquiryArt(artRefId, memberDetails);
+        } else {
+            inquiryArt = artInquiryService.inquiryArtForGuest(artRefId);
+        }
+
         ResultDto<ArtDetailResponseDto> resultDto = ResultDto.in(inquiryArt.getStatus(), inquiryArt.getMessage());
         resultDto.setData((ArtDetailResponseDto) inquiryArt.getData());
 
+        // 알람
+        Member receiver = alarmService.getOwnerInfo(resultDto.getData()
+                                                             .getShopId());
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("receiver",receiver);
 
         return "artboard/art_detail";
     }

@@ -1,0 +1,10 @@
+<div th:fragment="search-bar">
+    <form id="search-form" th:action="@{/artboard/inquiry}" method="get">
+        <div class="search-field">
+            <input class="search-input" id="search-input" type="text" name="keyword" placeholder="검색어를 입력해주세요" />
+            <div class="search-icon" onclick="submitSearch()">
+                <img src="/assets/icons/shop/search.svg" />
+            </div>
+        </div>
+    </form>
+</div>

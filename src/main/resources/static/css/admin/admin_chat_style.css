@@ -129,7 +129,7 @@ button {
 .chatArea {
     overflow-y: auto;
     flex-grow: 1;
-    padding: 40px 8px 40px 8px;
+    padding: 40px 30px 40px 30px;
 }
 
 /* 날짜 표시 */

@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.controller.owner;
 
+import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
@@ -10,6 +11,7 @@ import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class OwnerController {
     private final ShopModificationService shopModificationService;
     private final ShopDetailService shopDetailService;
     private final ShopRegistrationService shopRegistrationService;
+    private final CategoryRepository categoryRepository;
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
@@ -80,19 +84,18 @@ public class OwnerController {
                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                    @RequestParam(value = "size", defaultValue = "5", required = false) int size,
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
-                                   @RequestParam(value = "category", defaultValue = "", required = false) String category,
+                                   @RequestParam(value = "keyword", required = false) String keyword,
                                    Model model) {
-
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(memberDetails, page, size, sortBy, category);
+            CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArtByShopId(memberDetails, page, size, sortBy, keyword);
             ResultDto<ArtListResponseDto> resultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
             resultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
 
             model.addAttribute("result", resultDto);
-            model.addAttribute("sortBy", sortBy);
-            model.addAttribute("size", size);
+            model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("keyword", keyword);
             model.addAttribute("error", error);
         } catch (Exception e) {
 
@@ -104,8 +107,8 @@ public class OwnerController {
     }
 
 
-    // 매장 정보 수정
-
+    // 매장 정보 수정 ( 매장 정보 불러오기 )
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shop/update")
     public String updateShop(Model model,
                              @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -128,6 +131,9 @@ public class OwnerController {
         return "owner/owner_shop_update";
     }
 
+
+    // 매장 정보 수정
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/owner/shop/update")
     public String updateShop(Model model,
                              @RequestPart(value = "file") List<MultipartFile> multipartFileList,
@@ -158,12 +164,14 @@ public class OwnerController {
     }
 
     // 내 매장 상세 조회
+    // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shopDetail")
     public String getShopDetail(Model model,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
         Member member = memberDetails.getMember();
         Long shopId = member.getOwner().getShop().getShopId();
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
 
         model.addAttribute("shopDetail", shopDetail.getData());
 
@@ -174,6 +182,9 @@ public class OwnerController {
     // enum 타임리프로 리턴
     @ModelAttribute("shopStatus")
     public ShopStatus[] shopStatuses() {
-        return ShopStatus.values();
+        return Stream.of(ShopStatus.values())
+                     .filter(status -> status == ShopStatus.BEFORE_OPEN || status == ShopStatus.OPEN)
+                     .toArray(ShopStatus[]::new);
     }
+
 }

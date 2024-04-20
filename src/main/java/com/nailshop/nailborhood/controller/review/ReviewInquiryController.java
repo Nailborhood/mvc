@@ -1,12 +1,18 @@
 package com.nailshop.nailborhood.controller.review;
 
+
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.category.Category;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +32,9 @@ import java.util.Map;
 public class ReviewInquiryController {
 
     private final ReviewInquiryService reviewInquiryService;
+    private final AlarmService alarmService;
+    private final CategoryRepository categoryRepository;
+
 
 
     // 리뷰 상세 조회
@@ -33,17 +42,44 @@ public class ReviewInquiryController {
     public String detailReview(Model model,
                                @AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long reviewId,
-                               @RequestParam(value = "shopId") Long shopId){
+                               @RequestParam(value = "shopId") Long shopId,
+                               @RequestParam(required = false) Boolean alarmSent){
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId);
+        boolean isLoggedIn = memberDetails != null;
+
+//        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
+
+        CommonResponseDto<Object> detailReview;
+
+        if (isLoggedIn) {
+            // 로그인한 경우
+            detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
+        } else {
+            detailReview = reviewInquiryService.detailReviewForGuest(reviewId, shopId);
+        }
+
 
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
+        // 알람
+        Member receiver = alarmService.getOwnerInfo(shopId);
+        if (Boolean.TRUE.equals(alarmSent)) {
+            model.addAttribute("alarmSent", true);
+
+        }
+
+        // 리뷰 작성자
+        //Member reviewReceiver = alarmService.getUserInfo(reviewId);
+
+
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("receiver", receiver);
+        //model.addAttribute("reviewReceiver",reviewReceiver);
 
         return "review/review_detail";
     }
@@ -52,11 +88,11 @@ public class ReviewInquiryController {
     @GetMapping("/review/inquiry")
     public String allReview(Model model,
                             @AuthenticationPrincipal MemberDetails memberDetails,
-                            @RequestParam(value = "keyword" ,required = false) String keyword,
+                            @RequestParam(value = "keyword", required = false) String keyword,
                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                            @RequestParam(value = "size", defaultValue = "5", required = false) int size,
+                            @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                             @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
-                            @RequestParam(value = "category", defaultValue = "", required = false) String category){
+                            @RequestParam(value = "category", defaultValue = "", required = false) String category) {
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
@@ -68,16 +104,18 @@ public class ReviewInquiryController {
             resultDto.setData((ReviewListResponseDto) allReview.getData());
 
             List<Map<String, String>> criteriaOptions = reviewInquiryService.createCriteriaOptions();
+            List<Category> categoryList = categoryRepository.findAll();
 
             model.addAttribute("result", resultDto);
-//            model.addAttribute("orderby", criteria);
-//            model.addAttribute("size", size);
+            model.addAttribute("orderby", criteria);
+            model.addAttribute("size", size);
             model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("categories", categoryList);
             model.addAttribute("error", error);
 
-
-        } catch (Exception e){
+        } catch (Exception e) {
             error = true;
+//            model.addAttribute("error", ErrorCode.REVIEW_NOT_FOUND);
             model.addAttribute("error", error);
 
         }
@@ -85,4 +123,18 @@ public class ReviewInquiryController {
         return "review/review_list";
     }
 
+    @GetMapping("/review/category/inquiry")
+    public ResponseEntity<ResultDto<ReviewListResponseDto>> allReviewByCategory(@RequestParam(value = "keyword", required = false) String keyword,
+                                                                                @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                                @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                                                                @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
+                                                                                @RequestParam(value = "category", defaultValue = "", required = false) String category) {
+
+        CommonResponseDto<Object> allReview = reviewInquiryService.allReview(keyword, page, size, criteria, category);
+        ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(allReview.getStatus(), allReview.getMessage());
+        resultDto.setData((ReviewListResponseDto) allReview.getData());
+
+        return ResponseEntity.status(allReview.getHttpStatus()).body(resultDto);
+
+    }
 }

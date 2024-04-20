@@ -21,4 +21,11 @@ public interface ArtLikeRepository extends JpaRepository<ArtLike, Long> {
     @Query("DELETE FROM ArtLike al WHERE al.artRef.artRefId = :artRefId")
     @Modifying(clearAutomatically = true)
     void deleteByArtRefId(@Param("artRefId") Long artRefId);
+
+    @Query("SELECT al.status " +
+            "FROM ArtLike al " +
+            "LEFT JOIN al.artRef a " +
+            "LEFT JOIN al.member m " +
+            "WHERE m.memberId = :memberId AND a.artRefId = :artRefId ")
+    Boolean findStatusByMemberIdAnAndArtRefId(@Param("memberId") Long memberId, @Param("artRefId") Long artRefId);
 }

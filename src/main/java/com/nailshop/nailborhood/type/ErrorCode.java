@@ -10,6 +10,7 @@ public enum ErrorCode {
     // customer,owner
     CUSTOMER_NOT_FOUND("고객을 찾을 수 없습니다."),
     OWNER_ALREADY_EXIST("이미 매장 신청을 하여, 더이상 매장 신청을 할 수 없습니다"),
+    OWNER_NOT_FOUND("OWNER 정보를 찾을 수 없습니다"),
 
     // 이미지 업로드
     IMAGE_UPLOAD_FAIL("이미지 업로드 실패"),
@@ -48,6 +49,7 @@ public enum ErrorCode {
     PASSWORD_CHECK_FAIL("비밀번호가 일치하지 않습니다."),
     PASSWORD_UPDATE_FAIL("비밀번호 수정에 실패하였습니다."),
     PROFILE_UPDATE_FAIL("프로필 업로드에 실패하였습니다."),
+    SHOP_FAVORITE_EMPTY("저장한 매장이 없습니다."),
 
     UNAUTHORIZED_ACCESS("접근 권한이 없습니다."),
 
@@ -64,12 +66,15 @@ public enum ErrorCode {
 
     // 리뷰
     REVIEW_NOT_REGISTRATION("등록된 리뷰가 없습니다"),
-    ART_NOT_REGISTRATION("등록된 아트판이 없습니다"),
+    ART_NOT_REGISTRATION("등록된 아트가 없습니다"),
     SHOP_NOT_REGISTRATION("등록된 가게가 없습니다."),
 
     // 채팅
     CHAT_ROOM_NOT_FOUND("채팅룸을 찾을 수 없습니다"),
-    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다");
+    CHAT_ROOM_ALREADY_EXIST("이미 채팅방이 있습니다"),
+
+    // 알람
+    ALARM_NOT_FOUND("알람을 찾을 수 없습니다.");
 
     private final String description;
 }

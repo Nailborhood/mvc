@@ -40,4 +40,12 @@ public interface FavoriteRepository extends JpaRepository<Favorite,Long> {
             "LEFT JOIN f.member m " +
             "WHERE f.member.memberId = :memberId AND f.status = true ")
     Page<Shop> findFavoriteListByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+
+    // memberId 와 shopId로 매장 찜 status 불러오기 매장상세에서 사용
+    @Query("SELECT f.status " +
+            "FROM Favorite f " +
+            "LEFT JOIN f.member m " +
+            "LEFT JOIN f.shop s " +
+            "WHERE m.memberId = :memberId AND s.shopId = :shopId")
+    Boolean findStatusByMemberIdAndShopId(@Param("memberId") Long memberId,@Param("shopId") Long shopId);
 }

@@ -94,7 +94,7 @@ public class ShopRegistrationService {
 
         // 매장 세부정보 등록
         Shop shop = Shop.builder()
-                        .status(ShopStatus.BEFORE_OPEN)
+                        .status(ShopStatus.READY)
                         .content(shopRegistrationRequestDto.getContent())
                         .name(shopRegistrationRequestDto.getName())
                         .website(shopRegistrationRequestDto.getWebsite())

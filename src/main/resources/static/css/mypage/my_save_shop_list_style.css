@@ -11,7 +11,7 @@
     --main-color_navy: #1d438a;
 }
 
-.empty-shop-message {
+.error-code {
     display: flex;
     justify-content: center;
     align-items: center;

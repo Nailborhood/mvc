@@ -13,11 +13,13 @@ import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListRespons
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.chat.ChattingRoomService;
 import com.nailshop.nailborhood.service.chat.MessageService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,9 +39,11 @@ public class ChattingRoomController {
     private final ShopDetailService shopDetailService;
     private final MessageService messageService;
     private final ObjectMapper objectMapper;
+    private final AlarmService alarmService;
 
     // 사장님 페이지
     // 채팅방 개설
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/roomForm")
     public String roomForm(@AuthenticationPrincipal MemberDetails memberDetails) {
         try {
@@ -55,6 +59,7 @@ public class ChattingRoomController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/chatroom")
     public String createChatRoom(RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberDetails memberDetails) {
 
@@ -63,7 +68,7 @@ public class ChattingRoomController {
         redirectAttributes.addFlashAttribute("roomId", chattingRoom.getRoomId());
         return "redirect:/chatroom/" + chattingRoom.getRoomId(); // 채팅방 입장 페이지로 리다이렉트
     }
-
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/chatroom/{roomId}")
     public String joinRoom(@PathVariable("roomId") Long roomId,
                            Model model,
@@ -89,9 +94,14 @@ public class ChattingRoomController {
             // 채팅 메세지
             List<Map<String, Object>> messageListDto = messageService.getMessageList(roomId);
             String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
+
+            // 알람
+            Member receiver = alarmService.getAdminInfo(roomId);
+
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson", messageResponseDtoListJson);
+            model.addAttribute("receiver",receiver);
 
 
             return "owner/owner_chat_room_detail";
@@ -123,6 +133,7 @@ public class ChattingRoomController {
     }*/
 
     // 채팅룸 검색
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/search/chat")
     public String searchChatList(Model model,
                                  @RequestParam(value = "keyword", required = false) String keyword,
@@ -138,7 +149,7 @@ public class ChattingRoomController {
             ResultDto<ChattingRoomListResponseDto> resultDto = ResultDto.in(allChatList.getStatus(), allChatList.getMessage());
             resultDto.setData((ChattingRoomListResponseDto) allChatList.getData());
 
-            model.addAttribute("chatList", allChatList.getData());
+            model.addAttribute("resultDto", resultDto);
 
 
             return "admin/admin_chat_search_list";
@@ -150,6 +161,7 @@ public class ChattingRoomController {
     }
 
     // 채팅룸 Id 상세 조회
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/chatroom/{roomId}")
     public String getChatRoom(@PathVariable("roomId") Long roomId,
                               Model model,
@@ -174,9 +186,13 @@ public class ChattingRoomController {
             List<Map<String, Object>> messageListDto = messageService.getMessageList(roomId);
             String messageResponseDtoListJson = objectMapper.writeValueAsString(messageListDto);
 
+            // 알람
+            Member receiver = alarmService.getOwnerInfoByChat(roomId);
+
             model.addAttribute("shopDto", resultDto);
             model.addAttribute("chatRoomDto", chattingRoomDetailDto);
             model.addAttribute("messageResponseDtoListJson", messageResponseDtoListJson);
+            model.addAttribute("receiver", receiver);
 
 
             return "admin/admin_chat_room_detail";

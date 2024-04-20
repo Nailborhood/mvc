@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script th:src="@{/js/admin/admin_delete_shop.js}"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin_basic_style.css}">
 </head>
@@ -50,11 +51,10 @@
                         <div class="th"></div> <!-- 매장 삭제 버튼을 위한 빈 컬럼 -->
                     </div>
                 </div>
-                <div class="tbody" th:if="${shopList != null}">
+                <div class="tbody" th:if="${resultDto != null}">
 
-                    <div class="tr chart-item" th:each="shop : ${shopList.allShopsLookupResponseDtoList}"
+                    <div class="tr chart-item" th:each="shop : ${resultDto.getData().getAllShopsLookupResponseDtoList()}"
                          th:data-href="@{/shopDetail/{shopId}(shopId=${shop.shopId})}">
-<!--                        <a th:href="@{/shopDetail/{shopId}(shopId=${shop.shopId})}">-->
                             <div class="td" th:text="${shop.shopId}"></div>
                             <div class="td"><img class="chart-profile" th:src="@{${shop.shopMainImgPath}}"
                                                  alt="Profile Image"></div>
@@ -82,13 +82,32 @@
                                     매장 삭제
                                 </button>
                             </div>
-<!--                        </a>-->
                     </div>
 
                 </div>
 
             </div>
-
+            <div class="pagination" th:unless="${errorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&sortBy=' + ${sortBy}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop?page=' + ${pageNum} + '&size=' + ${size} + '&sortBy=' + ${sortBy}}"
+                               th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} '&sortBy=' + ${sortBy}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>

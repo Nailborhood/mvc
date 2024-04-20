@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class ReviewDetailResponseDto {
 
     private Long reviewId;
@@ -31,23 +31,8 @@ public class ReviewDetailResponseDto {
     private String reviewAuthorProfileImg;
     private LocalDateTime reviewCreatedAt;
     private LocalDateTime reviewUpdatedAt;
+    private Boolean reviewLikeStatus;
+    private boolean isDeleted;
+    private String writer;
 
-    @Builder
-    public ReviewDetailResponseDto(Long reviewId, Long shopId, String shopName, ShopStatus shopStatus, String  shopAddress, String reviewReportStatus, List<String> categoryTypeList, Map<Integer, String> imgPathMap, String contents, Integer rate, Long likeCnt, String reviewAuthor, String reviewAuthorProfileImg, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
-        this.shopId = shopId;
-        this.reviewId = reviewId;
-        this.shopName = shopName;
-        this.shopStatus = shopStatus;
-        this.shopAddress = shopAddress;
-        this.reviewReportStatus = reviewReportStatus;
-        this.categoryTypeList = categoryTypeList;
-        this.imgPathMap = imgPathMap;
-        this.contents = contents;
-        this.rate = rate;
-        this.likeCnt = likeCnt;
-        this.reviewAuthor = reviewAuthor;
-        this.reviewAuthorProfileImg = reviewAuthorProfileImg;
-        this.reviewCreatedAt = reviewCreatedAt;
-        this.reviewUpdatedAt = reviewUpdatedAt;
-    }
 }
