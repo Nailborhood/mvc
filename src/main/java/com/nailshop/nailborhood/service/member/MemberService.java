@@ -241,22 +241,14 @@ public class MemberService {
     }
 
     // 프로필 수정
-<<<<<<< HEAD
     public CommonResponseDto<Object> updateProfileImg(Long id, MultipartFile multipartFile) {
+
         // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
-=======
-    public CommonResponseDto<Object> updateProfileImg(String accessToken, MultipartFile multipartFile) {
-        // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
-        Long id = tokenProvider.getUserId(accessToken);
->>>>>>> origin/dev
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         try {
             String imgPath = s3UploadService.profileImgUpload(multipartFile);
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/dev
             memberRepository.updateMemberProfileImg(id, imgPath);
 
             return commonService.successResponse(SuccessCode.PROFILE_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
@@ -265,7 +257,6 @@ public class MemberService {
         }
     }
 
-<<<<<<< HEAD
     public Member findMemberForOAuth2Login(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
@@ -282,6 +273,4 @@ public class MemberService {
         }
         return SessionDto.of(member);
     }
-=======
->>>>>>> origin/dev
 }
