@@ -6,8 +6,9 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/member/signup_style.css}" />
-    <script th:src="@{/js/member/signup.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script th:src="@{/js/member/signup.js}"></script>
+    <script th:src="@{/js/member/viewPassword.js}"></script>
 </head>
 <div layout:fragment="content">
     <div class="login-title">
@@ -56,11 +57,12 @@
             <tr>
                 <td colspan="2">
                     <input type="password" name="password" id="password-input" placeholder="password" required>
+                    <i class="bi bi-eye"></i>
                 </td>
             </tr>
             <tr id="password-pattern_message" style="display: none;">
                 <td colspan="2">
-                    <p>비밀번호 형식안내 자리</p>
+                    <p>비밀번호는 8-20글자</p>
                 </td>
             </tr>
             <tr>
@@ -71,6 +73,7 @@
             <tr>
                 <td colspan="2">
                     <input type="password" id="password-check-input" oninput="passwordCheckMatch()" placeholder="password check" required>
+                    <i class="bi bi-eye"></i>
                 </td>
             </tr>
             <tr id="password-match_div" style="display: none;">

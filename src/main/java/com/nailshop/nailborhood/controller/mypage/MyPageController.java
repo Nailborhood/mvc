@@ -3,8 +3,7 @@ package com.nailshop.nailborhood.controller.mypage;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
-import com.nailshop.nailborhood.dto.member.MemberInfoDto;
-import com.nailshop.nailborhood.dto.member.request.BeforeModPasswordCheckRequestDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.member.request.ModMemberInfoRequestDto;
 import com.nailshop.nailborhood.dto.member.request.ModPasswordRequestDto;
 import com.nailshop.nailborhood.dto.mypage.MyFavoriteListResponseDto;
@@ -19,6 +18,13 @@ import com.nailshop.nailborhood.service.mypage.MypageService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRequestLookupService;
 import com.nailshop.nailborhood.type.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
@@ -103,55 +110,71 @@ public class MyPageController {
 
     }
 
+    // 비밀번호 수정 페이지
+    @GetMapping("/password")
+    public String modPasswordPage(Authentication authentication,
+                                  @AuthenticationPrincipal MemberDetails memberDetails,
+                                  Model model,
+                                  ModPasswordRequestDto modPasswordRequestDto) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+        // TODO 구글 로그인은 비밀번호 처리를 어떻게 할 것인가?
+        model.addAttribute("modPasswordRequestDto",modPasswordRequestDto);
+        return "mypage/modify_password_form";
+    }
+
     // 비밀번호 수정
     @PostMapping("/modifyPassword")
-    public ResponseEntity<ResultDto<Void>> modifyPassword(@RequestHeader(AUTH) String accessToken,
-                                                          @RequestBody ModPasswordRequestDto modPasswordRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(accessToken, modPasswordRequestDto);
-        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
+    @ResponseBody
+    public String modifyPassword(@AuthenticationPrincipal MemberDetails memberDetails,
+                                 @ModelAttribute ModPasswordRequestDto modPasswordRequestDto) {
+        Long id = memberDetails.getMember().getMemberId();
+        CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(id, modPasswordRequestDto);
+        if(commonResponseDto.getHttpStatus().is2xxSuccessful()) return "redirect:/mypage/myInfo";
+        else return ""; // TODO 에러처리 추가 필요
     }
 
     // 프로필 수정
-    @PutMapping(consumes = {"multipart/form-data"}, value = "/modProfile")
-    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
+    @PostMapping(consumes = {"multipart/form-data"}, value = "/modProfile")
+    public String modifyProfile(Authentication authentication,
+                                                         @AuthenticationPrincipal MemberDetails memberDetails,
+                                                         Model model,
                                                          @RequestPart(value = "file") MultipartFile multipartFile) {
-        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
-        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(result);
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(sessionDto.getId(), multipartFile);
+        return "redirect:/user";
     }
 
-    // 비밀번호 수정 전 확인
-    @PostMapping("/passwordCheck")
-    public ResponseEntity<ResultDto<Object>> passwordCheck(@RequestHeader(AUTH) String accessToken,
-                                                           @RequestBody BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = memberService.beforeUpdatePassword(accessToken, beforeModPasswordCheckRequestDto);
-        ResultDto<Object> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        result.setData((boolean) commonResponseDto.getData());
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                .body(result);
-    }
+//    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
+//                                                         @RequestPart(value = "file") MultipartFile multipartFile) {
+//        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
+//        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+//                             .body(result);
+//    }
+
 
     //  내 정보 확인
+//    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
-    public String modifyInfoPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
-        Long loginId = memberDetails.getMember().getMemberId();
-        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(loginId);
-//        ResultDto<MemberInfoDto> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+    public String modifyInfoPage(Authentication authentication,
+                                 @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
+        CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(sessionDto.getId());
         model.addAttribute("memberInfo", commonResponseDto.getData());
         return "mypage/modify_info_form";
     }
 
     // 내 정보 수정 - 작업중
     @PostMapping("/modMyInfo")
-    public String modMyInfo(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String modMyInfo(Authentication authentication,
+                            @AuthenticationPrincipal MemberDetails memberDetails,
                             ModMemberInfoRequestDto modMemberInfoRequestDto) {
-        Long id = memberDetails.getMember().getMemberId();
-        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(id, modMemberInfoRequestDto);
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(sessionDto.getId(), modMemberInfoRequestDto);
         System.out.println(commonResponseDto.getMessage());
         return "redirect:/mypage/myInfo";
     }
@@ -225,26 +248,28 @@ public class MyPageController {
 
     // 회원탈퇴
     @GetMapping("/dropoutProc")
-    public String memberDropOut(@AuthenticationPrincipal MemberDetails memberDetails) {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        Long id = memberDetails.getMember().getMemberId();
-        CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(id);
+    public String memberDropOut(Authentication authentication,
+                                @AuthenticationPrincipal MemberDetails memberDetails) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(sessionDto.getId());
         return "redirect:/logout";
     }
 
     // 회원 탈퇴 페이지
     @GetMapping("/dropout")
-    public String dropoutPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+    public String dropoutPage(Authentication authentication,
+                              @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         return "mypage/drop_out_form";
     }
 
     // 로그아웃 페이지
     @GetMapping("/logout")
-    public String logoutPage(@AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+    public String logoutPage(Authentication authentication,
+                             @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         return "mypage/logout_form";
     }
 
