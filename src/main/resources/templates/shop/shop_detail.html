@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>매장 상세</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!--    <script th:src="@{/js/shop/favorite.js}"></script>-->
+    <!--    <script th:src="@{/js/shop/favorite.js}"></script>-->
     <script th:src="@{/js/alarm/favorite_alarm.js}"></script>
     <script th:src="@{/js/get_layouts.js}"></script>
     <script th:src="@{/js/shop/shop_detail.js}"></script>
@@ -126,7 +126,8 @@
             <div class="shop-art">
                 <div class="art-row">
                     <span class="art">아트</span>
-                    <a th:href="@{/art/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}"
+                    <a th:if="${resultDto.getData().getShopArtBoardLookupResponseDtoList().size() != 0}"
+                       th:href="@{/art/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}"
                        class="shop-art-link">
                         <img src="/assets/icons/shop/arrow.svg">
                     </a>
@@ -154,7 +155,8 @@
             <div class="shop-review">
                 <div class="review-row">
                     <span class="review">리뷰</span>
-                    <a th:href="@{/review/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}"
+                    <a th:if="${resultDto.getData().getShopReviewLookupResponseDtoList().size() != 0 }"
+                       th:href="@{/review/{shopId}(shopId=${resultDto.getData().getShopDetailLookupResponseDto().getShopId()})}"
                        class="shop-review-link">
                         <img src="/assets/icons/shop/arrow.svg">
                     </a>
