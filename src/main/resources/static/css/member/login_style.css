@@ -40,6 +40,7 @@
     width: 200px;
     font-size: 15px;
     outline: var(--shadow_1) auto 1px;
+    box-sizing: unset;
 }
 
 
