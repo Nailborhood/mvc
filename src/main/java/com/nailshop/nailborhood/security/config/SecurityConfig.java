@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.security.config;
 
+import com.nailshop.nailborhood.security.config.auth.OAuthMemberDetailsService;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAccessDeniedHandler;
 import com.nailshop.nailborhood.security.config.exceptionHandler.CustomAuthenticationEntryPoint;
 import jakarta.servlet.DispatcherType;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final OAuthMemberDetailsService oAuthMemberDetailsService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -73,7 +75,7 @@ public class SecurityConfig {
                                 .loginProcessingUrl("/loginProc")
                                 .usernameParameter("email")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/example")
+                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
                                 .successHandler(
                                         new AuthenticationSuccessHandler() {
@@ -81,7 +83,7 @@ public class SecurityConfig {
                                             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                                                 System.out.println("authentication : " + authentication.getName());
                                                 System.out.println("authentication : " + authentication.getPrincipal());
-                                                response.sendRedirect("/example");
+                                                response.sendRedirect("/");
                                             }
                                         })
                                 .failureHandler(
@@ -93,19 +95,29 @@ public class SecurityConfig {
                                             }
                                         })
                 )
+                .oauth2Login((oauth) ->
+                        oauth
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/")
+                                .failureUrl("/login?error=true")
+                                .userInfoEndpoint(
+                                        userInfoEndpointConfig ->
+                                                userInfoEndpointConfig
+                                                        .userService(oAuthMemberDetailsService)
+                                )
+                )
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/logout")
-                                .logoutSuccessUrl("/example")
+                                .logoutSuccessUrl("/")
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )
-//                .oauth2Login()
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement)->
-                                sessionManagement
-                                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                                        .maximumSessions(3)
+                        sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                                .maximumSessions(3)
                 )
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
