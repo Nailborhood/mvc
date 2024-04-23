@@ -84,7 +84,7 @@
 }
 
 .clearButton {
-    margin-top: 5px;
+    margin-top: 8px;
 }
 
 .search-select-box button:hover {
@@ -97,7 +97,7 @@
 }
 
 .orderby-select{
-    margin-left: 225px;
+    margin-left: 160px;
 }
 
 .orderby-select select {
