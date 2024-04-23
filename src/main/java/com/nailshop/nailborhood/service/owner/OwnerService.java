@@ -37,6 +37,7 @@ public class OwnerService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final OwnerRepository ownerRepository;
+    private final MemberRepository memberRepository;
 
 
     // 매장 리뷰 조회
@@ -106,6 +107,13 @@ public class OwnerService {
         return commonService.successResponse(SuccessCode.SHOP_REVIEW_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopReviewListLookupResponseDto);
     }
 
+    // owner Info
+    public Owner getOwnerInfo(Long memberId) {
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
+        Owner owner = ownerRepository.findByMemberId(memberId);
+        return owner;
+    }
 }
 

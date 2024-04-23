@@ -26,7 +26,9 @@
     /* background-color: #ccc;*/
     margin: 30px auto;
 }
-
+.alarm-description-section .precautions {
+    margin: auto 50px;
+}
 
 .alarm-info a{
     display: flex;
@@ -79,4 +81,8 @@
 
 .error-code {
     margin: 50px auto;
+}
+
+.alarm-empty-message {
+    margin: 200px auto;
 }

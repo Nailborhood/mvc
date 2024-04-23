@@ -38,9 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Map;
-
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,9 +56,10 @@ public class MyPageController {
                            @AuthenticationPrincipal MemberDetails memberDetails,
                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                           @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
+                           @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
 
@@ -71,7 +69,7 @@ public class MyPageController {
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
             model.addAttribute("result", resultDto);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_FOUND);
 
         }
@@ -85,9 +83,10 @@ public class MyPageController {
     public String myFavorite(Model model,
                              @AuthenticationPrincipal MemberDetails memberDetails,
                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                             @RequestParam(value = "size", defaultValue = "10", required = false) int size){
+                             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
         Member member = memberDetails.getMember();
 
@@ -99,7 +98,7 @@ public class MyPageController {
 
             model.addAttribute("result", resultDto);
 
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
 
             model.addAttribute("ErrorCode", ErrorCode.SHOP_FAVORITE_EMPTY);
 
@@ -116,10 +115,10 @@ public class MyPageController {
                                   @AuthenticationPrincipal MemberDetails memberDetails,
                                   Model model,
                                   ModPasswordRequestDto modPasswordRequestDto) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
         // TODO 구글 로그인은 비밀번호 처리를 어떻게 할 것인가?
-        model.addAttribute("modPasswordRequestDto",modPasswordRequestDto);
+        model.addAttribute("modPasswordRequestDto", modPasswordRequestDto);
         return "mypage/modify_password_form";
     }
 
@@ -128,19 +127,21 @@ public class MyPageController {
     @ResponseBody
     public String modifyPassword(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @ModelAttribute ModPasswordRequestDto modPasswordRequestDto) {
-        Long id = memberDetails.getMember().getMemberId();
+        Long id = memberDetails.getMember()
+                               .getMemberId();
         CommonResponseDto<Object> commonResponseDto = memberService.updatePassword(id, modPasswordRequestDto);
-        if(commonResponseDto.getHttpStatus().is2xxSuccessful()) return "redirect:/mypage/myInfo";
+        if (commonResponseDto.getHttpStatus()
+                             .is2xxSuccessful()) return "redirect:/mypage/myInfo";
         else return ""; // TODO 에러처리 추가 필요
     }
 
     // 프로필 수정
     @PostMapping(consumes = {"multipart/form-data"}, value = "/modProfile")
     public String modifyProfile(Authentication authentication,
-                                                         @AuthenticationPrincipal MemberDetails memberDetails,
-                                                         Model model,
-                                                         @RequestPart(value = "file") MultipartFile multipartFile) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+                                @AuthenticationPrincipal MemberDetails memberDetails,
+                                Model model,
+                                @RequestPart(value = "file") MultipartFile multipartFile) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
         CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(sessionDto.getId(), multipartFile);
         return "redirect:/user";
@@ -160,7 +161,7 @@ public class MyPageController {
     @GetMapping("/myInfo")
     public String modifyInfoPage(Authentication authentication,
                                  @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
 
         CommonResponseDto<Object> commonResponseDto = memberService.findMyInfo(sessionDto.getId());
@@ -173,7 +174,7 @@ public class MyPageController {
     public String modMyInfo(Authentication authentication,
                             @AuthenticationPrincipal MemberDetails memberDetails,
                             ModMemberInfoRequestDto modMemberInfoRequestDto) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         CommonResponseDto<Object> commonResponseDto = memberService.updateMyInfo(sessionDto.getId(), modMemberInfoRequestDto);
         System.out.println(commonResponseDto.getMessage());
         return "redirect:/mypage/myInfo";
@@ -185,18 +186,21 @@ public class MyPageController {
     @GetMapping("/owner/shop/request")
     public String requestShop(Model model,
                               @AuthenticationPrincipal MemberDetails memberDetails,
+                              Authentication authentication,
                               ShopRegistrationRequestDto shopRegistrationRequestDto) {
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
 
-        Member member = memberDetails.getMember();
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         // 이미 신청한 기록이 존재
-        if(!shopRegistrationService.checkExistingOwner(member)){
-            model.addAttribute("errorCode",ErrorCode.OWNER_ALREADY_EXIST);
+        if (!shopRegistrationService.checkExistingOwner(sessionDto.getId())) {
+            model.addAttribute("errorCode", ErrorCode.OWNER_ALREADY_EXIST);
 
         }
 
-        StoreAddressSeparationListDto storeAddressSeparationListDtoList =shopRegistrationService.findAddress();
+
+        StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
         model.addAttribute("requestDto", shopRegistrationRequestDto);
         model.addAttribute("addressDto", storeAddressSeparationListDtoList);
         return "request/request_shop_registration";
@@ -209,13 +213,14 @@ public class MyPageController {
                               @ModelAttribute StoreAddressSeparationDto storeAddressSeparationDto,
                               @ModelAttribute ShopRegistrationRequestDto shopRegistrationRequestDto,
                               @AuthenticationPrincipal MemberDetails memberDetails,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              Authentication authentication) {
 
-
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         try {
-            Member member = memberDetails.getMember();
+
             shopRegistrationService.updateAddressInfo(shopRegistrationRequestDto, storeAddressSeparationDto);
-            CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(member,multipartFileList, fileList, shopRegistrationRequestDto);
+            CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(sessionDto.getId(), multipartFileList, fileList, shopRegistrationRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -230,14 +235,17 @@ public class MyPageController {
     }
 
 
-
     // 매장 신청 조회
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
     @GetMapping("/owner/shop/request/list")
-    public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
+    public String requestShopList(Model model, @AuthenticationPrincipal MemberDetails memberDetails, Authentication authentication) {
+
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         try {
-            Member member = memberDetails.getMember();
-            CommonResponseDto<Object> myShop = shopRequestLookupService.getShopRequest(member);
+
+            CommonResponseDto<Object> myShop = shopRequestLookupService.getShopRequest(sessionDto.getId());
             model.addAttribute("myShop", myShop.getData());
             return "request/request_shop_registration_list";
         } catch (NotFoundException e) {
@@ -250,7 +258,7 @@ public class MyPageController {
     @GetMapping("/dropoutProc")
     public String memberDropOut(Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         CommonResponseDto<Object> commonResponseDto = memberService.deleteMember(sessionDto.getId());
         return "redirect:/logout";
     }
@@ -259,7 +267,7 @@ public class MyPageController {
     @GetMapping("/dropout")
     public String dropoutPage(Authentication authentication,
                               @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
         return "mypage/drop_out_form";
     }
@@ -268,7 +276,7 @@ public class MyPageController {
     @GetMapping("/logout")
     public String logoutPage(Authentication authentication,
                              @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
-        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
         return "mypage/logout_form";
     }

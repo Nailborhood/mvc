@@ -273,4 +273,11 @@ public class MemberService {
         }
         return SessionDto.of(member);
     }
+
+
+    // 유저 정보 가져오기
+    public Member getMemberInfo(Long memberId) {
+        return memberRepository.findById(memberId)
+                               .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+    }
 }

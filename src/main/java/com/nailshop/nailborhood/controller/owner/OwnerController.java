@@ -6,6 +6,7 @@ import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
@@ -14,6 +15,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
@@ -23,6 +25,7 @@ import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +46,7 @@ public class OwnerController {
     private final ShopDetailService shopDetailService;
     private final ShopRegistrationService shopRegistrationService;
     private final CategoryRepository categoryRepository;
+    private final MemberService memberService;
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
@@ -53,9 +57,10 @@ public class OwnerController {
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
+                                    @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
+        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
+                                                                      .getNickname() : "";
         model.addAttribute("memberNickname", nicknameSpace);
 
         Member member = memberDetails.getMember();
@@ -111,15 +116,15 @@ public class OwnerController {
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shop/update")
     public String updateShop(Model model,
-                             @AuthenticationPrincipal MemberDetails memberDetails) {
+                             @AuthenticationPrincipal MemberDetails memberDetails,
+                             Authentication authentication) {
 
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
-        Member member = memberDetails.getMember();
-        CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(member);
+
+        CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(sessionDto.getId());
         ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
         resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
 
@@ -140,15 +145,18 @@ public class OwnerController {
                              @ModelAttribute ShopModifiactionRequestDto shopModifiactionRequestDto,
                              @ModelAttribute StoreAddressSeparationDto storeAddressSeparationDto,
                              RedirectAttributes redirectAttributes,
-                             @AuthenticationPrincipal MemberDetails memberDetails) {
+                             @AuthenticationPrincipal MemberDetails memberDetails,
+                             Authentication authentication) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
+
+        Long shopId = owner.getShop().getShopId();
+
         try {
 
-            Member member = memberDetails.getMember();
-            Long shopId = member.getOwner()
-                                .getShop()
-                                .getShopId();
             shopModificationService.updateAddressInfo(shopModifiactionRequestDto, storeAddressSeparationDto);
-            CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(member, multipartFileList, shopModifiactionRequestDto);
+            CommonResponseDto<Object> commonResponseDto = shopModificationService.updateShop(sessionDto.getId(), multipartFileList, shopModifiactionRequestDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
             redirectAttributes.addAttribute("shopId", shopId);
@@ -168,10 +176,12 @@ public class OwnerController {
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shopDetail")
     public String getShopDetail(Model model,
-                                @AuthenticationPrincipal MemberDetails memberDetails) {
-        Member member = memberDetails.getMember();
-        Long shopId = member.getOwner().getShop().getShopId();
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
+                                @AuthenticationPrincipal MemberDetails memberDetails,
+                                Authentication authentication) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
+        Long shopId = owner.getShop().getShopId();
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId,sessionDto.getId());
 
         model.addAttribute("shopDetail", shopDetail.getData());
 

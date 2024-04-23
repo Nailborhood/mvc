@@ -8,6 +8,7 @@ import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResp
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.ShopReviewListResponseDto;
@@ -17,6 +18,7 @@ import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.alarm.AlarmService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.shop.ShopArtBoardListService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.ShopListLookupLocalService;
@@ -27,6 +29,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,21 +51,24 @@ public class ShopController {
     private final ShopRegistrationService shopRegistrationService;
     private final AlarmService alarmService;
     private final CategoryRepository categoryRepository;
-
+    private final MemberService memberService;
 
 
     // main
     @GetMapping(value = "/")
     public String getAllShops(@AuthenticationPrincipal MemberDetails memberDetails,
-                              Model model) {
+                              Model model,
+                              Authentication authentication) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
+        if(authentication != null) {
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
+        }
+
         CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
         ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
         resultDto.setData((HomeDetailResponseDto) allResultList.getData());
         model.addAttribute("resultDto", resultDto);
-        model.addAttribute("memberNickname", nicknameSpace);
 
         return "home/home";
 
@@ -93,11 +99,15 @@ public class ShopController {
                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                        @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
                                        Model model,
-                                       @AuthenticationPrincipal MemberDetails memberDetails) {
+                                       @AuthenticationPrincipal MemberDetails memberDetails,
+                                       Authentication authentication) {
 //        dongId = 1L;
         try {
-            String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                          .getNickname() : "";
+            if(authentication != null) {
+                SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+                model.addAttribute("sessionDto", sessionDto);
+            }
+
             CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId, cityId);
             ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
             resultDto.setData((ShopListResponseDto) allShopsList.getData());
@@ -109,7 +119,7 @@ public class ShopController {
             model.addAttribute("resultDto", resultDto);
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
-            model.addAttribute("memberNickname", nicknameSpace);
+
             return "shop/shop_local_list";
         } catch (NotFoundException e) {
             StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();
@@ -127,35 +137,30 @@ public class ShopController {
     // 매장 상세 조회
     @GetMapping("/shopDetail/{shopId}")
     public String getShopDetail(Model model,
+                                Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails,
                                 @PathVariable Long shopId) {
 
-
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
-        // 로그인 여부를 확인
-        boolean isLoggedIn = memberDetails != null;
-
-
-        CommonResponseDto<Object> shopDetail;
-
-        if (isLoggedIn) {
-            // 로그인한 경우
-            shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
-        } else {
-            shopDetail = shopDetailService.getShopDetailForGuest(shopId);
-
-        }
         // 결과 데이터 처리
         try {
-            ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
-            resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
+            if(authentication != null) {
+                SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+                model.addAttribute("sessionDto", sessionDto);
+                CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, sessionDto.getId());
+                ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+                resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
+                model.addAttribute("resultDto", resultDto);
+            } else {
+                CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetailForGuest(shopId);
+                ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+                resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
+                model.addAttribute("resultDto", resultDto);
+                model.addAttribute("sessionDto", "");
+            }
             // 알람
             Member receiver = alarmService.getOwnerInfo(shopId);
             model.addAttribute("receiver", receiver);
-            model.addAttribute("memberNickname", nicknameSpace);
-            model.addAttribute("isLoggedIn", isLoggedIn);
-            model.addAttribute("resultDto", resultDto);
+//            model.addAttribute("isLoggedIn", isLoggedIn);
             return "shop/shop_detail";
         } catch (NotFoundException e) {
 
