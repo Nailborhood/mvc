@@ -76,7 +76,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     // 관리자 매장 검색
     @Query("SELECT s " +
             "FROM Shop s " +
-            "WHERE s.name Like %:keyword% AND s.status = 'OPEN' " )
+            "WHERE s.name Like %:keyword% AND s.status <> 'READY'" )
     Page<Shop> findALlShopListByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     // 신청 매장 전체 조회
@@ -156,4 +156,10 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "LEFT JOIN s.dong.districts dt " +
             "WHERE (s.name Like %:keyword% ) AND s.isDeleted = false AND dt.districtsId =:districtsId AND s.status = 'OPEN'")
     Page<Shop> findAllNotDeletedByDistrictsIdAndKeyword(Pageable pageable, @Param("districtsId") Long districtsId, @Param("keyword") String keyword);
+
+    // 관리자 매장 조회
+    @Query("SELECT s " +
+            "FROM Shop s " +
+            "WHERE s.status <> 'READY'" )
+    Page<Shop> findAllShopListByStatus(PageRequest pageable);
 }

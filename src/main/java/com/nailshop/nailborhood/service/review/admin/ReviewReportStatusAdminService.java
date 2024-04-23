@@ -246,12 +246,12 @@ public class ReviewReportStatusAdminService {
 
             // 리뷰 이미지 삭제
 
-            List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
+/*            List<ReviewImg> reviewImgList = reviewImgRepository.findByReviewImgListReviewId(reviewId);
             for (ReviewImg reviewImg : reviewImgList) {
                 String reviewImgUrl = reviewImg.getImgPath();
                 s3UploadService.deleteReviewImg(reviewImgUrl);
                 reviewImgRepository.deleteByReviewImgId(reviewImg.getReviewImgId(), true);
-            }
+            }*/
 
 
             // 삭제 되는 리뷰 좋아요 수 0, reviewLike status false로 변경
