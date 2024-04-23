@@ -51,9 +51,16 @@ header {
     object-fit: cover;
 }
 
+.login-info-div {
+    position: absolute;
+    display: flex;
+    right: 38px;
+    top: 38px;
+}
+
 .profile-field {
     margin: 5px;
-    position: absolute;
+    /*position: absolute;*/
     right: 38px;
     top: 38px;
     cursor: pointer;
@@ -78,6 +85,7 @@ header {
 
 .profile-field:hover #profile-mypage-div {
     display: block;
+    z-index: 9;
 }
 #profile-mypage-div {
     display: none;
@@ -86,9 +94,9 @@ header {
 #profile-mypage-div {
     position: absolute;
     width: 115px;
-    /*height: 140px;*/
-    top: 52px;
-    right: -35px;
+    /* height: 140px; */
+    top: 56px;
+    right: -28px;
     border: 1px solid var(--shadow_1);
     border-radius: 4px;
     background-color: white;

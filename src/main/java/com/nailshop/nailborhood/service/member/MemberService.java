@@ -239,6 +239,16 @@ public class MemberService {
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+//
+//
+//    public CommonResponseDto<Object> findUser(Long id) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+//
+//
+//    }
+//
+
 
     // 프로필 수정
     public CommonResponseDto<Object> updateProfileImg(Long id, MultipartFile multipartFile) {

@@ -7,10 +7,8 @@ import com.nailshop.nailborhood.dto.member.request.*;
 
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.member.MemberService;
-import io.swagger.v3.oas.annotations.Hidden;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -74,12 +72,17 @@ public class MemberController {
 
     // 마이페이지 겸 유저 조회 페이지로...?
     @GetMapping("/user")
+//    @GetMapping("/user/{memberId}")
     public String userPage(Authentication authentication,
-                           @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
+                           @AuthenticationPrincipal MemberDetails memberDetails,
+//                           @PathVariable Long memberId,
+                           Model model) {
         if(authentication != null) {
             SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
             model.addAttribute("sessionDto", sessionDto);
         }
+//        CommonResponseDto<Object> commonResponseDto = memberService.findUser(memberId);
+
         return "mypage/user";
     }
 
