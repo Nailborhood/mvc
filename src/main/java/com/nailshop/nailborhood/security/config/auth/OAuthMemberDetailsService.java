@@ -1,7 +1,9 @@
 package com.nailshop.nailborhood.security.config.auth;
 
+import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.member.request.OAuthAttributes;
+import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 
 @Service
@@ -22,6 +25,7 @@ import java.util.Collections;
 public class OAuthMemberDetailsService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
+    private final CustomerRepository customerRepository;
     private final HttpSession httpSession;
 
     @Override
@@ -36,6 +40,7 @@ public class OAuthMemberDetailsService implements OAuth2UserService<OAuth2UserRe
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         Member member = saveOrUpdateOAuth2Member(attributes);
+        saveOAuth2Customer(member);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(member.getRole().toString())),
@@ -50,4 +55,12 @@ public class OAuthMemberDetailsService implements OAuth2UserService<OAuth2UserRe
         return memberRepository.save(member);
     }
 
+    private void saveOAuth2Customer(Member member) {
+        if(customerRepository.findCustomerByMember_MemberId(member.getMemberId()).isEmpty()) {
+            Customer customer = Customer.builder()
+                    .member(member)
+                    .build();
+            customerRepository.save(customer);
+        }
+    }
 }
