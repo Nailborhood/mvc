@@ -70,18 +70,21 @@ public class ReviewController {
     @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
     public String registerReview(@PathVariable Long shopId,
                                  Authentication authentication,
+                                 Model model,
                                  @AuthenticationPrincipal MemberDetails memberDetails,
                                  @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                  @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
                                  RedirectAttributes redirectAttributes) {
 
-        try {
-            SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
-            Long reviewId = reviewRegistrationService.saveReview(shopId, sessionDto.getId(), multipartFileList, reviewRegistrationRequestDto);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
+        try {
+            Long reviewId = reviewRegistrationService.saveReview(shopId, sessionDto.getId(), multipartFileList, reviewRegistrationRequestDto);
 //            return "redirect:/review/inquiry/" + reviewId+"?shopId="+shopId;
             return String.format("redirect:/review/inquiry/%d?shopId=%d&alarmSent=true", reviewId, shopId);
         } catch (Exception e) {
+
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.REVIEW_REGISTER_FAIL);
 
             return "review/review_registration";
