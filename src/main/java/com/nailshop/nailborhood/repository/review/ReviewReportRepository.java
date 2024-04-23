@@ -33,8 +33,7 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
     @Query("SELECT rr " +
             "FROM ReviewReport rr " +
             "LEFT JOIN rr.review r " +
-            "LEFT JOIN r.reviewImgList ri " +
-            "WHERE (r.isDeleted = true AND rr.status =:A AND ri.isDeleted = true ) OR (r.isDeleted = false AND rr.status =:R AND ri.isDeleted = false )")
+            "WHERE (r.isDeleted = true AND rr.status =:A  ) OR (r.isDeleted = false AND rr.status =:R  )")
     Page<ReviewReport> findAllByStatus(Pageable pageable, @Param("A") String accept, @Param("R") String reject);
 
 
@@ -68,8 +67,7 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
             "FROM ReviewReport rr " +
             "LEFT JOIN rr.review r " +
             "LEFT JOIN r.shop s " +
-            "LEFT JOIN r.reviewImgList ri " +
-            "WHERE (rr.member.nickname Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) AND ((r.isDeleted = true AND rr.status =:A AND ri.isDeleted = true) OR (r.isDeleted = false AND rr.status =:R AND ri.isDeleted = true))" )
+            "WHERE (rr.member.nickname Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) AND ((r.isDeleted = true AND rr.status =:A ) OR (r.isDeleted = false AND rr.status =:R ))" )
     Page<ReviewReport> findAllReviewReportListBySearchAndStatus(@Param("keyword")String keyword, Pageable pageable,@Param("A") String accept ,@Param("R") String reject);
 
     // reportId에 해당되는 reviewId 찾기

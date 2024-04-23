@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -98,16 +99,12 @@ public class ReviewReportController {
     // 리뷰 신고 처리 변경
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/search/review/report")
-    public String changeReviewReportStatus(@RequestParam Long reportId,
-                                           @RequestParam(value = "status") String status) {
-        System.out.printf("reportId" + reportId);
-        System.out.printf("status" + status);
-//        CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(reportId, status);
+    public ResponseEntity<?> changeReviewReportStatus(@RequestParam Long reportId,
+                                                      @RequestParam(value = "status") String status) {
         reviewReportStatusAdminService.changeReviewStatus(reportId, status);
-//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return "redirect:/admin/search/review/report/status";
+        return ResponseEntity.ok(Collections.singletonMap("redirect", "/admin/search/review/report/status"));
     }
+
 
 
     // 리뷰 신고 상세 조회
