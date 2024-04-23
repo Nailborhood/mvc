@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
     group:
-      local: common, db, aws, jwt
-      blue: blue, common, rds, aws, jwt
-      green: green, common, rds, aws, jwt
+      local: common, db, aws, jwt, oauth2
+      blue: blue, common, rds, aws, jwt, oauth2
+      green: green, common, rds, aws, jwt, oauth2
 
 server:
   env: blue

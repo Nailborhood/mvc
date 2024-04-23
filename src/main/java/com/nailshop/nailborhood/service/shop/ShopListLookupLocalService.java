@@ -26,10 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +49,7 @@ public class ShopListLookupLocalService {
         Page<Shop> shops = shopRepository.findAllNotDeleted(pageable);
 
         if (shops.isEmpty()) {
-            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+            return commonService.errorResponse(ErrorCode.SHOP_NOT_FOUND.getDescription(), HttpStatus.OK, null);
         }
 
 
@@ -76,38 +73,63 @@ public class ShopListLookupLocalService {
     public CommonResponseDto<Object> getHome() {
 
         // 좋아요 많이 받은 아트판
-        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "");
-        if (inquiryAllArt == null) {
-            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
-        }
+        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "","");
+//        if (inquiryAllArt == null) {
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
 
         ResultDto<ArtListResponseDto> artListResponseDtoResultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
         artListResponseDtoResultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+
         List<ResultDto<ArtListResponseDto>> artListResponseDtoList = new ArrayList<>();
-        artListResponseDtoList.add(artListResponseDtoResultDto);
+        if(inquiryAllArt.getData() != null) {
+            artListResponseDtoList.add(artListResponseDtoResultDto);
+        }else {
+            artListResponseDtoList = Collections.emptyList();
+        }
+
+//        CommonResponseDto<Object> inquiryAllArt = artInquiryService.inquiryAllArt(1, 4, "likeCount", "");
+//        try{
+//            ResultDto<ArtListResponseDto> artListResponseDtoResultDto = ResultDto.in(inquiryAllArt.getStatus(), inquiryAllArt.getMessage());
+//            artListResponseDtoResultDto.setData((ArtListResponseDto) inquiryAllArt.getData());
+//            List<ResultDto<ArtListResponseDto>> artListResponseDtoList = new ArrayList<>();
+//            artListResponseDtoList.add(artListResponseDtoResultDto);
+//        }
+//        catch (NotFoundException e) {
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
+
 
 
         // 리뷰 많은 매장
         CommonResponseDto<Object> allReviewShopsList = getShopList(1, 4, "DESC", "reviewCnt");
-        if (allReviewShopsList == null) {
-            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
-        }
+//        if (allReviewShopsList == null) {
+//            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+//        }
         ResultDto<ShopListResponseDto> shopListByReviewResponseDtoResultDto = ResultDto.in(allReviewShopsList.getStatus(), allReviewShopsList.getMessage());
         shopListByReviewResponseDtoResultDto.setData((ShopListResponseDto) allReviewShopsList.getData());
 
         List<ResultDto<ShopListResponseDto>> shopListByReviewResponseDtoList = new ArrayList<>();
-        shopListByReviewResponseDtoList.add(shopListByReviewResponseDtoResultDto);
-
+        if(allReviewShopsList !=null && allReviewShopsList.getData() != null) {
+            shopListByReviewResponseDtoList.add(shopListByReviewResponseDtoResultDto);
+        }else {
+            shopListByReviewResponseDtoList = Collections.emptyList();
+        }
         // 별점 높은 매장
         CommonResponseDto<Object> allRateShopsList = getShopList(1, 4, "DESC", "rateAvg");
-        if (allRateShopsList == null) {
-            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
-        }
+//        if (allRateShopsList == null) {
+//            throw new NotFoundException(ErrorCode.SHOP_NOT_FOUND);
+//        }
         ResultDto<ShopListResponseDto> shopListByRateResponseDtoResultDto = ResultDto.in(allRateShopsList.getStatus(), allRateShopsList.getMessage());
         shopListByRateResponseDtoResultDto.setData((ShopListResponseDto) allRateShopsList.getData());
 
         List<ResultDto<ShopListResponseDto>> shopListByRateResponseDtoList = new ArrayList<>();
-        shopListByRateResponseDtoList.add(shopListByRateResponseDtoResultDto);
+        if(allRateShopsList.getData() != null) {
+            shopListByRateResponseDtoList.add(shopListByRateResponseDtoResultDto);
+        }else {
+            shopListByRateResponseDtoList = Collections.emptyList();
+        }
+
 
         HomeDetailResponseDto homeDetailResponseDto = HomeDetailResponseDto.builder()
                                                                            .artListResponseDtoList(artListResponseDtoList)

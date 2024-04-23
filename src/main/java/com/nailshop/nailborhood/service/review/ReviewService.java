@@ -51,14 +51,12 @@ public class ReviewService {
     private final CategoryReviewRepository categoryReviewRepository;
     private final CommonService commonService;
     private final S3UploadService s3UploadService;
-    private final TokenProvider tokenProvider;
 
     // 리뷰 수정
     @Transactional
-    public CommonResponseDto<Object> reviewUpdate(MemberDetails memberDetails, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
+    public CommonResponseDto<Object> reviewUpdate(Long memberId, Long reviewId, Long shopId, List<MultipartFile> multipartFileList, ReviewUpdateDto reviewUpdateDto) {
 
-        Member member = memberDetails.getMember();
-        memberRepository.findByMemberIdAndIsDeleted(member.getMemberId())
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -70,8 +68,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 수정하려는 유저 동일 검증
-        Long loginId = member.getMemberId();
-        if (!review.getCustomer().getCustomerId().equals(loginId)) {
+        if (!review.getCustomer().getMember().getNickname().equals(member.getNickname())) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 
@@ -90,6 +87,7 @@ public class ReviewService {
         updateShopRateAvg(shop);
 
         // 리뷰 카테고리 수정
+        //TODO
 //        categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
 //        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
@@ -109,10 +107,9 @@ public class ReviewService {
 
     // 리뷰 신고
     @Transactional
-    public CommonResponseDto<Object> reviewReport(Member member, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
+    public CommonResponseDto<Object> reviewReport(Long memberId, Long reviewId, Long shopId, ReviewReportDto reviewReportDto) {
 
-        Long memberId = member.getMemberId();
-        memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -144,10 +141,9 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public CommonResponseDto<Object> reviewDelete(Member member, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewDelete(Long memberId, Long reviewId, Long shopId) {
 
-        Long memberId = member.getMemberId();
-        memberRepository.findByMemberIdAndIsDeleted(memberId)
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 매장 존재 여부
@@ -159,7 +155,7 @@ public class ReviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자와 삭제하려는 유저 동일 검증 추가
-        if (!review.getCustomer().getCustomerId().equals(memberId)) {
+        if (!review.getCustomer().getMember().getNickname().equals(member.getNickname())) {
             throw new BadRequestException(ErrorCode.AUTHOR_NOT_EQUAL);
         }
 

@@ -25,6 +25,7 @@ import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -53,42 +54,41 @@ public class ShopDetailService {
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
     private final FavoriteRepository favoriteRepository;
+    private final MemberService memberService;
 
     // 매장 상세 조회
     @Transactional
-    public CommonResponseDto<Object> getShopDetail(Long shopId, MemberDetails memberDetails) {
+    public CommonResponseDto<Object> getShopDetail(Long shopId, Long memberId) {
 
-
+        Member member = memberService.getMemberInfo(memberId);
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
-        ShopDetailLookupResponseDto shopDetailLookupResponseDto = Stream.of(shop)
-                                                                        .map(s -> new ShopDetailLookupResponseDto(
-                                                                                        s.getShopId(),
-                                                                                        s.getName(),
-                                                                                        s.getPhone(),
-                                                                                        s.getAddress(),
-                                                                                        s.getOpentime(),
-                                                                                        s.getWebsite(),
-                                                                                        s.getContent(),
-                                                                                        s.getStatus(),
-                                                                                        s.getCreatedAt(),
-                                                                                        s.getRateAvg(),
-                                                                                        s.getReviewCnt(),
-                                                                                        s.getFavoriteCnt(),
-                                                                                        s.getIsDeleted()
-                                                                                )
 
 
-                                                                        )
-                                                                        .findFirst()
-                                                                        .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+        ShopDetailLookupResponseDto shopDetailLookupResponseDto = ShopDetailLookupResponseDto.builder()
+                                                                                             .name(shop.getName())
+                                                                                             .phone(shop.getPhone())
+                                                                                             .isDeleted(shop.getIsDeleted())
+                                                                                             .shopId(shop.getShopId())
+                                                                                             .createdAt(shop.getCreatedAt())
+                                                                                             .address(shop.getAddress())
+                                                                                             .rateAvg(shop.getRateAvg())
+                                                                                             .reviewCnt(shop.getReviewCnt())
+                                                                                             .website(shop.getWebsite())
+                                                                                             .status(shop.getStatus())
+                                                                                             .content(shop.getContent())
+                                                                                             .favoriteCnt(shop.getFavoriteCnt())
+                                                                                             .opentime(shop.getOpentime())
+                                                                                             .build();
 
-        if(memberDetails != null){
-            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberDetails.getMember().getMemberId(), shopId);
+
+        if(member != null){
+            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberId, shopId);
             if(heartStatus == null){
                 heartStatus = false;
             }
-            shopDetailLookupResponseDto.setHeartStatus(heartStatus);}
+            shopDetailLookupResponseDto.setHeartStatus(heartStatus);
+        }
 //        }else {
 //            Boolean heartStatus = false;
 //        }
@@ -99,10 +99,16 @@ public class ShopDetailService {
 
 
         CommonResponseDto<Object> reviewList = shopReviewListLookupService.getAllReviewListByShopId(1, 4, "createdAt", "DESC", shopId);
+//        if(reviewList == null){
+//            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//        }
         ResultDto<ShopReviewListResponseDto> reviewResultDto = ResultDto.in(reviewList.getStatus(), reviewList.getMessage());
         reviewResultDto.setData((ShopReviewListResponseDto) reviewList.getData());
 
         CommonResponseDto<Object> artList = shopArtBoardListService.getAllArtBoardListByShopId(1, 4, "createdAt", "DESC", shopId);
+//        if(artList == null){
+//            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//        }
         ResultDto<ShopArtBoardListLookupResponseDto> artBoardResultDto = ResultDto.in(artList.getStatus(), artList.getMessage());
         artBoardResultDto.setData((ShopArtBoardListLookupResponseDto) artList.getData());
 
@@ -115,7 +121,7 @@ public class ShopDetailService {
         } else {
             // 리뷰가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             reviewListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
-            if (reviewListData.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//            if (reviewListData.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
         // 아트보드 데이터 처리
@@ -127,7 +133,7 @@ public class ShopDetailService {
         } else {
             // 아트가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
             artBoardListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
-            if (artBoardListData.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//            if (artBoardListData.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
         }
 
 
@@ -146,12 +152,12 @@ public class ShopDetailService {
 
     // 내 매장 조회 (매장 수정 용)
     @Transactional
-    public CommonResponseDto<Object> getMyShopDetail(Member member) {
+    public CommonResponseDto<Object> getMyShopDetail(Long memberId) {
 
         // member, owner, shop get
-/*        Member member = memberRepository.findByMemberIdAndIsDeleted(memberDetails.getMember()
-                                                                                 .getMemberId())
-                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));*/
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                           .getOwnerId())
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
@@ -160,7 +166,7 @@ public class ShopDetailService {
         Shop shop = owner.getShop();
 
         Shop myShop = shopRepository.findByShopId(shop.getShopId())
-                                  .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+                                    .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         ShopDetailLookupResponseDto shopDetailLookupResponseDto = Stream.of(myShop)
                                                                         .map(s -> {
@@ -187,6 +193,8 @@ public class ShopDetailService {
                                                                                     s.getReviewCnt(),
                                                                                     s.getFavoriteCnt(),
                                                                                     s.getIsDeleted()
+
+
                                                                             );
                                                                         })
                                                                         .findFirst()
@@ -197,7 +205,7 @@ public class ShopDetailService {
 
         // 저장되어있는 주소
         Dong dong = dongRepository.findByDongId(myShop.getDong()
-                                                    .getDongId());
+                                                      .getDongId());
         Districts districts = districtsRepository.findByDistrictsId(dong.getDistricts()
                                                                         .getDistrictsId());
         City city = cityRepository.findByCityId(districts.getCity()
@@ -233,6 +241,7 @@ public class ShopDetailService {
 
     // 채팅에서 사장님 매장 id 가져오기
     public Shop findMyShopId(Long ownerId) {
+
 
         return shopRepository.findAllShopByOwnerId(ownerId)
                              .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
@@ -270,6 +279,7 @@ public class ShopDetailService {
                                                                                     s.getReviewCnt(),
                                                                                     s.getFavoriteCnt(),
                                                                                     s.getIsDeleted()
+
                                                                             );
                                                                         })
                                                                         .findFirst()
@@ -314,5 +324,82 @@ public class ShopDetailService {
     }
 
 
+    public CommonResponseDto<Object> getShopDetailForGuest(Long shopId) {
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+                                  .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+
+        ShopDetailLookupResponseDto shopDetailLookupResponseDto = ShopDetailLookupResponseDto.builder()
+                                                                                             .name(shop.getName())
+                                                                                             .phone(shop.getPhone())
+                                                                                             .isDeleted(shop.getIsDeleted())
+                                                                                             .shopId(shop.getShopId())
+                                                                                             .createdAt(shop.getCreatedAt())
+                                                                                             .address(shop.getAddress())
+                                                                                             .rateAvg(shop.getRateAvg())
+                                                                                             .reviewCnt(shop.getReviewCnt())
+                                                                                             .website(shop.getWebsite())
+                                                                                             .status(shop.getStatus())
+                                                                                             .content(shop.getContent())
+                                                                                             .favoriteCnt(shop.getFavoriteCnt())
+                                                                                             .opentime(shop.getOpentime())
+                                                                                             .build();
+
+
+        List<MenuDetailResponseDto> menuDetailResponseDtoList = menuRepository.findAllByShopId(shopId);
+        List<ShopImgListResponseDto> shopImgListResponseDtoList = shopImgRepository.findAllByShopImgListByShopId(shopId);
+
+
+        CommonResponseDto<Object> reviewList = shopReviewListLookupService.getAllReviewListByShopId(1, 4, "createdAt", "DESC", shopId);
+//        if(reviewList == null){
+//            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+//        }
+        ResultDto<ShopReviewListResponseDto> reviewResultDto = ResultDto.in(reviewList.getStatus(), reviewList.getMessage());
+        reviewResultDto.setData((ShopReviewListResponseDto) reviewList.getData());
+
+
+        CommonResponseDto<Object> artList = shopArtBoardListService.getAllArtBoardListByShopId(1, 4, "createdAt", "DESC", shopId);
+//        if(artList == null){
+//            throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+//        }
+        ResultDto<ShopArtBoardListLookupResponseDto> artBoardResultDto = ResultDto.in(artList.getStatus(), artList.getMessage());
+        artBoardResultDto.setData((ShopArtBoardListLookupResponseDto) artList.getData());
+
+        // 리뷰 데이터 처리
+        List<ShopAndReviewLookUpResponseDto> reviewListData;
+        if (reviewResultDto.getData() != null && reviewResultDto.getData()
+                                                                .getShopAndReviewLookUpResponseDto() != null) {
+            reviewListData = reviewResultDto.getData()
+                                            .getShopAndReviewLookUpResponseDto();
+        } else {
+            // 리뷰가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
+            reviewListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+//            reviewListData = reviewResultDto.getMessage();
+//            if (reviewListData.isEmpty()) throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+        }
+
+        // 아트보드 데이터 처리
+        List<ShopArtBoardLookupResponseDto> artBoardListData;
+        if (artBoardResultDto.getData() != null && artBoardResultDto.getData()
+                                                                    .getShopArtBoardLookupResponseDtoList() != null) {
+            artBoardListData = artBoardResultDto.getData()
+                                                .getShopArtBoardLookupResponseDtoList();
+        } else {
+            // 아트가 없는 경우, 적절한 처리 (예: 빈 리스트 할당)
+            artBoardListData = Collections.emptyList(); // 또는 적절한 메시지를 담은 객체를 생성하여 할당
+//            if (artBoardListData.isEmpty()) throw new NotFoundException(ErrorCode.ART_NOT_FOUND);
+        }
+
+
+        ShopDetailListResponseDto shopDetailListResponseDto = ShopDetailListResponseDto.builder()
+                                                                                       .shopDetailLookupResponseDto(shopDetailLookupResponseDto)
+                                                                                       .menuDetailResponseDtoList(menuDetailResponseDtoList)
+                                                                                       .shopImgListResponseDtoList(shopImgListResponseDtoList)
+                                                                                       .shopReviewLookupResponseDtoList(reviewListData)
+                                                                                       .shopArtBoardLookupResponseDtoList(artBoardListData)
+                                                                                       .build();
+
+        return commonService.successResponse(SuccessCode.SHOP_DETAIL_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopDetailListResponseDto);
+    }
 }
 

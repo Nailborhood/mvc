@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>알람</title>
+    <link rel="stylesheet" th:href="@{/css/alarm/my_alarm_list_style.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/alarm/alarm_list.js}"></script>
+</head>
+
+<body>
+<div id="wrapper">
+    <div th:replace="fragments/header::header"></div>
+    <div layout:fragment="content" class="content">
+        <div class="alarm-local-list-content">
+            <div class="all-alarm-list">
+                <div class="alarm-description-section">
+                    <span class="precautions"> 💌 알람 </span>
+                </div>
+                <div class="alarm-list_div" th:if="${resultDto != null }">
+                    <div class="alarm-info" th:each="alarm : ${resultDto.getData().getAlarmResponseDtoList()}">
+                        <a th:href="@{${alarm.getUrl()}}" th:data-alarm-id="${alarm.getAlarmId()}" class="alarm-link">
+                            <div class="alarm-info_title" th:text="${alarm.getSenderName()}">
+                               sender
+                            </div>
+                            <div class="alarm-info_text">
+                                <div th:switch="${alarm.alarmType.name()}">
+                                    <p th:case="'CHAT'" th:text="${alarm.getShopName()+'에서 보낸 새로운 메세지가 있습니다'}"></p>
+                                    <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
+                                </div>
+                            </div>
+                            <div class="alarm-info_time" th:text="${alarm.getCreatedAt()}">
+                                time
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+                <div th:if="${resultDto.getData().getAlarmResponseDtoList().size()==0}">
+                    <p>알림이 없습니다</p>
+                </div>
+            </div>
+            <div class="pagination" th:if="${resultDto.getData().getPaginationDto().getTotalPages() !=0}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/alarm/list?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/alarm/list?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}}" th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/alarm/list?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/footer::footer"></div>
+</div>
+<script th:src="@{/js/get_layouts.js}"></script>
+<script th:src="@{/js/shop/shop_detail.js}"></script>
+</body>
+
+</html>

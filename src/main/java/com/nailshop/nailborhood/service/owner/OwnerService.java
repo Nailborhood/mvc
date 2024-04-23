@@ -10,6 +10,7 @@ import com.nailshop.nailborhood.dto.review.response.ShopReviewListLookupResponse
 import com.nailshop.nailborhood.dto.review.response.ShopReviewLookupResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
@@ -36,10 +37,15 @@ public class OwnerService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final OwnerRepository ownerRepository;
+    private final MemberRepository memberRepository;
+
 
     // 매장 리뷰 조회
     @Transactional
-    public CommonResponseDto<Object> getAllReviewListByShopId(String keyword, int page, int size, String criteria, String sort, Member member) {
+    public CommonResponseDto<Object> getAllReviewListByShopId(String keyword, int page, int size, String criteria, String sort, Long memberId) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                          .getOwnerId())
@@ -104,5 +110,13 @@ public class OwnerService {
         return commonService.successResponse(SuccessCode.SHOP_REVIEW_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopReviewListLookupResponseDto);
     }
 
+    // owner Info
+    public Owner getOwnerInfo(Long memberId) {
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Owner owner = ownerRepository.findByMemberId(memberId);
+        return owner;
+    }
 }
 

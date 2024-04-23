@@ -3,6 +3,8 @@ package com.nailshop.nailborhood.service.review;
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.category.CategoryReview;
 import com.nailshop.nailborhood.domain.member.Customer;
+import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
@@ -12,11 +14,12 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.CustomerRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -32,7 +35,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReviewRegistrationService {
-    private final TokenProvider tokenProvider;
     private final ReviewRepository reviewRepository;
     private final ShopRepository shopRepository;
     private final CommonService commonService;
@@ -41,6 +43,8 @@ public class ReviewRegistrationService {
     private final CategoryRepository categoryRepository;
     private final CategoryReviewRepository categoryReviewRepository;
     private final CustomerRepository customerRepository;
+    private final MemberRepository memberRepository;
+    private final OwnerRepository ownerRepository;
 
 
     @Transactional
@@ -93,6 +97,55 @@ public class ReviewRegistrationService {
         return commonService.successResponse(SuccessCode.REVIEW_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
+    @Transactional
+    // 리뷰 등록
+    public Long saveReview(Long shopId, Long memberId, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+
+        // token 에서 memberId 가져오기
+        Customer customer = customerRepository.findByMemberId(memberId);
+
+        // 매장 존재 여부
+        Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
+                                  .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        // 리뷰 세부정보 등록
+        Review review = Review.builder()
+                              .contents(reviewRegistrationRequestDto.getContents())
+                              .isDeleted(false)
+                              .rate(reviewRegistrationRequestDto.getRate())
+                              .shop(shop)
+                              .likeCnt(0L)
+                              .customer(customer)
+                              .build();
+
+        review = reviewRepository.save(review);
+
+        // 리뷰 사진 등록
+        saveReviewImg(multipartFileList, review);
+
+        // CategoryReview 저장
+        for (Long categoryId : reviewRegistrationRequestDto.getCategoryIdList()) {
+
+            Category category = categoryRepository.findById(categoryId)
+                                                  .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryReview categoryReview = CategoryReview.builder()
+                                                          .category(category)
+                                                          .review(review)
+                                                          .build();
+
+            categoryReviewRepository.save(categoryReview);
+        }
+
+        // 리뷰 등록 시 매장 별점 평균 변경
+        updateShopRateAvg(shop);
+
+        // 리뷰 등록 시 리뷰 개수 변경
+        shopRepository.updateReviewCntIncreaseByShopId(shopId);
+
+        return review.getReviewId();
+    }
+
     // 이미지 저장
     private void saveReviewImg(List<MultipartFile> multipartFileList, Review review) {
         // s3에 이미지 업로드
@@ -114,6 +167,8 @@ public class ReviewRegistrationService {
         }
     }
 
+
+
     private void updateShopRateAvg(Shop shop) {
         Long shopId = shop.getShopId();
         List<Review> reviews = reviewRepository.findAllByShopIdAndIsDeleted(shopId);
@@ -132,4 +187,8 @@ public class ReviewRegistrationService {
     }
 
 
+    public Member getOwnerInfo(Long shopId) {
+       Owner owner = ownerRepository.findByShopId(shopId);
+        return memberRepository.findByOwnerId(owner.getOwnerId());
+    }
 }

@@ -9,7 +9,8 @@
     <!-- SockJS와 Stomp.js 포함 -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-    <script th:src="@{/js/chat/chat.js}"></script>
+    <!--<script th:src="@{/js/chat/chat.js}"></script>-->
+    <script th:src="@{/js/alarm/chat_alarm.js}"></script>
     <link rel="stylesheet" th:href="@{/css/owner/owner_style.css}"/>
     <link rel="stylesheet" th:href="@{/css/owner/owner_chat_style.css}"/>
 
@@ -27,6 +28,7 @@
                   th:action="@{'/chatroom/'+${chatRoomDto.getRoomId()}}"
                   method="post">
                 <input type="hidden" id="roomId" th:value="${chatRoomDto.getRoomId()}">
+                <input type="hidden" id="receiver" th:value="${receiver.getEmail()}"/>
                 <div id="messageDto"  th:attr="data-message-dto=${messageResponseDtoListJson}" hidden></div>
                 <div class="content-div">
                     <!-- 채팅 박스 -->
@@ -47,37 +49,14 @@
 
                             </div>
                         </div>
-                        <div class="chatArea"  >
-
-
-
-                            <!-- 사용자의 채팅 메시지 표시 영역 -->
-<!--                            <div class="myChat">
-                                <div class="chatBox">
-                                    <div class="chat-content">
-                                    </div>
-                                    <div class="chatTime">
-                                    </div>
-                                </div>
-                            </div>-->
-
-                            <!-- 상대방의 채팅 메시지 표시 영역 -->
-<!--                            <div class="userChat">
-                                <div class="chatBox">
-                                    <div class="chat-content">
-                                    </div>
-                                    <div class="chatTime">
-                                    </div>
-                                </div>
-                            </div>-->
-
-
+                        <div class="chatArea">
                         </div>
 
                         <!-- 채팅 메시지 입력 영역 -->
                         <div class="inputArea" th:unless="${shopErrorCode}">
 
-                            <input type="hidden" id="writer" th:value="${memberNickname}"/>
+                            <input type="hidden" id="writer" th:value="${sessionDto.getNickname()}"/>
+
                             <input type="text" id="message" placeholder="메시지를 입력하세요..."/>
                             <button type="submit" >전송</button>
                         </div>

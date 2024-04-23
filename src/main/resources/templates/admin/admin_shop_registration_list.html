@@ -47,12 +47,13 @@
                         <div class="th">리뷰 별점</div>
                         <div class="th">메뉴 개수</div>
                         <div class="th">운영상태</div>
-                        <div class="th"></div>
+
                     </div>
                 </div>
                 <div class="tbody" th:if="${resultDto != null}">
-                    <div class="tr chart-item" th:each="request : ${resultDto.getData().getAllShopsLookupResponseDtoList()}"
-                         th:data-href="@{/shopRegistrationDetail/{shopId}(shopId=${request.shopId})}" >
+                    <div class="tr chart-item"
+                         th:each="request : ${resultDto.getData().getAllShopsLookupResponseDtoList()}"
+                         th:data-href="@{/shopRegistrationDetail/{shopId}(shopId=${request.shopId})}">
                         <div class="td" th:text="${request.shopId}"></div>
                         <div class="td"><img class="chart-profile" th:src="@{${request.shopMainImgPath}}"
                                              alt="Profile Image"></div>
@@ -66,10 +67,10 @@
                         <div class="td" th:text="${request.reviewCnt}"></div>
                         <div class="td" th:text="${request.rateAvg}"></div>
                         <div class="td" th:text="${request.menuCnt}"></div>
-
-                <span th:switch="${#strings.toString(request.status)}">
-                    <span th:case="'BEFORE_OPEN'" th:text="'영업전'"></span>
-                </span>
+                        <div class="td">
+                            <span th:switch="${#strings.toString(request.status)}">
+                                <span th:case="'READY'" th:text="'준비중'"></span>
+                            </span>
                         </div>
                         <!--
                         <div class="td">
@@ -92,13 +93,19 @@
                 <div class="pagination-div">
                     <ul class="pagination-ul">
                         <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
-                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby} + '&sort=' + ${sort}}">Prev</a>
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby} + '&sort=' + ${sort}}">Prev</a>
                         </li>
-                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
-                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}+ '&sort=' + ${sort}}" th:text="${pageNum}"></a>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop/request?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}+ '&sort=' + ${sort}}"
+                               th:text="${pageNum}"></a>
                         </li>
-                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
-                            <a class="page-link" th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby} +'&sort=' + ${sort}}">Next</a>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/admin/search/shop/request?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby} +'&sort=' + ${sort}}">Next</a>
                         </li>
                     </ul>
                 </div>

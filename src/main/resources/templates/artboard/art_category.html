@@ -1,0 +1,18 @@
+<div th:fragment="check-category">
+    <div class="checkbox-button_row">
+        <div th:each="category : ${categories}" class="checkbox-button">
+            <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
+            <div class="checked-div">
+                <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
+            </div>
+        </div>
+    </div>
+    <div class="sortBy-select">
+        <select name="sortBy" id="sortBy">
+            <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                    th:text="${criteria.text}"
+                    th:selected="${criteria.value == selectedOrderby}">Option
+            </option>
+        </select>
+    </div>
+</div>

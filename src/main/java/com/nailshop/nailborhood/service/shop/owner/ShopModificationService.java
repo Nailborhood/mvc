@@ -58,8 +58,8 @@ public class ShopModificationService {
 
 
     @Transactional
-    public CommonResponseDto<Object> updateShop(Member member, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
-        Long memberId = member.getMemberId();
+    public CommonResponseDto<Object> updateShop(Long memberId, List<MultipartFile> multipartFileList, ShopModifiactionRequestDto shopModifiactionRequestDto) {
+
 
 
         // 매장 Owner 인지 확인

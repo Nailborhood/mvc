@@ -24,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,7 +112,7 @@ public class MemberService {
                     .phoneNum(signUpRequestDto.getPhoneNum())
                     .gender(signUpRequestDto.getGender())
                     .birthday(signUpRequestDto.getBirthday())
-                    .profileImg("defaultImage")
+                    .profileImg("/assets/icons/user.svg")
                     .role(Role.ROLE_USER)
                     .provider("Nail")
                     .isDeleted(false)
@@ -133,6 +135,7 @@ public class MemberService {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         return memberOptional.isPresent();
     }
+
     private boolean findByNickname(String nickname) {
         Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
         return memberOptional.isPresent();
@@ -147,47 +150,6 @@ public class MemberService {
     private boolean matchWithPasswordPattern(String password) {
         String passwordPattern = "^[A-Za-z0-9]{8,20}$";
         return Pattern.matches(passwordPattern, password);
-    }
-
-
-    @Transactional
-    public CommonResponseDto<Object> renewToken(String refreshToken) {
-
-        // 유저 get
-        Login login = loginRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-
-        Member member = login.getMember();
-
-        GeneratedToken generatedToken = tokenProvider.generateToken(member);
-
-        login.updateToken(generatedToken.getRefreshToken());
-
-        Long id = member.getMemberId();
-
-        // 헤더에 넣을 access token
-        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                .memberId(id)
-                .accessToken(generatedToken.getAccessToken())
-                .accessTokenExpireTime(generatedToken.getAccessTokenExpireTime())
-                .build();
-
-        // 쿠키에 넣을 refresh token
-        ResponseCookie responseCookie = ResponseCookie
-                .from("refreshToken", generatedToken.getRefreshToken())
-                .maxAge(Duration.ofDays(7))
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(false)
-//                .domain("https://nailborhood.shop")
-                .build();
-
-        Map<String, Object> loginMap = new HashMap<>();
-        loginMap.put("accessToken", tokenResponseDto);
-        loginMap.put("refreshToken", responseCookie);
-
-        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, loginMap);
     }
 
     // 비밀번호 확인
@@ -241,29 +203,19 @@ public class MemberService {
         }
     }
 
-    // 비밀번호 수정 전 비밀번호 확인 (마이페이지로 이동 핋요)
-    public CommonResponseDto<Object> beforeUpdatePassword(String accessToken, BeforeModPasswordCheckRequestDto beforeModPasswordCheckRequestDto) {
-        Long id = tokenProvider.getUserId(accessToken);
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-        boolean match = passwordCheck(member.getEmail(), beforeModPasswordCheckRequestDto.getPasswordCheck());
-        return commonService.successResponse(SuccessCode.PASSWORD_CHECK_SUCCESS.getDescription(), HttpStatus.OK, match);
-    }
-
     // 비밀번호 수정 (마이페이지로 이동 필요)
     @Transactional
-    public CommonResponseDto<Object> updatePassword(String accessToken, ModPasswordRequestDto modPasswordRequestDto) {
-        boolean match = modPasswordRequestDto.getPassword().equals(modPasswordRequestDto.getPasswordCheck());
-        if (!match)
+    public CommonResponseDto<Object> updatePassword(Long id, ModPasswordRequestDto modPasswordRequestDto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+        boolean check = passwordCheck(member.getEmail(), modPasswordRequestDto.getOldPassword());
+        boolean match = modPasswordRequestDto.getNewPassword().equals(modPasswordRequestDto.getNewPasswordCheck());
+        if (!match || !check)
             return commonService.errorResponse(ErrorCode.PASSWORD_CHECK_FAIL.getDescription(), HttpStatus.BAD_REQUEST, modPasswordRequestDto);
         else {
-            Long id = tokenProvider.getUserId(accessToken);
-            Member member = memberRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
 
-            String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getPassword());
+            String encodedPassword = bCryptPasswordEncoder.encode(modPasswordRequestDto.getNewPassword());
             memberRepository.updateMemberPasswordByMemberId(id, encodedPassword);
-
             return commonService.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);
         }
     }
@@ -287,11 +239,21 @@ public class MemberService {
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+//
+//
+//    public CommonResponseDto<Object> findUser(Long id) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+//
+//
+//    }
+//
+
 
     // 프로필 수정
-    public CommonResponseDto<Object> updateProfileImg(String accessToken, MultipartFile multipartFile) {
+    public CommonResponseDto<Object> updateProfileImg(Long id, MultipartFile multipartFile) {
+
         // TODO 기본이미지로 변경할 시에는 어떻게 해야하는가?
-        Long id = tokenProvider.getUserId(accessToken);
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
         try {
@@ -305,4 +267,27 @@ public class MemberService {
         }
     }
 
+    public Member findMemberForOAuth2Login(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+    }
+
+    public SessionDto getSessionDto(Authentication authentication, MemberDetails memberDetails) {
+        Member member;
+        if (memberDetails == null) {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            member = findMemberForOAuth2Login((String) attributes.get("email"));
+        } else {
+            member = memberDetails.getMember();
+        }
+        return SessionDto.of(member);
+    }
+
+
+    // 유저 정보 가져오기
+    public Member getMemberInfo(Long memberId) {
+        return memberRepository.findById(memberId)
+                               .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+    }
 }

@@ -5,11 +5,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>매장 상세</title>
+    <title>home</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script th:src="@{/js/shop/favorite.js}"></script>
-    <script th:src="@{/js/get_layouts.js}"></script>
-    <script th:src="@{/js/shop/shop_detail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/home/home_style.css}">
 </head>
@@ -28,29 +25,35 @@
 
             <div class="best-artRef">
                 <div class="artRef-row">
-                    <span class="artRef">베스트 아트판</span>
+                    <span class="artRef">베스트 아트</span>
                     <!--  TODO: url 수정-->
                     <a th:href="@{/artboard/inquiry}" class="shop-artRef-best-link">
                         <img src="/assets/icons/shop/arrow.svg">
                     </a>
                 </div>
                 <div class="division-line"></div>
-                <div th:if="${errorCodeArt}" class="error-code" th:text="${errorCodeArt.description}"></div>
-
-                <div class="artRef-img-row" th:unless="${errorCodeArt}">
+                <div class="artRef-img-row">
                     <div class="artRef-list-block"
                          th:each="artResult: ${resultDto.getData().getArtListResponseDtoList()}">
-                        <div th:each="art :${artResult.getData().getArtResponseDtoList()}">
-                            <a class="artRef-link"
-                               th:href="@{/user/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
-                                <div class="artRef-img">
-                                    <img th:src="@{${art.getMainImgPath()}}">
-                                </div>
-                            </a>
+                        <div th:if="${artResult.getData().getArtResponseDtoList().size() != 0 }" class="art-container">
+                            <div th:each="art : ${artResult.getData().getArtResponseDtoList()}" class="art-item">
+                                <a class="artRef-link"
+                                   th:href="@{/artboard/inquiry/{artRefId}(artRefId=${art.getId()})}" role="link">
+                                    <div class="artRef-img">
+                                        <img th:src="@{${art.getMainImgPath()}}">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div th:if="${artResult.getData().getArtResponseDtoList().size() == 0}">
+                            <p>베스트 아트판이 아직 없습니다</p>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+
             <div class="best-shop-review">
                 <div class="review-row">
                     <span class="review">인기순 매장</span>
@@ -59,19 +62,23 @@
                     </a>
                 </div>
                 <div class="division-line"></div>
-                <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
 
                 <div class="review-img-row">
                     <div class="review-list-block"
                          th:each="reviewResult : ${resultDto.getData().getShopListByReviewResponseDtoList()}">
-                        <div th:each="review : ${reviewResult.getData().getShopLookupResponseDtoList()}">
-                            <a class="review-link"
-                               th:href="@{/shopDetail/{shopId}(shopId=${review.getShopId()})}"
-                               role="link">
-                                <div class="review-img">
-                                    <img th:src="@{${review.getShopMainImgPath()}}">
-                                </div>
-                            </a>
+                        <div th:if="${reviewResult.getData().getShopLookupResponseDtoList().size() != 0 }" class="review-container">
+                            <div th:each="review : ${reviewResult.getData().getShopLookupResponseDtoList()}" class="review-item">
+                                <a class="review-link"
+                                   th:href="@{/shopDetail/{shopId}(shopId=${review.getShopId()})}"
+                                   role="link">
+                                    <div class="review-img">
+                                        <img th:src="@{${review.getShopMainImgPath()}}">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div th:if="${reviewResult.getData().getShopLookupResponseDtoList().size() == 0 }">
+                            <p>인기순 매장이 아직 없습니다</p>
                         </div>
                     </div>
                 </div>
@@ -85,18 +92,22 @@
                     </a>
                 </div>
                 <div class="division-line"></div>
-                <div th:if="${errorCode}" class="error-code" th:text="${errorCode.description}"></div>
 
                 <div class="rate-img-row">
                     <div class="rate-list-block"
                          th:each="rateResult : ${resultDto.getData().getShopListByRateResponseDtoList()}">
-                        <div th:each="rate : ${rateResult.getData().getShopLookupResponseDtoList()}">
-                            <a class="rate-link"
-                               th:href="@{/shopDetail/{shopId}(shopId=${rate.getShopId()})}" role="link">
-                                <div class="rate-img">
-                                    <img th:src="@{${rate.getShopMainImgPath()}}">
-                                </div>
-                            </a>
+                        <div th:if="${rateResult.getData().getShopLookupResponseDtoList().size() != 0 }" class="rate-container">
+                            <div th:each="rate : ${rateResult.getData().getShopLookupResponseDtoList()}" class="rate-item">
+                                <a class="rate-link"
+                                   th:href="@{/shopDetail/{shopId}(shopId=${rate.getShopId()})}" role="link">
+                                    <div class="rate-img">
+                                        <img th:src="@{${rate.getShopMainImgPath()}}">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div th:if="${rateResult.getData().getShopLookupResponseDtoList().size() == 0 }">
+                            <p>별점 높은 매장이 아직 없습니다</p>
                         </div>
                     </div>
                 </div>

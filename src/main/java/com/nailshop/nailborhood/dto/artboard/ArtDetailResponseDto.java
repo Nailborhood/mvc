@@ -13,6 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ArtDetailResponseDto {
 
+    private Long shopId;
     private Long artRefId;
     private String name;
     private String content;
@@ -22,9 +23,11 @@ public class ArtDetailResponseDto {
     private Map<Integer, String> imgPathMap;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean artLikeStatus;
 
     @Builder
-    public ArtDetailResponseDto(Long artRefId, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, Map<Integer, String> imgPathMap, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ArtDetailResponseDto(Long shopId,Long artRefId, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, Map<Integer, String> imgPathMap, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean artLikeStatus) {
+        this.shopId = shopId;
         this.artRefId = artRefId;
         this.name = name;
         this.content = content;
@@ -34,5 +37,6 @@ public class ArtDetailResponseDto {
         this.imgPathMap = imgPathMap;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.artLikeStatus = artLikeStatus;
     }
 }

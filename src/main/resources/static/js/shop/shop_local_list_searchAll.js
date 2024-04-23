@@ -19,6 +19,20 @@ document.addEventListener("DOMContentLoaded", function () {
         submitFormWithSearchParams();
     });
 
+    // orderby 변경 시 로컬 스토리지에 저장하고 폼 제출
+    document.getElementById('orderby').addEventListener('change', function() {
+        var orderby = this.value;
+        localStorage.setItem('orderby', orderby); // 변경된 orderby 값을 로컬 스토리지에 저장
+        var form = document.getElementById('searchForm');
+        form.submit();
+    });
+
+    // 페이지 로드 시 로컬 스토리지에서 orderby 값을 읽어 설정
+    var storedOrderby = localStorage.getItem('orderby');
+    if (storedOrderby) {
+        document.getElementById('orderby').value = storedOrderby;
+    }
+
     // 초기화 버튼 클릭 시 로컬 스토리지 값 초기화 및 폼 초기화
     document.getElementById('clearStorageButton').addEventListener('click', function() {
         localStorage.removeItem('cityId');
@@ -30,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('dongId').style.display = 'none';
         document.getElementById('dongId').selectedIndex = 0;
         document.getElementById('keywordInput').value = '';
+        var orderby = document.getElementById('orderby').value;
         var form = document.getElementById('searchForm');
         form.action = '/shop/list';
     });
@@ -97,9 +112,10 @@ document.addEventListener("DOMContentLoaded", function () {
         //dongSelect.style.display = 'block';
         dongSelect.value = localStorage.getItem('dongId');
     }
-    //
-    // window.addEventListener('beforeunload', function() {
-    //     localStorage.clear();
-    // });
+
+/*    window.addEventListener('beforeunload', function() {
+        localStorage.clear();
+    });*/
+
 });
 

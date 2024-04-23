@@ -15,31 +15,28 @@
 }
 
 .pagination-div {
-    width: 250px;
-    height: 30px;
 }
 
 .pagination-ul {
-    width: 100%;
-    height: 100%;
     display: flex;
-    text-decoration: none;
+    justify-content: center;
+    padding: 0;
     border: 1px solid var(--shadow_1);
     border-radius: 2px;
+    list-style-type: none;
 }
 
 .page-item {
     background-color: var(--main-color_begie);
-    width: 20%;
-    height: 100%;
-    display: flex;
+    margin: 0;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     border-right: 1px solid var(--shadow_1);
 }
 
 .page-item:last-child {
-    border-right: none; /* 마지막 페이지 버튼은 선 제거 */
+    border-right: none;
 }
 
 .page-item:hover {

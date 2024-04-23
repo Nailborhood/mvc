@@ -12,7 +12,7 @@ function reviewDelete(button) {
                 alert(data.message);
                 if (data.status === 'success') {
                     // 성공했다면 페이지를 새로고침하거나 사용자를 다른 페이지로 리다이렉션
-                    location.reload();
+                    window.history.back();
                 }
             })
             .catch(error => console.error('Error:', error));

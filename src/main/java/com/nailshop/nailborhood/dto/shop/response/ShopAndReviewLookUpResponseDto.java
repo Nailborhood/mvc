@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -36,8 +37,12 @@ public class ShopAndReviewLookUpResponseDto {
 
     private Long shopId;
 
+    private List<Long> categoryIdList;
 
-    public ShopAndReviewLookUpResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt, String nickName, String shopName, String shopAddress, String time, double reviewAvg, int reviewCnt, int favoriteCnt, String shopMainImgPath, Long shopId) {
+    private List<String> categoryTypeList;
+
+
+    public ShopAndReviewLookUpResponseDto(Long reviewId, String contents, Integer rate, String reviewImgPath, LocalDateTime createdAt, String nickName, String shopName, String shopAddress, String time, double reviewAvg, int reviewCnt, int favoriteCnt, String shopMainImgPath, Long shopId, List<Long> categoryIdList, List<String> categoryTypeList) {
         this.reviewId = reviewId;
         this.contents = contents;
         this.rate = rate;
@@ -52,5 +57,7 @@ public class ShopAndReviewLookUpResponseDto {
         this.favoriteCnt = favoriteCnt;
         this.shopMainImgPath = shopMainImgPath;
         this.shopId = shopId;
+        this.categoryIdList = categoryIdList;
+        this.categoryTypeList = categoryTypeList;
     }
 }

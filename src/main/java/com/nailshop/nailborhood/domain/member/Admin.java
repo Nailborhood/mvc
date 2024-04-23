@@ -1,9 +1,13 @@
 package com.nailshop.nailborhood.domain.member;
 
+import com.nailshop.nailborhood.domain.alarm.Alarm;
+import com.nailshop.nailborhood.domain.chat.ChattingRoom;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -19,4 +23,6 @@ public class Admin {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "admin")
+    private List<ChattingRoom> chattingRoomList;
 }

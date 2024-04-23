@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.search;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewReportListLookupDto;
@@ -10,6 +11,8 @@ import com.nailshop.nailborhood.dto.review.response.admin.AdminReviewListRespons
 import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.review.admin.ReviewReportStatusAdminService;
 import com.nailshop.nailborhood.service.search.AdminSearchService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -18,6 +21,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +35,7 @@ public class AdminSearchController {
 
     private final AdminSearchService adminSearchService;
     private final ReviewReportStatusAdminService reviewReportStatusAdminService;
+    private final MemberService memberService;
 
 
     // 리뷰 검색
@@ -39,7 +45,13 @@ public class AdminSearchController {
                                       @RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                       @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-                                      @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+                                      @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                      Authentication authentication,
+                                      @AuthenticationPrincipal MemberDetails memberDetails) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         try {
             CommonResponseDto<Object> allReviewList = adminSearchService.searchReviewInquiry(keyword, page, size, sortBy);
             ResultDto<AdminReviewListResponseDto> resultDto = ResultDto.in(allReviewList.getStatus(), allReviewList.getMessage());
@@ -62,7 +74,12 @@ public class AdminSearchController {
                                     @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy) {
+                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
+                                    Authentication authentication,
+                                    @AuthenticationPrincipal MemberDetails memberDetails) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
         try {
             CommonResponseDto<Object> allShopList = adminSearchService.searchShopInquiry(keyword, page, size, sortBy);

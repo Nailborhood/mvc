@@ -32,4 +32,11 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
     @Modifying(clearAutomatically = true)
     void deleteByReviewId(@Param("reviewId") Long reviewId, @Param("status") boolean b);
 
+    @Query("SELECT rr.status " +
+            "FROM ReviewLike rr " +
+            "LEFT JOIN rr.review r " +
+            "LEFT JOIN rr.member m " +
+            "WHERE m.memberId = :memberId AND r.reviewId = :reviewId ")
+    Boolean findStatusByMemberIdAndReviewId(@Param("memberId") Long memberId, @Param("reviewId") Long reviewId);
+
 }

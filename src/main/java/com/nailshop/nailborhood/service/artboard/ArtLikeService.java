@@ -10,6 +10,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -30,13 +31,13 @@ public class ArtLikeService {
     private final ArtRefRepository artRefRepository;
     private final ArtLikeRepository artLikeRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
+
 
     @Transactional
-    public CommonResponseDto<Object> likeArt(String accessToken, Long artRefId) {
+    public CommonResponseDto<Object> likeArt(Long memberId, Long artRefId) {
 
         // 멤버 확인
-        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtRef 정보 get

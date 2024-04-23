@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -63,8 +64,24 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 관리자 회원 검색
     @Query("SELECT m " +
             "FROM Member m " +
-            "WHERE m.name LIKE %:keyword" )
-    Page<Member> findAllMemberListByKeyword(@Param("keyword")String keyword, Pageable pageable);
+            "WHERE m.name LIKE %:keyword")
+    Page<Member> findAllMemberListByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "LEFT JOIN m.owner o " +
+            "WHERE o.ownerId =:ownerId ")
+    Member findByOwnerId(@Param("ownerId") Long ownerId);
 
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "LEFT JOIN m.admin a " +
+            "WHERE a.adminId =:adminId ")
+    Member findByAdminId(@Param("adminId") Long adminId);
+
+    //TODO: name 인지 id 인지
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "WHERE m.email =:receiver and m.isDeleted = false ")
+    Optional<Member> findByMemberNameAndIsDeleted(String receiver);
 }

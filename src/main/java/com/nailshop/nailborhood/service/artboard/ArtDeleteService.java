@@ -4,24 +4,20 @@ import com.nailshop.nailborhood.domain.artboard.ArtImg;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
-import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
-import com.nailshop.nailborhood.type.Role;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -38,16 +34,15 @@ public class ArtDeleteService {
     private final ArtLikeRepository artLikeRepository;
     private final CategoryArtRepository categoryArtRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
+
+
 
     @Transactional
-    public CommonResponseDto<Object> deleteArt(/*String accessToken, */Long artRefId) {
+    public CommonResponseDto<Object> deleteArt(Long memberId, Long artRefId) {
 
         // 멤버 확인
-
-//        Member member = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-//        if (member.getRole().equals(Role.USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtRef 정보 get
         ArtRef artRef = artRefRepository.findById(artRefId)

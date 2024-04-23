@@ -8,11 +8,9 @@
 }
 
 header {
-    /* background-color: #f8f6f1; */
     background-color: var(--main-color_begie);
     position: relative;
     padding: 0 85px;
-    margin-top: 23px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,10 +51,17 @@ header {
     object-fit: cover;
 }
 
+.login-info-div {
+    position: absolute;
+    display: flex;
+    right: 38px;
+    top: 38px;
+}
+
 .profile-field {
     margin: 5px;
-    position: absolute;
-    right: 35px;
+    /*position: absolute;*/
+    right: 38px;
     top: 38px;
     cursor: pointer;
     display: flex;
@@ -66,7 +71,6 @@ header {
 
 #profile-img-field, #login-img-field {
     position: relative;
-    background-color: #82817e;
     width: 50px;
     height: 50px;
     border-radius: 70%;
@@ -81,6 +85,7 @@ header {
 
 .profile-field:hover #profile-mypage-div {
     display: block;
+    z-index: 9;
 }
 #profile-mypage-div {
     display: none;
@@ -88,22 +93,26 @@ header {
 
 #profile-mypage-div {
     position: absolute;
-    width: 110px;
-    height: 140px;
-    top: 52px;
-    right: -30px;
+    width: 115px;
+    /* height: 140px; */
+    top: 56px;
+    right: -28px;
     border: 1px solid var(--shadow_1);
     border-radius: 4px;
     background-color: white;
 }
 
 #profile-mypage-div ul {
-    height: 140px;
+    /*height: 140px;*/
     display: flex;
     flex-direction: column;
     font-size: 15px;
     justify-content: space-evenly;
     margin: 0 13px;
+}
+
+#profile-mypage-div ul > li {
+    padding: 3px 0;
 }
 
 #profile-mypage-div > ul > li > a {
@@ -139,4 +148,38 @@ header {
 .header-menu a {
     text-decoration: none;
     color: var(--shadow_4);
+}
+
+/*.badge{*/
+/*    font-size: 10px;*/
+/*    height: 15px;*/
+/*    margin-left: -24px;*/
+/*}*/
+.alarm-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.alarm-field a{
+    color: black;
+}
+
+
+#alarm-img-field {
+    position: relative;
+    display: inline-block;
+}
+
+#newNoticeCnt {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    /* 추가 스타일링 */
+    background-color: #007bff; /* 부트스트랩 primary 색상 */
+    color: white;
+    font-size: 0.75em;
+    padding: 0.25em 0.6em;
+    border-radius: 100%;
 }

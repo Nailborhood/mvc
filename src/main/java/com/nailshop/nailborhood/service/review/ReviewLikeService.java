@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 public class ReviewLikeService {
 
     private final CommonService commonService;
-    private final TokenProvider tokenProvider;
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
@@ -34,10 +33,9 @@ public class ReviewLikeService {
 
 
     @Transactional
-    public CommonResponseDto<Object> reviewLike(MemberDetails memberDetails, Long reviewId, Long shopId) {
+    public CommonResponseDto<Object> reviewLike(Long memberId, Long reviewId, Long shopId) {
 
 
-        Long memberId = memberDetails.getMember().getMemberId();
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
