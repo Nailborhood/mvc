@@ -40,11 +40,11 @@
                     </div>
 
                 </div>
-                <div th:if="${resultDto == null}">
+                <div th:if="${resultDto.getData().getAlarmResponseDtoList().size()==0}">
                     <p>알림이 없습니다</p>
                 </div>
             </div>
-            <div class="pagination" th:if="${resultDto != null}">
+            <div class="pagination" th:if="${resultDto.getData().getPaginationDto().getTotalPages() !=0}">
                 <div class="pagination-div">
                     <ul class="pagination-ul">
                         <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
