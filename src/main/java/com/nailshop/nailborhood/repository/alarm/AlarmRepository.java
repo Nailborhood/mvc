@@ -17,6 +17,8 @@ public interface AlarmRepository extends JpaRepository<Alarm,Long> {
 
     @Query("SELECT count(*) " +
             "FROM Alarm a " +
-            "WHERE a.receiver.memberId =:receiverId AND a.isChecked = false ")
+            "LEFT JOIN a.receiver r " +
+            "LEFT JOIN a.sender s "+
+            "WHERE a.receiver.memberId =:receiverId AND a.isChecked = false AND s.memberId <> r.memberId")
     int countByReceiverId(@Param("receiverId") Long receiverId);
 }
