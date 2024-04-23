@@ -9,3 +9,4 @@ spring:
             scope:
               - profile
               - email
+            redirect-uri: https://nailborhood.shop//login/oauth2/code/google
