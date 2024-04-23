@@ -94,6 +94,7 @@ public class ChattingRoomController {
 
 
             SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
            Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
             // 채팅룸 정보
             ChattingRoomDetailDto chattingRoomDetailDto = chattingRoomService.findChatRoomId(roomId);

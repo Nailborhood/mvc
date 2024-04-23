@@ -78,8 +78,7 @@ public class AdminShopController {
     public String getShopDetail(Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
-                                @PathVariable Long shopId,
-                                Authentication authentication) {
+                                @PathVariable Long shopId) {
 
 
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);

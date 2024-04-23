@@ -11,9 +11,11 @@ import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.detail.ShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
 import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
@@ -47,7 +49,8 @@ public class OwnerController {
     private final ShopRegistrationService shopRegistrationService;
     private final MemberService memberService;
     private final CategoryRepository categoryRepository;
-    private final MemberService memberService;
+    private final AlarmService alarmService;
+
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
@@ -154,6 +157,7 @@ public class OwnerController {
                              Authentication authentication) {
 
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
 
         Long shopId = owner.getShop().getShopId();
@@ -185,11 +189,19 @@ public class OwnerController {
                                 Authentication authentication) {
       
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
         Long shopId = owner.getShop().getShopId();
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId,sessionDto.getId());
+        ResultDto<ShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
+        resultDto.setData((ShopDetailListResponseDto) shopDetail.getData());
 
-        model.addAttribute("shopDetail", shopDetail.getData());
+        model.addAttribute("resultDto", resultDto);
+
+
+        Member receiver = alarmService.getOwnerInfo(shopId);
+        model.addAttribute("receiver", receiver);
 
         return "shop/shop_detail";
     }

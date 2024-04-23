@@ -53,7 +53,7 @@ public class ShopController {
     private final MemberService memberService;
     private final AlarmService alarmService;
     private final CategoryRepository categoryRepository;
-    private final MemberService memberService;
+
 
 
     // main
