@@ -6,6 +6,7 @@ import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
 import com.nailshop.nailborhood.dto.shop.request.StoreAddressSeparationDto;
 import com.nailshop.nailborhood.dto.shop.response.StoreAddressSeparationListDto;
@@ -14,6 +15,7 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.artboard.ArtInquiryService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.owner.OwnerService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
@@ -23,6 +25,7 @@ import com.nailshop.nailborhood.type.ShopStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,12 +45,14 @@ public class OwnerController {
     private final ShopModificationService shopModificationService;
     private final ShopDetailService shopDetailService;
     private final ShopRegistrationService shopRegistrationService;
+    private final MemberService memberService;
     private final CategoryRepository categoryRepository;
 
     // 검색기능이랑 통합
     //사장님 리뷰 검색
     @GetMapping("/owner/review")
     public String getShopReviewList(Model model,
+                                    Authentication authentication,
                                     @AuthenticationPrincipal MemberDetails memberDetails,
                                     @RequestParam(value = "keyword", required = false) String keyword,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -55,14 +60,13 @@ public class OwnerController {
                                     @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                     @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort){
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
-        Member member = memberDetails.getMember();
         boolean error = false;
 
         try {
-            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, member);
+            CommonResponseDto<Object> shopReview = ownerService.getAllReviewListByShopId(keyword, page, size, criteria, sort, sessionDto.getId());
 
             model.addAttribute("reviewList", shopReview.getData());
             model.addAttribute("error", error);
@@ -81,11 +85,14 @@ public class OwnerController {
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
     @GetMapping("/owner/artboard/manage")
     public String inquiryAllArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
+                                   Authentication authentication,
                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                    @RequestParam(value = "size", defaultValue = "5", required = false) int size,
                                    @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy,
                                    @RequestParam(value = "keyword", required = false) String keyword,
                                    Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         boolean error = false;
 
         try {
@@ -164,14 +171,17 @@ public class OwnerController {
     }
 
     // 내 매장 상세 조회
-    // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
+    // 매장상세에 heartStatus때문에 memberDetails 추가함
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/shopDetail")
     public String getShopDetail(Model model,
+                                Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         Member member = memberDetails.getMember();
         Long shopId = member.getOwner().getShop().getShopId();
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, member.getMemberId());
 
         model.addAttribute("shopDetail", shopDetail.getData());
 

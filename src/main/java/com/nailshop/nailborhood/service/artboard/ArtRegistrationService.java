@@ -14,6 +14,7 @@ import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -37,15 +38,16 @@ public class ArtRegistrationService {
     private final S3UploadService s3UploadService;
     private final ArtImgRepository artImgRepository;
     private final ArtRefRepository artRefRepository;
-    private final ShopRepository shopRepository;
+    private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryArtRepository categoryArtRepository;
 
     @Transactional
-    public CommonResponseDto<Object> registerArt(MemberDetails memberDetails, List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerArt(Long memberId, List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
 
         // 멤버 확인
-        Member member = memberDetails.getMember();
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         // shop 정보 get

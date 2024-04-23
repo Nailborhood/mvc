@@ -1,8 +1,5 @@
 package com.nailshop.nailborhood.service.review;
 
-import com.nailshop.nailborhood.domain.member.Customer;
-import com.nailshop.nailborhood.domain.member.Member;
-import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.review.ReviewImg;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
@@ -22,10 +19,8 @@ import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
-import com.nailshop.nailborhood.type.ReviewReportStatus;
 import com.nailshop.nailborhood.type.ShopStatus;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +48,7 @@ public class ReviewInquiryService {
 
 
     // 리뷰 상세조회
-    public CommonResponseDto<Object> detailReview(Long reviewId, Long shopId, MemberDetails memberDetails) {
+    public CommonResponseDto<Object> detailReview(Long reviewId, Long shopId, Long memberId) {
 
         // 매장 존재 여부
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
@@ -71,8 +66,7 @@ public class ReviewInquiryService {
                                   .getMember()
                                   .getProfileImg();
 
-        Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberDetails.getMember()
-                                                                                                     .getMemberId(), reviewId);
+        Boolean reviewLikeStatus = reviewLikeRepository.findStatusByMemberIdAndReviewId(memberId, reviewId);
         if (reviewLikeStatus == null) {
             reviewLikeStatus = false;
         }
@@ -81,8 +75,8 @@ public class ReviewInquiryService {
         // 영업상태, 신고상태, 카테고리
         ShopStatus shopStatus = shop.getStatus();
 
-        ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
-        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
+//        ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
+//        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
 
         List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
@@ -100,7 +94,7 @@ public class ReviewInquiryService {
                                                                                  .shopName(shop.getName())
                                                                                  .shopStatus(shopStatus)
                                                                                  .shopAddress(shop.getAddress())
-                                                                                 .reviewReportStatus(reviewReportStatus)
+//                                                                                 .reviewReportStatus(reviewReportStatus)
                                                                                  .categoryTypeList(categoryList)
                                                                                  .imgPathMap(reviewImgPathMap)
                                                                                  .contents(review.getContents())
@@ -142,8 +136,8 @@ public class ReviewInquiryService {
         // 영업상태, 신고상태, 카테고리
         ShopStatus shopStatus = shop.getStatus();
 
-        ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
-        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
+//        ReviewReport reviewReport = reviewReportRepository.findReviewReportByReviewId(reviewId);
+//        String reviewReportStatus = (reviewReport != null) ? reviewReport.getStatus() : "신고 되지 않았음";
 
         List<String> categoryList = categoryReviewRepository.findCategoryTypeByReviewId(reviewId);
 
@@ -161,7 +155,7 @@ public class ReviewInquiryService {
                                                                                  .shopName(shop.getName())
                                                                                  .shopStatus(shopStatus)
                                                                                  .shopAddress(shop.getAddress())
-                                                                                 .reviewReportStatus(reviewReportStatus)
+//                                                                                 .reviewReportStatus(reviewReportStatus)
                                                                                  .categoryTypeList(categoryList)
                                                                                  .imgPathMap(reviewImgPathMap)
                                                                                  .contents(review.getContents())

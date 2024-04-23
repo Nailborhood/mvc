@@ -41,14 +41,12 @@ public class MypageService {
     private final MemberRepository memberRepository;
 
     // 내가 쓴 리뷰 조회 (마이페이지)
-    public CommonResponseDto<Object> myReview(Member member, int page, int size, String sortBy) {
+    public CommonResponseDto<Object> myReview(Long memberId, int page, int size, String sortBy) {
 
 //        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
 //                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
-
-        Long memberId = member.getMemberId();
+//        if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
 
@@ -102,10 +100,12 @@ public class MypageService {
     }
 
     // 찜한 매장 조회
-    public CommonResponseDto<Object> myFavorite(Member member,int page, int size) {
+    public CommonResponseDto<Object> myFavorite(Long memberId,int page, int size) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
-        Long memberId = member.getMemberId();
         PageRequest pageable = PageRequest.of(page - 1, size);
 
         Page<Shop> myFavoritePage = favoriteRepository.findFavoriteListByMemberId(memberId, pageable);

@@ -56,24 +56,23 @@ public class MyPageController {
     // 내가 쓴 리뷰
     @GetMapping("/review/inquiry")
     public String myReview(Model model,
+                           Authentication authentication,
                            @AuthenticationPrincipal MemberDetails memberDetails,
                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                            @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
-        Member member = memberDetails.getMember();
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
         try {
-            CommonResponseDto<Object> myReview = mypageService.myReview(member, page, size, sortBy);
+            CommonResponseDto<Object> myReview = mypageService.myReview(sessionDto.getId(), page, size, sortBy);
             ResultDto<MyReviewListResponseDto> resultDto = ResultDto.in(myReview.getStatus(), myReview.getMessage());
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
             model.addAttribute("result", resultDto);
         }catch (NotFoundException e){
             model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_FOUND);
-
         }
 
         return "mypage/my_review_list";
@@ -83,16 +82,16 @@ public class MyPageController {
     // 찜한 매장 조회
     @GetMapping("/shop/favorite/inquiry")
     public String myFavorite(Model model,
+                             Authentication authentication,
                              @AuthenticationPrincipal MemberDetails memberDetails,
                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                              @RequestParam(value = "size", defaultValue = "10", required = false) int size){
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
-        Member member = memberDetails.getMember();
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
         try {
-            CommonResponseDto<Object> myFavorite = mypageService.myFavorite(member, page, size);
+            CommonResponseDto<Object> myFavorite = mypageService.myFavorite(sessionDto.getId(), page, size);
             ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
             resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 

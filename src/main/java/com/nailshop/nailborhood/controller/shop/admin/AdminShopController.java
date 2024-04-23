@@ -3,9 +3,11 @@ package com.nailshop.nailborhood.controller.shop.admin;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.home.HomeDetailResponseDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.member.admin.ShopRegistrationHandler;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +37,7 @@ public class AdminShopController {
     private final ShopRequestLookupAdminService shopRequestLookupAdminService;
     private final ShopRegistrationHandler shopRegistrationHandler;
     private final ShopDetailService shopDetailService;
+    private final MemberService memberService;
 
     // 매장 신청 조회
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -65,10 +69,12 @@ public class AdminShopController {
     // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
-    public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String getShopDetail(Authentication authentication,
+                                @AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
                                 @PathVariable Long shopId){
-        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, memberDetails);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, sessionDto.getId());
 
         String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
 

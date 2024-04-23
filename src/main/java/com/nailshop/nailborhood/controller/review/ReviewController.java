@@ -5,11 +5,14 @@ import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewReportDto;
 import com.nailshop.nailborhood.dto.review.request.ReviewUpdateDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewDetailResponseDto;
 import com.nailshop.nailborhood.repository.category.CategoryRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.review.ReviewInquiryService;
 import com.nailshop.nailborhood.service.review.ReviewService;
 import com.nailshop.nailborhood.dto.review.request.ReviewRegistrationRequestDto;
@@ -19,7 +22,7 @@ import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.AlarmType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,25 +40,27 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewInquiryService reviewInquiryService;
     private final ReviewRegistrationService reviewRegistrationService;
+    private final MemberService memberService;
     private final ShopDetailService shopDetailService;
     private final CategoryRepository categoryRepository;
 
     // 리뷰 등록(GET)
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_OWNER')")
     @GetMapping("/{shopId}/review/registration")
-    public String showRegisterReview(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String showRegisterReview(Authentication authentication,
+                                     @AuthenticationPrincipal MemberDetails memberDetails,
                                      Model model,
                                      @PathVariable Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
+        if(authentication != null) {
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
+        }
 
         List<Category> categoryList = categoryRepository.findAll();
 
-
         model.addAttribute("shopId", shopId);
         model.addAttribute("categories", categoryList);
-        model.addAttribute("memberNickname", nicknameSpace);
 
         return "review/review_registration";
     }
@@ -64,18 +69,15 @@ public class ReviewController {
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
     public String registerReview(@PathVariable Long shopId,
+                                 Authentication authentication,
                                  @AuthenticationPrincipal MemberDetails memberDetails,
                                  @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                  @ModelAttribute ReviewRegistrationRequestDto reviewRegistrationRequestDto,
                                  RedirectAttributes redirectAttributes) {
 
         try {
-/*            CommonResponseDto<Object> commonResponseDto = reviewRegistrationService.registerReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
-            ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());*/
-
-            Long reviewId = reviewRegistrationService.saveReview(shopId, memberDetails, multipartFileList, reviewRegistrationRequestDto);
+            SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+            Long reviewId = reviewRegistrationService.saveReview(shopId, sessionDto.getId(), multipartFileList, reviewRegistrationRequestDto);
 
 //            return "redirect:/review/inquiry/" + reviewId+"?shopId="+shopId;
             return String.format("redirect:/review/inquiry/%d?shopId=%d&alarmSent=true", reviewId, shopId);
@@ -88,15 +90,16 @@ public class ReviewController {
 
     // 리뷰 수정
     @PostMapping(consumes = {"multipart/form-data"}, value = "/review/update/{reviewId}")
-    public String reviewUpdate(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String reviewUpdate(Authentication authentication,
+                               @AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable Long reviewId,
                                @RequestParam(value = "shopId") Long shopId,
                                @RequestPart(value = "img") List<MultipartFile> multipartFileList,
                                @ModelAttribute ReviewUpdateDto reviewUpdateDto,
                                RedirectAttributes redirectAttributes) {
-
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
         try {
-            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(memberDetails, reviewId, shopId, multipartFileList, reviewUpdateDto);
+            CommonResponseDto<Object> commonResponseDto = reviewService.reviewUpdate(sessionDto.getId(), reviewId, shopId, multipartFileList, reviewUpdateDto);
             ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
@@ -116,16 +119,16 @@ public class ReviewController {
 
     // 리뷰 수정 뷰
     @GetMapping("/review/update/{reviewId}")
-    public String getReviewUpdate(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String getReviewUpdate(Authentication authentication,
+                                  @AuthenticationPrincipal MemberDetails memberDetails,
                                   Model model,
                                   @PathVariable Long reviewId,
                                   @RequestParam(value = "shopId") Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, sessionDto.getId());
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
@@ -136,14 +139,14 @@ public class ReviewController {
 
     // 리뷰 신고
     @PostMapping("/review/report/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewReport(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<ResultDto<Void>> reviewReport(Authentication authentication,
+                                                        @AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId,
                                                         @RequestBody ReviewReportDto reviewReportDto) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
 
-        Member member = memberDetails.getMember();
-
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(member, reviewId, shopId, reviewReportDto);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewReport(sessionDto.getId(), reviewId, shopId, reviewReportDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
@@ -156,14 +159,14 @@ public class ReviewController {
     @GetMapping("/review/report/{reviewId}")
     public String reviewReportView(Model model,
                                    @AuthenticationPrincipal MemberDetails memberDetails,
+                                   Authentication authentication,
                                    @PathVariable Long reviewId,
                                    @RequestParam(value = "shopId") Long shopId) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
-        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, memberDetails);
+        CommonResponseDto<Object> detailReview = reviewInquiryService.detailReview(reviewId, shopId, sessionDto.getId());
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
@@ -175,13 +178,14 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/mypage/review/{reviewId}")
-    public ResponseEntity<ResultDto<Void>> reviewDelete(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<ResultDto<Void>> reviewDelete(Authentication authentication,
+                                                        @AuthenticationPrincipal MemberDetails memberDetails,
                                                         @PathVariable Long reviewId,
                                                         @RequestParam(value = "shopId") Long shopId) {
 
-        Member member = memberDetails.getMember();
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
 
-        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(member, reviewId, shopId);
+        CommonResponseDto<Object> commonResponseDto = reviewService.reviewDelete(sessionDto.getId(), reviewId, shopId);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())

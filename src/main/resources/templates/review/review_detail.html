@@ -46,7 +46,7 @@
                     <img th:src="${result.getData().reviewAuthorProfileImg}" alt="프로필 이미지" class="profile-pic" />
                     <span class="review-author" th:text="${result.getData().reviewAuthor}">작성자 닉네임</span>
                     <div class="review-count">
-                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                        <a href="#" class="like" th:data-review-id="${result.getData().reviewId}" th:data-like-status="${result.getData().reviewLikeStatus}" th:data-shop-id="${result.getData().shopId}" th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
                         th:data-writer="${result.getData().getWriter()}">
 
                             <img class="like-img" src="/assets/icons/review/emptyThumbsUp.svg" />
@@ -71,8 +71,8 @@
                 <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span>
                 <p class="review-content" th:text="${result.getData().contents}">리뷰 내용</p>
                 <div class="review-btn">
-                    <a th:if="${memberNickname == result.getData().reviewAuthor}" th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>
-                    <button type="button" th:if="${memberNickname == result.getData().reviewAuthor}" class="delete-button" th:data-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
+                    <a th:if="${nickName == result.getData().reviewAuthor}" th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>
+                    <button type="button" th:if="${nickName == result.getData().reviewAuthor}" class="delete-button" th:data-id="${result.getData().reviewId}" th:data-shop-id="${result.getData().shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
                 </div>
             </div>
         </div>
