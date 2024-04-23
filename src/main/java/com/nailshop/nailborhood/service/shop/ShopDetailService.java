@@ -56,8 +56,10 @@ public class ShopDetailService {
 
     // 매장 상세 조회
     @Transactional
-    public CommonResponseDto<Object> getShopDetail(Long shopId, MemberDetails memberDetails) {
+    public CommonResponseDto<Object> getShopDetail(Long shopId, Long memberId) {
 
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
@@ -79,8 +81,8 @@ public class ShopDetailService {
                                                                                              .opentime(shop.getOpentime())
                                                                                              .build();
 
-        if(memberDetails != null){
-            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberDetails.getMember().getMemberId(), shopId);
+        if(member != null){
+            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberId, shopId);
             if(heartStatus == null){
                 heartStatus = false;
             }

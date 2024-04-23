@@ -37,11 +37,15 @@ public class OwnerService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final OwnerRepository ownerRepository;
+    private final MemberRepository memberRepository;
 
 
     // 매장 리뷰 조회
     @Transactional
-    public CommonResponseDto<Object> getAllReviewListByShopId(String keyword, int page, int size, String criteria, String sort, Member member) {
+    public CommonResponseDto<Object> getAllReviewListByShopId(String keyword, int page, int size, String criteria, String sort, Long memberId) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                          .getOwnerId())

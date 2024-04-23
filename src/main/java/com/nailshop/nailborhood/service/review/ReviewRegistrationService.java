@@ -20,7 +20,6 @@ import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -36,7 +35,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReviewRegistrationService {
-    private final TokenProvider tokenProvider;
     private final ReviewRepository reviewRepository;
     private final ShopRepository shopRepository;
     private final CommonService commonService;
@@ -101,10 +99,9 @@ public class ReviewRegistrationService {
 
     @Transactional
     // 리뷰 등록
-    public Long saveReview(Long shopId, MemberDetails memberDetails, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
+    public Long saveReview(Long shopId, Long memberId, List<MultipartFile> multipartFileList, ReviewRegistrationRequestDto reviewRegistrationRequestDto) {
 
         // token 에서 memberId 가져오기
-        Long memberId = memberDetails.getMember().getMemberId();
         Customer customer = customerRepository.findByMemberId(memberId);
 
         // 매장 존재 여부

@@ -27,8 +27,8 @@
                     </div>
                     <div class="heart">
                         <a class="heart-btn" href="#" role="button" th:data-shop-id="${shop.shopId}"
-                           th:data-favorite-status="${shop.heartStatus}" th:data-memberDetails="${memberNickname}"
-                           th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                           th:data-favorite-status="${shop.heartStatus}"
+                           th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
                            th:data-receiver="${receiver.getEmail()}">
 
                             <img th:id="heartImg" src="/assets/icons/shop/emptyHeart.svg"/>

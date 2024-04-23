@@ -15,6 +15,7 @@ import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -36,6 +37,7 @@ public class ArtInquiryService {
     private final ArtRefRepository artRefRepository;
     private final ArtImgRepository artImgRepository;
     private final ArtLikeRepository artLikeRepository;
+    private final MemberRepository memberRepository;
     private final CategoryArtRepository categoryArtRepository;
 
     // 전체 조회
@@ -127,11 +129,14 @@ public class ArtInquiryService {
     }
 
     // 상세 조회
-    public CommonResponseDto<Object> inquiryArt(Long artRefId, MemberDetails memberDetails) {
+    public CommonResponseDto<Object> inquiryArt(Long artRefId, Long memberId) {
 
         // ArtRef get
         ArtRef artRef = artRefRepository.findById(artRefId)
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtImg get
         List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
@@ -140,8 +145,7 @@ public class ArtInquiryService {
             artImgPathMap.put(artImg.getImgNum(), artImg.getImgPath());
         }
 
-        Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberDetails.getMember()
-                                                                                                 .getMemberId(), artRefId);
+        Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberId, artRefId);
         if (artLikeStatus == null) {
             artLikeStatus = false;
         }

@@ -29,9 +29,8 @@ public class FavoriteShopService {
 
 
     @Transactional
-    public CommonResponseDto<Object> favoriteShop(Long shopId, MemberDetails memberDetails) {
+    public CommonResponseDto<Object> favoriteShop(Long shopId, Long memberId) {
 
-        Long memberId = memberDetails.getMember().getMemberId();
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
