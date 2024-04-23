@@ -25,6 +25,7 @@ import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -53,14 +54,13 @@ public class ShopDetailService {
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
     private final FavoriteRepository favoriteRepository;
+    private final MemberService memberService;
 
     // 매장 상세 조회
     @Transactional
     public CommonResponseDto<Object> getShopDetail(Long shopId, Long memberId) {
 
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-
+        Member member = memberService.getMemberInfo(memberId);
         Shop shop = shopRepository.findByShopIdAndIsDeleted(shopId)
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
@@ -81,12 +81,14 @@ public class ShopDetailService {
                                                                                              .opentime(shop.getOpentime())
                                                                                              .build();
 
+
         if(member != null){
             Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberId, shopId);
             if(heartStatus == null){
                 heartStatus = false;
             }
-            shopDetailLookupResponseDto.setHeartStatus(heartStatus);}
+            shopDetailLookupResponseDto.setHeartStatus(heartStatus);
+        }
 //        }else {
 //            Boolean heartStatus = false;
 //        }
@@ -150,12 +152,12 @@ public class ShopDetailService {
 
     // 내 매장 조회 (매장 수정 용)
     @Transactional
-    public CommonResponseDto<Object> getMyShopDetail(Member member) {
+    public CommonResponseDto<Object> getMyShopDetail(Long memberId) {
 
         // member, owner, shop get
-/*        Member member = memberRepository.findByMemberIdAndIsDeleted(memberDetails.getMember()
-                                                                                 .getMemberId())
-                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));*/
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                           .getOwnerId())
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
@@ -239,6 +241,7 @@ public class ShopDetailService {
 
     // 채팅에서 사장님 매장 id 가져오기
     public Shop findMyShopId(Long ownerId) {
+
 
         return shopRepository.findAllShopByOwnerId(ownerId)
                              .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
@@ -326,7 +329,6 @@ public class ShopDetailService {
                                   .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
 
-
         ShopDetailLookupResponseDto shopDetailLookupResponseDto = ShopDetailLookupResponseDto.builder()
                                                                                              .name(shop.getName())
                                                                                              .phone(shop.getPhone())
@@ -342,8 +344,6 @@ public class ShopDetailService {
                                                                                              .favoriteCnt(shop.getFavoriteCnt())
                                                                                              .opentime(shop.getOpentime())
                                                                                              .build();
-
-
 
 
         List<MenuDetailResponseDto> menuDetailResponseDtoList = menuRepository.findAllByShopId(shopId);

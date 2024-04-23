@@ -26,18 +26,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopRegistrationHandler {
 
     private final CommonService commonService;
-    private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
     private final ShopRepository shopRepository;
     private final OwnerRepository ownerRepository;
 
     @Transactional
-    public CommonResponseDto<Object> shopApprove(MemberDetails memberDetails, Long shopId) {
+    public CommonResponseDto<Object> shopApprove( Long shopId) {
 
         // 권한 확인
-        Member admin = memberDetails.getMember();
+//        Member admin = memberDetails.getMember();
 
-        if (!admin.getRole().equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+/*        if (!admin.getRole().equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
+
 
         // shop, owner 정보 get
         Shop shop = shopRepository.findById(shopId)
@@ -58,12 +58,12 @@ public class ShopRegistrationHandler {
     }
 
     @Transactional
-    public CommonResponseDto<Object> shopReject(MemberDetails memberDetails, Long shopId){
+    public CommonResponseDto<Object> shopReject(Long shopId){
 
         // 권한 확인
-        Member admin = memberDetails.getMember();
+        /*Member admin = memberDetails.getMember();
 
-        if (!admin.getRole().equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        if (!admin.getRole().equals(Role.ROLE_ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);*/
 
         // shop, owner 정보 get
         Shop shop = shopRepository.findById(shopId)

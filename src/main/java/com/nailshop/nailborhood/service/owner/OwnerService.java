@@ -110,6 +110,13 @@ public class OwnerService {
         return commonService.successResponse(SuccessCode.SHOP_REVIEW_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopReviewListLookupResponseDto);
     }
 
+    // owner Info
+    public Owner getOwnerInfo(Long memberId) {
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
+        Owner owner = ownerRepository.findByMemberId(memberId);
+        return owner;
+    }
 }
 

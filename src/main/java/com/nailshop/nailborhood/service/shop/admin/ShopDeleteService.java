@@ -53,10 +53,6 @@ public class ShopDeleteService {
     private final ArtLikeRepository artLikeRepository;
     private final CategoryArtRepository categoryArtRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
-    private final ReviewReportRepository reviewReportRepository;
-    private final ChattingRoomRepository chattingRoomRepository;
-    private final MessageRepository messageRepository;
     private final OwnerRepository ownerRepository;
     private final CertificateImgRepository certificateImgRepository;
 

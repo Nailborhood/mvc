@@ -18,10 +18,12 @@ import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.chat.ChattingRoomRepository;
 import com.nailshop.nailborhood.repository.chat.MessageRepository;
 import com.nailshop.nailborhood.repository.member.AdminRepository;
+import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.common.CommonService;
+import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.SuccessCode;
@@ -46,9 +48,12 @@ public class ChattingRoomService {
     private final ShopDetailService shopDetailService;
     private final MessageRepository messageRepository;
     private final CommonService commonService;
-
+    private final MemberRepository memberRepository;
     // 채탕방 개설
-    public ChattingRoom createChatRoom(Member member) {
+    public ChattingRoom createChatRoom(Long memberId) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Shop shop = shopRepository.findAllShopListByOwnerId(member.getOwner().getOwnerId());
         String shopName = shop.getName();
@@ -90,7 +95,7 @@ public class ChattingRoomService {
     }
 
     // 채팅룸 전체 조회(관리자)
-    public List<ChattingRoomDetailAndShopInfoDto> getChatRoomList(Long adminId, @AuthenticationPrincipal MemberDetails memberDetails) {
+    /*public List<ChattingRoomDetailAndShopInfoDto> getChatRoomList(Long adminId, @AuthenticationPrincipal MemberDetails memberDetails) {
         List<ChattingRoom> chattingRoomList = chattingRoomRepository.findAllByAdminId(adminId);
 
         Member member = memberDetails.getMember();
@@ -100,7 +105,7 @@ public class ChattingRoomService {
             // 채팅룸에 해당되는 매장 정보
             Shop shop = shopDetailService.findMyShopId(room.getOwner()
                                                            .getOwnerId());
-            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(member);
+            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail();
             MyShopDetailListResponseDto shopDetailData = (MyShopDetailListResponseDto) shopDetail.getData();
 
 
@@ -132,7 +137,7 @@ public class ChattingRoomService {
         }
 
         return chattingRoomDetailAndShopInfoDtoList;
-    }
+    }*/
 
     // 채팅 룸 검색 (관리자)
     public CommonResponseDto<Object> searchChatRoomList(Long adminId, String keyword, int page, int size, String sortBy) {
@@ -204,7 +209,11 @@ public class ChattingRoomService {
         return commonService.successResponse(SuccessCode.SEARCH_BY_CHATROOM_SUCCESS.getDescription(), HttpStatus.OK, chattingRoomListResponseDto);
     }
 
-    public void checkingChatRoom(Member member) {
+    public void checkingChatRoom(Long memberId) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
         Owner owner = ownerRepository.findByOwnerId(member.getOwner()
                                                           .getOwnerId())
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));

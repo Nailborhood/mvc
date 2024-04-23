@@ -32,6 +32,7 @@ public class ArtLikeService {
     private final ArtLikeRepository artLikeRepository;
     private final MemberRepository memberRepository;
 
+
     @Transactional
     public CommonResponseDto<Object> likeArt(Long memberId, Long artRefId) {
 

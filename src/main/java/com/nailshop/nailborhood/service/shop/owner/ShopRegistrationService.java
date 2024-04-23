@@ -55,13 +55,8 @@ public class ShopRegistrationService {
 
 
     // 매장 등록
-    public CommonResponseDto<Object> registerShop(Member member, List<MultipartFile> multipartFileList, List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
+    public CommonResponseDto<Object> registerShop(Long memberId,List<MultipartFile> multipartFileList, List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto) {
 
-
-
-        Long memberId = member.getMemberId();
-        memberRepository.findById(memberId)
-                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 이미 owner ( 신청을 이미 한 사람 ) 은 더이상 매장 신청 할 수 없게 처리
         Owner existingOwner = ownerRepository.findByMemberId(memberId);
@@ -118,6 +113,9 @@ public class ShopRegistrationService {
 
         // 사업자 증명 사진 등록
         saveCertificateImg(fileList, shop);
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // Owner 등록
         Owner owner = Owner.builder()
@@ -251,14 +249,10 @@ public class ShopRegistrationService {
     }
 
 
-   public boolean checkExistingOwner(Member member) {
-
-        Member memberInfo = memberRepository.findById(member.getMemberId())
-                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+   public boolean checkExistingOwner(Long memberId) {
 
         // 이미 owner ( 신청을 이미 한 사람 ) 은 더이상 매장 신청 할 수 없게 처리
-        Owner existingOwner = ownerRepository.findByMemberId(memberInfo.getMemberId());
-
+        Owner existingOwner = ownerRepository.findByMemberId(memberId);
 
         if (existingOwner != null) {
             // 이미 신청한 상황

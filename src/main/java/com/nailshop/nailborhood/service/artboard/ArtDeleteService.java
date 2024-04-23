@@ -36,6 +36,7 @@ public class ArtDeleteService {
     private final MemberRepository memberRepository;
 
 
+
     @Transactional
     public CommonResponseDto<Object> deleteArt(Long memberId, Long artRefId) {
 

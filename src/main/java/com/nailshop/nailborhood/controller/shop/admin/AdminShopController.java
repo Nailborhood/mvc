@@ -47,14 +47,20 @@ public class AdminShopController {
                               @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                               @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                              @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
+                              @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
+                              Authentication authentication,
+                              @AuthenticationPrincipal MemberDetails memberDetails) {
+
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
 
 
         try {
             CommonResponseDto<Object> allShopRequestList = shopRequestLookupAdminService.getAllShopRequest(keyword, page, size, criteria, sort);
             ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopRequestList.getStatus(), allShopRequestList.getMessage());
             resultDto.setData((AllShopsListResponseDto) allShopRequestList.getData());
-            model.addAttribute("resultDto" ,resultDto);
+            model.addAttribute("resultDto", resultDto);
 
             return "admin/admin_shop_registration_list";
         } catch (NotFoundException e) {
@@ -72,26 +78,26 @@ public class AdminShopController {
     public String getShopDetail(Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
-                                @PathVariable Long shopId){
+                                @PathVariable Long shopId,
+                                Authentication authentication) {
+
+
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, sessionDto.getId());
-
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-
         model.addAttribute("shopDetail", shopDetail.getData());
-        model.addAttribute("memberNickname", nicknameSpace);
 
         return "admin/admin_shop_registration";
     }
-
-
 
 
     // 매장 삭제
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/delete/shop")
     public String deleteShop(@RequestParam Long shopId) {
-         shopDeleteService.deleteShop(shopId);
+
+        shopDeleteService.deleteShop(shopId);
 
         return "redirect:/admin/search/shop";
     }
@@ -112,22 +118,24 @@ public class AdminShopController {
     // 매장등록신청 승인
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin/shop/approve/{shopId}")
-    public ResponseEntity<ResultDto<Void>> shopApprove(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                       @PathVariable Long shopId){
-        CommonResponseDto<Object> shopApprove = shopRegistrationHandler.shopApprove(memberDetails, shopId);
+    public ResponseEntity<ResultDto<Void>> shopApprove(@PathVariable Long shopId) {
+
+
+        CommonResponseDto<Object> shopApprove = shopRegistrationHandler.shopApprove(shopId);
         ResultDto<Void> resultDto = ResultDto.in(shopApprove.getStatus(), shopApprove.getMessage());
 
-        return ResponseEntity.status(shopApprove.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(shopApprove.getHttpStatus())
+                             .body(resultDto);
     }
 
     // 매장등록신청 거절
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/admin/shop/reject/{shopId}")
-    public ResponseEntity<ResultDto<Void>> shopReject(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                      @PathVariable Long shopId){
-        CommonResponseDto<Object> shopReject = shopRegistrationHandler.shopReject(memberDetails, shopId);
+    public ResponseEntity<ResultDto<Void>> shopReject(@PathVariable Long shopId) {
+        CommonResponseDto<Object> shopReject = shopRegistrationHandler.shopReject(shopId);
         ResultDto<Void> resultDto = ResultDto.in(shopReject.getStatus(), shopReject.getMessage());
 
-        return ResponseEntity.status(shopReject.getHttpStatus()).body(resultDto);
+        return ResponseEntity.status(shopReject.getHttpStatus())
+                             .body(resultDto);
     }
 }

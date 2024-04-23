@@ -32,8 +32,10 @@ public class ShopRequestLookupService {
     // 매장 신청 리스트 조회
 
     @Transactional
-    public CommonResponseDto<Object> getShopRequest(Member member) {
+    public CommonResponseDto<Object> getShopRequest(Long memberId) {
 
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Long ownerId = member.getOwner().getOwnerId();
         Shop shopRequestList = shopRepository.findAllShopListByOwnerId(ownerId);

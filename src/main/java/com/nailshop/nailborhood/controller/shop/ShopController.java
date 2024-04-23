@@ -53,19 +53,21 @@ public class ShopController {
     private final MemberService memberService;
     private final AlarmService alarmService;
     private final CategoryRepository categoryRepository;
-
+    private final MemberService memberService;
 
 
     // main
     @GetMapping(value = "/")
-    public String getAllShops(Authentication authentication,
-                              @AuthenticationPrincipal MemberDetails memberDetails,
-                              Model model) {
+
+    public String getAllShops(@AuthenticationPrincipal MemberDetails memberDetails,
+                              Model model,
+                              Authentication authentication) {
 
         if(authentication != null) {
             SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
             model.addAttribute("sessionDto", sessionDto);
         }
+
         CommonResponseDto<Object> allResultList = shopListLookupLocalService.getHome();
         ResultDto<HomeDetailResponseDto> resultDto = ResultDto.in(allResultList.getStatus(), allResultList.getMessage());
         resultDto.setData((HomeDetailResponseDto) allResultList.getData());
@@ -100,11 +102,15 @@ public class ShopController {
                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
                                        @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
                                        Model model,
-                                       @AuthenticationPrincipal MemberDetails memberDetails) {
+                                       @AuthenticationPrincipal MemberDetails memberDetails,
+                                       Authentication authentication) {
 //        dongId = 1L;
         try {
-            String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                          .getNickname() : "";
+            if(authentication != null) {
+                SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+                model.addAttribute("sessionDto", sessionDto);
+            }
+
             CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId, cityId);
             ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
             resultDto.setData((ShopListResponseDto) allShopsList.getData());
@@ -116,7 +122,7 @@ public class ShopController {
             model.addAttribute("resultDto", resultDto);
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
-            model.addAttribute("memberNickname", nicknameSpace);
+
             return "shop/shop_local_list";
         } catch (NotFoundException e) {
             StoreAddressSeparationListDto storeAddressSeparationListDtoList = shopRegistrationService.findAddress();

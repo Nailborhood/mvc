@@ -3,12 +3,15 @@ package com.nailshop.nailborhood.controller.chat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailshop.nailborhood.domain.chat.ChattingRoom;
+import com.nailshop.nailborhood.domain.member.Admin;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.member.Owner;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomDetailDto;
 import com.nailshop.nailborhood.dto.chat.response.ChattingRoomListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
+import com.nailshop.nailborhood.dto.member.SessionDto;
 import com.nailshop.nailborhood.dto.shop.response.detail.MyShopDetailListResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
@@ -16,10 +19,14 @@ import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.alarm.AlarmService;
 import com.nailshop.nailborhood.service.chat.ChattingRoomService;
 import com.nailshop.nailborhood.service.chat.MessageService;
+import com.nailshop.nailborhood.service.member.MemberService;
+import com.nailshop.nailborhood.service.member.admin.AdminInfoService;
+import com.nailshop.nailborhood.service.owner.OwnerService;
 import com.nailshop.nailborhood.service.shop.ShopDetailService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,15 +47,21 @@ public class ChattingRoomController {
     private final MessageService messageService;
     private final ObjectMapper objectMapper;
     private final AlarmService alarmService;
+    private final MemberService memberService;
+    private final OwnerService ownerService;
+    private final AdminInfoService adminInfoService;
+
 
     // 사장님 페이지
     // 채팅방 개설
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/owner/roomForm")
-    public String roomForm(@AuthenticationPrincipal MemberDetails memberDetails) {
+    public String roomForm(Authentication authentication,@AuthenticationPrincipal MemberDetails memberDetails,Model model) {
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
         try {
-            Member member = memberDetails.getMember();
-            chattingRoomService.checkingChatRoom(member);
+
+            chattingRoomService.checkingChatRoom(sessionDto.getId());
             return "owner/owner_chat_room_form";
         } catch (BadRequestException b) {
             Member member = memberDetails.getMember();
@@ -61,33 +74,35 @@ public class ChattingRoomController {
 
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/chatroom")
-    public String createChatRoom(RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberDetails memberDetails) {
+    public String createChatRoom(RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberDetails memberDetails,Authentication authentication) {
 
-        Member member = memberDetails.getMember();
-        ChattingRoom chattingRoom = chattingRoomService.createChatRoom(member);
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+
+        ChattingRoom chattingRoom = chattingRoomService.createChatRoom(sessionDto.getId());
         redirectAttributes.addFlashAttribute("roomId", chattingRoom.getRoomId());
         return "redirect:/chatroom/" + chattingRoom.getRoomId(); // 채팅방 입장 페이지로 리다이렉트
     }
+
+
     @PreAuthorize("hasRole('ROLE_OWNER')")
     @GetMapping("/chatroom/{roomId}")
     public String joinRoom(@PathVariable("roomId") Long roomId,
                            Model model,
-                           @AuthenticationPrincipal MemberDetails memberDetails) throws JsonProcessingException {
+                           @AuthenticationPrincipal MemberDetails memberDetails,
+                           Authentication authentication) throws JsonProcessingException {
         try {
 
 
-            String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-            model.addAttribute("memberNickname", nicknameSpace);
-
-            Member member = memberDetails.getMember();
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+           Owner owner = ownerService.getOwnerInfo(sessionDto.getId());
             // 채팅룸 정보
             ChattingRoomDetailDto chattingRoomDetailDto = chattingRoomService.findChatRoomId(roomId);
             // 매장 정보
-            Shop shop = shopDetailService.findMyShopId(member.getOwner().getOwnerId());
+            Shop shop = shopDetailService.findMyShopId(owner.getOwnerId());
             if (shop.getIsDeleted()) {
                 model.addAttribute("shopErrorCode", ErrorCode.DELETED_SHOP);
             }
-            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(member);
+            CommonResponseDto<Object> shopDetail = shopDetailService.getMyShopDetail(sessionDto.getId());
             ResultDto<MyShopDetailListResponseDto> resultDto = ResultDto.in(shopDetail.getStatus(), shopDetail.getMessage());
             resultDto.setData((MyShopDetailListResponseDto) shopDetail.getData());
 
@@ -140,12 +155,16 @@ public class ChattingRoomController {
                                  @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                  @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                  @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy,
-                                 @AuthenticationPrincipal MemberDetails memberDetails) {
+                                 @AuthenticationPrincipal MemberDetails memberDetails,Authentication authentication) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         try {
 
-            Long adminId = memberDetails.getMember().getAdmin().getAdminId();
+            Admin admin = adminInfoService.getAdminInfo(sessionDto.getId());
             // 채팅룸 리스트 & 채팅룸 해당 매장 정보 & 메세지 리스트
-            CommonResponseDto<Object> allChatList = chattingRoomService.searchChatRoomList(adminId, keyword, page, size, sortBy);
+            CommonResponseDto<Object> allChatList = chattingRoomService.searchChatRoomList(admin.getAdminId(), keyword, page, size, sortBy);
             ResultDto<ChattingRoomListResponseDto> resultDto = ResultDto.in(allChatList.getStatus(), allChatList.getMessage());
             resultDto.setData((ChattingRoomListResponseDto) allChatList.getData());
 
@@ -165,11 +184,13 @@ public class ChattingRoomController {
     @GetMapping("/admin/chatroom/{roomId}")
     public String getChatRoom(@PathVariable("roomId") Long roomId,
                               Model model,
-                              @AuthenticationPrincipal MemberDetails memberDetails) throws JsonProcessingException {
+                              @AuthenticationPrincipal MemberDetails memberDetails,Authentication authentication) throws JsonProcessingException {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
         try {
 
-            String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-            model.addAttribute("memberNickname", nicknameSpace);
 
             // 채팅룸 정보
             ChattingRoomDetailDto chattingRoomDetailDto = chattingRoomService.findChatRoomId(roomId);
