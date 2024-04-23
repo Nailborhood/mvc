@@ -19,17 +19,8 @@ import com.nailshop.nailborhood.service.shop.owner.ShopRegistrationService;
 import com.nailshop.nailborhood.service.shop.owner.ShopRequestLookupService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,9 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Map;
-
-import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 
 @Controller
 @RequiredArgsConstructor
@@ -156,7 +144,7 @@ public class MyPageController {
 
 
     //  내 정보 확인
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
     public String modifyInfoPage(Authentication authentication,
                                  @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
@@ -168,7 +156,6 @@ public class MyPageController {
         return "mypage/modify_info_form";
     }
 
-    // 내 정보 수정 - 작업중
     @PostMapping("/modMyInfo")
     public String modMyInfo(Authentication authentication,
                             @AuthenticationPrincipal MemberDetails memberDetails,
@@ -247,6 +234,7 @@ public class MyPageController {
     }
 
     // 회원탈퇴
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/dropoutProc")
     public String memberDropOut(Authentication authentication,
                                 @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -256,6 +244,7 @@ public class MyPageController {
     }
 
     // 회원 탈퇴 페이지
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/dropout")
     public String dropoutPage(Authentication authentication,
                               @AuthenticationPrincipal MemberDetails memberDetails, Model model) {
@@ -265,6 +254,7 @@ public class MyPageController {
     }
 
     // 로그아웃 페이지
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/logout")
     public String logoutPage(Authentication authentication,
                              @AuthenticationPrincipal MemberDetails memberDetails, Model model) {

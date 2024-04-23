@@ -7,10 +7,8 @@ import com.nailshop.nailborhood.dto.member.request.*;
 
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
 import com.nailshop.nailborhood.service.member.MemberService;
-import io.swagger.v3.oas.annotations.Hidden;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
