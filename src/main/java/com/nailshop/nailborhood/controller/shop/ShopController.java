@@ -3,6 +3,7 @@ package com.nailshop.nailborhood.controller.shop;
 
 import com.nailshop.nailborhood.domain.category.Category;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.dto.artboard.ArtDetailResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
@@ -49,6 +50,7 @@ public class ShopController {
     private final ShopReviewListLookupService shopReviewListLookupService;
     private final ShopArtBoardListService shopArtBoardListService;
     private final ShopRegistrationService shopRegistrationService;
+    private final MemberService memberService;
     private final AlarmService alarmService;
     private final CategoryRepository categoryRepository;
     private final MemberService memberService;
@@ -56,6 +58,7 @@ public class ShopController {
 
     // main
     @GetMapping(value = "/")
+
     public String getAllShops(@AuthenticationPrincipal MemberDetails memberDetails,
                               Model model,
                               Authentication authentication) {
@@ -175,6 +178,7 @@ public class ShopController {
     //매장 리뷰 조회
     @GetMapping("/review/{shopId}")
     public String getShopReviewList(Model model,
+                                    Authentication authentication,
                                     @AuthenticationPrincipal MemberDetails memberDetails,
                                     @PathVariable Long shopId,
                                     @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -183,9 +187,10 @@ public class ShopController {
                                     @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
                                     @RequestParam(value = "keyword", required = false) String keyword) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember()
-                                                                      .getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        if(authentication != null) {
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
+        }
         boolean error = false;
 
         try {
@@ -213,6 +218,7 @@ public class ShopController {
     // 매장 아트 조회
     @GetMapping("/art/{shopId}")
     public String getShopArtList(Model model,
+                                 Authentication authentication,
                                  @AuthenticationPrincipal MemberDetails memberDetails,
                                  @PathVariable Long shopId,
                                  @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -221,8 +227,10 @@ public class ShopController {
                                  @RequestParam(value = "category", defaultValue = "", required = false) String category,
                                  @RequestParam(value = "keyword", required = false) String keyword) {
 
-        String nicknameSpace = (memberDetails != null) ? memberDetails.getMember().getNickname() : "";
-        model.addAttribute("memberNickname", nicknameSpace);
+        if(authentication != null) {
+            SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+            model.addAttribute("sessionDto", sessionDto);
+        }
         boolean error = false;
 
         try {

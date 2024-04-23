@@ -75,7 +75,8 @@ public class AdminShopController {
     // TODO 매장상세에 heartStatus때문에 memberDetails 추가함
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/shopRegistrationDetail/{shopId}")
-    public String getShopDetail(@AuthenticationPrincipal MemberDetails memberDetails,
+    public String getShopDetail(Authentication authentication,
+                                @AuthenticationPrincipal MemberDetails memberDetails,
                                 Model model,
                                 @PathVariable Long shopId,
                                 Authentication authentication) {
@@ -84,10 +85,7 @@ public class AdminShopController {
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
 
-
         CommonResponseDto<Object> shopDetail = shopDetailService.getShopDetail(shopId, sessionDto.getId());
-
-
         model.addAttribute("shopDetail", shopDetail.getData());
 
         return "admin/admin_shop_registration";

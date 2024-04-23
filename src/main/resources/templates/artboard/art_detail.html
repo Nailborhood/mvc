@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="like-section">
-                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-memberDetails="${memberNickname}" th:data-is-logged-in="${#strings.isEmpty(memberNickname) ? 'false' : 'true'}"
+                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
                     th:data-receiver="${receiver.getEmail()}">
 
                         <img class="like-img" src="/assets/icons/art/emptyLike.svg" />

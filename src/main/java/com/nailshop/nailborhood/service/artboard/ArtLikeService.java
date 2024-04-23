@@ -34,10 +34,10 @@ public class ArtLikeService {
 
 
     @Transactional
-    public CommonResponseDto<Object> likeArt(MemberDetails memberDetails, Long artRefId) {
+    public CommonResponseDto<Object> likeArt(Long memberId, Long artRefId) {
 
         // 멤버 확인
-        Member member = memberRepository.findByMemberIdAndIsDeleted(memberDetails.getMember().getMemberId())
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtRef 정보 get

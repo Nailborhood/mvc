@@ -81,9 +81,10 @@ public class ShopDetailService {
                                                                                              .opentime(shop.getOpentime())
                                                                                              .build();
 
-        if (member != null) {
-            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(member.getMemberId(), shopId);
-            if (heartStatus == null) {
+
+        if(member != null){
+            Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberId, shopId);
+            if(heartStatus == null){
                 heartStatus = false;
             }
             shopDetailLookupResponseDto.setHeartStatus(heartStatus);
