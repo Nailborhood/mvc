@@ -102,5 +102,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("알람 발송에 실패했습니다.");
             });
     }
+
+    var reviewPostLink = document.getElementById('review-post-link');
+    if (reviewPostLink) {
+        reviewPostLink.addEventListener('click', function(event) {
+            var isLoggedIn = this.getAttribute('data-is-logged-in') === 'true';
+            if (!isLoggedIn) {
+                event.preventDefault();
+                alert("로그인 후 이용할 수 있습니다.");
+                window.location.href = '/login'; // 로그인 페이지로 리디렉션
+            }
+        });
+    }
+
 });
 
