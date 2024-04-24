@@ -1,5 +1,5 @@
 /*@import "/src/components/admin/admin_side_style.css";*/
-
+@import "admin_side_style.css";
 :root {
     --main-color_begie: #f7f5f0;
     --shadow_1: #dad2cd;
@@ -100,6 +100,8 @@
     padding: 8px;
     border: 1px solid #ddd;
     align-content: center;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .th {
@@ -107,6 +109,10 @@
     font-weight: bold;
 }
 
+.chart-item:hover {
+    background-color: var(--shadow_1);
+    cursor: pointer;
+}
 
 
 .chart-profile {
