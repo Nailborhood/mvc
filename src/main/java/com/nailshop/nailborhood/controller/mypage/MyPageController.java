@@ -42,6 +42,7 @@ public class MyPageController {
 
 
     // 내가 쓴 리뷰
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/review/inquiry")
     public String myReview(Model model,
                            Authentication authentication,
@@ -70,6 +71,7 @@ public class MyPageController {
     }
 
     // 찜한 매장 조회
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/shop/favorite/inquiry")
     public String myFavorite(Model model,
                              Authentication authentication,
