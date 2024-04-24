@@ -159,6 +159,7 @@ header {
     position: relative;
     display: flex;
     align-items: center;
+    width: 45px;
 }
 
 .alarm-field a{
@@ -171,13 +172,16 @@ header {
     display: inline-block;
 }
 
+#alarm-img-field img {
+    width: 33px;
+    height: 33px;
+}
+
 #newNoticeCnt {
     position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(50%, -50%);
-    /* 추가 스타일링 */
-    background-color: #007bff; /* 부트스트랩 primary 색상 */
+    top: 10px;
+    right: 3px;
+    background-color: var(--main-color_navy);
     color: white;
     font-size: 0.75em;
     padding: 0.25em 0.6em;
