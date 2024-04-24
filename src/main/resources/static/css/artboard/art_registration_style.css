@@ -56,7 +56,7 @@
     margin-bottom: 40px;
 }
 
-.input-file-button {
+.input-file-button, .delete-file-button{
     padding: 3px 10px;
     border: none;
     background-color: #1d438a;
@@ -142,12 +142,16 @@ table {
     background-color: rgba(43, 107, 225, 0.287);
 }
 
+.delete-file-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
 @media (max-width: 768px) {
     .image-upload-box {
         width: 100%;
     }
 
-    .input-file-button, .submit-button {
+    .input-file-button, .submit-button, .delete-file-button {
         margin: 10px 0;
     }
 }

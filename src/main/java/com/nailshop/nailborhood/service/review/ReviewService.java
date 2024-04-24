@@ -21,7 +21,6 @@ import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
-import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -87,19 +86,18 @@ public class ReviewService {
         updateShopRateAvg(shop);
 
         // 리뷰 카테고리 수정
-        //TODO
-//        categoryReviewRepository.deleteByReviewReviewId(reviewId);
+        categoryReviewRepository.deleteByReviewReviewId(reviewId);
 
-//        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
-//            Category category = categoryRepository.findById(categoryId)
-//                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
-//
-//            CategoryReview categoryReview = CategoryReview.builder()
-//                    .review(review)
-//                    .category(category)
-//                    .build();
-//            categoryReviewRepository.save(categoryReview);
-//        }
+        for(Long categoryId : reviewUpdateDto.getCategoryListId()){
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            CategoryReview categoryReview = CategoryReview.builder()
+                    .review(review)
+                    .category(category)
+                    .build();
+            categoryReviewRepository.save(categoryReview);
+        }
 
 
         return commonService.successResponse(SuccessCode.REVIEW_UPDATE_SUCCESS.getDescription(), HttpStatus.OK, null);

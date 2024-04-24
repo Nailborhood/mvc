@@ -22,6 +22,7 @@ import com.nailshop.nailborhood.type.ErrorCode;
 import com.nailshop.nailborhood.type.AlarmType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -45,7 +46,7 @@ public class ReviewController {
     private final CategoryRepository categoryRepository;
 
     // 리뷰 등록(GET)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/{shopId}/review/registration")
     public String showRegisterReview(Authentication authentication,
                                      @AuthenticationPrincipal MemberDetails memberDetails,
@@ -66,7 +67,7 @@ public class ReviewController {
     }
 
     // 리뷰 등록(POST)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/{shopId}/review/registration")
     public String registerReview(@PathVariable Long shopId,
                                  Authentication authentication,
@@ -92,6 +93,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/review/update/{reviewId}")
     public String reviewUpdate(Authentication authentication,
                                @AuthenticationPrincipal MemberDetails memberDetails,
@@ -121,6 +123,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정 뷰
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/review/update/{reviewId}")
     public String getReviewUpdate(Authentication authentication,
                                   @AuthenticationPrincipal MemberDetails memberDetails,
@@ -135,12 +138,16 @@ public class ReviewController {
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("categories", categoryList);
 
         return "review/review_mod";
     }
 
     // 리뷰 신고
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/review/report/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewReport(Authentication authentication,
                                                         @AuthenticationPrincipal MemberDetails memberDetails,
@@ -159,6 +166,7 @@ public class ReviewController {
 
 
     // 리뷰 신고 뷰
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/review/report/{reviewId}")
     public String reviewReportView(Model model,
                                    @AuthenticationPrincipal MemberDetails memberDetails,
@@ -180,6 +188,7 @@ public class ReviewController {
 
 
     // 리뷰 삭제
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @DeleteMapping("/mypage/review/{reviewId}")
     public ResponseEntity<ResultDto<Void>> reviewDelete(Authentication authentication,
                                                         @AuthenticationPrincipal MemberDetails memberDetails,

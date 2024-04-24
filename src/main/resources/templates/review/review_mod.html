@@ -7,6 +7,7 @@
     <title>리뷰 수정 페이지</title>
     <link rel="stylesheet" href="/css/layout/layout_style.css">
     <link rel="stylesheet" href="/css/review/review_mod_style.css">
+    <link rel="stylesheet" href="/css/search/category_style.css">
     <script th:src="@{/js/review/review_mod.js}"></script>
 </head>
 
@@ -19,13 +20,17 @@
                 <div class="body-content">
                     <div class="review-write-section">
                         <div class="rating-section">
-                            <label for="star-rating" class="rating-label">네일은 어떠셨어요?</label>
+                            <label for="star-rating" class="rating-label">리뷰 수정하기</label>
                             <select id="star-rating" name="rate" class="star-rating-input">
                                 <option th:each="i : ${#numbers.sequence(5,1)}"
                                         th:value="${i}"
                                         th:text="${#strings.repeat('★',i)} + ${#strings.repeat('☆', 5-i)}"
                                         th:selected="${i == result.getData().rate}">별점</option>
                             </select>
+                        </div>
+                        <div class="category">
+                            <span class="category-text">카테고리 선택</span>
+                            <div th:replace="fragments/components/search/check_category.html"></div>
                         </div>
 
                         <div class="image-gallery">

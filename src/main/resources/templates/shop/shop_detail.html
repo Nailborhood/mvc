@@ -37,7 +37,9 @@
                     </div>
 
                     <div class="review-post-link-container">
-                        <a class="review-post-link" th:href="@{/{shopId}/review/registration (shopId=${shop.shopId})}">
+                        <a class="review-post-link" th:href="@{/{shopId}/review/registration (shopId=${shop.shopId})}"
+                           id="review-post-link"
+                           th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}">
                             리뷰쓰기
                         </a>
                     </div>
