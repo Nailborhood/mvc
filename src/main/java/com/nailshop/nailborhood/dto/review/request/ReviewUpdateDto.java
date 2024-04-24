@@ -14,6 +14,6 @@ public class ReviewUpdateDto {
     private Long reviewId;
     private String contents;
     private Integer rate;
-//    private List<Long> categoryListId;
+    private List<Long> categoryListId;
 
 }

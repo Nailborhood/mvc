@@ -35,6 +35,20 @@
     margin-bottom: 20px;
 }
 
+.category-text {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.category {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
 .image-gallery {
     display: flex;
     flex-wrap: wrap;

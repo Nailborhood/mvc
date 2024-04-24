@@ -138,7 +138,10 @@ public class ReviewController {
         ResultDto<ReviewDetailResponseDto> resultDto = ResultDto.in(detailReview.getStatus(), detailReview.getMessage());
         resultDto.setData((ReviewDetailResponseDto) detailReview.getData());
 
+        List<Category> categoryList = categoryRepository.findAll();
+
         model.addAttribute("result", resultDto);
+        model.addAttribute("categories", categoryList);
 
         return "review/review_mod";
     }
