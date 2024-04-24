@@ -1,11 +1,14 @@
 package com.nailshop.nailborhood.service.member;
 
 import com.nailshop.nailborhood.domain.member.Customer;
+import com.nailshop.nailborhood.domain.member.Favorite;
 import com.nailshop.nailborhood.domain.member.Login;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
+import com.nailshop.nailborhood.dto.member.response.UserInfoResponseDto;
 import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
@@ -239,15 +242,30 @@ public class MemberService {
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
-//
-//
-//    public CommonResponseDto<Object> findUser(Long id) {
-//        Member member = memberRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-//
-//
-//    }
-//
+
+
+    public CommonResponseDto<Object> findUser(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+
+        UserInfoResponseDto userInfoResponseDto =  UserInfoResponseDto.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .favoriteCnt(member.getFavoriteList()
+                        .stream()
+                        .filter(Favorite::getStatus)
+                        .count()
+                )
+                .reviewCnt(member.getCustomer().getReviewList()
+                        .stream()
+                        .filter(review -> !review.isDeleted())
+                        .count()
+                )
+                .reservationCnt(0L)
+                .build();
+        return commonService.successResponse(SuccessCode.MEMBER_FOUND.getDescription(), HttpStatus.OK, userInfoResponseDto);
+    }
+
 
 
     // 프로필 수정
