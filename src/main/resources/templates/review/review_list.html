@@ -25,6 +25,16 @@
 
         <div class="search-bar">
             <div th:replace="review/review_search.html"></div>
+
+            <div class="orderby-select">
+                <span class="total-element" th:text="'전체 ' + ${result.getData().paginationDto.totalElements + '개'}"></span>
+                <select name="orderby" id="orderby">
+                    <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                            th:text="${criteria.text}"
+                            th:selected="${criteria.value == selectedOrderby}">Option
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="review-list" th:unless="${error}" id="review-list" >
             <div th:each="review, iterStat : ${result.getData().reviewResponseDtoList}" class="review-list-block" th:if="${iterStat.count <= 20}">
