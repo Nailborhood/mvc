@@ -71,18 +71,18 @@ public class MemberController {
 
 
     // 마이페이지 겸 유저 조회 페이지로...?
-    @GetMapping("/user")
-//    @GetMapping("/user/{memberId}")
+//    @GetMapping("/user")
+    @GetMapping("/user/{memberId}")
     public String userPage(Authentication authentication,
                            @AuthenticationPrincipal MemberDetails memberDetails,
-//                           @PathVariable Long memberId,
+                           @PathVariable(name = "memberId") Long memberId,
                            Model model) {
         if(authentication != null) {
             SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
             model.addAttribute("sessionDto", sessionDto);
         }
-//        CommonResponseDto<Object> commonResponseDto = memberService.findUser(memberId);
-
+        CommonResponseDto<Object> commonResponseDto = memberService.findUser(memberId);
+        model.addAttribute("userInfoResponseDto", commonResponseDto.getData());
         return "mypage/user";
     }
 
