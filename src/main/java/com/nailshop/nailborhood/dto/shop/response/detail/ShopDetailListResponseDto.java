@@ -18,5 +18,6 @@ public class ShopDetailListResponseDto {
     private List<MenuDetailResponseDto> menuDetailResponseDtoList;
     private List<ShopAndReviewLookUpResponseDto> shopReviewLookupResponseDtoList; // 리뷰리스트
     private List<ShopArtBoardLookupResponseDto> shopArtBoardLookupResponseDtoList; // 아트 리스트
+    private ShopCertificateImgResponseDto shopCertificateImgResponseDto;
 
 }
