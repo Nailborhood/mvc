@@ -97,4 +97,63 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("알람 발송에 실패했습니다.");
             });
     }
+
+    const clickBookMarkUrl = "/assets/icons/art/clickBookMark.svg";
+    const emptyBookMarkUrl = "/assets/icons/art/emptyBookMark.svg";
+
+    $('.artBookMark').each(function() {
+        var btn = $(this);
+        var isBookMark = btn.attr('data-bookmark-status') === 'true';
+        var imgSrc = isBookMark ? '/assets/icons/art/clickBookMark.svg' : '/assets/icons/art/emptyBookMark.svg';
+        btn.find('img').attr('src', imgSrc);
+
+        btn.click(function(e) {
+            e.preventDefault();
+
+            var isLoggedIn = btn.attr('data-is-logged-in') === 'true';
+            if (!isLoggedIn) {
+                alert("로그인 후 이용할 수 있습니다.");
+                return;
+            }
+
+            var artRefId = btn.attr('data-art-id');
+            /*var receiver = btn.attr('data-receiver');*/
+
+            if (btn.attr('data-bookmark-status') === 'true') {
+                fetch( `/artboard/bookmark/${artRefId}`, {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 요청이 성공하면 찜 버튼의 상태와 아이콘을 업데이트합니다.
+                        if(data.status) {
+                            btn.find('img').attr('src', emptyBookMarkUrl);
+                            location.reload();
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else if (btn.attr('data-bookmark-status') === 'false'){
+                fetch( `/artboard/bookmark/${artRefId}`, {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 요청이 성공하면 찜 버튼의 상태와 아이콘을 업데이트합니다.
+                        if(data.status) {
+                            btn.find('img').attr('src', clickBookMarkUrl);
+                            location.reload();
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+
+
 });

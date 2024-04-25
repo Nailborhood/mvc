@@ -60,6 +60,7 @@ public class ArtRegistrationService {
                 .likeCount(0L)
                 .isDeleted(false)
                 .shop(shop)
+                .bookMarkCount(0L)
                 .build();
 
         artRef = artRefRepository.save(artRef);

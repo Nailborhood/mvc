@@ -37,6 +37,14 @@
             </div>
 
             <div class="art-info-wrapper">
+                <div class="bookMark-section">
+                    <a href="#" class="artBookMark" th:data-art-id="${result.getData().artRefId}" th:data-bookmark-status="${result.getData().artBookMarkStatus}" th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
+                       th:data-receiver="${receiver.getEmail()}">
+
+                        <img class="bookmark-img" src="/assets/icons/art/emptyBookMark.svg" />
+                    </a>
+                </div>
+
                 <h2 th:text="${result.getData().name}">title</h2>
                 <h3 th:text="${result.getData().shopName}">shopName</h3>
                 <p th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">categoryTypeList</p>

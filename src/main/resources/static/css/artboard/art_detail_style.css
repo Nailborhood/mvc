@@ -81,3 +81,8 @@
 .art-info-wrapper p:last-of-type {
     margin-bottom: 30px;
 }
+
+.bookmark-img {
+    width: 30px;
+    height: 30px;
+}
