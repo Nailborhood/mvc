@@ -153,4 +153,28 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) ")
     Page<ArtRef> findAllArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
 
+
+    // 북마크 증가
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = a.bookMarkCount +1" +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void increaseBookMarkCount(@Param("artRefId") Long artRefId);
+
+    // 북마크 감소
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = CASE WHEN a.bookMarkCount > 0 " +
+            "THEN (a.bookMarkCount -1) " +
+            "ELSE 0 END " +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void decreaseBookMarkCount(@Param("artRefId") Long artRefId);
+
+    // 북마크 0으로 변경
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = 0 " +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void makeBookMarkCountZero(@Param("artRefId") Long artRefId);
+
 }
