@@ -26,5 +26,6 @@ public class ArtDetailResponseDto {
     private Boolean artLikeStatus;
     private Long bookMarkCount;
     private Boolean artBookMarkStatus;
+    private String shopAddress;
 
 }

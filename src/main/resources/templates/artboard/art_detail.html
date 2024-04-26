@@ -15,21 +15,45 @@
 </head>
 
 <body>
-    <div layout:fragment="content">
-        <div class="content-wrapper">
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="art-detail-section">
             <div class="image-slider-wrapper">
                 <div th:each="imgEntry : ${result.getData().imgPathMap}"
                      th:class="${imgEntry.key == 1} ? 'image-slide active' : 'image-slide'"
                      th:style="|background-image:url(@{${imgEntry.value}})|">
                 </div>
 
-                <div class="like-section">
-                    <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}" th:data-like-status="${result.getData().artLikeStatus}" th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
-                    th:data-receiver="${receiver.getEmail()}">
+                <div class="art-like-bookmark-section">
+                    <div class="like-section">
+                        <a href="#" class="artLike" th:data-art-id="${result.getData().artRefId}"
+                           th:data-like-status="${result.getData().artLikeStatus}"
+                           th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
+                           th:data-receiver="${receiver.getEmail()}">
 
-                        <img class="like-img" src="/assets/icons/art/emptyLike.svg" />
-                    </a>
-                    <span class="like-count" th:text="${result.getData().likeCount}">likeCount</span>
+                            <img class="like-img" src="/assets/icons/art/emptyLike.svg"/>
+                        </a>
+                        <span class="like-count" th:text="${result.getData().likeCount}">likeCount</span>
+                    </div>
+
+                    <div class="bookMark-section">
+                        <a href="#" class="artBookMark" th:data-art-id="${result.getData().artRefId}"
+                           th:data-bookmark-status="${result.getData().artBookMarkStatus}"
+                           th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
+                           th:data-receiver="${receiver.getEmail()}">
+
+                            <img class="bookmark-img" src="/assets/icons/art/emptyBookMark.svg"/>
+                        </a>
+                        <div th:if="${sessionDto != null}">
+                            <div th:if="${receiver != null}">
+                            <span class="bookmark-count"
+                                  th:if="${sessionDto.email == receiver.email}"
+                                  th:text="${result.getData().bookMarkCount}">
+                                bookMarkCount
+                            </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
@@ -37,22 +61,37 @@
             </div>
 
             <div class="art-info-wrapper">
-                <div class="bookMark-section">
-                    <a href="#" class="artBookMark" th:data-art-id="${result.getData().artRefId}" th:data-bookmark-status="${result.getData().artBookMarkStatus}" th:data-is-logged-in="${#strings.isEmpty(sessionDto) ? 'false' : 'true'}"
-                       th:data-receiver="${receiver.getEmail()}">
+                <a th:href="@{/shopDetail/{shopId}(shopId=${receiver.getOwner().getShop().getShopId()})}"
+                   class="art-info-profile-link">
+                    <div class="art-info-profile">
+                        <img th:src="${receiver.getProfileImg()}" alt="프로필 이미지" class="profile-pic"/>
+                        <span class="art-owner" th:text="${receiver.getNickname()}">art owner</span>
+                    </div>
 
-                        <img class="bookmark-img" src="/assets/icons/art/emptyBookMark.svg" />
-                    </a>
+
+                    <p class="art-meta">
+                        <span class="shop-name" th:text="${result.getData().shopName}"></span>&nbsp; |&nbsp;
+                        <span class="shop-address" th:text="${result.getData().shopAddress}">매장 주소</span>
+                    </p>
+                </a>
+                <div class="art-info-title">
+                    <span class="art-title" th:text="${result.getData().name}">제목</span>
+                    <span class="art-date"
+                          th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd HH:mm')}">작성 일시</span>
                 </div>
 
-                <h2 th:text="${result.getData().name}">title</h2>
-                <h3 th:text="${result.getData().shopName}">shopName</h3>
-                <p th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">categoryTypeList</p>
-                <p th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd, HH:mm')}">createdAt</p>
-                <p th:text="${result.getData().content}">content</p>
+
+                <!--                <span  class="art-category" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">categoryTypeList</span>-->
+                <div class="category-container">
+                    <th:block th:each="category : ${result.getData().categoryTypeList}">
+                        <span class="category-box" th:text="'#' + ${category}"></span>
+                    </th:block>
+                </div>
+                <p class="art-content" th:text="${result.getData().content}">content</p>
             </div>
         </div>
     </div>
+</div>
 </body>
 
 </html>

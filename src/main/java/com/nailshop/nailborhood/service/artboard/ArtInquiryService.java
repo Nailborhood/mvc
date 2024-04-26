@@ -179,6 +179,8 @@ public class ArtInquiryService {
                                                                         .artLikeStatus(artLikeStatus)
                                                                         .bookMarkCount(artRef.getBookMarkCount())
                                                                         .artBookMarkStatus(artBookMarkStatus)
+                                                                        .shopAddress(artRef.getShop()
+                                                                                           .getAddress())
                                                                         .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
@@ -215,6 +217,8 @@ public class ArtInquiryService {
                                                                         .createdAt(artRef.getCreatedAt())
                                                                         .updatedAt(artRef.getUpdatedAt())
                                                                         .bookMarkCount(artRef.getBookMarkCount())
+                                                                        .shopAddress(artRef.getShop()
+                                                                                           .getAddress())
                                                                         .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
