@@ -103,6 +103,37 @@ public class MyPageController {
 
     }
 
+    //내가 북마크한 아트
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/art/bookmark/inquiry")
+    public String myBookmark(Model model,
+                             Authentication authentication,
+                             @AuthenticationPrincipal MemberDetails memberDetails,
+                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                             @RequestParam(value = "size", defaultValue = "20", required = false) int size) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
+        try {
+            CommonResponseDto<Object> myBookmark = mypageService.myBookmark(sessionDto.getId(), page, size);
+            ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myBookmark.getStatus(), myBookmark.getMessage());
+            resultDto.setData((MyFavoriteListResponseDto) myBookmark.getData());
+
+
+            model.addAttribute("result", resultDto);
+
+        } catch (NotFoundException e) {
+
+            model.addAttribute("ErrorCode", ErrorCode.SHOP_FAVORITE_EMPTY);
+
+        }
+
+
+        return "mypage/my_bookmark_list";
+
+    }
+
     // 비밀번호 수정 페이지
     @GetMapping("/password")
     public String modPasswordPage(Authentication authentication,

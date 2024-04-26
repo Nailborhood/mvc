@@ -42,6 +42,21 @@
                     </div>
                 </div>
             </div>
+            <div class="pagination" th:unless="${ReviewErrorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + ${pageNum}}" th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
