@@ -154,6 +154,20 @@ public class ArtController {
         return ResponseEntity.status(likeArt.getHttpStatus()).body(resultDto);
     }
 
+    // 아트판 북마크
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PostMapping("/artboard/bookmark/{artRefId}")
+    public ResponseEntity<ResultDto<ArtBookMarkResponseDto>> bookMarkArtRef(Authentication authentication,
+                                                                    @AuthenticationPrincipal MemberDetails memberDetails,
+                                                                    @PathVariable Long artRefId){
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        CommonResponseDto<Object> bookMarkArt = artLikeService.bookMarkArt(sessionDto.getId(), artRefId);
+        ResultDto<ArtBookMarkResponseDto> resultDto = ResultDto.in(bookMarkArt.getStatus(), bookMarkArt.getMessage());
+        resultDto.setData((ArtBookMarkResponseDto) bookMarkArt.getData());
+
+        return ResponseEntity.status(bookMarkArt.getHttpStatus()).body(resultDto);
+    }
+
     // 아트판 전체 조회
     @GetMapping("/artboard/inquiry")
     public String inquiryAllArtRef(@RequestParam(value = "page", defaultValue = "1", required = false) int page,

@@ -1,12 +1,16 @@
 package com.nailshop.nailborhood.service.artboard;
 
+import com.nailshop.nailborhood.domain.artboard.ArtBookMark;
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.dto.artboard.ArtBookMarkResponseDto;
 import com.nailshop.nailborhood.dto.artboard.ArtLikeResponseDto;
+import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.artboard.ArtBookMarkRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
@@ -31,6 +35,7 @@ public class ArtLikeService {
     private final ArtRefRepository artRefRepository;
     private final ArtLikeRepository artLikeRepository;
     private final MemberRepository memberRepository;
+    private final ArtBookMarkRepository artBookMarkRepository;
 
 
     @Transactional
@@ -88,6 +93,64 @@ public class ArtLikeService {
                         .build();
 
                 return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artLikeResponseDto);
+            }
+        }
+    }
+
+    // 아트 북마크
+    public CommonResponseDto<Object> bookMarkArt(Long memberId, Long artRefId) {
+        // 멤버 확인
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // ArtRef 정보 get
+        ArtRef artRef = artRefRepository.findById(artRefId)
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
+
+        // artLike 존재 여부 확인
+        Optional<ArtBookMark> artBookMark = artBookMarkRepository.findByMemberMemberIdAndArtRefArtRefId(member.getMemberId(), artRefId);
+
+        if (artBookMark.isEmpty()){
+            // 첫 좋아요
+            ArtBookMark bookMark = ArtBookMark.builder()
+                                        .status(true)
+                                        .artRef(artRef)
+                                        .member(member)
+                                        .build();
+
+            artBookMarkRepository.save(bookMark);
+            artRefRepository.increaseBookMarkCount(artRefId);
+
+            ArtBookMarkResponseDto artBookMarkResponseDto = ArtBookMarkResponseDto.builder()
+                                                                          .status(true)
+                                                                          .build();
+
+            return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artBookMarkResponseDto);
+
+        } else {
+
+            ArtBookMark existingArtBookMark = artBookMark.get();
+
+            if (existingArtBookMark.getStatus()){
+                // 좋아요 true -> false
+                artLikeRepository.toggleStatus(existingArtBookMark.getArtBookMarkId(), false);
+                artRefRepository.decreaseBookMarkCount(artRefId);
+
+                ArtBookMarkResponseDto artBookMarkResponseDto = ArtBookMarkResponseDto.builder()
+                                                                                      .status(true)
+                                                                                      .build();
+
+                return commonService.successResponse(SuccessCode.ART_DISLIKE_SUCCESS.getDescription(), HttpStatus.OK, artBookMarkResponseDto);
+            } else {
+                // 좋아요 false -> true
+                artBookMarkRepository.toggleStatus(existingArtBookMark.getArtBookMarkId(), true);
+                artRefRepository.increaseBookMarkCount(artRefId);
+
+                ArtBookMarkResponseDto artBookMarkResponseDto = ArtBookMarkResponseDto.builder()
+                                                                                      .status(true)
+                                                                                      .build();
+
+                return commonService.successResponse(SuccessCode.ART_LIKE_SUCCESS.getDescription(), HttpStatus.OK, artBookMarkResponseDto);
             }
         }
     }

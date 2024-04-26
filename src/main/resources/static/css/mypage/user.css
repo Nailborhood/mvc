@@ -17,6 +17,7 @@
 
 
 .mypage-content_div {
+    width: 1000px;
     min-height: 560px;
     display: flex;
     justify-content: space-between;
@@ -61,6 +62,19 @@
     align-items: center;
 }
 
+#profile-nickname {
+    width: 260px;
+    height: 30px;
+    text-align: center;
+    font-size: 22px;
+    margin: 10px;
+}
+
+#info-span {
+    display: flex;
+}
+
+
 .mypage-menu_div {
     display: flex;
     flex-direction: column;
@@ -71,11 +85,11 @@
 
 .mypage-menu_row {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     width: 700px;
     height: 230px;
-    /*background-color: #0084ff;*/
+    padding-left: 30px;
 }
 
 .mypage-menu_block {

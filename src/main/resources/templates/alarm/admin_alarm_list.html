@@ -40,8 +40,8 @@
                     </div>
 
                 </div>
-                <div th:if="${resultDto.getData().getAlarmResponseDtoList().size()==0}">
-                    <p>알림이 없습니다</p>
+                <div class="alarm-empty-message" th:if="${resultDto.getData().getAlarmResponseDtoList().size()==0}">
+                    <p>도착한 알림이 없습니다</p>
                 </div>
             </div>
             <div class="pagination" th:if="${resultDto.getData().getPaginationDto().getTotalPages() !=0}">

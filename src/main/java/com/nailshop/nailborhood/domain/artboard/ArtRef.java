@@ -29,6 +29,9 @@ public class ArtRef extends BaseTime {
     @Column(name = "like_count")
     private Long likeCount;
 
+    @Column(name = "book_mark_count")
+    private Long bookMarkCount;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
@@ -46,12 +49,13 @@ public class ArtRef extends BaseTime {
     private Shop shop;
 
     @Builder
-    public ArtRef(String name, String content, Long likeCount, Boolean isDeleted, Shop shop) {
+    public ArtRef(String name, String content, Long likeCount, Boolean isDeleted, Shop shop, Long bookMarkCount) {
         this.name = name;
         this.content = content;
         this.likeCount = likeCount;
         this.isDeleted = isDeleted;
         this.shop = shop;
+        this.bookMarkCount = bookMarkCount;
     }
 
     public void updateArtRef(String name, String content){
