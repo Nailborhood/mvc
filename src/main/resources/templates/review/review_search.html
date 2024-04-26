@@ -5,6 +5,12 @@
             <div class="search-button" onclick="submitSearch()">
                 <img src="/assets/icons/search_icon.png" alt="Search">
             </div>
+            <div class="clearButton">
+                <button class="clearStorageButton" id="clearStorageButton">
+                    <img src="/assets/icons/shop/reset.png" alt="reset">
+                    초기화
+                </button>
+            </div>
         </div>
         <div class="search-select-box">
             <div class="checkbox-button_row">
@@ -15,6 +21,16 @@
                     </div>
                 </div>
             </div>
+            <div class="orderby-select">
+                <!--            <span class="total-element" th:text="'전체 ' + ${result.getData().paginationDto.totalElements + '개'}"></span>-->
+                <select name="orderby" id="orderby">
+                    <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
+                            th:text="${criteria.text}"
+                            th:selected="${criteria.value == selectedOrderby}">Option
+                    </option>
+                </select>
+            </div>
         </div>
+
     </form>
 </div>
