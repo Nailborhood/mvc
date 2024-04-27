@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@NoArgsConstructor
+@Builder
 public class ArtDetailResponseDto {
 
     private Long shopId;
@@ -24,19 +24,8 @@ public class ArtDetailResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean artLikeStatus;
+    private Long bookMarkCount;
+    private Boolean artBookMarkStatus;
+    private String shopAddress;
 
-    @Builder
-    public ArtDetailResponseDto(Long shopId,Long artRefId, String name, String content, Long likeCount, String shopName, List<String> categoryTypeList, Map<Integer, String> imgPathMap, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean artLikeStatus) {
-        this.shopId = shopId;
-        this.artRefId = artRefId;
-        this.name = name;
-        this.content = content;
-        this.likeCount = likeCount;
-        this.shopName = shopName;
-        this.categoryTypeList = categoryTypeList;
-        this.imgPathMap = imgPathMap;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.artLikeStatus = artLikeStatus;
-    }
 }
