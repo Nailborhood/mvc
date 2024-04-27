@@ -23,6 +23,13 @@ public interface ArtBookMarkRepository extends JpaRepository<ArtBookMark, Long> 
     @Modifying(clearAutomatically = true)
     void toggleStatus(@Param("id") Long artLikeId, @Param("status") boolean b);
 
+    @Query("SELECT ab.status " +
+            "FROM ArtBookMark ab " +
+            "LEFT JOIN ab.artRef a " +
+            "LEFT JOIN ab.member m " +
+            "WHERE m.memberId = :memberId AND a.artRefId = :artRefId ")
+    Boolean findStatusByMemberIdAnAndArtRefId(@Param("memberId") Long memberId, @Param("artRefId") Long artRefId);
+
     // 내가 북마크한 아트 조회
     @Query("SELECT abm.artRef " +
             "FROM ArtBookMark abm " +

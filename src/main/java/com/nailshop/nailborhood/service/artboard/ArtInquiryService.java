@@ -11,6 +11,7 @@ import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.artboard.ArtBookMarkRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtImgRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtLikeRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
@@ -39,6 +40,7 @@ public class ArtInquiryService {
     private final ArtLikeRepository artLikeRepository;
     private final MemberRepository memberRepository;
     private final CategoryArtRepository categoryArtRepository;
+    private final ArtBookMarkRepository artBookMarkRepository;
 
     // 전체 조회
     public CommonResponseDto<Object> inquiryAllArt(int page, int size, String sortBy, String category, String keyword) {
@@ -106,6 +108,7 @@ public class ArtInquiryService {
                                                           .categoryTypeList(categoryTypeList)
                                                           .createdAt(artRef.getCreatedAt())
                                                           .updatedAt(artRef.getUpdatedAt())
+                                                          .bookMarkCount(artRef.getBookMarkCount())
                                                           .build();
 
             artResponseDtoList.add(artResponseDto);
@@ -136,7 +139,7 @@ public class ArtInquiryService {
                                         .orElseThrow(() -> new NotFoundException(ErrorCode.ART_NOT_FOUND));
 
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                                        .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         // ArtImg get
         List<ArtImg> artImgList = artImgRepository.findByArtRefId(artRefId);
@@ -148,6 +151,12 @@ public class ArtInquiryService {
         Boolean artLikeStatus = artLikeRepository.findStatusByMemberIdAnAndArtRefId(memberId, artRefId);
         if (artLikeStatus == null) {
             artLikeStatus = false;
+        }
+
+        // 북마크
+        Boolean artBookMarkStatus = artBookMarkRepository.findStatusByMemberIdAnAndArtRefId(memberId, artRefId);
+        if (artBookMarkStatus == null) {
+            artBookMarkStatus = false;
         }
 
         // ArtDetailResponseDto build
@@ -168,6 +177,10 @@ public class ArtInquiryService {
                                                                         .createdAt(artRef.getCreatedAt())
                                                                         .updatedAt(artRef.getUpdatedAt())
                                                                         .artLikeStatus(artLikeStatus)
+                                                                        .bookMarkCount(artRef.getBookMarkCount())
+                                                                        .artBookMarkStatus(artBookMarkStatus)
+                                                                        .shopAddress(artRef.getShop()
+                                                                                           .getAddress())
                                                                         .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
@@ -203,6 +216,9 @@ public class ArtInquiryService {
                                                                         .imgPathMap(artImgPathMap)
                                                                         .createdAt(artRef.getCreatedAt())
                                                                         .updatedAt(artRef.getUpdatedAt())
+                                                                        .bookMarkCount(artRef.getBookMarkCount())
+                                                                        .shopAddress(artRef.getShop()
+                                                                                           .getAddress())
                                                                         .build();
 
         return commonService.successResponse(SuccessCode.ART_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artDetailResponseDto);
@@ -252,6 +268,7 @@ public class ArtInquiryService {
                                                           .categoryTypeList(categoryTypeList)
                                                           .createdAt(artRef.getCreatedAt())
                                                           .updatedAt(artRef.getUpdatedAt())
+                                                          .bookMarkCount(artRef.getBookMarkCount())
                                                           .build();
 
             artResponseDtoList.add(artResponseDto);
@@ -287,6 +304,11 @@ public class ArtInquiryService {
         option2.put("value", "updatedAt");
         option2.put("text", "최신순");
         sortOptions.add(option2);
+
+        Map<String, String> option3 = new HashMap<>();
+        option3.put("value", "bookMarkCount");
+        option3.put("text", "저장순");
+        sortOptions.add(option3);
 
         return sortOptions;
     }

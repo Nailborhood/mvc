@@ -251,7 +251,7 @@ public class ArtController {
                     .getShopId());
 
             model.addAttribute("result", resultDto);
-            model.addAttribute("sessionDto", "");
+            model.addAttribute("sessionDto", null);
             model.addAttribute("receiver",receiver);
         }
 

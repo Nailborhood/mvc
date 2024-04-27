@@ -98,6 +98,7 @@ public class ArtLikeService {
     }
 
     // 아트 북마크
+    @Transactional
     public CommonResponseDto<Object> bookMarkArt(Long memberId, Long artRefId) {
         // 멤버 확인
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
@@ -133,7 +134,7 @@ public class ArtLikeService {
 
             if (existingArtBookMark.getStatus()){
                 // 좋아요 true -> false
-                artLikeRepository.toggleStatus(existingArtBookMark.getArtBookMarkId(), false);
+                artBookMarkRepository.toggleStatus(existingArtBookMark.getArtBookMarkId(), false);
                 artRefRepository.decreaseBookMarkCount(artRefId);
 
                 ArtBookMarkResponseDto artBookMarkResponseDto = ArtBookMarkResponseDto.builder()
