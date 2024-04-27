@@ -14,6 +14,7 @@ import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.artboard.ArtBookMarkRepository;
 import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
 import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
@@ -44,6 +45,7 @@ public class MypageService {
     private final CategoryReviewRepository categoryReviewRepository;
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
+    private final ArtBookMarkRepository artBookMarkRepository;
 
     // 내가 쓴 리뷰 조회 (마이페이지)
     public CommonResponseDto<Object> myReview(Long memberId, int page, int size, String sortBy) {
@@ -162,7 +164,7 @@ public class MypageService {
         if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
         PageRequest pageable = PageRequest.of(page - 1, size);
 
-        Page<ArtRef> myBookmarkPage;
+        Page<ArtRef> myBookmarkPage = artBookMarkRepository.findArtBookMarkListByMemberId(memberId,pageable);
         if (myBookmarkPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_BOOKMARK_EMPTY);
 
         List<ArtRef> myBookmarkList = myBookmarkPage.getContent();

@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.controller.mypage;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.SessionDto;
@@ -117,15 +118,15 @@ public class MyPageController {
 
         try {
             CommonResponseDto<Object> myBookmark = mypageService.myBookmark(sessionDto.getId(), page, size);
-            ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myBookmark.getStatus(), myBookmark.getMessage());
-            resultDto.setData((MyFavoriteListResponseDto) myBookmark.getData());
+            ResultDto<ArtListResponseDto> resultDto = ResultDto.in(myBookmark.getStatus(), myBookmark.getMessage());
+            resultDto.setData((ArtListResponseDto) myBookmark.getData());
 
 
             model.addAttribute("result", resultDto);
 
         } catch (NotFoundException e) {
 
-            model.addAttribute("ErrorCode", ErrorCode.SHOP_FAVORITE_EMPTY);
+            model.addAttribute("ArtErrorCode", ErrorCode.ART_BOOKMARK_EMPTY);
 
         }
 
