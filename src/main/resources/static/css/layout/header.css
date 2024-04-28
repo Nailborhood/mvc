@@ -117,7 +117,7 @@ header {
 #profile-mypage-div {
     position: absolute;
     width: 115px;
-    top: 56px;
+    top: 45px;
     right: -28px;
     border: 1px solid var(--shadow_1);
     border-radius: 4px;

@@ -19,6 +19,32 @@
     color: var(--main-color_navy);
 }
 
+.social-icons_div {
+    margin-top: 15px;
+    padding: 10px;
+    border-bottom: var(--shadow_2) solid 1px;
+    border-top: var(--shadow_2) solid 1px;
+    width: 208px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.social-icons_div span {
+    cursor: pointer;
+}
+
+#google-logo {
+    width: 208px;
+    height: 30.7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255, 255, 255);
+    border-radius: 3px;
+    border: 1px solid var(--shadow_2);
+}
+
 .signup-form {
     display: flex;
     flex-direction: column;
@@ -38,6 +64,7 @@ table input {
     width: 200px;
     font-size: 15px;
     outline: lightgray auto 1px;
+    box-sizing: unset;
 }
 
 
