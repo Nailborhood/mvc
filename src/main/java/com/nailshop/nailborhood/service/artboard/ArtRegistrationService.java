@@ -43,7 +43,7 @@ public class ArtRegistrationService {
     private final CategoryArtRepository categoryArtRepository;
 
     @Transactional
-    public CommonResponseDto<Object> registerArt(Long memberId, List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
+    public Long registerArt(Long memberId, List<MultipartFile> multipartFileList, ArtRegistrationRequestDto artRegistrationRequestDto) {
 
         // 멤버 확인
         Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
@@ -82,7 +82,7 @@ public class ArtRegistrationService {
             categoryArtRepository.save(categoryArt);
         }
 
-        return commonService.successResponse(SuccessCode.ART_REGISTRATION_SUCCESS.getDescription(), HttpStatus.OK, null);
+        return artRef.getArtRefId();
     }
 
     // 이미지 저장
