@@ -100,7 +100,6 @@ public class ShopController {
                                        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                        @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                       @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort,
                                        Model model,
                                        @AuthenticationPrincipal MemberDetails memberDetails,
                                        Authentication authentication) {
@@ -111,7 +110,7 @@ public class ShopController {
                 model.addAttribute("sessionDto", sessionDto);
             }
 
-            CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, sort, criteria, dongId, districtsId, cityId);
+            CommonResponseDto<Object> allShopsList = shopListLookupLocalService.getShopListByDong(keyword, page, size, criteria, dongId, districtsId, cityId);
             ResultDto<ShopListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
             resultDto.setData((ShopListResponseDto) allShopsList.getData());
 

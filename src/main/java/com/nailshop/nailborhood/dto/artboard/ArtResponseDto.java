@@ -22,6 +22,7 @@ public class ArtResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long bookMarkCount;
+    private String shopAddress;
 
 
 }

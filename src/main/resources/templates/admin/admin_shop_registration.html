@@ -23,10 +23,10 @@
                     <div class="title-container">
                         <span class="title" th:text="${shop.name}"></span>
                     </div>
-                    <div class="heart">
-                        <!--                            TODO : 찜버튼-->
-                        <!--                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
-                        <!--                            </a>-->
+                    <!--<div class="heart">
+                        &lt;!&ndash;                            TODO : 찜버튼&ndash;&gt;
+                        &lt;!&ndash;                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">&ndash;&gt;
+                        &lt;!&ndash;                            </a>&ndash;&gt;
                         <a class="heart-btn" href="#" role="button">
                             <img src="/assets/icons/shop/clickHeart.svg" />
                         </a>
@@ -36,7 +36,7 @@
                         <a class="review-post-link" href="/{shopId}/review/registration (shopId=${shop.shopId})" role="button">
                             리뷰쓰기
                         </a>
-                    </div>
+                    </div>-->
                 </div>
                 <div id="review" th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
                     <span class="review-cnt">⭐️&nbsp;</span>

@@ -42,6 +42,10 @@
                                     <div class="artRef-img">
                                         <img th:src="@{${art.getMainImgPath()}}">
                                     </div>
+                                    <div class="artRef-info">
+                                        <div class="artRef-shop-name" th:text="${art.getShopName()}"></div>
+                                       <!-- <div class="artRef-shop-address" th:text="${art.getShopAddress()}"></div>-->
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -74,6 +78,10 @@
                                     <div class="review-img">
                                         <img th:src="@{${review.getShopMainImgPath()}}">
                                     </div>
+                                    <div class="review-info">
+                                        <div class="review-shop-name" th:text="${review.getName()}"></div>
+                                        <div class="review-shop-address" th:text="${review.getAddress()}"></div>
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -102,6 +110,10 @@
                                    th:href="@{/shopDetail/{shopId}(shopId=${rate.getShopId()})}" role="link">
                                     <div class="rate-img">
                                         <img th:src="@{${rate.getShopMainImgPath()}}">
+                                    </div>
+                                    <div class="rate-info">
+                                        <div class="rate-shop-name" th:text="${rate.getName()}"></div>
+                                        <div class="rate-shop-address" th:text="${rate.getAddress()}"></div>
                                     </div>
                                 </a>
                             </div>

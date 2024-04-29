@@ -24,9 +24,12 @@
                 <div class="alarm-list_div" th:if="${resultDto != null }">
                     <div class="alarm-info" th:each="alarm : ${resultDto.getData().getAlarmResponseDtoList()}">
                         <a th:href="@{${alarm.getUrl()}}" th:data-alarm-id="${alarm.getAlarmId()}" class="alarm-link">
-                            <div class="alarm-info_title" th:switch="${alarm.getSenderName()}">
-                                <p th:case="'ADMIN'" th:text="'관리자'"></p>
-                                <p th:case="*" th:text="${alarm.getSenderName()}"></p>
+                            <div class="alarm-sender-profileImg">
+                                <img th:src="${alarm.getSenderProfileImg()}" alt="프로필 이미지" class="profile-pic"/>
+                                <div class="alarm-info_title" th:switch="${alarm.getSenderName()}">
+                                    <p th:case="'ADMIN'" th:text="'관리자'"></p>
+                                    <p th:case="*" th:text="${alarm.getSenderName()}"></p>
+                                </div>
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
