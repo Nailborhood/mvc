@@ -184,7 +184,7 @@ button {
     align-items: flex-end;
     justify-content: flex-start; /* 수평 방향에서 중앙 정렬 */
     cursor: pointer;
-    margin-top: auto;
+    margin-top: 230px;
     margin-bottom: 20px;
     margin-right: 40px;
     flex-shrink: 0;

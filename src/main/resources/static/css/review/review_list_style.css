@@ -79,7 +79,7 @@
     justify-content: center;
     align-items: flex-end;
     display: flex;
-    margin-left: 920px;
+    margin-left: 980px;
     margin-bottom: 20px;
     margin-top: 100px;
 }
@@ -131,7 +131,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     position: relative;
-    width: 1000px;
+    width: 1060px;
     margin: 15px auto 0;
 }
 

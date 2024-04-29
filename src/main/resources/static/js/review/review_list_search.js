@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var orderby = document.getElementById('orderby').value;
         var selectedCategories = [];
         var keyword = keywordInput.value;
-        var size = size.value;
+        var size = document.getElementById("size");
 
         checkboxes.forEach(function(checkbox) {
             if (checkbox.checked) {
