@@ -22,16 +22,23 @@
                 <span id="newNoticeCnt" class="badge badge-pill badge-primary">0</span>
             </div>
             <div class="profile-field">
-                <a sec:authorize="isAuthenticated()" th:href="@{/user/{id}(id=${sessionDto.id})}">
+                <a sec:authorize="isAuthenticated()" th:href="@{/user}">
                     <div id="profile-img-field">
                         <img th:src="@{${sessionDto.profileImg}}" />
                     </div>
                 </a>
-                <a sec:authorize="isAnonymous()" th:href="@{/login}">
-                    <div id="login-img-field">
-                        <img src="/assets/icons/user.svg" />
+                <span id="anonymous-span" sec:authorize="isAnonymous()">
+                    <div id="login-href">
+                        <a th:href="@{/login}">
+                            로그인
+                        </a>
                     </div>
-                </a>
+                    <div id="signup-href">
+                        <a th:href="@{/signup}">
+                            회원가입
+                        </a>
+                    </div>
+                </span>
                 <div sec:authorize="isAuthenticated()" id="profile-mypage-div">
                     <ul sec:authorize="hasRole('ROLE_USER')">
                         <li><a th:href="@{/mypage/myInfo}">정보 수정</a></li>

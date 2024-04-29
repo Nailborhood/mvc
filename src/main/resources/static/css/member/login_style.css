@@ -94,8 +94,9 @@ td i {
     justify-content: space-around;
 }
 
-.social-icons span {
+.social-icons img {
     cursor: pointer;
+    width: 208px;
 }
 
 #google-logo {
