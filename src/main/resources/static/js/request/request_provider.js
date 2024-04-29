@@ -1,23 +1,18 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var link = document.querySelector('#sidebar-link-owner');
-
-    link.addEventListener('click', function(event) {
-        event.preventDefault(); // 기본 동작 중단
-        var provider = this.getAttribute('data-provider');
+   function checkProviderAndRedirect() {
+       var link = document.querySelector('#link-owner-request');
+        var provider = link.getAttribute('data-provider');
         console.log(provider);
         if (provider === 'Nail') {
-            window.location.href = this.href;
-
+            window.location.href = "/mypage/owner/shop/request"
         } else if (provider === 'google') {
             // 확인 대화 상자를 표시
             if (confirm('Google 계정으로는 사업자 신청을 할 수 없습니다. 내동네일 회원가입 페이지로 이동하시겠습니까?')) {
-                // window.location.href = '/login';
                 logoutAndRedirect();
             }
         } else {
             alert('지원하지 않는 계정 유형입니다.');
         }
-    });
+    }
 
     function logoutAndRedirect() {
         fetch('/logout', { method: 'POST' })  // 로그아웃을 처리할 서버의 URL과 메소드를 설정
@@ -33,5 +28,3 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('로그아웃 처리 중 오류 발생:', error);
             });
     }
-
-});

@@ -1,8 +1,5 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--<head>
-    <script th:src="@{/js/request/request_provider.js}"></script>
-</head>-->
 <div th:fragment="mypage_side" style="display: contents">
     <ul class="sidebar-ul ul-left">
         <li class="sidebar-li"><a th:href="@{/mypage/myInfo}">정보 수정</a></li>
@@ -12,7 +9,7 @@
         <li class="sidebar-li"><a th:href="@{/mypage/art/bookmark/inquiry}">북마크</a></li>
         <li class="sidebar-li"><a th:href="@{/mypage/logout}">로그아웃</a></li>
     </ul>
-    <a class="sidebar-link" id="sidebar-link-owner" th:href="@{/mypage/owner/shop/request}"
+    <a class="sidebar-link" id="link-owner-request" onclick="checkProviderAndRedirect()"
     th:data-provider="${sessionDto.provider}">사업자 모드 전환 신청</a>
     <a class="sidebar-link" th:href="@{/mypage/dropout}">회원 탈퇴</a>
 </div>
