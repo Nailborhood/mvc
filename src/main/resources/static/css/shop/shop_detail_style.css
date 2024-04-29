@@ -109,6 +109,18 @@
     display: block;
 }
 
+/*.image-slide2 {
+    display: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 550px;
+}
+
+.image-slide.active2 {
+    display: block;
+}*/
+
 .prev, .next {
     cursor: pointer;
     position: absolute;
@@ -216,7 +228,7 @@ td {
     justify-content: space-between;
     align-items: center; /* 세로 중앙 정렬을 위해 추가 */
     padding: 10px 0; /* 경계선과 텍스트 사이의 간격을 주기 위해 추가 */
-    width: 400%;
+    width: 630%;
 }
 .separator {
     display: inline-block;

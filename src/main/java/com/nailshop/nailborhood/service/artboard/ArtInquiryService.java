@@ -109,6 +109,8 @@ public class ArtInquiryService {
                                                           .createdAt(artRef.getCreatedAt())
                                                           .updatedAt(artRef.getUpdatedAt())
                                                           .bookMarkCount(artRef.getBookMarkCount())
+                                                          .shopAddress(artRef.getShop()
+                                                                             .getAddress())
                                                           .build();
 
             artResponseDtoList.add(artResponseDto);

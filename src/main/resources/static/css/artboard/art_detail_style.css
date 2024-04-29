@@ -88,6 +88,7 @@
     font-size: 20px;
     padding: 5px 0;
     margin-top: 20px;
+    display: flex;
 }
 .bookmark-img {
     width: 31px;

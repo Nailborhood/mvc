@@ -142,12 +142,12 @@ public class ShopListLookupLocalService {
 
     // 전체 매장 조회 (주소(동))
     @Transactional
-    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String sort, String criteria, Long dongId, Long districtsId, Long cityId) {
+    public CommonResponseDto<Object> getShopListByDong(String keyword, int page, int size, String criteria, Long dongId, Long districtsId, Long cityId) {
 
 
         // 정렬기준 설정
-        Pageable pageable = (sort.equals("ASC")) ?
-                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, criteria)) : PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, criteria));
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(criteria)
+                                                                  .descending());
 
         // dongId 유무
         Page<Shop> shops;

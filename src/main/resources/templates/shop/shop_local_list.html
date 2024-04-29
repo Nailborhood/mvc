@@ -10,6 +10,7 @@
 <!--   <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>-->
 <!--    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>-->
     <script th:src="@{/js/shop/shop_local_list_searchAll.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_local_list_style.css}">
 </head>
 
@@ -110,21 +111,21 @@
 
                 </div>
             </div>
-            <!--<div class="pagination" th:unless="${errorCode}">
+            <div class="pagination" th:unless="${errorCode}">
                 <div class="pagination-div">
                     <ul class="pagination-ul">
-                        <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
-                            <a class="page-link" th:href="@{'/shop/list?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
                         </li>
-                        <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
                             <a class="page-link" th:href="@{'/shop/list?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}}" th:text="${pageNum}"></a>
                         </li>
-                        <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
-                            <a class="page-link" th:href="@{'/shop/list?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
                         </li>
                     </ul>
                 </div>
-            </div>-->
+            </div>
         </div>
     </div>
     <div th:replace="fragments/footer::footer"></div>
