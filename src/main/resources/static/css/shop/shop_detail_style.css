@@ -5,6 +5,7 @@
     --shadow_3: #82817e;
     --shadow_4: #595857;
     --main-color_navy: #1d438a;
+    --gray20: 68, 68, 71;
 }
 
 .error-code {
@@ -30,7 +31,7 @@
     flex-direction: column;
     align-items: flex-start;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 30px auto;
     position: relative;
 }
 
@@ -42,12 +43,13 @@
 .title-star {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding: 7px 0px;
 }
 
 .review-post-link-container {
-    margin-left: 20px;
+    /*margin-left: 20px;*/
+    margin: 7px 0 0 20px;
 }
 
 .title {
@@ -80,7 +82,7 @@
     background-color: #1d438a; /* 빨간색 배경 */
     color: white; /* 텍스트는 흰색 */
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
-    border-radius: 5px;
+    border-radius: 15px;
 }
 
 .review-post-link:hover {
@@ -148,19 +150,21 @@
 
 .subtitle {
     margin-top: 10px;
-    font-size: 20px;
+    /*font-size: 20px;*/
     font-weight: 500;
     vertical-align: middle;
     display: inline-block;
+    color: rgba(var(--gray20), 1);
 }
 
 .location-subtitle {
     margin-top: 40px;
     margin-bottom: 5px;
-    font-size: 20px;
+    /*font-size: 20px;*/
     font-weight: 500;
     vertical-align: middle;
     display: inline-block;
+    color: rgba(var(--gray20), 1);
 }
 
 .info-subtitle {
@@ -214,29 +218,40 @@ td {
 .shop-menu {
     display: flex;
     background-color: var(--main-color_begie);
-    padding: 30px 30px 30px 70px;
-    margin: 40px 50px;
-    width: 90%;
+    padding: 30px 30px 30px 30px;
+    margin: 40px 0px;
+    width: 820px;
 }
 
 .menu-list {
     /*margin-left: 50px;*/
+    margin: 0px auto;
+}
+
+.menu-txt {
+    width: 150px;
 }
 
 .price-row {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: center; /* 세로 중앙 정렬을 위해 추가 */
     padding: 10px 0; /* 경계선과 텍스트 사이의 간격을 주기 위해 추가 */
-    width: 630%;
+    gap: 100px;
+    width: 700px;
 }
 .separator {
     display: inline-block;
     height: 1px;
     background-color: #C0C0C0;
-    width: 50%; /* 가로 길이를 부모 요소의 100%로 설정합니다. */
-    margin: 0 5px; /* 양 옆에 여백을 주어 텍스트와 가격 사이에 공백을 둡니다. */
-    vertical-align: middle;
+    width: 300px; /* 가로 길이를 부모 요소의 100%로 설정합니다. */
+    /*margin: 0 5px; !* 양 옆에 여백을 주어 텍스트와 가격 사이에 공백을 둡니다. *!*/
+    /*vertical-align: middle;*/
+}
+
+.menu-price {
+    width: 120px;
+    text-align: end;
 }
 
 .shop-art , .shop-review {
