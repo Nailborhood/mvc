@@ -22,7 +22,7 @@
                 <span id="newNoticeCnt" class="badge badge-pill badge-primary">0</span>
             </div>
             <div class="profile-field">
-                <a sec:authorize="isAuthenticated()" th:href="@{/user/{id}(id=${sessionDto.id})}">
+                <a sec:authorize="isAuthenticated()" th:href="@{/user}">
                     <div id="profile-img-field">
                         <img th:src="@{${sessionDto.profileImg}}" />
                     </div>
