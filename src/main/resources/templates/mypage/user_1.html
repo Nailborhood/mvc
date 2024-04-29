@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
-        <link rel="stylesheet" th:href="@{/css/mypage/user.css}" />
+    <link rel="stylesheet" th:href="@{/css/mypage/user.css}" />
+    <script th:src="@{/js/request/request_provider}"></script>
 </head>
 <div layout:fragment="content" class="mypage-content">
     <div class="content">
@@ -67,7 +68,7 @@
                     </div>
                 </div>
                 <div>
-                     사업자 전환 신청 | 고객 센터
+                    <a th:data-provider="${sessionDto.provider}" id="link-owner-request" onclick="checkProviderAndRedirect()">사업자 전환 신청</a> | 고객 센터
                 </div>
             </div>
 <!--            <div class="mypage-menu_div">-->
