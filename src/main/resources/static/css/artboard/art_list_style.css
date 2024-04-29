@@ -223,16 +223,20 @@
     display: block;
     overflow: hidden;
     position: relative;
-    width: 100%;
+    width: 260px;
     height: 260px;
 }
 
 .art-img img {
-    width: 100%;
-    height: 100%;
+    width: 260px;
+    height: 260px;
     object-fit: cover;
-    /*max-width: 250px;*/
+    transition: transform 0.3s ease;
     background-color: #f7f5f0;;
+}
+
+.art-img:hover img {
+    transform: scale(1.1);
 }
 
 .art-icon {
@@ -245,12 +249,11 @@
     flex-shrink: 0;
     justify-content: flex-start;
     left: 0;
-    margin: 0;
     padding: 0;
     pointer-events: none;
     position: absolute;
     right: 0;
     top: 0;
     vertical-align: baseline;
-    margin: 8px;
+    margin: 8px 0;
 }
