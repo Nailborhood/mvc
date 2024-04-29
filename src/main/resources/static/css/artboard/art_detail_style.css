@@ -30,10 +30,9 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    padding: 16px;
+    padding: 10px 5px 90px;
     color: white;
     font-weight: bold;
-    font-size: 24px;
     transition: 0.6s ease;
     user-select: none;
 }
@@ -43,8 +42,13 @@
 }
 
 .next {
-    right: 0;
+    right: -1px;
 }
+
+.prev img, .next img {
+    width: 45px;
+}
+
 .art-like-bookmark-section{
     display: flex;
     gap: 15px;

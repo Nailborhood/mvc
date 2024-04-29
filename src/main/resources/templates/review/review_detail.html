@@ -61,14 +61,17 @@
                     <span class="rating-number" th:text="${result.getData().rate}">5</span>
                     <span class="review-date" th:text="${#temporals.format(result.getData().reviewCreatedAt, 'yyyy-MM-dd HH:mm')}">작성 일시</span>
                 </div>
+                <div class="shop-menu">시술 내역</div>
 
-
-                <p class="review-meta">
+                <a class="shop-meta" th:href="@{/shopDetail/{shopId}(shopId=${result.getData().shopId})}">
                     <span class="shop-name" th:text="${result.getData().shopName}"></span>&nbsp; |&nbsp;
-                    <span class="shop-menu">시술 내역</span> &nbsp;|&nbsp;
                     <span class="shop-address" th:text="${result.getData().shopAddress}">매장 주소</span>
-                </p>
-                <span class="review-service" th:text="${#strings.listJoin(result.getData().categoryTypeList, ', ')}">카테고리</span>
+                </a>
+                <div class="review-service">
+                    <th:block th:each="category : ${result.getData().categoryTypeList}">
+                        <span class="category-box" th:text="'#' + ${category}"></span>
+                    </th:block>
+                </div>
                 <p class="review-content" th:text="${result.getData().contents}">리뷰 내용</p>
                 <div class="review-btn">
                     <a th:if="${nickName == result.getData().reviewAuthor}" th:href="@{/review/update/{reviewId}(reviewId=${result.getData().reviewId}, shopId=${result.getData().shopId})}" class="update-button">리뷰 수정</a>

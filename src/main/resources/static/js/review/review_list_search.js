@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var orderby = document.getElementById('orderby').value;
         var selectedCategories = [];
         var keyword = keywordInput.value;
+        var size = size.value;
 
         checkboxes.forEach(function(checkbox) {
             if (checkbox.checked) {
@@ -108,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         console.log("Keyword:", keyword);
         console.log("orderby:", orderby);
+        console.log("size:", size);
         console.log("Query String before fetch:", queryString);
 
         const currentQueryString = selectedCategories.map(function(id) {
