@@ -11,5 +11,5 @@ public class UserInfoResponseDto {
     private String nickname;
     private Long reviewCnt;
     private Long favoriteCnt;
-    private Long reservationCnt;
+    private Long bookmarkCnt;
 }
