@@ -34,7 +34,7 @@
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
-                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 남긴 리뷰에 좋아요가 등록되었습니다'}"></p>
+                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 등록하신 회원님의 리뷰를 좋아합니다'}"></p>
                                     <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>
