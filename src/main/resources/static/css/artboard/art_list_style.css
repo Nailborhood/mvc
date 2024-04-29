@@ -5,15 +5,133 @@
     height: 100%;
 }
 
+.error-code{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+
+.search-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.search-input {
+    width: 477px;
+    padding: 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+    margin-left: 80px;
+}
+
+.search-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -40px;
+}
+
+.search-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.search-select-box {
+    display: flex;
+    justify-content: center;
+    /*gap: 10px*/
+}
+
+.search-field button {
+    padding: 3px 10px;
+    border: none;
+    /*background-color:var(--main-color_navy);*/
+    background: none;
+    color: gray;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    align-items: normal;
+    display: flex;
+    gap: 3px;
+    margin-left: 25px;
+}
+
+.clearButton {
+    margin-top: 5px;
+}
+
+.search-field .clearButton img {
+    width: 15px;
+    height: 15px;
+}
+
 .sortBy-select{
     margin-right: 10px;
+    justify-content: center;
+    align-items: flex-end;
+    display: flex;
+    margin-left: 920px;
+    margin-bottom: 20px;
+    margin-top: 100px;
 }
 
 .sortBy-select select {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    width: 70px;
+    width: 80px;
+}
+
+.checkbox-button_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 14px;
+    position: absolute;
+}
+
+.checkbox-button {
+    flex: 0 0 calc(20% - 20px);
+    height: 30px;
+    width: 35px;
+}
+
+.checked-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--shadow_1);
+    background-color: var(--main-color_begie);
+}
+
+.category-checkbox:checked + .checked-div {
+    background-color: #82817e;
+}
+.category-checkbox {
+    display: none;
+}
+
+.division-line {
+    width: 820px;
+    padding: 10px 10px 15px 10px;
+    border-top: 1px solid var(--shadow_1);
+}
+.content {
+    display: flex;
+    align-items: center;
 }
 
 

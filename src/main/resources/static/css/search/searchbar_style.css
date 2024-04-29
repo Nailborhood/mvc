@@ -67,6 +67,7 @@
 .search-field {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     width: 450px;
     margin: 30px auto 50px;
 }
@@ -84,7 +85,7 @@
     border: none;
     cursor: pointer;
     margin-left: -40px;
-    padding-top: 8px;
+    /*padding-top: 8px;*/
 }
 
 .search-icon img {
@@ -94,20 +95,21 @@
 
 .checkbox-button_row {
     display: flex;
-    width: 500px;
+    /*width: 500px;*/
     flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    gap: 15px;
+    /*center 였음*/
+    justify-content: flex-start;
     margin-bottom: 20px;
-    margin-top: 20px;
-    margin-left: 550px;
+    margin-top: 14px;
+    /*margin-left: 550px;*/
 }
 
 .checkbox-button {
-    /*flex: 0 0 calc(20% - 20px);*/
-    margin: auto;
-    height: 25px;
-    width: 70px;
+    flex: 0 0 calc(20% - 20px);
+    /*margin: auto;*/
+    height: 30px;
+    width: 32px;
 }
 
 .checked-div {

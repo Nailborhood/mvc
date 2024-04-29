@@ -10,16 +10,18 @@
 .search-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 40px;
-    margin-top: 30px;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 .search-input {
-    width: 450px;
+    width: 477px;
     padding: 10px 25px;
     border: 1px solid #ddd;
     border-radius: 15px;
     outline: none;
+    margin-left: 80px;
 }
 
 .search-button {
@@ -27,7 +29,6 @@
     border: none;
     cursor: pointer;
     margin-left: -40px;
-    padding-top: 8px;
 }
 
 .search-button img {
@@ -41,19 +42,13 @@
     /*gap: 10px*/
 }
 
-.address-select {
-    margin-bottom: 10px;
-    margin-left: 10px;
+/*.search-select-box select {*/
+/*    padding: 5px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 10px;*/
+/*}*/
 
-}
-
-.search-select-box select {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-.search-select-box button {
+.search-container button {
     padding: 3px 10px;
     border: none;
     /*background-color:var(--main-color_navy);*/
@@ -65,31 +60,36 @@
     align-items: normal;
     display: flex;
     gap: 3px;
-    justify-content: space-evenly;
+    margin-left: 25px;
 }
 
 .clearButton {
     margin-top: 5px;
 }
 
-.search-select-box button:hover {
-    background-color: var(--hover);
-}
+/*.search-select-box button:hover {*/
+/*    background-color: var(--hover);*/
+/*}*/
 
-.search-select-box .clearButton img {
+.search-container .clearButton img {
     width: 15px;
     height: 15px;
 }
 
 .orderby-select{
     margin-right: 10px;
+    align-items: flex-end;
+    display: flex;
+    margin-left: 920px;
+    margin-bottom: 20px;
+    margin-top: 100px;
 }
 
 .orderby-select select {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    width: 70px;
+    width: 80px;
 }
 
 .content {
@@ -97,25 +97,20 @@
     align-items: center;
 }
 
-.empty-review-message {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
 .checkbox-button_row {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
+    gap: 15px;
+    justify-content: center;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 14px;
+    position: absolute;
 }
 
 .checkbox-button {
     flex: 0 0 calc(20% - 20px);
-    height: 25px;
-    width: 40px;
+    height: 30px;
+    width: 35px;
 }
 
 .checked-div {
@@ -139,7 +134,6 @@
 .shop-info {
     width: 600px;
     height: 140px;
-    background-color: antiquewhite;
     border-radius: 5px;
     padding: 0 10px;
     display: flex;
@@ -181,13 +175,19 @@
     margin-top: 3px;
 }
 
+.division-line {
+    width: 820px;
+    padding: 10px 10px 15px 10px;
+    border-top: 1px solid var(--shadow_1);
+}
+
 .shop-review_list {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     position: relative;
     width: 1000px;
-    margin: 10px auto 0;
+    margin: 15px auto 0;
 }
 
 .review-list-block {

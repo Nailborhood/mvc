@@ -47,6 +47,27 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    document.getElementById('clearStorageButton').addEventListener('click', function() {
+        // localStorage에서 관련 데이터 삭제
+        localStorage.removeItem('keywordInput');
+        localStorage.removeItem('sortBy');
+        localStorage.removeItem('selectedCategories');
+
+        // 입력 필드 초기화
+        document.getElementById('keywordInput').value = '';
+
+        // 셀렉트 박스 초기화
+        document.getElementById('sortBy').selectedIndex = 0;
+
+        // 카테고리 체크박스 모두 초기화
+        const checkboxes = document.querySelectorAll(".category-checkbox");
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        filterArtByCategory();
+    });
+
     function toggleCheckbox(event) {
         var checkbox = event.currentTarget.querySelector(".category-checkbox");
         checkbox.checked = !checkbox.checked;

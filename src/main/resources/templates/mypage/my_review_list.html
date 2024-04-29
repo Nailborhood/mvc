@@ -7,6 +7,7 @@
     <title>내가 쓴 리뷰</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
     <link rel="stylesheet" th:href="@{/css/mypage/my_review_list_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/review/review_list_star.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
     <script th:src="@{/js/review/review_delete.js}"></script>
@@ -40,6 +41,21 @@
                         <a th:href="@{/review/update/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="update-button">리뷰 수정</a>
                         <button type="button" class="delete-button" th:data-id="${review.reviewId}" th:data-shop-id="${review.shopId}" onclick="reviewDelete(this)">리뷰 삭제</button>
                     </div>
+                </div>
+            </div>
+            <div class="pagination" th:unless="${ReviewErrorCode}">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + ${pageNum}}" th:text="${pageNum}"></a>
+                        </li>
+                        <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

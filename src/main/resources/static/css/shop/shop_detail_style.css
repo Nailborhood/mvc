@@ -114,7 +114,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    padding: 16px;
+    padding: 1px;
     color: var(--shadow_1);
     font-weight: bold;
     font-size: 40px;
@@ -127,7 +127,7 @@
 }
 
 .next {
-    right: 0;
+    right: -2px;
 }
 
 .prev img, .next img {
@@ -242,7 +242,7 @@ td {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 98%;
+    width: 820px;
     margin-bottom: 1px;
 }
 

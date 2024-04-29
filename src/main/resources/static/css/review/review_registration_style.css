@@ -74,10 +74,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
-.input-file-button {
+.input-file-button, .delete-file-button {
     padding: 3px 10px;
     border: none;
     background-color: #1d438a;
@@ -87,6 +87,10 @@
 }
 
 .input-file-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-file-button:hover {
     background-color: rgba(43, 107, 225, 0.287);
 }
 
@@ -178,7 +182,7 @@
         width: 100%;
     }
 
-    .upload-button, .submit-button {
+    .upload-button, .submit-button, .delete-file-button {
         margin: 10px 0;
     }
 }

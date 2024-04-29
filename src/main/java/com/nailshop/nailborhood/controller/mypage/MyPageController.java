@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.controller.mypage;
 
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.SessionDto;
@@ -100,6 +101,37 @@ public class MyPageController {
 
 
         return "mypage/my_fav_shop_list";
+
+    }
+
+    //내가 북마크한 아트
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/art/bookmark/inquiry")
+    public String myBookmark(Model model,
+                             Authentication authentication,
+                             @AuthenticationPrincipal MemberDetails memberDetails,
+                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                             @RequestParam(value = "size", defaultValue = "20", required = false) int size) {
+
+        SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
+        model.addAttribute("sessionDto", sessionDto);
+
+        try {
+            CommonResponseDto<Object> myBookmark = mypageService.myBookmark(sessionDto.getId(), page, size);
+            ResultDto<ArtListResponseDto> resultDto = ResultDto.in(myBookmark.getStatus(), myBookmark.getMessage());
+            resultDto.setData((ArtListResponseDto) myBookmark.getData());
+
+
+            model.addAttribute("result", resultDto);
+
+        } catch (NotFoundException e) {
+
+            model.addAttribute("ArtErrorCode", ErrorCode.ART_BOOKMARK_EMPTY);
+
+        }
+
+
+        return "mypage/my_bookmark_list";
 
     }
 

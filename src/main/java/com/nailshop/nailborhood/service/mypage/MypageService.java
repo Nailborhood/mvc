@@ -1,8 +1,11 @@
 package com.nailshop.nailborhood.service.mypage;
 
+import com.nailshop.nailborhood.domain.artboard.ArtRef;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.review.Review;
 import com.nailshop.nailborhood.domain.shop.Shop;
+import com.nailshop.nailborhood.dto.artboard.ArtListResponseDto;
+import com.nailshop.nailborhood.dto.artboard.ArtResponseDto;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.PaginationDto;
 import com.nailshop.nailborhood.dto.mypage.FavoriteShopDetailDto;
@@ -11,6 +14,9 @@ import com.nailshop.nailborhood.dto.mypage.MyReviewListResponseDto;
 import com.nailshop.nailborhood.dto.review.response.ReviewResponseDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
+import com.nailshop.nailborhood.repository.artboard.ArtBookMarkRepository;
+import com.nailshop.nailborhood.repository.artboard.ArtRefRepository;
+import com.nailshop.nailborhood.repository.category.CategoryArtRepository;
 import com.nailshop.nailborhood.repository.category.CategoryReviewRepository;
 import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
@@ -39,6 +45,7 @@ public class MypageService {
     private final CategoryReviewRepository categoryReviewRepository;
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
+    private final ArtBookMarkRepository artBookMarkRepository;
 
     // 내가 쓴 리뷰 조회 (마이페이지)
     public CommonResponseDto<Object> myReview(Long memberId, int page, int size, String sortBy) {
@@ -146,6 +153,59 @@ public class MypageService {
 
 
         return commonService.successResponse(SuccessCode.MY_FAVORITE_SHOP_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, myFavoriteListResponseDto);
+    }
+
+    // 북마크한 아트 조회
+    public CommonResponseDto<Object> myBookmark(Long memberId,int page, int size) {
+
+        Member member = memberRepository.findByMemberIdAndIsDeleted(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (!member.getRole().equals(Role.ROLE_USER)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+        PageRequest pageable = PageRequest.of(page - 1, size);
+
+        Page<ArtRef> myBookmarkPage = artBookMarkRepository.findArtBookMarkListByMemberId(memberId,pageable);
+        if (myBookmarkPage.isEmpty()) throw new NotFoundException(ErrorCode.ART_BOOKMARK_EMPTY);
+
+        List<ArtRef> myBookmarkList = myBookmarkPage.getContent();
+        List<ArtResponseDto> artResponseDtoList = new ArrayList<>();
+
+        for (ArtRef artRef : myBookmarkList) {
+
+            String mainImgPath = artRef.getArtImgList()
+                    .getFirst()
+                    .getImgPath();
+            String shopName = artRef.getShop()
+                    .getName();
+
+            ArtResponseDto artResponseDto = ArtResponseDto.builder()
+                    .id(artRef.getArtRefId())
+                    .name(artRef.getName())
+                    .content(artRef.getContent())
+                    .likeCount(artRef.getLikeCount())
+                    .mainImgPath(mainImgPath)
+                    .shopName(shopName)
+                    .createdAt(artRef.getCreatedAt())
+                    .updatedAt(artRef.getUpdatedAt())
+                    .build();
+
+            artResponseDtoList.add(artResponseDto);
+        }
+
+        PaginationDto paginationDto = PaginationDto.builder()
+                .totalPages(myBookmarkPage.getTotalPages())
+                .totalElements(myBookmarkPage.getTotalElements())
+                .pageNo(myBookmarkPage.getNumber())
+                .isLastPage(myBookmarkPage.isLast())
+                .build();
+
+        ArtListResponseDto artListResponseDto = ArtListResponseDto.builder()
+                .artResponseDtoList(artResponseDtoList)
+                .paginationDto(paginationDto)
+                .build();
+
+
+        return commonService.successResponse(SuccessCode.MY_FAVORITE_SHOP_INQUIRY_SUCCESS.getDescription(), HttpStatus.OK, artListResponseDto);
     }
 
 
