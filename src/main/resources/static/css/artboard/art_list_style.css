@@ -74,7 +74,7 @@
 }
 
 .sortBy-select{
-    margin-right: 10px;
+    /*margin-right: 10px;*/
     justify-content: center;
     align-items: flex-end;
     display: flex;
@@ -188,7 +188,7 @@
     /*margin-left: 200px;*/
     /*margin-right: 200px;*/
     width: 1060px;
-    margin: 10px auto 0;
+    margin: 30px auto 0;
 }
 
 .art-list-row {

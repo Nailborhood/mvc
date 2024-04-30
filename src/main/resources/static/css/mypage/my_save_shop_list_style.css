@@ -107,12 +107,13 @@
 }
 
 .update-button {
-    padding: 8px 13px;
+    padding: 9px 16px;
     border: none;
     background-color: #1d438a;
     color: white;
     cursor: pointer;
     font-size: 17px;
+    border-radius: 15px;
 }
 
 .update-button:hover {

@@ -41,15 +41,21 @@
 }
 
 .title-star {
+    width: 800px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 7px 0px;
+    padding: 7px 0;
 }
 
+.title-star_container {
+    display: flex;
+    /* justify-content: space-between; */
+    width: 600px;
+}
 .review-post-link-container {
     /*margin-left: 20px;*/
-    margin: 7px 0 0 20px;
+    margin: 15px 0 0 20px;
 }
 
 .title {
@@ -315,6 +321,7 @@ td {
     display: block;
     overflow: hidden;
     position: relative;
+
 }
 
 .art-img img, .review-img img {
@@ -322,10 +329,13 @@ td {
     /*width: 100%;*/
     /*max-*/width: 202px;
     height: 202px;
+    transition: transform 0.3s ease;
 }
-
+.art-img:hover img, .review-img:hover img {
+    transform: scale(1.1);
+}
 .division-line {
-    width: 820px;
+    width: 830px;
     padding: 10px 10px 15px 10px;
     border-top: 1px solid var(--shadow_2);
 }
