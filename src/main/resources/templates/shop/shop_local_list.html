@@ -7,8 +7,8 @@
     <meta charset="UTF-8">
     <title>매장 지역 검색</title>
     <!--    <script th:src="@{/js/get_layouts.js}"></script>-->
-<!--   <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>-->
-<!--    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>-->
+    <!--   <script th:src="@{/js/shop/shop_local_list_selectAddress.js}"></script>-->
+    <!--    <script th:src="@{/js/shop/shop_local_list_search.js}"></script>-->
     <script th:src="@{/js/shop/shop_local_list_searchAll.js}"></script>
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <link rel="stylesheet" th:href="@{/css/shop/shop_local_list_style.css}">
@@ -22,19 +22,28 @@
             <!-- 검색 기능 -->
             <!-- <form id="searchForm" th:action="@{/shop/list}" method="get">-->
             <form id="searchForm" class="searchForm" method="get">
-                <div class="search-container">
-                    <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요" name="keyword"/>
-                    <button type="submit" class="search-button">
-                        <img src="/assets/icons/search_icon.png" alt="Search">
-                    </button>
+                <div class="search-container_clearButton">
+                    <div class="search-container">
+                        <input type="text" id="keywordInput" class="search-input" placeholder="검색어를 입력해주세요"
+                               name="keyword"/>
+                        <button type="submit" class="search-button">
+                            <img src="/assets/icons/search_icon.png" alt="Search">
+                        </button>
+                    </div>
+                    <div class="clearButton">
+                        <button class="clearStorageButton" id="clearStorageButton">
+                            <img src="/assets/icons/shop/reset.png" alt="reset">
+                            초기화
+                        </button>
+                    </div>
                 </div>
                 <div class="search-select-box">
                     <div class="address-select">
                         <select name="cityId" id="cityId">
-                        <option value="">도시 선택</option>
-                        <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
-                                th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
-                    </select>
+                            <option value="">도시 선택</option>
+                            <option th:each="city : ${addressDto.cityDtoList}" th:value="${city.cityId}"
+                                    th:text="${city.cityName}" th:data-city-id="${city.cityId}"></option>
+                        </select>
 
                         <select name="districtsId" id="districtsId">
                             <option value="">구 선택</option>
@@ -51,12 +60,7 @@
                                     style="display:none;"></option>
                         </select>
                     </div>
-                    <div class="clearButton">
-                        <button class="clearStorageButton" id="clearStorageButton">
-                            <img src="/assets/icons/shop/reset.png" alt="reset">
-                            초기화
-                        </button>
-                    </div>
+
                     <div class="orderby-select">
                         <select name="orderby" id="orderby">
                             <option th:each="criteria : ${criteriaOptions}" th:value="${criteria.value}"
@@ -92,7 +96,7 @@
                                         time
                                     </div>
                                     <div class="shop-info_favorite">
-                                        <span class="favorite-cnt">❤️&nbsp;</span>
+                                        <span class="favorite-cnt">🏷️&nbsp;</span>
                                         <span class="score" th:text="${shop.favoriteCnt}"></span>&nbsp
 
                                     </div>
@@ -115,13 +119,19 @@
                 <div class="pagination-div">
                     <ul class="pagination-ul">
                         <li th:if="${resultDto.getData().paginationDto.pageNo > 1}" class="page-item">
-                            <a class="page-link" th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
+                            <a class="page-link"
+                               th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Prev</a>
                         </li>
-                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}" class="page-item">
-                            <a class="page-link" th:href="@{'/shop/list?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}}" th:text="${pageNum}"></a>
+                        <li th:each="pageNum : ${#numbers.sequence(1, resultDto.getData().paginationDto.totalPages)}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/shop/list?page=' + ${pageNum} + '&size=' + ${size} + '&orderby=' + ${orderby}}"
+                               th:text="${pageNum}"></a>
                         </li>
-                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}" class="page-item">
-                            <a class="page-link" th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
+                        <li th:if="${resultDto.getData().paginationDto.pageNo < resultDto.getData().paginationDto.totalPages}"
+                            class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/shop/list?page=' + (${resultDto.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
                         </li>
                     </ul>
                 </div>
