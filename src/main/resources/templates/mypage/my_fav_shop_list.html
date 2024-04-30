@@ -7,6 +7,7 @@
     <title>내가 저장한 매장</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
     <link rel="stylesheet" th:href="@{/css/mypage/my_save_shop_list_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/mypage/my_fav_list_delete.js}"></script>
 
 </head>
@@ -38,6 +39,21 @@
                         <button type="button" class="update-button" th:data-id="${shop.shopId}" onclick="favCancel(this)">제거</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="pagination"  th:unless="${ErrorCode}">
+            <div class="pagination-div">
+                <ul class="pagination-ul">
+                    <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
+                        <a class="page-link" th:href="@{'/mypage/shop/favorite/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size}}">Prev</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                        <a class="page-link" th:href="@{'/mypage/shop/favorite/inquiry?page=' + ${pageNum} + '&size=' + ${size}}" th:text="${pageNum}"></a>
+                    </li>
+                    <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
+                        <a class="page-link" th:href="@{'/mypage/shop/favorite/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size}}">Next</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

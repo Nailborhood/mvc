@@ -33,13 +33,13 @@
                 <div class="pagination-div">
                     <ul class="pagination-ul">
                         <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == 1}">
-                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size}}">Prev</a>
                         </li>
                         <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
-                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + ${pageNum}}" th:text="${pageNum}">pageNo</a>
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + ${pageNum} + '&size=' + ${size}}" th:text="${pageNum}">pageNo</a>
                         </li>
                         <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == result.getData().paginationDto.totalPages}">
-                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size}}">Next</a>
                         </li>
                     </ul>
                 </div>

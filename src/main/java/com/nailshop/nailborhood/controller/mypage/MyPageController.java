@@ -63,6 +63,8 @@ public class MyPageController {
             resultDto.setData((MyReviewListResponseDto) myReview.getData());
 
             model.addAttribute("result", resultDto);
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("size", size);
         } catch (NotFoundException e) {
             model.addAttribute("ReviewErrorCode", ErrorCode.REVIEW_NOT_FOUND);
         }
@@ -90,7 +92,7 @@ public class MyPageController {
             ResultDto<MyFavoriteListResponseDto> resultDto = ResultDto.in(myFavorite.getStatus(), myFavorite.getMessage());
             resultDto.setData((MyFavoriteListResponseDto) myFavorite.getData());
 
-
+            model.addAttribute("size", size);
             model.addAttribute("result", resultDto);
 
         } catch (NotFoundException e) {
@@ -123,6 +125,7 @@ public class MyPageController {
 
 
             model.addAttribute("result", resultDto);
+            model.addAttribute("size", size);
 
         } catch (NotFoundException e) {
 
