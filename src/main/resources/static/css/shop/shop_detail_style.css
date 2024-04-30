@@ -335,7 +335,7 @@ td {
     transform: scale(1.1);
 }
 .division-line {
-    width: 820px;
+    width: 830px;
     padding: 10px 10px 15px 10px;
     border-top: 1px solid var(--shadow_2);
 }

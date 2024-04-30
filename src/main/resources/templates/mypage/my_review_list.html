@@ -48,13 +48,13 @@
                 <div class="pagination-div">
                     <ul class="pagination-ul">
                         <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">
-                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1) + '&size=' + ${size} + '&orderby=' + ${sortBy}}">Prev</a>
                         </li>
                         <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
                             <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + ${pageNum}}" th:text="${pageNum}"></a>
                         </li>
                         <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
-                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
                         </li>
                     </ul>
                 </div>
