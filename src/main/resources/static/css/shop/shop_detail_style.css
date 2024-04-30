@@ -51,7 +51,7 @@
 .title-star_container {
     display: flex;
     /* justify-content: space-between; */
-    width: 400px;
+    width: 600px;
 }
 .review-post-link-container {
     /*margin-left: 20px;*/
