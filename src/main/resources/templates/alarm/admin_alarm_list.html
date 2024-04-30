@@ -32,7 +32,7 @@
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
-                                    <p th:case="'CHAT'" th:text="${alarm.getShopName()+'에서 보낸 새로운 메세지가 있습니다'}"></p>
+                                    <p th:case="'CHAT'" th:text="${alarm.getShopName()+' 사장님이 보낸 새로운 메세지가 있습니다'}"></p>
                                     <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>

@@ -67,51 +67,51 @@
                 <tr>
                     <td>
                         <img class="time-img" src="/assets/icons/shop/time.svg"/>
-                        <span class="subtitle">&nbsp;운영시간</span>
+                        <span class="subtitle">운영시간</span>
                     </td>
                 </tr>
                 <tr>
-                    <td th:text="${shop.opentime}"></td>
+                    <td class="shop-info-detail-col" th:text="${shop.opentime}"></td>
                 </tr>
                 <tr>
                     <td>
                         <img src="/assets/icons/shop/call.svg" class="phone-img"/>
-                        <span class="subtitle">&nbsp;전화</span>
+                        <span class="subtitle">전화</span>
                     </td>
                 </tr>
                 <tr>
-                    <td th:text="${shop.phone}"></td>
+                    <td class="shop-info-detail-col" th:text="${shop.phone}"></td>
                 </tr>
                 <tr>
                     <td>
                         <img src="/assets/icons/shop/website.svg" class="website-img"/>
-                        <span class="subtitle">&nbsp;</span>
+<!--                        <span class="subtitle">&nbsp;</span>-->
                         <span class="subtitle" th:text="${shop.website}"></span>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <img src="/assets/icons/shop/info.svg" class="info-img /">
-                        <span class="info-subtitle">&nbsp;매장정보</span>
+                        <span class="info-subtitle">매장정보</span>
                     </td>
                 </tr>
                 <tr>
-                    <td th:text="${shop.content}"></td>
+                    <td class="shop-info-detail-col" th:text="${shop.content}"></td>
                 </tr>
                 <tr>
                     <td>
                         <img src="/assets/icons/shop/location.svg" class="location-img"/>
-                        <span class="location-subtitle">&nbsp;</span>
+                        <!--                        <span class="location-subtitle">&nbsp;</span>-->
                         <span class="location-subtitle" th:text="${shop.address}">&nbsp;</span>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <div class="shop-location">
-                <div class="map">
-                    <img src="/assets/icons/shop/map.svg" class="map-img">
-                </div>
-            </div>
+            <!--            <div class="shop-location">
+                            <div class="map">
+                                <img src="/assets/icons/shop/map.svg" class="map-img">
+                            </div>
+                        </div>-->
             <div class="shop-menu">
                 <div class="menu-list">
                     <div class="price-row" th:each="menu : ${resultDto.getData().getMenuDetailResponseDtoList()}">
