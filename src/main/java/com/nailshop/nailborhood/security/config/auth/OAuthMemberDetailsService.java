@@ -50,7 +50,7 @@ public class OAuthMemberDetailsService implements OAuth2UserService<OAuth2UserRe
 
     private Member saveOrUpdateOAuth2Member(OAuthAttributes authAttributes) {
         Member member = memberRepository.findByEmail(authAttributes.getEmail())
-                .map(entity -> entity.update(authAttributes.getName(), authAttributes.getPicture()))
+                .map(entity -> entity.update(authAttributes.getName()))
                 .orElse(authAttributes.toEntity());
         return memberRepository.save(member);
     }
