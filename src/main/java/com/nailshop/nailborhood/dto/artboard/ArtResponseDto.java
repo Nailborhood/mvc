@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@Builder
 public class ArtResponseDto {
 
     private Long id;
@@ -21,18 +21,8 @@ public class ArtResponseDto {
     private String mainImgPath;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long bookMarkCount;
+    private String shopAddress;
 
-    @Builder
-    public ArtResponseDto(Long id, String name, String content, Long likeCount, String shopName, List<Long> categoryIdList, List<String> categoryTypeList, String mainImgPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.content = content;
-        this.likeCount = likeCount;
-        this.shopName = shopName;
-        this.categoryIdList = categoryIdList;
-        this.categoryTypeList = categoryTypeList;
-        this.mainImgPath = mainImgPath;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+
 }

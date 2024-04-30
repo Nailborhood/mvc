@@ -17,4 +17,5 @@ public class AlarmResponseDto {
     private String createdAt;
     private String shopName;
     private String artRefName;
+    private String senderProfileImg; //  알람 보내는 사람 profile 이미지
 }

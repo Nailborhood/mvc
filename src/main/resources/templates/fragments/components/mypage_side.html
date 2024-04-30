@@ -6,9 +6,11 @@
         <li class="sidebar-li"><a th:href="@{/mypage/password}">비밀번호 수정</a></li>
         <li class="sidebar-li"><a th:href="@{/mypage/review/inquiry}">내 리뷰</a></li>
         <li class="sidebar-li"><a th:href="@{/mypage/shop/favorite/inquiry}">관심 매장</a></li>
+        <li class="sidebar-li"><a th:href="@{/mypage/art/bookmark/inquiry}">북마크</a></li>
         <li class="sidebar-li"><a th:href="@{/mypage/logout}">로그아웃</a></li>
     </ul>
-    <a class="sidebar-link" th:href="@{/mypage/owner/shop/request}">사업자 모드 전환 신청</a>
+    <a class="sidebar-link" id="link-owner-request" onclick="checkProviderAndRedirect()"
+    th:data-provider="${sessionDto.provider}">사업자 모드 전환 신청</a>
     <a class="sidebar-link" th:href="@{/mypage/dropout}">회원 탈퇴</a>
 </div>
 </html>

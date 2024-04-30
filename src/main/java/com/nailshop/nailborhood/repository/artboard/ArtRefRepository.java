@@ -1,6 +1,7 @@
 package com.nailshop.nailborhood.repository.artboard;
 
 import com.nailshop.nailborhood.domain.artboard.ArtRef;
+import com.nailshop.nailborhood.domain.shop.Shop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,7 +59,7 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
     @Query("SELECT a " +
             "FROM ArtRef a " +
             "LEFT join a.shop s " +
-            "WHERE s.shopId = :shopId AND s.isDeleted = false ")
+            "WHERE s.shopId = :shopId AND a.isDeleted = false ")
     Page<ArtRef> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
 
     // 카테고리 조회(isDeleted = false)
@@ -152,5 +153,29 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
             "LEFT JOIN a.shop s " +
             "WHERE (a.name Like %:keyword% OR s.name Like %:keyword%) ")
     Page<ArtRef> findAllArtRefListBySearch(@Param("keyword") String keyword, Pageable pageable);
+
+
+    // 북마크 증가
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = a.bookMarkCount +1" +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void increaseBookMarkCount(@Param("artRefId") Long artRefId);
+
+    // 북마크 감소
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = CASE WHEN a.bookMarkCount > 0 " +
+            "THEN (a.bookMarkCount -1) " +
+            "ELSE 0 END " +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void decreaseBookMarkCount(@Param("artRefId") Long artRefId);
+
+    // 북마크 0으로 변경
+    @Query("UPDATE ArtRef a " +
+            "SET a.bookMarkCount = 0 " +
+            "WHERE a.artRefId = :artRefId")
+    @Modifying(clearAutomatically = true)
+    void makeBookMarkCountZero(@Param("artRefId") Long artRefId);
 
 }

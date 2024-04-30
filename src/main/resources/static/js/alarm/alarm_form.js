@@ -12,9 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
             var count = data.count;
             var noticeElement = document.getElementById("newNoticeCnt");
             if (noticeElement) {
-                noticeElement.innerText = count;
-            } else {
-                console.log("아직 로그인이 되지 않아서 알림 수를 알 수 없습니다.");
+                if (count === 0) {
+                    noticeElement.style.display = 'none';
+                } else {
+                    noticeElement.innerText = count;
+                    noticeElement.style.display = '';
+                }
             }
         })
         .catch(error => {
@@ -93,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(message.url, message.alarmId);
 
         let currentCount = parseInt(document.getElementById("newNoticeCnt").innerText);
-        document.getElementById("newNoticeCnt").innerText = currentCount + 1;
+        /*document.getElementById("newNoticeCnt").innerText = currentCount + 1;*/
     }
 
 

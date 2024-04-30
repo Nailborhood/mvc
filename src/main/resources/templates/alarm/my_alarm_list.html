@@ -24,14 +24,17 @@
                 <div class="alarm-list_div" th:if="${resultDto != null }">
                     <div class="alarm-info" th:each="alarm : ${resultDto.getData().getAlarmResponseDtoList()}">
                         <a th:href="@{${alarm.getUrl()}}" th:data-alarm-id="${alarm.getAlarmId()}" class="alarm-link">
-                            <div class="alarm-info_title" th:switch="${alarm.getSenderName()}">
-                                <p th:case="'ADMIN'" th:text="'관리자'"></p>
-                                <p th:case="'OWNER'" th:text="'사장님'"></p>
-                                <p th:case="*" th:text="${alarm.getSenderName()}"></p>
+                            <div class="alarm-sender-profileImg">
+                                <img th:src="${alarm.getSenderProfileImg()}" alt="프로필 이미지" class="profile-pic"/>
+                                <div class="alarm-info_title" th:switch="${alarm.getSenderName()}">
+                                    <p th:case="'ADMIN'" th:text="'관리자'"></p>
+                                    <p th:case="'OWNER'" th:text="'사장님'"></p>
+                                    <p th:case="*" th:text="${alarm.getSenderName()}"></p>
+                                </div>
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
-                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 남긴 리뷰에 좋아요가 등록되었습니다'}"></p>
+                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 등록하신 회원님의 리뷰를 좋아합니다'}"></p>
                                     <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>

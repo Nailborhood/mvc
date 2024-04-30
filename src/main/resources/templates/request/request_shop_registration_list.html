@@ -54,7 +54,8 @@
                     </td>
                     <td>
 
-                        <button id="ownerPageButton" class="button"  th:if="${#strings.toString(myShop.status) == 'OPEN'}"> 사장님페이지</button>
+                        <button id="ownerPageButton" class="button"  th:if="${#strings.toString(myShop.status) == 'OPEN'}"
+                        th:data-provider="${sessionDto.getProvider()}">사업자 모드 로그인</button>
                     </td>
                 </tr>
 

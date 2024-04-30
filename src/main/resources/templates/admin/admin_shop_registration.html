@@ -23,10 +23,10 @@
                     <div class="title-container">
                         <span class="title" th:text="${shop.name}"></span>
                     </div>
-                    <div class="heart">
-                        <!--                            TODO : 찜버튼-->
-                        <!--                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">-->
-                        <!--                            </a>-->
+                    <!--<div class="heart">
+                        &lt;!&ndash;                            TODO : 찜버튼&ndash;&gt;
+                        &lt;!&ndash;                            <a class="heart-btn" href="@{/favorite/{shopId}(shopId=${shop.shopId})}" role="button">&ndash;&gt;
+                        &lt;!&ndash;                            </a>&ndash;&gt;
                         <a class="heart-btn" href="#" role="button">
                             <img src="/assets/icons/shop/clickHeart.svg" />
                         </a>
@@ -36,7 +36,7 @@
                         <a class="review-post-link" href="/{shopId}/review/registration (shopId=${shop.shopId})" role="button">
                             리뷰쓰기
                         </a>
-                    </div>
+                    </div>-->
                 </div>
                 <div id="review" th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
                     <span class="review-cnt">⭐️&nbsp;</span>
@@ -52,6 +52,18 @@
                 <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
                 <a class="next" onclick="moveSlide(1)">&#10095;</a>
             </div>
+<!--            <div class="image-slider-wrapper-certificateImg">
+                <div th:each="certificateImg : ${shopDetail.shopCertificateImgResponseDto}"
+                     th:class="${certificateImg.imgNum == 1} ? 'image-slide active2' : 'image-slide2'"
+                     th:style="|background-image:url(@{${certificateImg.imgPath}})|">
+                     &lt;!&ndash;th:class="${certificateImg.imgNum == 1} ? 'image-slide active' : 'image-slide'"&ndash;&gt;
+
+                </div>
+&lt;!&ndash;                <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
+                <a class="next" onclick="moveSlide(1)">&#10095;</a>&ndash;&gt;
+            </div>-->
+
+
             <table>
                 <tbody th:each="shop : ${shopDetail.shopDetailLookupResponseDto}">
                 <tr>

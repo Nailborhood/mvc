@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage_style.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage/my_bookmark_list_style.css}">
+    <script th:src="@{/js/get_layouts.js}"></script>
+    <script th:src="@{/js/request/request_provider.js}"></script>
+</head>
+<div layout:fragment="content" style="flex-direction: row" class="mypage-content">
+    <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
+    <div class="content">
+        <span class="mypage-title-span">북마크한 아트</span>
+        <div th:if="${ArtErrorCode}" class="error-code" th:text="${ArtErrorCode.description}"></div>
+        <div class="mypage-content_div" th:unless="${ArtErrorCode}">
+            <div class="art-list" id="art-list">
+                <div th:each="art, iterStat : ${result.getData().artResponseDtoList}" class="art-list-block" th:if="${iterStat.count <= 20}">
+                    <a th:href="@{/artboard/inquiry/{id}(id=${art.id})}" class="art-link" role="link">
+                        <div class="art-img">
+                            <img th:src="@{${art.getMainImgPath()}}" alt="Art Image">
+                        </div>
+                        <div class="art-icon">
+                            <img th:src="@{/assets/icons/slide.svg}">
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-div">
+                    <ul class="pagination-ul">
+                        <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == 1}">
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} - 1)}">Prev</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(1, result.getData().paginationDto.totalPages)}" class="page-item">
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + ${pageNum}}" th:text="${pageNum}">pageNo</a>
+                        </li>
+                        <li class="page-item" th:unless="${result.getData().paginationDto.pageNo == result.getData().paginationDto.totalPages}">
+                            <a class="page-link" th:href="@{'/mypage/art/bookmark/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1)}">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

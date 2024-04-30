@@ -14,6 +14,7 @@ import com.nailshop.nailborhood.service.member.MemberService;
 import com.nailshop.nailborhood.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,7 @@ public class ArtController {
     private final MemberService memberService;
 
     // 아트판 등록(GET)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/owner/artboard/register")
     public String showRegisterArt(Authentication authentication,
                                   @AuthenticationPrincipal MemberDetails memberDetails,
@@ -57,7 +58,7 @@ public class ArtController {
     }
 
     // 아트판 등록(POST)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/register")
     public String registerArt(Authentication authentication,
                               @AuthenticationPrincipal MemberDetails memberDetails,
@@ -66,12 +67,11 @@ public class ArtController {
                               RedirectAttributes redirectAttributes) {
         try {
             SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
-            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(sessionDto.getId(), multipartFileList, artRegistrationRequestDto);
-            ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
+            Long artRefId = artRegistrationService.registerArt(sessionDto.getId(), multipartFileList, artRegistrationRequestDto);
 
-            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+//            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/artboard/inquiry";
+            return "redirect:/artboard/inquiry/" + artRefId;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
 
@@ -80,7 +80,7 @@ public class ArtController {
     }
 
     // 아트판 수정(GET)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/owner/artboard/modify/{artRefId}")
     public String showUpdateArt(@AuthenticationPrincipal MemberDetails memberDetails,
                                 Authentication authentication,
@@ -102,7 +102,7 @@ public class ArtController {
     }
 
     // 아트판 수정(POST)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @PostMapping(consumes = {"multipart/form-data"}, value = "/owner/artboard/modify/{artRefId}")
     public String updateArtRef(Authentication authentication,
                                @AuthenticationPrincipal MemberDetails memberDetails,
@@ -116,8 +116,10 @@ public class ArtController {
             ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+            redirectAttributes.addAttribute("artRefId", artRefId);
 
-            return "redirect:/owner/artboard/manage";
+            return "redirect:/artboard/inquiry/" + artRefId;
+
         } catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
 
@@ -126,7 +128,7 @@ public class ArtController {
     }
 
     // 아트판 삭제
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping( "/owner/artboard/delete/{artRefId}")
     public ResponseEntity<ResultDto<Void>> deleteArtRef(Authentication authentication,
                                                         @AuthenticationPrincipal MemberDetails memberDetails,
@@ -140,7 +142,7 @@ public class ArtController {
     }
 
     // 아트판 좋아요
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER', 'ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/artboard/like/{artRefId}")
     public ResponseEntity<ResultDto<ArtLikeResponseDto>> likeArtRef(Authentication authentication,
                                                                     @AuthenticationPrincipal MemberDetails memberDetails,
@@ -151,6 +153,20 @@ public class ArtController {
         resultDto.setData((ArtLikeResponseDto) likeArt.getData());
 
         return ResponseEntity.status(likeArt.getHttpStatus()).body(resultDto);
+    }
+
+    // 아트판 북마크
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PostMapping("/artboard/bookmark/{artRefId}")
+    public ResponseEntity<ResultDto<ArtBookMarkResponseDto>> bookMarkArtRef(Authentication authentication,
+                                                                    @AuthenticationPrincipal MemberDetails memberDetails,
+                                                                    @PathVariable Long artRefId){
+        SessionDto sessionDto = memberService.getSessionDto(authentication,memberDetails);
+        CommonResponseDto<Object> bookMarkArt = artLikeService.bookMarkArt(sessionDto.getId(), artRefId);
+        ResultDto<ArtBookMarkResponseDto> resultDto = ResultDto.in(bookMarkArt.getStatus(), bookMarkArt.getMessage());
+        resultDto.setData((ArtBookMarkResponseDto) bookMarkArt.getData());
+
+        return ResponseEntity.status(bookMarkArt.getHttpStatus()).body(resultDto);
     }
 
     // 아트판 전체 조회
@@ -236,7 +252,7 @@ public class ArtController {
                     .getShopId());
 
             model.addAttribute("result", resultDto);
-            model.addAttribute("sessionDto", "");
+            model.addAttribute("sessionDto", null);
             model.addAttribute("receiver",receiver);
         }
 

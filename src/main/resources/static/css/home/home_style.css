@@ -12,12 +12,12 @@
     flex-direction: column;
     align-items: flex-start;
     max-width: 800px;
-    margin: 50px auto;
+    margin: 0px auto;
     position: relative;
 }
 
 .event-image {
-    margin: 50px auto;
+    margin: 40px auto;
 }
 
 .event-image .main img{
@@ -228,7 +228,7 @@ td {
     height: 202px;
 }
 
-.artRef-img , .review-img .rate-img {
+.artRef-img , .review-img, .rate-img {
     display: block;
     overflow: hidden;
     position: relative;
@@ -238,7 +238,13 @@ td {
     object-fit: cover;
     width: 202px;
     height: 202px;
+    transition: transform 0.3s ease; /* 변환 효과의 지속 시간과 타이밍 함수 설정 */
 }
+
+.artRef-img:hover img, .review-img:hover img, .rate-img:hover img{
+    transform: scale(1.1); /* 이미지를 10% 확대 */
+}
+
 
 .division-line {
     width: 820px;
@@ -277,3 +283,30 @@ td {
 /*.reject-button:hover{*/
 /*    background-color: rgba(229, 97, 97, 0.29);*/
 /*}*/
+
+.artRef-link, .review-link, .rate-link {
+    color: #000000;
+    text-decoration: none;
+}
+
+.artRef-shop-name, .review-shop-name, .rate-shop-name {
+    font-size: 14px;
+    line-height: 30px;
+    display: block;
+    word-break: break-all;
+    color: #828C94;
+}
+
+.artRef-shop-address, .review-shop-address, .rate-shop-address {
+    white-space: nowrap; /* 텍스트를 한 줄로 만듦 */
+    overflow: hidden;    /* 오버플로된 텍스트 숨김 */
+    text-overflow: ellipsis; /* 오버플로된 텍스트를 말줄임표로 표시 */
+    max-width: 192px;     /* 최대 너비 설정 */
+    font-size: 13px;
+}
+
+
+.artRef-info, .review-info, .rate-info {
+    padding: 0 5px;
+}
+

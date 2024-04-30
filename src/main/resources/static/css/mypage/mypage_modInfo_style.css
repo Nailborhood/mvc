@@ -36,14 +36,22 @@ td {
 
 table input {
     height: 25px;
-    width: 200px;
+    width: 220px;
     font-size: 15px;
     outline: lightgray auto 1px;
+    box-sizing: unset;
 }
 
 
 table input:focus-visible {
     outline: var(--main-color_navy) auto 1px;
+}
+
+#gender-select_td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
 }
 
 .gender-radio {

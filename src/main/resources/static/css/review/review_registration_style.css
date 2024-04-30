@@ -74,19 +74,24 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
-.input-file-button {
-    padding: 3px 10px;
+.input-file-button, .delete-file-button {
+    padding: 5px 11px;
     border: none;
     background-color: #1d438a;
     color: white;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 15px;
+    font-size: 14px;
 }
 
 .input-file-button:hover {
+    background-color: rgba(43, 107, 225, 0.287);
+}
+
+.delete-file-button:hover {
     background-color: rgba(43, 107, 225, 0.287);
 }
 
@@ -151,11 +156,11 @@
 
 .submit-button {
     height: 31px;
-    width: 150px;
+    width: 100px;
     font-size: 15px;
     border: none;
     background-color: var(--main-color_navy);
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     color: var(--main-color_begie);
 }
@@ -178,7 +183,7 @@
         width: 100%;
     }
 
-    .upload-button, .submit-button {
+    .upload-button, .submit-button, .delete-file-button {
         margin: 10px 0;
     }
 }

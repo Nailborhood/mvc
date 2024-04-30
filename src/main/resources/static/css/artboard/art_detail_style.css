@@ -1,10 +1,16 @@
 .content-wrapper {
+    flex: 1;
+    padding: 15px 30px;
     display: flex;
-    margin: 20px 100px;
+    flex-direction: column;
+}
+.art-detail-section {
+    display: flex;
+    margin: 20px auto;
 }
 
 .image-slider-wrapper {
-    width: 50%;
+    width: 600px;
     position: relative;
 }
 
@@ -24,10 +30,9 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    padding: 16px;
+    padding: 10px 5px 90px;
     color: white;
     font-weight: bold;
-    font-size: 24px;
     transition: 0.6s ease;
     user-select: none;
 }
@@ -37,15 +42,27 @@
 }
 
 .next {
-    right: 0;
+    right: -1px;
 }
 
+.prev img, .next img {
+    width: 45px;
+}
+
+.art-like-bookmark-section{
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 10px 0;
+}
 .like-section {
-    text-align: left;
+    gap: 7px;
+    display: flex;
+    /*text-align: left;*/
     color: #333;
     font-size: 20px;
     padding: 5px 0;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 .like-img{
@@ -56,28 +73,113 @@
     text-decoration: none;
 }
 
-.art-info-wrapper {
-    width: 50%;
-    padding-left: 20px;
-    box-sizing: border-box;
-}
-
-.art-info-wrapper h2 {
-    margin-top: 0;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.art-info-wrapper h3 {
+.bookMark-section{
+    align-items: flex-start;
+    /*text-align: left;*/
+    color: #333;
     font-size: 20px;
-    margin-bottom: 15px;
+    padding: 5px 0;
+    /*margin-top: 20px;*/
+    display: flex;
+}
+.bookmark-img {
+    width: 31px;
+    height: 22px;
 }
 
-.art-info-wrapper p {
-    font-size: 16px;
-    margin-bottom: 15px;
+.art-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    height: 590px;
+    padding-top: 20px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    line-height: 22px;
 }
+
 
 .art-info-wrapper p:last-of-type {
     margin-bottom: 30px;
+}
+
+
+.art-info-profile{
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+.profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 5px;
+}
+
+.art-owner .art-category .art-date {
+    margin-right: 5px;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+
+
+.art-date {
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.art-info-title {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc; /* 연한 회색의 얇은 선 */
+    padding-bottom: 10px; /* 내용과 선 사이의 간격 */
+
+}
+
+.art-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.art-category {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.art-content {
+    margin-top: 15px;
+}
+
+.category-container {
+    display: flex;
+    flex-wrap: wrap; /* 줄바꿈 허용 */
+    gap: 10px; /* 박스 간의 간격 */
+    margin-top: 5px;
+}
+
+.category-box {
+    background-color: #f0f0f0;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap; /*줄바꿈 방지*/
+}
+
+.art-info-profile-link {
+    text-decoration: none; /* 링크의 밑줄 제거 */
+    color: inherit; /* 기본 텍스트 색상을 상속받음 */
+}
+
+.art-info-profile-link:hover {
+    color: #1d438a; /* 호버 시 텍스트 색상 변경 */
 }

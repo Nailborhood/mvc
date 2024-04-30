@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.service.member.FavoriteShopService;
 import com.nailshop.nailborhood.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class FavoriteController {
 
 
     // 매장 찜
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/favorite/{shopId}")
     public ResponseEntity<ResultDto<FavoriteResponseDto>> getShopDetail(Authentication authentication,
                                                                         @AuthenticationPrincipal MemberDetails memberDetails,

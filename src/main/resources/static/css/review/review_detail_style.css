@@ -10,10 +10,9 @@
 
 .image-slide {
     display: none;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    height: 600px;
+    height: 500px;
 }
 
 .image-slide.active {
@@ -25,18 +24,18 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    padding: 16px;
+    padding: 10px 5px 90px;
     color: white;
     transition: 0.6s ease;
     user-select: none;
 }
 
 .prev {
-    left: -20px;
+    left: 0;
 }
 
 .next {
-    right: -20px;
+    right: -1px;
 }
 
 .prev img, .next img {
@@ -68,10 +67,15 @@
     margin-bottom: 10px;
 }
 
-.review-rating, .review-count {
+.review-rating {
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 10px;
+}
+
+.review-count {
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .review-count {
@@ -110,17 +114,26 @@ button {
     padding-bottom: 5px;
 }
 
-.review-meta {
+.review-meta{
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.shop-meta, .shop-menu {
     font-size: 14px;
     color: #666;
     margin-bottom: 15px;
+    text-decoration: none; /* 링크의 밑줄 제거 */
 }
 
 .review-author, .review-service, .review-date {
     margin-right: 5px;
     font-size: 16px;
     color: #666;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
 }
 
 .review-date {
@@ -128,15 +141,25 @@ button {
     font-size: 12px;
 }
 
-.review-service {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 15px;
+.category-container {
+    display: flex;
+    flex-wrap: wrap; /* 줄바꿈 허용 */
+    gap: 10px; /* 박스 간의 간격 */
+    margin-top: 5px;
+}
+
+.category-box {
+    background-color: #f0f0f0;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap; /*줄바꿈 방지*/
 }
 
 .profile-pic {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 5px;
@@ -161,7 +184,7 @@ button {
     align-items: flex-end;
     justify-content: flex-start; /* 수평 방향에서 중앙 정렬 */
     cursor: pointer;
-    margin-top: auto;
+    margin-top: 230px;
     margin-bottom: 20px;
     margin-right: 40px;
     flex-shrink: 0;
@@ -169,12 +192,13 @@ button {
 }
 
 .delete-button, .update-button {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border: none;
     background-color: #1d438a; /* 빨간색 배경 */
     color: white; /* 텍스트는 흰색 */
     cursor: pointer; /* 마우스를 올렸을 때 손가락 커서 표시 */
     text-decoration: none;
+    border-radius: 15px;
 }
 
 

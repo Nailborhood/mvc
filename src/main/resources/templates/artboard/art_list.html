@@ -9,7 +9,7 @@
     <title>아트 전체 조회</title>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_list_style.css}">
-    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">-->
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
     <script th:src="@{/js/get_layouts.js}"></script>
 <!--    <script th:src="@{/js/artboard/art_search.js}"></script>-->
@@ -24,7 +24,7 @@
     <div th:unless="${error}" layout:fragment="content">
         <div class="search-bar">
             <div th:replace="artboard/art_searchbar.html"></div>
-            <div th:replace="artboard/art_category.html"></div>
+<!--            <div th:replace="artboard/art_category.html"></div>-->
         </div>
 
         <div class="art-list" id="art-list">

@@ -2,6 +2,7 @@ package com.nailshop.nailborhood.dto.member.request;
 
 import com.nailshop.nailborhood.domain.member.Customer;
 import com.nailshop.nailborhood.domain.member.Member;
+import com.nailshop.nailborhood.type.Gender;
 import com.nailshop.nailborhood.type.Role;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,6 +68,7 @@ public class OAuthAttributes {
                 .nickname(name)
                 .profileImg(picture)
                 .password(UUIDPassword)
+                .gender(Gender.UNSELECTED)
                 .role(Role.ROLE_USER)
                 .provider(nameAttributeKey)
                 .isDeleted(false)

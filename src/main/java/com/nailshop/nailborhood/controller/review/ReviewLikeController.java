@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class ReviewLikeController {
     private final MemberService memberService;
 
     // 리뷰 좋아요
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/like/review/{reviewId}")
     public ResponseEntity<ResultDto<ReviewLikeResponseDto>> reviewLike(Authentication authentication,
                                                                        @AuthenticationPrincipal MemberDetails memberDetails,

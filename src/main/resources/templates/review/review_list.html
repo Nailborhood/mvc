@@ -21,12 +21,12 @@
         해당 리뷰가 없습니다.
     </div>
 
-    <div layout:fragment="content">
+    <div th:unless="${error}" layout:fragment="content">
 
         <div class="search-bar">
             <div th:replace="review/review_search.html"></div>
         </div>
-        <div class="review-list" th:unless="${error}" id="review-list" >
+        <div class="review-list" id="review-list" >
             <div th:each="review, iterStat : ${result.getData().reviewResponseDtoList}" class="review-list-block" th:if="${iterStat.count <= 20}">
                 <a th:href="@{/review/inquiry/{reviewId}(reviewId=${review.reviewId}, shopId=${review.shopId})}" class="review-link" role="link">
                     <div class="review-img">
@@ -38,7 +38,7 @@
                 </a>
             </div>
         </div>
-        <div class="pagination" th:unless="${error}">
+        <div class="pagination">
             <div class="pagination-div">
                 <ul class="pagination-ul">
                     <li th:if="${result.getData().paginationDto.pageNo > 1}" class="page-item">

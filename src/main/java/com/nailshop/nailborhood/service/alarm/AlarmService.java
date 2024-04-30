@@ -80,7 +80,9 @@ public class AlarmService {
                                                                                               .getOwner()
                                                                                               .getShop()
                                                                                               .getName())
-                                                                               .isChecked(alarm.isChecked());
+                                                                               .isChecked(alarm.isChecked())
+                                                                               .senderProfileImg(alarm.getSender()
+                                                                                                      .getProfileImg());
 
 
             // 아트판 정보
@@ -145,7 +147,9 @@ public class AlarmService {
                                                                                .shopName(alarm.getSender()
                                                                                               .getOwner()
                                                                                               .getShop()
-                                                                                              .getName());
+                                                                                              .getName())
+                                                                               .senderProfileImg(alarm.getSender()
+                                                                                                      .getProfileImg());
 
 
             alarmResponseDtoList.add(builder.build());
@@ -193,7 +197,9 @@ public class AlarmService {
                                                                                .senderName(alarm.getSender()
                                                                                                 .getName())
                                                                                .createdAt(formattedTime)
-                                                                               .isChecked(alarm.isChecked());
+                                                                               .isChecked(alarm.isChecked())
+                                                                               .senderProfileImg(alarm.getSender()
+                                                                                                      .getProfileImg());
 
 
             // 리뷰 정보

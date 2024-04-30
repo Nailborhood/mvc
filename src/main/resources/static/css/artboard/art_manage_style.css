@@ -36,7 +36,7 @@
 .art-link {
     width: 600px;
     height: 140px;
-    background-color: antiquewhite;
+    /* background-color: antiquewhite; */
     border-radius: 5px;
     padding: 0 10px;
     display: flex;
@@ -45,27 +45,53 @@
     margin-bottom: 20px;
     text-decoration: none;
     color: inherit;
+    background-color: var(--main-color_begie);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .art-info_img {
     width: 120px;
     height: 120px;
     margin-right: 10px;
+    overflow: hidden;
 }
 
 .art-info_img img {
     width: 100%;
     height: 100%;
+    transition: transform 0.3s ease;
 }
 
+.art-info_img:hover img{
+    transform: scale(1.1);
+}
 .art-info_text {
     display: flex;
     flex-direction: column;
+    margin: 0 30px;
+    line-height: 20px;
+}
+
+.art-info_title_date {
+    display: flex;
+    align-items: baseline;
 }
 
 .art-info_title {
-    font-size: 23px;
-    margin: 3px;
+    font-size: 17px;
+    margin: 5px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+    width: 90px;
+}
+
+.art-info_date {
+    font-size: 13px;
+    margin: 0 0 5px 5px;
+    color: #767678;
 }
 
 .art-info_address {
@@ -78,6 +104,19 @@
     margin-top: 3px;
 }
 
+.art-info_category {
+    background-color: #f0f0f0;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.art-info_content {
+    font-size: 12px;
+    margin: 5px;
+}
 .art-info_under div {
     border-right: 1px solid var(--shadow_3);
     padding: 0 3px;
@@ -109,11 +148,12 @@
 
 .edit-button, .delete-button {
     height: 31px;
-    width: 150px;
+    width: 65px;
     font-size: 15px;
+    font-weight: bold;
     border: none;
     background-color: var(--main-color_navy);
-    border-radius: 5px;
+    border-radius: 16px;
     cursor: pointer;
     color: var(--main-color_begie);
 }
@@ -129,13 +169,13 @@
 .edit-button-link {
     display: inline-block;
     height: 31px;
-    width: 150px;
+    width: 65px;
     font-size: 15px;
     background-color: var(--main-color_navy);
     color: var(--main-color_begie);
     text-align: center;
     line-height: 31px;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;

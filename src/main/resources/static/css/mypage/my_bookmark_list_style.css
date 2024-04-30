@@ -1,0 +1,98 @@
+.error-code{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.mypage-title-span {
+    padding: 10px 10px 15px 10px;
+    font-size: 27px;
+    border-bottom: 1px solid var(--shadow_2);
+}
+
+.mypage-content_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.art-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    position: relative;
+    /*margin-left: 200px;*/
+    /*margin-right: 200px;*/
+    width: 1060px;
+    margin: 10px auto 0;
+}
+
+.art-list-row {
+    align-items: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.art-list-block {
+    display: inline-block;
+    position: relative;
+    /*width: calc(25% - 14px);*/
+    width: calc((100% - (7px * 3)) / 4);
+    margin-right: 7px;
+    margin-bottom: 7px;
+    /*max-width: 250px*/
+}
+
+.art-list-block:nth-child(4n) {
+    margin-right: 0;
+}
+
+.art-link {
+    text-decoration: none;
+}
+
+.art-img {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 260px;
+    height: 260px;
+}
+
+.art-img img {
+    width: 260px;
+    height: 260px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    background-color: #f7f5f0;;
+}
+
+.art-img:hover img {
+    transform: scale(1.1);
+}
+
+.art-icon {
+    align-items: flex-end;
+    border: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    vertical-align: baseline;
+    margin: 8px;
+}

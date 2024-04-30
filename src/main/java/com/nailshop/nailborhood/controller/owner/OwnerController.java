@@ -53,7 +53,8 @@ public class OwnerController {
 
 
     // 검색기능이랑 통합
-    //사장님 리뷰 검색
+    // 사장님 리뷰 검색
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/owner/review")
     public String getShopReviewList(Model model,
                                     Authentication authentication,
@@ -88,7 +89,7 @@ public class OwnerController {
     }
 
     // 아트 관리
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/owner/artboard/manage")
     public String inquiryAllArtRef(@AuthenticationPrincipal MemberDetails memberDetails,
                                    Authentication authentication,

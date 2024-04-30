@@ -5,6 +5,7 @@ import com.nailshop.nailborhood.domain.address.Districts;
 import com.nailshop.nailborhood.domain.address.Dong;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.domain.member.Owner;
+import com.nailshop.nailborhood.domain.shop.CertificateImg;
 import com.nailshop.nailborhood.domain.shop.Shop;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardListLookupResponseDto;
 import com.nailshop.nailborhood.dto.artboard.response.ShopArtBoardLookupResponseDto;
@@ -20,6 +21,7 @@ import com.nailshop.nailborhood.repository.member.FavoriteRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.repository.member.OwnerRepository;
 import com.nailshop.nailborhood.repository.review.ReviewRepository;
+import com.nailshop.nailborhood.repository.shop.CertificateImgRepository;
 import com.nailshop.nailborhood.repository.shop.MenuRepository;
 import com.nailshop.nailborhood.repository.shop.ShopImgRepository;
 import com.nailshop.nailborhood.repository.shop.ShopRepository;
@@ -55,6 +57,7 @@ public class ShopDetailService {
     private final OwnerRepository ownerRepository;
     private final FavoriteRepository favoriteRepository;
     private final MemberService memberService;
+    private final CertificateImgRepository certificateImgRepository;
 
     // 매장 상세 조회
     @Transactional
@@ -82,9 +85,9 @@ public class ShopDetailService {
                                                                                              .build();
 
 
-        if(member != null){
+        if (member != null) {
             Boolean heartStatus = favoriteRepository.findStatusByMemberIdAndShopId(memberId, shopId);
-            if(heartStatus == null){
+            if (heartStatus == null) {
                 heartStatus = false;
             }
             shopDetailLookupResponseDto.setHeartStatus(heartStatus);
@@ -96,7 +99,12 @@ public class ShopDetailService {
 
         List<MenuDetailResponseDto> menuDetailResponseDtoList = menuRepository.findAllByShopId(shopId);
         List<ShopImgListResponseDto> shopImgListResponseDtoList = shopImgRepository.findAllByShopImgListByShopId(shopId);
+        CertificateImg certificateImg = certificateImgRepository.findByShopId(shopId);
 
+        ShopCertificateImgResponseDto shopCertificateImgResponseDto = ShopCertificateImgResponseDto.builder()
+                                                                                                   .imgNum(certificateImg.getImgNum())
+                                                                                                   .imgPath(certificateImg.getImgPath())
+                                                                                                   .build();
 
         CommonResponseDto<Object> reviewList = shopReviewListLookupService.getAllReviewListByShopId(1, 4, "createdAt", "DESC", shopId);
 //        if(reviewList == null){
@@ -143,6 +151,7 @@ public class ShopDetailService {
                                                                                        .shopImgListResponseDtoList(shopImgListResponseDtoList)
                                                                                        .shopReviewLookupResponseDtoList(reviewListData)
                                                                                        .shopArtBoardLookupResponseDtoList(artBoardListData)
+                                                                                       .shopCertificateImgResponseDto(shopCertificateImgResponseDto)
                                                                                        .build();
 
         return commonService.successResponse(SuccessCode.SHOP_DETAIL_LOOKUP_SUCCESS.getDescription(), HttpStatus.OK, shopDetailListResponseDto);

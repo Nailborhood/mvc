@@ -1,17 +1,16 @@
 package com.nailshop.nailborhood.service.member;
 
 import com.nailshop.nailborhood.domain.member.Customer;
-import com.nailshop.nailborhood.domain.member.Login;
+import com.nailshop.nailborhood.domain.member.Favorite;
 import com.nailshop.nailborhood.domain.member.Member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.member.*;
 import com.nailshop.nailborhood.dto.member.request.*;
+import com.nailshop.nailborhood.dto.member.response.UserInfoResponseDto;
 import com.nailshop.nailborhood.repository.member.CustomerRepository;
 import com.nailshop.nailborhood.repository.member.LoginRepository;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
 import com.nailshop.nailborhood.security.config.auth.MemberDetails;
-import com.nailshop.nailborhood.security.dto.GeneratedToken;
-import com.nailshop.nailborhood.security.dto.TokenResponseDto;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -32,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -177,7 +173,8 @@ public class MemberService {
         return commonService.successResponse(SuccessCode.MYINFO_SUCCESS.getDescription(), HttpStatus.OK, memberInfoDto);
     }
 
-    // 내 정보 업데이트 (마이페이지로 이동 필요)
+    // 내 정보 업데이트
+    // TODO (한 항목만 바꾸기가 안됨 확인 필요)
     @Transactional
     public CommonResponseDto<Object> updateMyInfo(Long id, ModMemberInfoRequestDto modInfoDto) {
         Member member = memberRepository.findById(id)
@@ -239,15 +236,34 @@ public class MemberService {
                 return commonService.errorResponse(ErrorCode.DROPOUT_FAIL.getDescription(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
-//
-//
-//    public CommonResponseDto<Object> findUser(Long id) {
-//        Member member = memberRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
-//
-//
-//    }
-//
+
+
+    public CommonResponseDto<Object> findUser(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND.getDescription()));
+
+        UserInfoResponseDto userInfoResponseDto =  UserInfoResponseDto.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .favoriteCnt(member.getFavoriteList()
+                        .stream()
+                        .filter(Favorite::getStatus)
+                        .count()
+                )
+                .reviewCnt(member.getCustomer().getReviewList()
+                        .stream()
+                        .filter(review -> !review.isDeleted())
+                        .count()
+                )
+                .bookmarkCnt(member.getArtBookMarkList()
+                        .stream()
+                        .filter(artBookMark -> !artBookMark.getStatus())
+                        .count()
+                )
+                .build();
+        return commonService.successResponse(SuccessCode.MEMBER_FOUND.getDescription(), HttpStatus.OK, userInfoResponseDto);
+    }
+
 
 
     // 프로필 수정
