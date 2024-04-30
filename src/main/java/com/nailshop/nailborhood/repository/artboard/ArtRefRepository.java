@@ -59,7 +59,7 @@ public interface ArtRefRepository extends JpaRepository<ArtRef, Long> {
     @Query("SELECT a " +
             "FROM ArtRef a " +
             "LEFT join a.shop s " +
-            "WHERE s.shopId = :shopId AND s.isDeleted = false ")
+            "WHERE s.shopId = :shopId AND a.isDeleted = false ")
     Page<ArtRef> findAllNotDeletedBYShopId(Pageable pageable, @Param("shopId") Long shopId);
 
     // 카테고리 조회(isDeleted = false)

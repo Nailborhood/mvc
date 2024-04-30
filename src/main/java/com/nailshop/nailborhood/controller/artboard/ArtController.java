@@ -67,12 +67,11 @@ public class ArtController {
                               RedirectAttributes redirectAttributes) {
         try {
             SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
-            CommonResponseDto<Object> registerArt = artRegistrationService.registerArt(sessionDto.getId(), multipartFileList, artRegistrationRequestDto);
-            ResultDto<Void> resultDto = ResultDto.in(registerArt.getStatus(), registerArt.getMessage());
+            Long artRefId = artRegistrationService.registerArt(sessionDto.getId(), multipartFileList, artRegistrationRequestDto);
 
-            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+//            redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
 
-            return "redirect:/artboard/inquiry";
+            return "redirect:/artboard/inquiry/" + artRefId;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_REGISTRATION_FAIL.getDescription());
 
@@ -117,8 +116,10 @@ public class ArtController {
             ResultDto<Void> resultDto = ResultDto.in(updateArt.getStatus(), updateArt.getMessage());
 
             redirectAttributes.addFlashAttribute("successMessage", resultDto.getMessage());
+            redirectAttributes.addAttribute("artRefId", artRefId);
 
-            return "redirect:/owner/artboard/manage";
+            return "redirect:/artboard/inquiry/" + artRefId;
+
         } catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", ErrorCode.ART_UPDATE_FAIL.getDescription());
 

@@ -100,11 +100,11 @@
 }
 
 .submit-button, .upload-button, .delete-file-button {
-    padding: 10px 20px;
+    padding: 9px 18px;
     margin-left: auto;
     background-color: #1d438a;
     color: white;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
 }
 
