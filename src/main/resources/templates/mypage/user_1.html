@@ -6,22 +6,29 @@
     <meta charset="UTF-8">
     <title>마이페이지</title>
     <link rel="stylesheet" th:href="@{/css/mypage/user.css}" />
-    <script th:src="@{/js/request/request_provider}"></script>
+    <script th:src="@{/js/request/request_provider.js}"></script>
 </head>
 <div layout:fragment="content" class="mypage-content">
     <div class="content">
-        <span class="mypage-title-span">마이페이지(링크 추후 연결)</span>
+        <span class="mypage-title-span">마이페이지</span>
         <div class="mypage-content_div">
             <div class="profile_div">
-                <div class="profile-img_div">
-                    <img th:src="@{${sessionDto.profileImg}}" />
+                <div id="profile-img">
+                    <div class="profile-img_div">
+                        <img th:src="@{${sessionDto.profileImg}}" />
+                    </div>
+<!--                    <div id="edit-img_div">-->
+<!--                        <a th:href="@{#}">-->
+<!--                            <img src="/assets/icons/member/picture_icon.svg">-->
+<!--                        </a>-->
+<!--                    </div>-->
                 </div>
                 <div class="profile-info_div">
                     <div id="profile-nickname">
                         <p th:text="${userInfoResponseDto.nickname}">닉네임 자리</p>
                     </div>
                     <span id="info-span">
-                        리뷰 <p th:text="${userInfoResponseDto.reviewCnt}">갯수</p> | 저장한 장소 <p th:text="${userInfoResponseDto.favoriteCnt}">갯수</p> | 북마크 <p th:text="${userInfoResponseDto.reservationCnt}">갯수</p>
+                        리뷰 <p th:text="${userInfoResponseDto.reviewCnt}">갯수</p> | 저장한 장소 <p th:text="${userInfoResponseDto.favoriteCnt}">갯수</p> | 북마크 <p th:text="${userInfoResponseDto.bookmarkCnt}">갯수</p>
                     </span>
                 </div>
             </div>
@@ -71,9 +78,6 @@
                     <a th:data-provider="${sessionDto.provider}" id="link-owner-request" onclick="checkProviderAndRedirect()">사업자 전환 신청</a> | 고객 센터
                 </div>
             </div>
-<!--            <div class="mypage-menu_div">-->
-
-<!--            </div>-->
         </div>
     </div>
 </div>

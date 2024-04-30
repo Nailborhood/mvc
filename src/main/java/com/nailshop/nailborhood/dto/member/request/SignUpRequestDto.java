@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.dto.member.request;
 
+import com.nailshop.nailborhood.type.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,6 @@ public class SignUpRequestDto {
     private String name;
     private LocalDate birthday;
     private String phoneNum;
-    private String gender;
+    private Gender gender;
     private String nickname;
 }

@@ -35,6 +35,10 @@
     border: solid 1px var(--shadow_2);
 }
 
+#profile-img {
+    position: relative;
+}
+
 .profile-img_div {
     position: relative;
     width: 200px;
@@ -49,7 +53,16 @@
     height: 100%;
 }
 
-
+#edit-img_div {
+    border-radius: 50%;
+    background-color: white;
+    border: 1px solid var(--shadow_3);
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 155px;
+    right: 5px;
+}
 
 .profile-info_div {
     width: 260px;

@@ -1,5 +1,6 @@
 package com.nailshop.nailborhood.dto.member;
 
+import com.nailshop.nailborhood.type.Gender;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class MemberInfoDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private String phoneNum;
-    private String gender;
+    private Gender gender;
     private String address;
     private String nickname;
     private String profileImg;
@@ -27,7 +28,7 @@ public class MemberInfoDto {
     private LocalDateTime createdAt;
 
     @Builder
-    public MemberInfoDto(Long memberId, String email, String name, LocalDate birthday, String phoneNum, String gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
+    public MemberInfoDto(Long memberId, String email, String name, LocalDate birthday, String phoneNum, Gender gender, String address, String nickname, String profileImg, boolean isDeleted, LocalDateTime createdAt) {
         this.memberId = memberId;
         this.email = email;
         this.name = name;
