@@ -100,9 +100,8 @@ public class Member extends BaseTime {
         this.role = role;
     }
 
-    public Member update(String name, String picture) {
+    public Member update(String name) {
         this.name = name;
-        this.profileImg = picture;
         return this;
     }
 

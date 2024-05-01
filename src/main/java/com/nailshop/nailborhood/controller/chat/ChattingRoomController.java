@@ -170,6 +170,9 @@ public class ChattingRoomController {
             resultDto.setData((ChattingRoomListResponseDto) allChatList.getData());
 
             model.addAttribute("resultDto", resultDto);
+            model.addAttribute("size",size);
+            model.addAttribute("sortBy",sortBy);
+            model.addAttribute("keyword",keyword);
 
 
             return "admin/admin_chat_search_list";

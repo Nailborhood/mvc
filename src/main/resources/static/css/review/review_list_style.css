@@ -37,20 +37,12 @@
 .search-select-box {
     display: flex;
     justify-content: center;
-    /*gap: 10px*/
+    position: relative;
 }
-
-
-/*.search-select-box select {*/
-/*    padding: 5px;*/
-/*    border: 1px solid #ccc;*/
-/*    border-radius: 10px;*/
-/*}*/
 
 .search-container button {
     padding: 3px 10px;
     border: none;
-    /*background-color:var(--main-color_navy);*/
     background: none;
     color: gray;
     cursor: pointer;
@@ -66,9 +58,6 @@
     margin-top: 5px;
 }
 
-/*.search-select-box button:hover {*/
-/*    background-color: var(--hover);*/
-/*}*/
 
 .search-container .clearButton img {
     width: 15px;

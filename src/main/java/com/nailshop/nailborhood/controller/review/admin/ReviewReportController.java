@@ -61,6 +61,9 @@ public class ReviewReportController {
             ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(allReviewReportList.getStatus(), allReviewReportList.getMessage());
             resultDto.setData((ReviewReportListLookupDto) allReviewReportList.getData());
             model.addAttribute("resultDto", resultDto);
+            model.addAttribute("size",size);
+            model.addAttribute("sortBy",sortBy);
+            model.addAttribute("keyword",keyword);
             return "admin/admin_reviewReport_list";
         } catch (NotFoundException e) {
             model.addAttribute("errorCode", ErrorCode.REVIEW_REPORT_NOT_FOUND);
@@ -87,6 +90,9 @@ public class ReviewReportController {
             ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(allReportStatusList.getStatus(), allReportStatusList.getMessage());
             resultDto.setData((ReviewReportListLookupDto) allReportStatusList.getData());
             model.addAttribute("resultDto", resultDto);
+            model.addAttribute("size",size);
+            model.addAttribute("sortBy",sortBy);
+            model.addAttribute("keyword",keyword);
             return "admin/admin_reviewReportStatus_list";
         } catch (NotFoundException e) {
             model.addAttribute("errorCode", ErrorCode.REVIEW_REPORT_NOT_FOUND);

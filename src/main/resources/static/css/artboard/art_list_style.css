@@ -46,7 +46,7 @@
 .search-select-box {
     display: flex;
     justify-content: center;
-    /*gap: 10px*/
+    position: relative;
 }
 
 .search-field button {

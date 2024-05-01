@@ -1,0 +1,51 @@
+
+.category-hide_checkbox {
+    display: none;
+}
+
+.category-chevron_label {
+    position: absolute;
+    bottom: -3px;
+    color: var(--shadow_4);
+}
+
+.category-chevron_label img{
+    width: 20px;
+    margin-left: 2px;
+}
+
+/* 체크박스 체크 시 메뉴 숨기기 */
+.category-hide_checkbox:checked ~ #checkbox-toggle {
+    display: none;
+}
+
+.category-hide_checkbox:checked ~ .sortBy-select {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.category-hide_checkbox:checked ~ .orderby-select {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* 체크박스 체크 시 체크된 라벨 보이기, 체크 안된 라벨 숨기기 */
+.category-hide_checkbox:checked ~ #checkbox-notchecked {
+    display: none;
+}
+.category-hide_checkbox:checked ~ #checkbox-checked {
+    display: flex;
+}
+
+/* 체크박스 체크 해제 시 메뉴 보이기 */
+.category-hide_checkbox:not(:checked) ~ #checkbox-toggle {
+    display: flex;
+}
+
+/* 체크박스 체크 해제 시 체크 안된 라벨 보이기, 체크된 라벨 숨기기 */
+.category-hide_checkbox:not(:checked) ~ #checkbox-notchecked {
+    display: block;
+}
+.category-hide_checkbox:not(:checked) ~ #checkbox-checked {
+    display: none;
+}

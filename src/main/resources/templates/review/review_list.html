@@ -9,20 +9,16 @@
     <title>리뷰 전체 조회</title>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/review/review_list_style.css}">
-<!--    <link rel="stylesheet" th:href="@{/css/search/searchbar_style.css}">-->
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
+    <link rel="stylesheet" th:href="@{/css/common/category_toggle.css}">
     <script th:src="@{/js/review/review_list_search.js}"></script>
-    <script th:src="@{/js/get_layouts.js}"></script>
-
 </head>
 
 <body>
     <div th:if="${error}" class="empty-review-message">
         해당 리뷰가 없습니다.
     </div>
-
     <div th:unless="${error}" layout:fragment="content">
-
         <div class="search-bar">
             <div th:replace="review/review_search.html"></div>
         </div>
