@@ -57,6 +57,9 @@ public class AdminSearchController {
             ResultDto<AdminReviewListResponseDto> resultDto = ResultDto.in(allReviewList.getStatus(), allReviewList.getMessage());
             resultDto.setData((AdminReviewListResponseDto) allReviewList.getData());
             model.addAttribute("resultDto", resultDto);
+            model.addAttribute("size",size);
+            model.addAttribute("sortBy",sortBy);
+            model.addAttribute("keyword",keyword);
             return "admin/admin_review_list";
         } catch (NotFoundException e) {
             //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
@@ -86,6 +89,9 @@ public class AdminSearchController {
             ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopList.getStatus(), allShopList.getMessage());
             resultDto.setData((AllShopsListResponseDto) allShopList.getData());
             model.addAttribute("resultDto", resultDto);
+            model.addAttribute("size",size);
+            model.addAttribute("sortBy",sortBy);
+            model.addAttribute("keyword",keyword);
             return "admin/admin_shop_list";
         } catch (NotFoundException e) {
             //TODO: errorcode 마다 페이지 반환을 다르게 해줘야하는지 고민
