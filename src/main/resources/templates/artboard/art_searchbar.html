@@ -13,7 +13,13 @@
             </div>
         </div>
         <div class="search-select-box">
-            <div class="checkbox-button_row">
+            <input type="checkbox" id="click" class="category-hide_checkbox"/>
+            <label class="category-chevron_label" for="click" id="checkbox-notchecked">
+                <img src="/assets/common/chevron-up.svg">
+            </label>
+            <label class="category-chevron_label" for="click" id="checkbox-checked">
+                <img src="/assets/common/chevron-down.svg"><p>카테고리</p>            </label>
+            <div class="checkbox-button_row" id="checkbox-toggle">
                 <div th:each="category : ${categories}" class="checkbox-button">
                     <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
                     <div class="checked-div">
