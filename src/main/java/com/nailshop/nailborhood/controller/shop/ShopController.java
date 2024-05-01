@@ -121,6 +121,9 @@ public class ShopController {
             model.addAttribute("resultDto", resultDto);
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
+            model.addAttribute("size",size);
+            model.addAttribute("orderby",criteria);
+            model.addAttribute("keyword",keyword);
 
             return "shop/shop_local_list";
         } catch (NotFoundException e) {
@@ -130,6 +133,10 @@ public class ShopController {
             model.addAttribute("addressDto", storeAddressSeparationListDtoList);
             model.addAttribute("criteriaOptions", criteriaOptions);
             model.addAttribute("errorCode", ErrorCode.SHOP_NOT_FOUND);
+            model.addAttribute("size",size);
+            model.addAttribute("orderby",criteria);
+            model.addAttribute("keyword",keyword);
+
             return "shop/shop_local_list";
         }
 
