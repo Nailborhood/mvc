@@ -8,7 +8,7 @@
     <title>리뷰 상세</title>
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/review/review_detail_style.css}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
     <script th:src="@{/js/review/review_detail_status.js}"></script>
     <script th:src="@{/js/artboard/art_detail.js}"></script>
     <script th:src="@{/js/review/review_detail.js}"></script>
@@ -20,7 +20,6 @@
 
 <body th:data-review-status="${result.getData().reviewReportStatus}" th:data-review-isDeleted="${result.getData().isDeleted}" th:data-shop-status="${result.getData().shopStatus}">
 <div id="wrapper">
-    <div th:replace="fragments/header::header"></div>
     <div layout:fragment="content" class="content">
         <!--알람에 필요한 변수 js data -->
         <input type="hidden" id="reviewId" th:value="${result.getData().reviewId}" />

@@ -51,7 +51,7 @@
                         <div class="td" th:text="${report.shopName}"></div>
                         <div class="td" th:text="${report.reportContents}"></div>
                         <div class="td" th:text="${report.reporter}"></div>
-                        <div class="td" th:text="${#temporals.format(report.date, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="td" th:text="${#temporals.format(report.date, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
                         <div class="td" th:text="${report.status}"></div>
                     </div>
                 </div>

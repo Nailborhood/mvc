@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 페이지-리뷰 신고 리스트</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
     <script th:src="@{/js/admin/admin_review_report.js}"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
@@ -57,7 +57,7 @@
                         <div class="td" th:text="${reviewReport.shopName}"></div>
                         <div class="td" th:text="${reviewReport.reportContents}"></div>
                         <div class="td" th:text="${reviewReport.reporter}"></div>
-                        <div class="td" th:text="${#temporals.format(reviewReport.date, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="td" th:text="${#temporals.format(reviewReport.date, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
                         <div class="td" th:text="${reviewReport.status}"></div>
                     </div>
                 </div>
