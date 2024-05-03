@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    var socket = new SockJS("/echo");
-
-    socket.onopen = function (){
-        console.log("매장 찜 소켓 연결 완료");
-    }
+    // var socket = new SockJS("/echo");
+    //
+    // socket.onopen = function (){
+    //     console.log("매장 찜 소켓 연결 완료");
+    // }
 
     const emptyLikeUrl = "/assets/icons/shop/emptyHeart.svg";
     const clickLikeUrl = "/assets/icons/shop/clickHeart.svg";

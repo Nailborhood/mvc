@@ -1,15 +1,17 @@
 <div th:fragment="check-category">
     <div class="checkbox-button_row">
         <div th:each="category : ${categories}" class="checkbox-button">
-            <input class="category-checkbox"
-                   th:id="${'category' + category.categoryId}"
-                   type="checkbox"
-                   name="categoryIdList"
-                   th:value="${category.categoryId}"
-                   th:checked="${#lists.contains(result.getData().categoryTypeList, category.type)}" />
-            <div class="checked-div">
-                <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
-            </div>
+            <label th:for="${'category' + category.categoryId}" class="full-width-label">
+                <input class="category-checkbox"
+                       th:id="${'category' + category.categoryId}"
+                       type="checkbox"
+                       name="categoryIdList"
+                       th:value="${category.categoryId}" style="display:none;"
+                       th:checked="${#lists.contains(result.getData().categoryTypeList, category.type)}" />
+                <div class="checked-div">
+                    <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
+                </div>
+            </label>
         </div>
     </div>
 </div>

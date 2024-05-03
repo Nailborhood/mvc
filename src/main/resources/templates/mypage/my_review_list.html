@@ -28,7 +28,7 @@
                         </div>
                         <div class="review-info_text">
                             <div class="review-info_shopName" th:text="${review.shopName}"></div>
-                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}"></div>
                             <div class="review-info_address" th:text="${review.shopAddress}"></div>
                             <div class="division-line"></div>
                             <div class="review-info_under">
@@ -54,7 +54,7 @@
                             <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + ${pageNum}}" th:text="${pageNum}"></a>
                         </li>
                         <li th:if="${result.getData().paginationDto.pageNo < result.getData().paginationDto.totalPages}" class="page-item">
-                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${orderby}}">Next</a>
+                            <a class="page-link" th:href="@{'/mypage/review/inquiry?page=' + (${result.getData().paginationDto.pageNo} + 1) + '&size=' + ${size} + '&orderby=' + ${sortBy}}">Next</a>
                         </li>
                     </ul>
                 </div>

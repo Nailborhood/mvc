@@ -88,7 +88,7 @@ public class ReviewInquiryController {
                             @AuthenticationPrincipal MemberDetails memberDetails,
                             @RequestParam(value = "keyword", required = false) String keyword,
                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                            @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                            @RequestParam(value = "size", defaultValue = "16", required = false) int size,
                             @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
                             @RequestParam(value = "category", defaultValue = "", required = false) String category) {
 
@@ -126,7 +126,7 @@ public class ReviewInquiryController {
     @GetMapping("/review/category/inquiry")
     public ResponseEntity<ResultDto<ReviewListResponseDto>> allReviewByCategory(@RequestParam(value = "keyword", required = false) String keyword,
                                                                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                                @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+                                                                                @RequestParam(value = "size", defaultValue = "16", required = false) int size,
                                                                                 @RequestParam(value = "orderby", defaultValue = "likeCnt", required = false) String criteria,
                                                                                 @RequestParam(value = "category", defaultValue = "", required = false) String category) {
 

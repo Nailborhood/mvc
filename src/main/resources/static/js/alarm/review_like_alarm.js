@@ -1,10 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    var socket = new SockJS("/echo");
-
-    socket.onopen = function (){
-        console.log("매장 찜 소켓 연결 완료");
-    }
 
     const clickLikeUrl = "/assets/icons/review/clickThunbsUp.svg";
     const emptyLikeUrl = "/assets/icons/review/emptyThumbsUp.svg";
