@@ -80,8 +80,7 @@
                 <div class="art-info-title">
                     <span class="art-title" th:text="${result.getData().name}">제목</span>
                     <span class="art-date"
-                          th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd HH:mm:ss', 'Asia/Seoul')}">작성 일시</span>
-
+                         th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}">작성 일시</span>
                 </div>
 
 

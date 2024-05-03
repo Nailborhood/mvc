@@ -43,8 +43,7 @@
                                 <div class="art-info_title" th:text="${art.getName()}">
                                     title
                                 </div>
-                                <div class="art-info_date"
-                                     th:text="${#temporals.format(art.getCreatedAt(), 'yyyy-MM-dd, HH:mm')}">
+                                <div class="art-info_date" th:text="${#temporals.format(art.getCreatedAt(), 'yyyy-MM-dd, HH:mm', 'Asia/Seoul')}">
                                     Date
                                 </div>
                             </div>

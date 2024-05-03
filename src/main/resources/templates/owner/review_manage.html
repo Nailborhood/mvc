@@ -38,7 +38,7 @@
                                 <img th:src="@{${review.reviewImgPath}}">
                             </div>
                             <div class="review-info_text">
-                                <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                                <div class="review-info_date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}"></div>
                                 <div class="review-info_nickname" th:text="${review.nickName}"></div>
                                 <div class="review-info_under">
                                     <span class="stars"></span>&nbsp;
