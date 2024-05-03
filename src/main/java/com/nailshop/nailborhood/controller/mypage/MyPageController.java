@@ -113,7 +113,7 @@ public class MyPageController {
                              Authentication authentication,
                              @AuthenticationPrincipal MemberDetails memberDetails,
                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                             @RequestParam(value = "size", defaultValue = "20", required = false) int size) {
+                             @RequestParam(value = "size", defaultValue = "16", required = false) int size) {
 
         SessionDto sessionDto = memberService.getSessionDto(authentication, memberDetails);
         model.addAttribute("sessionDto", sessionDto);
