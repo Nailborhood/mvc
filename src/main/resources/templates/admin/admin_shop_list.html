@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>관리자 페이지-매장 리스트</title>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>-->
     <script th:src="@{/js/admin/admin_delete_shop.js}"></script>
     <script th:src="@{/js/admin/admin_detail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
@@ -63,7 +63,7 @@
                             <div class="td" th:text="${shop.opentime}"></div>
                             <div class="td" th:text="${shop.address}"></div>
                             <div class="td" th:text="${shop.website}"></div>
-                            <div class="td" th:text="${#temporals.format(shop.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            <div class="td" th:text="${#temporals.format(shop.createdAt, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
                             <div class="td" th:text="${shop.favoriteCnt}"></div>
                             <div class="td" th:text="${shop.reviewCnt}"></div>
                             <div class="td" th:text="${shop.rateAvg}"></div>

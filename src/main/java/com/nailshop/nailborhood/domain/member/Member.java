@@ -1,10 +1,12 @@
 package com.nailshop.nailborhood.domain.member;
 
 import com.nailshop.nailborhood.domain.alarm.Alarm;
+import com.nailshop.nailborhood.domain.artboard.ArtBookMark;
 import com.nailshop.nailborhood.domain.artboard.ArtLike;
 import com.nailshop.nailborhood.domain.common.BaseTime;
 import com.nailshop.nailborhood.domain.review.ReviewLike;
 import com.nailshop.nailborhood.domain.review.ReviewReport;
+import com.nailshop.nailborhood.type.Gender;
 import com.nailshop.nailborhood.type.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -36,7 +38,8 @@ public class Member extends BaseTime {
     @Column(name = "phone_num")
     private String phoneNum;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private String nickname;
 
@@ -74,14 +77,16 @@ public class Member extends BaseTime {
     private List<ArtLike> artLikeList;
 
     @OneToMany(mappedBy = "member")
+    private List<ArtBookMark> artBookMarkList;
+
+    @OneToMany(mappedBy = "member")
     private List<ReviewLike> reviewLikeList;
 
     @OneToMany(mappedBy = "member")
     private List<ReviewReport> reviewReportList;
 
     @Builder
-    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, String gender, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
-
+    public Member( String email, String name, String password, LocalDate birthday, String phoneNum, Gender gender, String nickname, String profileImg,  String provider, boolean isDeleted, Role role) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -95,10 +100,8 @@ public class Member extends BaseTime {
         this.role = role;
     }
 
-    public Member update(String name, String picture) {
+    public Member update(String name) {
         this.name = name;
-        this.profileImg = picture;
-
         return this;
     }
 

@@ -48,7 +48,7 @@
                                         </div>
                                         <div class="chat-info_date"
                                              th:if="${chat.getMessageResponseDtoList().size() > 0}"
-                                             th:text="${#temporals.format(chat.getMessageResponseDtoList().get(chat.getMessageResponseDtoList().size()-1).getCreatedAt(),'yyyy-MM-dd HH:mm')}">
+                                             th:text="${#temporals.format(chat.getMessageResponseDtoList().get(chat.getMessageResponseDtoList().size()-1).getCreatedAt(),'yyyy-MM-dd HH:mm','Asia/Seoul')}">
                                         </div>
                                     </div>
 

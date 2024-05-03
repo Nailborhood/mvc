@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var socket = new SockJS("/echo");
-
-    socket.onopen = function (){
-        console.log("아트판 소켓 연결 완료");
-    }
+    // var socket = new SockJS("/echo");
+    //
+    // socket.onopen = function (){
+    //     console.log("아트판 소켓 연결 완료");
+    // }
     const clickLikeUrl = "/assets/icons/art/clickLike.svg";
     const emptyLikeUrl = "/assets/icons/art/emptyLike.svg";
 

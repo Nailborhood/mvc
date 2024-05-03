@@ -16,7 +16,7 @@
             <div sec:authorize="isAuthenticated()" id="alarm-field" class="alarm-field">
                 <a id="alarm" th:href="@{/alarm/list}">
                     <div id="alarm-img-field">
-                        <img src="/assets/icons/alarmIcon.png" />
+                        <img src="/assets/icons/alarmIcon.png"/>
                     </div>
                 </a>
                 <span id="newNoticeCnt" class="badge badge-pill badge-primary">0</span>
@@ -24,7 +24,7 @@
             <div class="profile-field">
                 <a sec:authorize="isAuthenticated()" th:href="@{/user}">
                     <div id="profile-img-field">
-                        <img th:src="@{${sessionDto.profileImg}}" />
+                        <img th:src="@{${sessionDto.profileImg}}"/>
                     </div>
                 </a>
                 <span id="anonymous-span" sec:authorize="isAnonymous()">
@@ -74,9 +74,10 @@
                 <li><a th:href="@{/}">홈</a></li>
                 <li><a th:href="@{/review/inquiry}">리뷰</a></li>
                 <li><a th:href="@{/shop/list}">내 주변</a></li>
-                <li><a th:href="@{/artboard/inquiry}">아트판</a></li>
+                <li><a th:href="@{/artboard/inquiry}">아트</a></li>
             </ul>
         </div>
     </header>
-    <div id="msgStack"></div>
+    <div id="msgStack" style="
+    position: fixed; bottom: 20px; left: 70px; z-index: 6;"></div>
 </div>

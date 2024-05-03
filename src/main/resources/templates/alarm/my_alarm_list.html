@@ -8,7 +8,7 @@
     <title>알람</title>
     <link rel="stylesheet" th:href="@{/css/alarm/my_alarm_list_style.css}">
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
     <script th:src="@{/js/alarm/alarm_list.js}"></script>
 </head>
 
@@ -34,7 +34,7 @@
                             </div>
                             <div class="alarm-info_text">
                                 <div th:switch="${alarm.alarmType.name()}">
-                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 남긴 리뷰에 좋아요가 등록되었습니다'}"></p>
+                                    <p th:case="'LIKE_REVIEW'" th:text="${alarm.getShopName() + '에 등록하신 회원님의 리뷰를 좋아합니다'}"></p>
                                     <p th:case="*" th:text="${alarm.alarmType.getDescription() + ' 가 처리되었습니다.'}"></p>
                                 </div>
                             </div>

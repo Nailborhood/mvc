@@ -176,15 +176,6 @@ public class MyPageController {
         return "redirect:/user";
     }
 
-//    public ResponseEntity<ResultDto<Void>> modifyProfile(@RequestHeader(AUTH) String accessToken,
-//                                                         @RequestPart(value = "file") MultipartFile multipartFile) {
-//        CommonResponseDto<Object> commonResponseDto = memberService.updateProfileImg(accessToken, multipartFile);
-//        ResultDto<Void> result = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-//                             .body(result);
-//    }
-
-
     //  내 정보 확인
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")

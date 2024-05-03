@@ -6,15 +6,14 @@
 <head>
     <meta charset="UTF-8">
     <title>아트 상세 조회</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
     <link rel="stylesheet" th:href="@{/css/layout/layout_style.css}">
     <link rel="stylesheet" th:href="@{/css/artboard/art_detail_style.css}">
-    <script th:src="@{/js/get_layouts.js}"></script>
+<!--    <script th:src="@{/js/get_layouts.js}"></script>-->
     <script th:src="@{/js/artboard/art_detail.js}"></script>
     <script th:src="@{/js/alarm/art_like_alarm.js}"></script>
 </head>
 
-<body>
 <div layout:fragment="content">
     <div class="content-wrapper">
         <div class="art-detail-section">
@@ -81,7 +80,7 @@
                 <div class="art-info-title">
                     <span class="art-title" th:text="${result.getData().name}">제목</span>
                     <span class="art-date"
-                          th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}">작성 일시</span>
+                         th:text="${#temporals.format(result.getData().createdAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}">작성 일시</span>
                 </div>
 
 
@@ -96,6 +95,6 @@
         </div>
     </div>
 </div>
-</body>
+
 
 </html>

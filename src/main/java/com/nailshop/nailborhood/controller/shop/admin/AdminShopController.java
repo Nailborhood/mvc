@@ -61,7 +61,10 @@ public class AdminShopController {
             ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopRequestList.getStatus(), allShopRequestList.getMessage());
             resultDto.setData((AllShopsListResponseDto) allShopRequestList.getData());
             model.addAttribute("resultDto", resultDto);
-
+            model.addAttribute("size",size);
+            model.addAttribute("orderby",criteria);
+            model.addAttribute("sort",sort);
+            model.addAttribute("keyword",keyword);
             return "admin/admin_shop_registration_list";
         } catch (NotFoundException e) {
 

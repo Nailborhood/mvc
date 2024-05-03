@@ -57,7 +57,7 @@
                         <div class="td" th:text="${member.birthday}"></div>
                         <div class="td" th:text="${member.address}"></div>
                         <div class="td" th:text="${member.gender}"></div>
-                        <div class="td" th:text="${member.createdAt}"></div>
+                        <div class="td" th:text="${#temporals.format(member.createdAt,'yyyy-MM-dd HH:mm:ss','Asia/Seoul')}"></div>
                         <div class="td" th:text="${member.isDeleted == false ? '가입' : '탈퇴'}"></div>
                         <div class="td">
                             <button class="button" th:if="${member.isDeleted == false}" th:memberId="${member.memberId}" th:onclick="deleteMember(this.getAttribute('memberId'))">회원 삭제</button>

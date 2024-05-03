@@ -8,7 +8,8 @@
     <title>내 정보 수정</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage_modInfo_style.css}" />
     <script th:src="@{/js/member/signup.js}"></script>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script th:src="@{/js/request/request_provider.js}"></script>
+<!--    <script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 </head>
 <div layout:fragment="content" style="flex-direction: row" class="mypage-content">
     <div th:insert="~{fragments/components/mypage_side::mypage_side}" class="sidebar-div"></div>
@@ -84,12 +85,28 @@
                                 <label>성별</label>
                             </td>
                         </tr>
+<!--                        <tr style="text-align: center;">-->
+<!--                            <td>-->
+<!--                                <input type="radio" class="gender-radio" name="gender" value="Male" th:checked="${memberInfo.gender eq 'M' ? 'checked':''}">남성-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <input type="radio" class="gender-radio" name="gender" value="Female" th:checked="${memberInfo.gender eq 'F' ? 'checked':''}">여성-->
+<!--                            </td>-->
+<!--                        </tr>-->
                         <tr style="text-align: center;">
-                            <td>
-                                <input type="radio" class="gender-radio" name="gender" value="Male" th:checked="${memberInfo.gender eq 'M' ? 'checked':''}">남성
-                            </td>
-                            <td>
-                                <input type="radio" class="gender-radio" name="gender" value="Female" th:checked="${memberInfo.gender eq 'F' ? 'checked':''}">여성
+                            <td colspan="2" id="gender-select_td">
+                                <div>
+                                    <input type="radio" class="gender-radio" id="gender_male" name="gender" value="MALE" th:checked="${memberInfo.gender eq 'MALE' ? 'checked':''}">
+                                    <label for="gender_male">남성</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="gender-radio" id="gender_female" name="gender" value="FEMALE" th:checked="${memberInfo.gender eq 'FEMALE' ? 'checked':''}">
+                                    <label for="gender_female">여성</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="gender-radio" id="gender_unselected" name="gender" value="UNSELECTED" th:checked="${memberInfo.gender eq 'UNSELECTED' ? 'checked':''}">
+                                    <label for="gender_unselected">선택하지않음</label>
+                                </div>
                             </td>
                         </tr>
                         </tbody>

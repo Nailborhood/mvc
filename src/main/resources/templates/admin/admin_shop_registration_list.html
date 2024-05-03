@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>관리자 페이지-매장 신청 리스트</title>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>-->
     <script th:src="@{/js/admin/admin_detail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
 <!--    <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">-->
@@ -62,7 +62,7 @@
                         <div class="td" th:text="${request.opentime}"></div>
                         <div class="td" th:text="${request.address}"></div>
                         <div class="td" th:text="${request.website}"></div>
-                        <div class="td" th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="td" th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
                         <div class="td" th:text="${request.favoriteCnt}"></div>
                         <div class="td" th:text="${request.reviewCnt}"></div>
                         <div class="td" th:text="${request.rateAvg}"></div>

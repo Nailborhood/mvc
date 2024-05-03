@@ -6,74 +6,98 @@
     <meta charset="UTF-8">
     <title>마이페이지</title>
     <link rel="stylesheet" th:href="@{/css/mypage/user.css}" />
-    <script th:src="@{/js/request/request_provider}"></script>
+    <script th:src="@{/js/request/request_provider.js}"></script>
 </head>
 <div layout:fragment="content" class="mypage-content">
     <div class="content">
-        <span class="mypage-title-span">마이페이지(링크 추후 연결)</span>
+        <span class="mypage-title-span">마이페이지</span>
         <div class="mypage-content_div">
-            <div class="profile_div">
-                <div class="profile-img_div">
-                    <img th:src="@{${sessionDto.profileImg}}" />
-                </div>
-                <div class="profile-info_div">
-                    <div id="profile-nickname">
-                        <p th:text="${userInfoResponseDto.nickname}">닉네임 자리</p>
+            <div style="display: flex;">
+                <div class="profile_div">
+                    <div id="profile-img">
+                        <div class="profile-img_div">
+                            <img th:src="@{${sessionDto.profileImg}}" />
+                        </div>
+                        <div id="profile-nickname">
+                            <p th:text="${userInfoResponseDto.nickname}">닉네임 자리</p>
+                        </div>
+                        <button id="profile-edit_button" onclick="location.href='#'">
+                            프로필 설정
+                        </button>
                     </div>
+                    <div class="profile-info_div">
                     <span id="info-span">
-                        리뷰 <p th:text="${userInfoResponseDto.reviewCnt}">갯수</p> | 저장한 장소 <p th:text="${userInfoResponseDto.favoriteCnt}">갯수</p> | 북마크 <p th:text="${userInfoResponseDto.reservationCnt}">갯수</p>
+                        <a th:href="@{/mypage/review/inquiry}">
+                            <div class="info_div">
+                                <p class="info_div-title">리뷰</p>
+                                <p class="info_div-cnt" th:text="${userInfoResponseDto.reviewCnt}">갯수</p>
+                            </div>
+                        </a>
+                        <a th:href="@{/mypage/shop/favorite/inquiry}">
+                            <div class="info_div">
+                                <p class="info_div-title">내 장소</p>
+                                <p class="info_div-cnt" th:text="${userInfoResponseDto.favoriteCnt}">갯수</p>
+                            </div>
+                        </a>
+                        <a th:href="@{/mypage/art/bookmark/inquiry}">
+                            <div class="info_div">
+                                <p class="info_div-title">북마크</p>
+                                <p class="info_div-cnt" th:text="${userInfoResponseDto.bookmarkCnt}">갯수</p>
+                            </div>
+                        </a>
                     </span>
+                    </div>
+                </div>
+                <div class="mypage-menu_div">
+                    <div class="mypage-menu_row">
+                        <div class="mypage-menu_block">
+                            <div class="menu-title">
+                                개인정보
+                            </div>
+                            <div class="menu-detail">
+                                <a th:href="@{/#}">
+                                    프로필 수정
+                                </a>
+                                <a th:href="@{/mypage/myInfo}">
+                                    개인정보 수정
+                                </a>
+                                <a th:href="@{/mypage/password}">
+                                    비밀번호 수정
+                                </a>
+                        </div>
+                        </div>
+                        <div class="mypage-menu_block">
+                            <div class="menu-title">
+                                리뷰
+                            </div>
+                            <div class="menu-detail">
+                                <a th:href="@{/mypage/review/inquiry}">내가 작성한 리뷰</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mypage-menu_row">
+                        <div class="mypage-menu_block">
+                            <div class="menu-title">
+                                매장
+                            </div>
+                            <div class="menu-detail">
+                                <a th:href="@{/mypage/shop/favorite/inquiry}">내가 저장한 매장</a>
+                            </div>
+                        </div>
+                        <div class="mypage-menu_block">
+                            <div class="menu-title">
+                                북마크
+                            </div>
+                            <div class="menu-detail">
+                                <a th:href="@{/mypage/art/bookmark/inquiry}">내 북마크</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="mypage-menu_div">
-                <div class="mypage-menu_row">
-                    <div class="mypage-menu_block">
-                        <div class="menu-title">
-                            개인정보
-                        </div>
-                        <span class="menu-detail">
-                            <a th:href="@{/mypage/myInfo}">
-                                개인정보 수정
-                            </a>
-                            <a th:href="@{/mypage/password}">
-                                비밀번호 수정
-                            </a>
-                        </span>
-                    </div>
-                    <div class="mypage-menu_block">
-                        <div class="menu-title">
-                            리뷰
-                        </div>
-                        <div class="menu-detail">
-                            <a th:href="@{/mypage/review/inquiry}">내 리뷰</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="mypage-menu_row">
-                    <div class="mypage-menu_block">
-                        <div class="menu-title">
-                            매장
-                        </div>
-                        <div class="menu-detail">
-                            <a th:href="@{/mypage/shop/favorite/inquiry}">관심 매장</a>
-                        </div>
-                    </div>
-                    <div class="mypage-menu_block">
-                        <div class="menu-title">
-                            북마크
-                        </div>
-                        <div class="menu-detail">
-                            <a th:href="@{#}">북마크</a>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <a th:data-provider="${sessionDto.provider}" id="link-owner-request" onclick="checkProviderAndRedirect()">사업자 전환 신청</a> | 고객 센터
-                </div>
+            <div id="mypage-link_div">
+                <a th:data-provider="${sessionDto.provider}" id="link-owner-request" onclick="checkProviderAndRedirect()">사업자 전환 신청</a> | 고객 센터
             </div>
-<!--            <div class="mypage-menu_div">-->
-
-<!--            </div>-->
         </div>
     </div>
 </div>

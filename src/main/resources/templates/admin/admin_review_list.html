@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>관리자 페이지-리뷰 리스트</title>
     <!-- <script src="/src/layouts/get_layout.js"></script>-->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>-->
     <script th:src="@{/js/admin/admin_detail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/pagination/pagination_style.css}">
    <!-- <link rel="stylesheet" th:href="@{/css/admin/admin_style.css}">-->
@@ -67,8 +67,8 @@
                         <div class="td" th:text="${adminReview.shopName}"></div>
                         <div class="td" th:text="${adminReview.rate}"></div>
                         <div class="td" th:text="${adminReview.likeCnt}"></div>
-                        <div class="td" th:text="${#temporals.format(adminReview.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
-                        <div class="td" th:text="${#temporals.format(adminReview.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="td" th:text="${#temporals.format(adminReview.createdAt, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
+                        <div class="td" th:text="${#temporals.format(adminReview.updatedAt, 'yyyy-MM-dd HH:mm','Asia/Seoul')}"></div>
                         <div class="td" th:text="${adminReview.isDeleted == false ? '유지' : '삭제'}"></div>
                         <div class="td">
                             <button class="button" th:if="${adminReview.isDeleted == false}">리뷰 삭제</button>

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/member/signup_style.css}" />
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<!--    <script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
     <script th:src="@{/js/member/signup.js}"></script>
     <script th:src="@{/js/member/viewPassword.js}"></script>
 </head>
@@ -137,11 +137,19 @@
                 </td>
             </tr>
             <tr style="text-align: center;">
-                <td>
-                    <input type="radio" class="gender-radio" name="gender" value="Male" checked="checked">남성
-                </td>
-                <td>
-                    <input type="radio" class="gender-radio" name="gender" value="Female">여성
+                <td colspan="2" id="gender-select_td">
+                    <div>
+                        <input type="radio" class="gender-radio" id="gender_male" name="gender" value="MALE" checked="checked">
+                        <label for="gender_male">남성</label>
+                    </div>
+                    <div>
+                        <input type="radio" class="gender-radio" id="gender_female" name="gender" value="FEMALE">
+                        <label for="gender_female">여성</label>
+                    </div>
+                    <div>
+                        <input type="radio" class="gender-radio" id="gender_unselected" name="gender" value="UNSELECTED">
+                        <label for="gender_unselected">선택하지않음</label>
+                    </div>
                 </td>
             </tr>
             </tbody>
