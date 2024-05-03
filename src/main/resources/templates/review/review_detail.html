@@ -59,7 +59,7 @@
                 <div class="review-rating">
                     <span class="stars"></span>
                     <span class="rating-number" th:text="${result.getData().rate}">5</span>
-                    <span class="review-date" th:text="${#temporals.format(result.getData().reviewCreatedAt, 'yyyy-MM-dd HH:mm')}">작성 일시</span>
+                    <span class="review-date" th:text="${#temporals.format(result.getData().reviewCreatedAt, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')}">작성 일시</span>
                 </div>
                 <div class="shop-menu">시술 내역</div>
 
