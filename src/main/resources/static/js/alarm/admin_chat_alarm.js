@@ -5,14 +5,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log("Receiver Email: ", receiver);
 
-    var sock = new SockJS("/echo");
-
-    sock.onopen = function() {
-        console.log("채팅 소켓 연결완료");
-    }
+    // var sock = new SockJS("/echo");
+    //
+    // sock.onopen = function() {
+    //     console.log("채팅 소켓 연결완료");
+    // }
     function connect() {
-        var socket = new SockJS('/stomp/chat');
-        stompClient = Stomp.over(socket);
+        var sock = new SockJS('/stomp/chat');
+        stompClient = Stomp.over(sock);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/sub/chatroom/' + roomId, function (messageOutput) {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var dateElement = document.createElement('div');
         dateElement.classList.add('dateDivider');
         var formattedDate = new Date(dateString).toLocaleDateString('ko-KR', {
-            year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+            year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul',
         });
         dateElement.innerHTML = formattedDate; // 예: '2024년 3월 28일 목요일'
         chatArea.appendChild(dateElement);
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.alarmId) {
                     // 성공 로직 처리, 서버로 메시지 전송
                     console.log("Alarm sent with ID:", data.alarmId);
-                    sock.send(`${alarmType},${receiver},${url},${data.alarmId}`);
+                    socket.send(`${alarmType},${receiver},${url},${data.alarmId}`);
                 } else {
                     throw new Error("Failed to retrieve alarm ID.");
                 }

@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 웹소켓 초기화
-    var socket = new SockJS("/echo");
+/*    var socket = new SockJS("/echo");
     socket.onopen = function() {
         console.log("Connected to the server.");
-    };
+    };*/
 
     // 초기 알람 카운트 가져오기
     fetch("/alarm/count")
