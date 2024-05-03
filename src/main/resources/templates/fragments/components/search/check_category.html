@@ -1,10 +1,24 @@
+<!--<div th:fragment="check-category">-->
+<!--    <div class="checkbox-button_row">-->
+<!--        <div th:each="category : ${categories}" class="checkbox-button">-->
+<!--            <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />-->
+<!--            <div class="checked-div">-->
+<!--                <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <div th:fragment="check-category">
     <div class="checkbox-button_row">
         <div th:each="category : ${categories}" class="checkbox-button">
-            <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" />
-            <div class="checked-div">
-                <label th:for="${'category' + category.categoryId}" th:text="${category.type}">카테고리명</label>
-            </div>
+            <!-- 레이블로 전체 영역을 감쌉니다. -->
+            <label th:for="${'category' + category.categoryId}" class="full-width-label">
+                <input class="category-checkbox" th:id="${'category' + category.categoryId}" type="checkbox" name="categoryIdList" th:value="${category.categoryId}" style="display:none;" />
+                <!-- 체크박스와 레이블을 한 div로 묶어서 둘 다 클릭 가능하게 합니다. -->
+                <div class="checked-div">
+                    <span th:text="${category.type}">카테고리명</span>
+                </div>
+            </label>
         </div>
     </div>
 </div>
